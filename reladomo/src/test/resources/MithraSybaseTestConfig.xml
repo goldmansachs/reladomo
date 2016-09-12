@@ -1,0 +1,51 @@
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraRuntime>
+    <ConnectionManager className="com.gs.fw.common.mithra.test.SybaseTestConnectionManager">
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Product" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AllTypes" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TimestampConversion" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ParaDesk" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Order" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.SaleAggregateData" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BigOrder" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BigOrderItem" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.MultiPkBigDecimal" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderStatus" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderItem" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderItemStatus" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.IdentityTable" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.StringDatedOrder" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.Alarm" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.AlarmCategory" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.AlarmSybase" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.AlarmNonTransactional" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.AlarmDatedTransactional" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.AlarmDatedNonTransactional" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.AlarmBitemporalTransactional" cacheType="partial"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.FileDirectory" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.TestAcctEntitySegment" cacheType="partial" useMultiUpdate="false"/>   <!-- use batch update instead of multiupdate for the test -->
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestEodAcctIfPnl" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestBalanceNoAcmap" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TimezoneTest" cacheType="partial"/>
+
+        <MithraTemporaryObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderDriver"/>
+
+    </ConnectionManager>
+</MithraRuntime>

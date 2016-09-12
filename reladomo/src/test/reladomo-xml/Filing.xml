@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.tax</PackageName>
+    <ClassName>Filing</ClassName>
+    <DefaultTable>FILING</DefaultTable>
+
+    <AsOfAttribute name="processingDate" fromColumnName="IN_Z" toColumnName="OUT_Z"
+                   infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                   defaultIfNotSpecified="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                   isProcessingDate="true"/>
+
+    <AsOfAttribute name="businessDate" fromColumnName="FROM_Z" toColumnName="THRU_Z"
+                   infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                   isProcessingDate="false" toIsInclusive="false"/>
+
+    <Attribute name="filingId" javaType="long" columnName="FILING_ID"
+               primaryKey="true" />
+
+    <!-- attributes of related object -->
+    <Attribute name="taxPeriodId" javaType="long" columnName="TAX_PERIOD_ID" nullable="false"/>
+    <Attribute name="entityId" javaType="long" columnName="ENTITY_ID" nullable="false"/>
+    <Attribute name="formId" javaType="long" columnName="FORM_ID" nullable="false"/>
+    <Attribute name="attachedToFilingId" javaType="long" columnName="PARENT_FILING_ID"/>
+    <Attribute name="consolidatedFilingId" javaType="long" columnName="COMBINED_FILING_ID"/>
+    <Attribute name="typeId" javaType="long" columnName="TYPE_ID" nullable="false"/>
+    <Attribute name="addressId" javaType="long" columnName="ADDRESS_ID"/>
+    <Attribute name="signerId" javaType="long" columnName="SIGNER_ID"/>
+    <Attribute name="signerRoleId" javaType="long" columnName="CONTACT_ROLE_ID"/>
+    <Attribute name="businessGroupId" javaType="long" columnName="BUS_GROUP_ID" nullable="false"/>
+    <Attribute name="originalDueDate" javaType="Date" columnName="DUE_DATE_ORG"/>
+    <Attribute name="extensionDueDate" javaType="Date" columnName="DUE_DATE_EXT"/>
+    <Attribute name="returnFilingDate" javaType="Date" columnName="DATE_RETURN_FILED"/>
+    <Attribute name="formName" javaType="String" columnName="FORM_NAME"/>
+    <Attribute name="targetFilingDate" javaType="Date" columnName="TARGET_FILING_DATE"/>
+    <Attribute name="paymentAmount" javaType="double" columnName="AMOUNT"/>
+    <Attribute name="paymentTypeId" javaType="long" columnName="PMT_TYPE_ID"/>
+    <Attribute name="paymentReference" javaType="String" columnName="CHECK_NO_WIRING"/>
+    <Attribute name="confirmationNumber" javaType="String" columnName="CONFIRM_NO"/>
+    <Attribute name="taxLiabilityTaxAmount" javaType="double" columnName="TAX_LIABLT_TAX_AMT"/>
+    <Attribute name="taxLiabilityInterestAmount" javaType="double" columnName="TAX_LIABLT_INTERST_AMT"/>
+    <Attribute name="taxLiabilityPenaltyAmount" javaType="double" columnName="TAX_LIABLT_PENALTY_AMT"/>
+    <Attribute name="taxLiabilityOtherTaxesAmount" javaType="double" columnName="TAX_LIABLT_OTHER_TAXES_AMT"/>
+    <Attribute name="taxLiabilityOtherTaxesNote" javaType="String" columnName="TAX_LIABLT_OTHER_TAXES_NOTE"/>
+    <Attribute name="taxLiabilityTotalAmount" javaType="double" columnName="TAX_LIABILITY_AMT"/>
+    <Attribute name="priorYearOverpaymentAmount" javaType="double" columnName="PRIOR_YR_OVRPMT_AMT"/>
+    <Attribute name="priorYearOverpaymentTCMAmount" javaType="double" columnName="PRIOR_YR_OVRPMT_TCM"/>
+    <Attribute name="estimatedPaymentAmount" javaType="double" columnName="EST_PMT_AMT"/>
+    <Attribute name="extensionAmount" javaType="double" columnName="EXT_PMT_AMT"/>
+    <Attribute name="otherCreditsPayments" javaType="double" columnName="OTHER_CREDITS_PMTS"/>
+    <Attribute name="otherCreditsPaymentsNote" javaType="String" columnName="OTHER_CREDITS_PMTS_NOTE"/>
+    <Attribute name="totalPaymentAmount" javaType="double" columnName="TOTAL_PMT_AMT"/>
+    <Attribute name="overpaymentAmount" javaType="double" columnName="OVRPMT_AMT"/>
+    <Attribute name="originalOverpaymentAppliedAmount" javaType="double" columnName="ORIG_OVRPMT_APPLIED"/>
+    <Attribute name="originalRefundAmount" javaType="double" columnName="REFUND_AMT_ORIG"/>
+    <Attribute name="revisionToOverpaymentAppliedAmount" javaType="double" columnName="REV_OVRPMT_APPLIED"/>
+    <Attribute name="revisionToRefundAmount" javaType="double" columnName="REFUND_AMT_REV"/>
+    <Attribute name="overpaymentAppliedAmount" javaType="double" columnName="OVRPMT_APPLIED_AMT"/>
+    <Attribute name="refundAmount" javaType="double" columnName="REFUND_AMT"/>
+    <Attribute name="refundReceivedAmount" javaType="double" columnName="REFUND_RECV_AMT"/>
+    <Attribute name="refundReceivedDate" javaType="Date" columnName="REFUND_RECV_DATE"/>
+    <Attribute name="k1Issued" javaType="int" columnName="K1_ISSUED"/>
+    <Attribute name="changedBy" javaType="String" columnName="CHANGED_BY" nullable="false"/>
+    <Attribute name="statusId" javaType="int" columnName="STATUS_ID"/>
+    <Attribute name="payingEntityId" javaType="long" columnName="PAYING_ENTITY_ID"/>
+    <Attribute name="attahcmentRecieved" javaType="String" columnName="ATTACHMENT_RECIEVED"/>
+    <Attribute name="totalLiabilityAtExtension" javaType="double" columnName="LIABILITY_AT_EXT_AMT"/>
+    <Attribute name="estimatedPaymentAmountIncome" javaType="double" columnName="EST_PAYMT_INC_AMT"/>
+    <Attribute name="estimatedPaymentAmountNonIncome" javaType="double" columnName="EST_PAYMT_NON_INC_AMT"/>
+    <Attribute name="extensionPaymentAmountIncome" javaType="double" columnName="EXT_PAYMT_INC_AMT"/>
+    <Attribute name="extensionPaymentAmountNonIncome" javaType="double" columnName="EXT_PAYMT_NON_INC_AMT"/>
+    <Attribute name="corpTaxReturnName" javaType="String" columnName="CORPTAX_RET_NAME"/>
+    <Attribute name="filingStatusId" javaType="long" columnName="FILING_STATUS_ID"/>
+    <Attribute name="emailNotification" javaType="String" columnName="EMAIL_NOTIF_FLAG"/>
+    <Attribute name="processedReturnRecieved" javaType="String" columnName="PROCESSED_RETURN_RECD"/>
+    <Attribute name="otherInformation" javaType="String" columnName="OTHER_INFO"/>
+    <Attribute name="extensionEstimatedPaymentNumber" javaType="int" columnName="EXT_EST_PMT_NUM"/>
+    <Attribute name="returnAmended" javaType="String" columnName="RETURN_AMENDED_FLAG"/>
+    <Attribute name="formRelatedToDifferentEntity" javaType="String" columnName="FORM_RELATED_TO_DIFF_ENTITY"/>
+    <Attribute name="formAsOfDate" javaType="Timestamp" columnName="FORM_VERSION_DATE" nullable="false"/>
+    <Attribute name="extendDueDateFlag" javaType="String" columnName="EXT_DUE_DATE_FLAG"/>
+    <Attribute name="eFileFlag" javaType="String" columnName="EFILE_FLAG"/>
+    <Attribute name="glTreasuryAccountNumber" javaType="String" columnName="GL_TREASURY_ACCNT_NO"/>
+    <Attribute name="useFederalExtension" javaType="String" columnName="ACCEPTS_EXT"/>
+    <Attribute name="jurisdictionId" javaType="long" columnName="JURISDICTION_ID"/>
+    <Attribute name="eFileAcceptanceDate" javaType="Date" columnName="EFILE_ACCEPT_DATE"/>
+
+    <Relationship name="form" relatedObject="Form" cardinality="many-to-one">Form.formId = this.formId and
+        Form.businessDate = this.formAsOfDate
+    </Relationship>
+    <Relationship name="formAddress" relatedObject="FormAddress" cardinality="many-to-one">FormAddress.addressId =
+        this.addressId and FormAddress.formId = this.formId and FormAddress.businessDate = this.formAsOfDate
+    </Relationship>
+    <Relationship name="attachedTo" relatedObject="Filing" cardinality="many-to-one">Filing.filingId =
+        this.attachedToFilingId
+    </Relationship>
+
+    <Relationship name="jurisdictionFilings" relatedObject="Jurisdiction" cardinality="many-to-one">
+        Jurisdiction.jurisdictionId=this.jurisdictionId
+    </Relationship>
+</MithraObject>

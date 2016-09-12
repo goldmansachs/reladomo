@@ -1,0 +1,9 @@
+class kata.domain.Task
+taskId , name           , status     , processingDateFrom     , processingDateTo
+1      , "Build Bridge" , "In Design", "1965-01-01 06:00:00.0", "1967-01-01 11:30:22.0"
+1      , "Build Bridge" , "Building" , "1967-01-01 11:30:22.0", "1969-12-30 23:59:00.0"
+1      , "Build Bridge" , "Restarted", "1990-01-01 06:00:00.0", "1992-12-01 23:59:00.0"
+2      , "Dam River"    , "Damming"  , "1991-01-01 06:00:00.0", "1996-12-01 23:59:00.0"
+2      , "Dam River"    , "Restarted", "2008-01-01 06:00:00.0", "9999-12-01 23:59:00.0"
+3      , "Colonize Moon", "In Design", "2007-01-01 06:00:00.0", "9999-12-01 23:59:00.0"
+

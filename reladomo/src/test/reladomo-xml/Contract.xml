@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject>
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>Contract</ClassName>
+    <DefaultTable>CONTRACT</DefaultTable>
+
+    <Attribute name="contractType" javaType="String" columnName="CONTRACT_TYPE" primaryKey="true" maxLength="15"/>
+    <Attribute name="contractId" javaType="int" columnName="CONTRACT_ID" primaryKey="true"/>
+    <Attribute name="accountId" javaType="String" columnName="ACCOUNT_ID" primaryKey="true" maxLength="15"/>
+    <Attribute name="productId" javaType="int" columnName="PRODUCT_ID" primaryKey="true"/>
+
+    <Attribute name="counterParty" javaType="String" columnName="COUNTERPARTY" maxLength="32"/>
+    <Attribute name="buySellInd" javaType="char" columnName="BUY_SELL_IND"/>
+    <Attribute name="unitCost" javaType="double" columnName="UNIT_COST"/>
+    <Attribute name="quantity" javaType="double" columnName="QUANTITY"/>
+
+    <Relationship name="underliers" relatedObject="Underlier" cardinality="one-to-many" reverseRelationshipName="contract">this.contractType = Underlier.contractType and
+        this.contractId = Underlier.contractId and this.productId = Underlier.productId and this.accountId = Underlier.accountId</Relationship>
+
+</MithraObject>
+

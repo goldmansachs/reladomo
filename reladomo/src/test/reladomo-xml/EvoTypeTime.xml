@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional" superClassType="table-per-subclass">
+    <PackageName>com.gs.fw.common.mithra.test.domain.evo</PackageName>
+    <ClassName>EvoTypeTime</ClassName>
+    <Attribute name="booleanAttribute" javaType="boolean" columnName="BOOLEAN_0"/>
+    <Attribute name="byteAttribute" javaType="byte" columnName="BYTE_0"/>
+    <Attribute name="charAttribute" javaType="char" columnName="CHAR_0"/>
+    <Attribute name="dateAttribute" javaType="Date" columnName="DATE_0"/>
+    <Attribute name="timeAttribute" javaType="Time" columnName="TIME_0"/>
+    <Attribute name="doubleAttribute" javaType="double" columnName="DOUBLE_0"/>
+    <Attribute name="floatAttribute" javaType="float" columnName="FLOAT_0"/>
+    <Attribute name="intAttribute" javaType="int" columnName="INT_0"/>
+    <Attribute name="longAttribute" javaType="long" columnName="LONG_0"/>
+    <Attribute name="shortAttribute" javaType="short" columnName="SHORT_0"/>
+    <Attribute name="stringAttribute" javaType="String" columnName="STRING_0" maxLength="10"/>
+    <Attribute name="timestampAttribute" javaType="Timestamp" columnName="TIMESTAMP_0"/>
+
+    <EmbeddedValue name="pk" type="EvoTypesTime">
+        <Mapping attribute="booleanAttribute" columnName="BOOLEAN_PK" primaryKey="true"/>
+        <Mapping attribute="byteAttribute" columnName="BYTE_PK" primaryKey="true"/>
+        <Mapping attribute="charAttribute" columnName="CHAR_PK" primaryKey="true"/>
+        <Mapping attribute="dateAttribute" columnName="DATE_PK" primaryKey="true"/>
+        <Mapping attribute="timeAttribute" columnName="TIME_PK" primaryKey="true"/>
+        <Mapping attribute="doubleAttribute" columnName="DOUBLE_PK" primaryKey="true"/>
+        <Mapping attribute="floatAttribute" columnName="FLOAT_PK" primaryKey="true"/>
+        <Mapping attribute="intAttribute" columnName="INT_PK" primaryKey="true"/>
+        <Mapping attribute="longAttribute" columnName="LONG_PK" primaryKey="true"/>
+        <Mapping attribute="shortAttribute" columnName="SHORT_PK" primaryKey="true"/>
+        <Mapping attribute="stringAttribute" columnName="STRING_PK" maxLength="10" primaryKey="true"/>
+        <Mapping attribute="timestampAttribute" columnName="TIMESTAMP_PK" primaryKey="true"/>
+        <Mapping attribute="bigDecimalAttribute" columnName="BIGDECIMAL_PK" precision="10" scale="2" primaryKey="true"/>
+    </EmbeddedValue>
+</MithraObject>

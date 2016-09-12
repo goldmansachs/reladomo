@@ -1,0 +1,36 @@
+/*
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+class com.gs.fw.common.mithra.test.glew.LewContract
+instrumentId, acctId, productSynonym, productSynonymType, debtClass, businessDateFrom,  businessDateTo, processingDateFrom, processingDateTo
+1, 100001, "IBM",   "GSN", "ppp", "2009-01-01 23:59:00.0", "2010-01-02 23:59:00.0", "2010-01-03 03:00:00.0", "2099-01-03 09:00:00.0"
+7, 100007, "APPLE", "GSN", "ppp", "2010-01-02 23:59:00.0", "2010-01-04 23:59:00.0", "2010-01-02 00:00:00.0", "2010-01-03 03:10:00.0"
+7, 100007, "APPLE", "GSN", "ppp", "2010-01-02 23:59:00.0", "2010-01-03 23:59:00.0", "2010-01-03 03:10:00.0", "9999-11-01 23:59:00.0"
+7, 100007, "APPLE", "GSN", "QQQ", "2010-01-03 23:59:00.0", "2079-05-06 23:59:00.0", "2010-01-03 03:10:00.0", "9999-11-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.glew.LewTransaction
+instrumentId, acctId, tranId, tradeQty, businessDateFrom,  businessDateTo, processingDateFrom, processingDateTo
+1, 100001, 1111, 20, "2010-01-01 23:59:00.0", "2079-05-06 23:59:00.0", "2009-01-03 00:00:00.0", "2010-01-01 03:00:00.0"
+1, 100001, 1111, 10, "2009-01-01 23:59:00.0", "2010-01-01 23:59:00.0", "2010-01-01 03:00:00.0", "9999-11-01 23:59:00.0"
+7, 100007, 7777, 30, "2009-01-02 23:59:00.0", "2010-01-02 23:59:00.0", "2009-01-02 00:00:00.0", "2010-01-02 00:00:00.0"
+7, 100007, 7777, 50, "2010-01-02 23:59:00.0", "2010-01-04 23:59:00.0", "2010-01-02 00:00:00.0", "2010-01-03 03:10:00.0"
+7, 100007, 7777, 50, "2010-01-02 23:59:00.0", "2010-01-03 23:59:00.0", "2010-01-03 03:10:00.0", "9999-11-01 23:59:00.0"
+7, 100007, 7777, 100,"2010-01-03 23:59:00.0", "2079-05-06 23:59:00.0", "2010-01-03 03:10:00.0", "9999-11-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.glew.GlewScrp
+name, viewId, typeId, businessDateFrom,  businessDateTo, processingDateFrom, processingDateTo
+"ppp", 1005, 100, "2009-01-01 23:59:00.0", "2079-05-06 23:59:00.0", "2009-01-03 00:00:00.0", "9999-11-01 23:59:00.0"
+"QQQ", 1005, 200, "2009-01-01 23:59:00.0", "2079-05-06 23:59:00.0", "2009-01-03 00:00:00.0", "2010-01-03 03:10:00.0"
+"QQQ", 1005, 300, "2010-01-01 23:59:00.0", "2079-05-06 23:59:00.0", "2010-01-03 03:00:00.0", "9999-11-01 23:59:00.0"

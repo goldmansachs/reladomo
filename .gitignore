@@ -1,0 +1,12 @@
+libboot/target/**
+build/lib/**
+build/asmlib
+build/setenv.bat
+build/setenv.ksh
+lib/**
+reladomo/target/**
+reladomogen/target/**
+reladomogenutil/target/**
+reladomogs/target/**
+reladomogsi/target/**
+reladomoui/target/**

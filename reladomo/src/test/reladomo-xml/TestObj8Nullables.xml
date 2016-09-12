@@ -1,0 +1,33 @@
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>TestObj8Nullables</ClassName>
+    <DefaultTable>TEST_OBJ_8NULL</DefaultTable>
+
+    <Attribute name="objectId" javaType="int" columnName="OBJ_ID" primaryKey="true"/>
+    <Attribute name="nullableField0" javaType="int" columnName="NULL_FIELD0"/>
+    <Attribute name="nullableField1" javaType="int" columnName="NULL_FIELD1"/>
+    <Attribute name="nullableField2" javaType="int" columnName="NULL_FIELD2"/>
+    <Attribute name="nullableField3" javaType="int" columnName="NULL_FIELD3"/>
+    <Attribute name="nullableField4" javaType="int" columnName="NULL_FIELD4"/>
+    <Attribute name="nullableField5" javaType="int" columnName="NULL_FIELD5"/>
+    <Attribute name="nullableField6" javaType="int" columnName="NULL_FIELD6"/>
+    <Attribute name="nullableField7" javaType="int" columnName="NULL_FIELD7"/>
+</MithraObject>

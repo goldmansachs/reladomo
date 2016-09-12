@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>TinyBalanceUtc</ClassName>
+    <DefaultTable>TINY_BALANCE_UTC</DefaultTable>
+    <SourceAttribute name="acmapCode" javaType="String"/>
+
+    <AsOfAttribute name="businessDate" fromColumnName="FROM_Z" toColumnName="THRU_Z" toIsInclusive="false"
+        infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"/>
+    <AsOfAttribute name="processingDate" fromColumnName="IN_Z" toColumnName="OUT_Z"
+        infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"
+        defaultIfNotSpecified="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]" isProcessingDate="true"
+        timezoneConversion="convert-to-utc"/>
+
+    <Attribute name="balanceId" javaType="int" columnName="BALANCE_ID" primaryKey="true"/>
+
+    <Attribute name="quantity" javaType="double" columnName="POS_QUANTITY_M"/>
+
+    <Relationship name="testRelationship" relatedObject="ParaBalance" cardinality="one-to-one">
+        this.balanceId = ParaBalance.balanceId
+    </Relationship>
+</MithraObject>

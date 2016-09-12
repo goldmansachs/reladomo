@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<!--
+ *
+ *
+ *
+ *
+-->
+<MithraObject objectType="read-only"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../mithraobject.xsd">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>PersonRO</ClassName>
+
+    <DefaultTable>PERSON_TBL</DefaultTable>
+
+    <Attribute name="id" javaType="int" columnName="OBJECTID" primaryKey="true"/>
+    <Attribute name="firstName" javaType="String" columnName="FIRST_NAME"/>
+    <Attribute name="lastName" javaType="String" columnName="LAST_NAME"/>
+    <Attribute name="firmId" javaType="int" columnName="FIRM_ID" nullable="true"/>
+    <Attribute name="addressId" javaType="int" columnName="ADDRESS_ID" nullable="true"/>
+
+    <Relationship name="firm" relatedObject="FirmRO" cardinality="many-to-one">
+        this.firmId = FirmRO.id
+    </Relationship>
+
+    <Relationship name="address" relatedObject="PersonAddressRO" parameters="String addressType" cardinality="one-to-one">
+        this.addressId = PersonAddressRO.id and PersonAddressRO.addressType={addressType}
+    </Relationship>
+</MithraObject>
+

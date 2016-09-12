@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType= "transactional">
+
+	<PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+	<ClassName>ControlDefinition</ClassName>
+	<DefaultTable>CONTROL_DEF</DefaultTable>
+
+	<AsOfAttribute name="processingDate" fromColumnName="IN_DT" toColumnName="OUT_DT" toIsInclusive="false" 
+	    infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]" isProcessingDate="true"
+	    defaultIfNotSpecified="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"/>
+
+	<Attribute name="controlCode" javaType="int" primaryKey="true" columnName="CONTROL_CD"/>
+	
+	<Attribute name="controlType" javaType="String" maxLength="10" columnName="CONTROL_TYPE"/>
+	<Attribute name="controlShortDesc" javaType="String" maxLength="10" columnName="CONTROL_SHORT_DESC"/>
+	<Attribute name="controlDesc" javaType="String" maxLength="40" columnName="CONTROL_DESC"/>
+	<Attribute name="updateBy" javaType="String" maxLength="30" columnName="UPDATE_BY"/>
+
+	<Attribute name="parentControlCode" javaType="int" columnName="PARENT_CONTROL_CD"/>
+	
+	<Relationship name="listDefinitionMappings" relatedObject="ControlListDefinitionMapping" cardinality="one-to-many" relatedIsDependent="true"
+            reverseRelationshipName="controlDefinition">
+		ControlListDefinitionMapping.controlCode = this.controlCode
+	</Relationship>
+	
+</MithraObject>

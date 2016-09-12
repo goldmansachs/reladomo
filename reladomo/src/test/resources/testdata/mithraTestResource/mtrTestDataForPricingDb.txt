@@ -1,0 +1,62 @@
+/*
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+
+class com.gs.fw.common.mithra.test.domain.Sale
+saleId,saleDate,sellerId,description,discountPercentage,settleDate,activeBoolean
+1, "2004-01-12 00:00:00.0", 1, "Sale 0001", 0.05, "2004-01-13", false
+2, "2004-02-12 00:00:00.0", 1, "Sale 0002", 0.07, "2004-02-14", true
+3, "2004-02-13 00:00:00.0", 1, "Sale 0003", 0.03, "2004-02-15", true
+4, "2004-02-12 00:00:00.0", 2, "Sale 0004", 0.1, "2004-02-12", false
+5, "2004-02-13 00:00:00.0", 2, "Sale 0005", 0.08, "2004-02-13", false
+
+
+class com.gs.fw.common.mithra.test.domain.SalesLineItem
+itemId,saleId,productId,manufacturerId,quantity
+//Items for Sale 0001
+1, 	1, 1, 1, 20
+
+//Items for Sale 0002
+2, 	2, 1, 1, 20
+3, 	2, 2, 1, 20
+4, 	2, 3, 2, 20
+
+//Items for Sale 0003
+5, 	3, 2, 2, 5
+6, 	3, 3, 2, 10
+7, 	3, 1, 2, 10
+
+//Items for Sale 0004
+8, 	4, 1, 1, 10
+9, 	4, 2, 1, 20
+
+//Items for Sale 0005
+10, 5, 3, 1, 15
+11, 5, 4, 2, 17
+12, 5, 1, 1, 23
+
+class com.gs.fw.common.mithra.test.domain.ProductSpecification
+productId,productCode,productName,originalPrice,discountPrice,otherPrice,minQuantity
+1, "AA", "PROD 1", 12.5, 11.50, 12, 150
+2, "AB", "PROD 2", 19.99, 15.00, 17, 225
+3, "BA", "PROD 3", 10.00, 9.99, 10, 350
+
+class com.gs.fw.common.mithra.test.domain.Stock
+stockId,ticker,companyName, stockPriceId,businessDateFrom,businessDateTo
+1, "IBM", "IBM CORPORATION", 1, "2002-11-29 00:00:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.StockPrice
+stockPriceId,lastPrice,active,businessDateFrom,businessDateTo
+1, 100.4,"Y", "2002-11-29 00:00:00.0","9999-12-01 23:59:00.0"

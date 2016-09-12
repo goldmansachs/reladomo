@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject>
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>DatedAccount</ClassName>
+    <DefaultTable>DATED_ACCOUNT</DefaultTable>
+
+    <SourceAttribute name="deskId" javaType="String"/>
+    <AsOfAttribute name="businessDate" fromColumnName="FROM_Z" toColumnName="THRU_Z"
+        infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"
+        defaultIfNotSpecified="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]" />
+    <AsOfAttribute name="processingDate" fromColumnName="IN_Z" toColumnName="OUT_Z"
+        infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"
+        defaultIfNotSpecified="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]" />
+    <Attribute name="id" javaType="int" columnName="ID" primaryKey="true"/>
+    <Attribute name="name" javaType="String" columnName="NAME" maxLength="15"/>
+    <Attribute name="trialId" javaType="int" columnName="TRIAL_ID"/>
+    <Attribute name="pnlGroupId" javaType="int" columnName="PNLGROUP_ID"/>
+
+    <Relationship name="datedTrial" relatedObject="DatedTrial" cardinality="many-to-one">DatedTrial.id = this.trialId</Relationship>
+    <Relationship name="datedPnlGroup" relatedObject="DatedPnlGroup" cardinality="many-to-one">DatedPnlGroup.id = this.pnlGroupId</Relationship>
+    <Relationship name="euroExchangeRate" relatedObject="ExchangeRate" cardinality="many-to-one">ExchangeRate.acmapCode = this.deskId and
+        ExchangeRate.currency="EUR" and ExchangeRate.date = this.businessDate</Relationship>
+</MithraObject>
+

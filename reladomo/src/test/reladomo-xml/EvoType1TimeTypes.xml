@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+    <PackageName>com.gs.fw.common.mithra.test.domain.evo</PackageName>
+    <ClassName>EvoType1TimeTypes</ClassName>
+    <SuperClass name="EvoTypeTime" generated="true"/>
+    <DefaultTable>EVO_TYPE1_TIME_TYPES</DefaultTable>
+    <EmbeddedValue name="rootEvo" type="EvoTypesRootWithTime">
+        <Mapping attribute="booleanAttribute" columnName="BOOLEAN_1"/>
+        <Mapping attribute="byteAttribute" columnName="BYTE_1"/>
+        <Mapping attribute="charAttribute" columnName="CHAR_1"/>
+        <Mapping attribute="dateAttribute" columnName="DATE_1"/>
+        <Mapping attribute="timeAttribute" columnName="TIME_1"/>
+        <Mapping attribute="doubleAttribute" columnName="DOUBLE_1"/>
+        <Mapping attribute="floatAttribute" columnName="FLOAT_1"/>
+        <Mapping attribute="intAttribute" columnName="INT_1"/>
+        <Mapping attribute="longAttribute" columnName="LONG_1"/>
+        <Mapping attribute="shortAttribute" columnName="SHORT_1"/>
+        <Mapping attribute="stringAttribute" columnName="STRING_1" maxLength="10"/>
+        <Mapping attribute="timestampAttribute" columnName="TIMESTAMP_1"/>
+        <Mapping attribute="bigDecimalAttribute" columnName="BIGDECIMAL_1" precision="18" scale="3"/>
+    </EmbeddedValue>
+</MithraObject>

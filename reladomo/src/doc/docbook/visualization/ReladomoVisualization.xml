@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<article>
+
+    <articleinfo>
+        <title>Visualizing Your Domain Model Using Reladomo Metadata</title>
+        <pubdate>26 September 2006</pubdate>
+        <author>Mohammad Rezaei</author>
+    </articleinfo>
+
+    <sect1>
+
+        <title>Introduction</title>
+        <para>When a persistent set of objects is specified in Reladomo metadata, the objects can be visualized. The output can
+            be used as documentation, or simply browsed through to gain understanding of the domain.
+        </para>
+
+    </sect1>
+
+    <sect1>
+
+        <title>Required Tools</title>
+            <para>
+                To use the visualization, you will need two things:
+                <itemizedlist>
+                    <listitem>
+                       <para>Run the MithraGraphGenerator using Ant.</para>
+                    </listitem>
+                    <listitem>
+                       <para>Load the graph in yEd.</para>
+                    </listitem>
+                </itemizedlist>
+            </para>
+
+        <sect2>
+            <title>Running MithraGraphGenerator</title>
+            <para>
+                MithraGraphGenerator is invoked via Ant. Here is an example target:
+            </para>
+
+            <programlisting language="xml"><![CDATA[
+<target name="generate-mithra-graph-product">
+    <taskdef name="mithra-graphgen"
+        classname="com.gs.fw.common.mithra.generator.MithraGraphGenerator"
+        loaderRef="mithraGenerator">
+       <classpath refid="mithragen.classpath"/>
+    </taskdef>
+    <mithra-graphgen xml="${mithra.home}/xml/mithra/para/ParaClassList.xml"
+        outputFile="${generated.src.dir}/paraproduct.graphml"
+        includeList="Product,PositionQuantity" followRelationshipDepth="1"
+        showAttributes="primaryKey"/>
+</target>
+]]></programlisting>
+
+            <para>
+                The elements for the <code>mithra-graphgen</code> tag above are:
+            </para>
+
+            <para>
+                The <code>xml</code> element specifies the location
+                of the Reladomo class list -- a list of all of the classes to be graphed by Reladomo. By default, the graph
+                generator will put all the classes in the graph if <code>includeList</code> is not specified. The combination of
+                <code>includeList</code> and <code>followRelationshipDepth</code> further defines what objects are shown on the
+                graph.
+            </para>
+
+            <para>
+                The <code>includeList</code> is a comma separated list of objects to be graphed. This is an optional attribute, and
+                omitting it will cause all the objects to be graphed. These objects, if specified, will
+                be the root from which relationships can be followed. The example above will graph the Product class, the PositionQuantity
+                class as well any objects that have a direct relationship from those two.
+            </para>
+
+            <para>
+                The <code>followRelationshipDepth</code> attribute specifies how deep relationships should be followed from the
+                classes specified in <code>includeList</code>. This attribute has no effect if <code>includeList</code> is not
+                specified. The default value is 1. To see just the classes specified in <code>includeList</code>, set this to zero.
+            </para>
+
+            <para>
+                The <code>showAttributes</code> value determines what object attributes will be visible in the output. The
+                valid values are: "none", "all", "primaryKey" or a number (e.g. "7"). If a number is specified, the primary keys
+                are given precedence and appear at the top of the list.
+            </para>
+
+        </sect2>
+            <sect2>
+                <title>Running yEd</title>
+                <para>
+                    You can download a copy of yEd from http://www.yworks.com/products/yed/. After running yEd, you can open the file
+                    you generated (paraproduct.graphml in the above example).
+                    You'll see a jumble of boxes. Don't panic. You have to use yEd to layout the diagram. yEd and a large number of options for layout.
+                    You should experiment a bit to see what fits your model best. All these options appear under the "Layout" menu.
+                    Here are some recommendations to get you started:
+                </para>
+                <itemizedlist>
+                    <listitem>
+                       <para>Small number of objects: Hierarchical or Orthogonal works well.</para>
+                    </listitem>
+                    <listitem>
+                       <para>Medium number of objects: Organic works well.</para>
+                    </listitem>
+                    <listitem>
+                       <para>Large number of objects: Circular works ok.</para>
+                    </listitem>
+                </itemizedlist>
+                <para>
+                    Once you have the diagram in it's final form, you can export to it to a variety of file type, including PDF, SVG and GIF.
+                    For large diagrams, you can also print the file on multiple pages.
+                </para>
+            </sect2>
+    </sect1>
+
+</article>

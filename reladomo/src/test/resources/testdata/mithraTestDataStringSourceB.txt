@@ -1,0 +1,74 @@
+/*
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+
+class com.gs.fw.common.mithra.test.domain.TinyBalance
+balanceId,quantity,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+1234,100.00,"2005-12-01 18:30:00.0","9999-12-01 23:59:00.0","2005-12-01 19:30:00.0","2005-12-15 18:49:00.0"
+1234,100.00,"2005-12-01 18:30:00.0","2005-12-15 18:30:00.0","2005-12-15 18:49:00.0","9999-12-01 23:59:00.0"
+1234,200.00,"2005-12-15 18:30:00.0","9999-12-01 23:59:00.0","2005-12-15 18:30:00.0","9999-12-01 23:59:00.0"
+
+8800,200.00,"2005-12-15 00:00:00.0","9999-12-01 23:59:00.0","2005-12-15 00:00:00.0","9999-12-01 23:59:00.0"
+8801,100.00,"2005-12-15 00:00:00.0","9999-12-01 23:59:00.0","2005-12-15 00:00:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.TinyBalanceNull
+balanceId,quantity,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+1234,100.00,"2005-12-01 18:30:00.0",null,"2005-12-01 19:30:00.0","2005-12-15 18:49:00.0"
+1234,100.00,"2005-12-01 18:30:00.0","2005-12-15 18:30:00.0","2005-12-15 18:49:00.0",null
+1234,200.00,"2005-12-15 18:30:00.0",null,"2005-12-15 18:30:00.0",null
+
+//AccountDescendingKey
+class com.gs.fw.common.mithra.test.domain.AccountDescendingKey
+accountId, accountDescription, accountOpeningDate
+26, "Account20", "2002-11-28 00:00:00.0"
+23, "Account19", "2002-11-28 00:00:00.0"
+22, "Account18", "2002-11-28 00:00:00.0"
+19, "Account17", "2002-11-28 00:00:00.0"
+16, "Account16", "2002-11-28 00:00:00.0"
+
+//AccountTransaction table
+class com.gs.fw.common.mithra.test.domain.AccountTransaction
+transactionId,transactionDescription,transactionDate
+1,"Transaction 1","2002-11-28 18:50:00.0"
+10000,"Transaction 10000","2002-11-29 18:50:00.0"
+100000,"Transaction 100000","2002-11-29 18:59:00.0"
+
+//AccountTransactionException table
+class com.gs.fw.common.mithra.test.domain.AccountTransactionException
+exceptionId,exceptionDescription,exceptionDate
+99996,"Exception 99996","2002-11-28 18:30:00.0"
+99999,"Exception 99999","2002-11-29 18:30:00.0"
+100002,"Exception 100002","2002-11-29 18:40:00.0"
+
+class com.gs.fw.common.mithra.test.domain.Account
+accountNumber,code,trialId,pnlGroupId
+"9410161001", "74101610", "001A", "999A"
+"9410161101", "74101611", "001A", "999A"
+"9410161201", "74101612", "001A", "999A"
+"9410161301", "74101613", "001A", "999A"
+
+class com.gs.fw.common.mithra.test.domain.IdentityTable
+objectId, month, orderId, description
+1, "2008-3-3 18:30:00.0", 1234, "LENNY KRAVITZ"
+2, "2008-3-3 18:30:00.0", 2345, "ZERO 7"
+3, "2008-3-3 18:30:00.0", 3456, "EARL GREYHOUND"
+
+class com.gs.fw.common.mithra.test.domain.desk.balance.position.PositionQuantity
+accountId,productId,positionType,quantity,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+"7616150502",1521,1800,-6851, "2002-11-29 00:00:00.0","9999-12-01 23:59:00.0","2002-11-30 00:30:00.0","9999-12-01 23:59:00.0"
+"7616030302",1521,1800,0,"2003-01-01 00:00:00.0","9999-12-01 23:59:00.0","2003-01-03 00:30:00.0","9999-12-01 23:59:00.0"
+"7616030402",1521,1800,1000,"2002-02-01 00:00:00.0","9999-12-01 23:59:00.0","2002-02-02 00:30:00.0","9999-12-01 23:59:00.0"
+"7616030602",1521,1800,-3000,"2002-12-27 00:00:00.0","9999-12-01 23:59:00.0","2002-12-28 00:30:00.0","9999-12-01 23:59:00.0"
+"7616030702",1521,1800,10,"2002-01-27 00:00:00.0","9999-12-01 23:59:00.0","2002-01-28 00:30:00.0","9999-12-01 23:59:00.0"

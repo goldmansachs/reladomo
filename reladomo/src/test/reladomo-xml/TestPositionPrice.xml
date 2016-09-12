@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>TestPositionPrice</ClassName>
+    <DatedTransactionalTemporalDirector>com.gs.fw.common.mithra.test.ParaLikeBiTemporalDirector</DatedTransactionalTemporalDirector>
+    <DefaultTable>TEST_POSITION_PRICE</DefaultTable>
+    <SourceAttribute name="acmapCode" javaType="String"/>
+
+    <AsOfAttribute name="businessDate" fromColumnName="FROM_Z" toColumnName="THRU_Z"
+        infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"/>
+    <AsOfAttribute name="processingDate" fromColumnName="IN_Z" toColumnName="OUT_Z"
+        infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"
+        defaultIfNotSpecified="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"
+        isProcessingDate="true"/>
+
+    <Attribute name="accountId" javaType="String" columnName="ACCT_NBR_C" trim="true" primaryKey="true" poolable="true"/>
+    <Attribute name="productId" javaType="int" columnName="PROD_I" primaryKey="true"/>
+    <Attribute name="positionType" javaType="int" columnName="POS_TYP_C" primaryKey="true"/>
+    <Attribute name="balanceType" javaType="int" columnName="POS_MKTVL_C" primaryKey="true"/>
+
+    <Attribute name="currency" javaType="String" columnName="PROD_CURR_C" primaryKey="true" poolable="true"/>
+    <Attribute name="sourceId" javaType="int" columnName="SOURCE_I" nullable="true" defaultIfNull="12"/>
+    <Attribute name="priceType" javaType="int" columnName="PRX_TYP_I" nullable="true" defaultIfNull="17"/>
+
+    <Attribute name="marketValue" javaType="double" columnName="POS_MKTVL_M"/>
+</MithraObject>

@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<article>
+
+    <articleinfo>
+        <title>Reladomo Object XML Generator</title>
+        <pubdate>26 June 2006</pubdate>
+        <auhor>Cameron Brien</auhor>
+    </articleinfo>
+
+    <sect1>
+
+        <title>Introduction</title>
+        <para>
+            Reladomo maps database tables to Java objects. These objects are generated using a set of
+            configuration and object definition XML (mapping) files created by the user. One must create one XML
+            file for every Reladomo object. The object XML file is the metadata definition of the Reladomo object.
+        </para>
+        <para>
+            To expedite the creation of object XML files from existing schema, an object XML file generator has been
+            created. It connects directly to a database, retrieving a list of the existing tables
+            and generating object XML files that appropriately map to these tables. The generator improves Reladomo's
+            usability and also ensures better consistency between the Reladomo objects' definitions and the tables to which
+            they are mapped.
+        </para>
+
+    </sect1>
+
+    <sect1>
+
+        <title>Usage</title>
+            <sect2>
+                <title>Ant Build Task</title>
+                <para>
+                An Ant task provides users with a simple way to integrate XML generation into a build. Consider the following example
+                as it points to a number of XML elements used by MithraDbDefinitionGenerator:
+            </para>
+
+            <programlisting language="xml"><![CDATA[<target name="generate-para-mithra-xml-url"
+        depends="compile-mithra, compile-mithra-generator">
+    <taskdef name="mithra-gen-xml"
+             classname="com.gs.fw.common.mithra.generator.
+                       objectxmlgenerator.MithraObjectXmlGenerator"
+             loaderRef="mithraGenerator">
+        <classpath refid="mithragen.classpath"/>
+    </taskdef>
+    <mithra-gen-xml userName="user"
+                    password="password"
+                    schema="schema"
+                    databaseType="sybase"
+                    driver="com.sybase.jdbc4.jdbc.SybDriver"
+                    url="jdbc:sybase:Tds:somehost.example.com:8111/
+                         schema"
+                    includeTables="TABLE_1, TABLE_2"
+                    outputDir="${para.home}/xml/mithra/generated"/>
+</target>
+
+<target name="generate-para-mithra-xml-ldap"
+        depends="compile-mithra, compile-mithra-generator">
+    <taskdef name="mithra-gen-xml"
+             classname="com.gs.fw.common.mithra.generator.
+                       objectxmlgenerator.MithraObjectXmlGenerator"
+             loaderRef="mithraGenerator">
+        <classpath refid="mithragen.classpath"/>
+    </taskdef>
+    <mithra-gen-xml userName="user"
+                    password="password"
+                    schema="schema"
+                    databaseType="sybase"
+                    ldapName="SOME_LDAP_NAME"
+                    includeTablesFromFile="include.txt"
+                    outputDir="${para.home}/xml/mithra/generated"/>
+</target>]]></programlisting>
+
+                <para>
+                Of interest are the elements for the <code>mithra-gen-xml</code> attributes above.
+                </para>
+
+                <para>
+                The <code>userName</code> and <code>password</code> elements specify the login credentials for the database to be used.
+                The <code>databaseType</code> element sets the database type to be used. Again, acceptable values
+                for the type are &quot;sybase&quot; and &quot;udb82&quot;. <code>outputDir</code> is the directory in which
+                the XML files will be generated. All of these elements must be included.
+            </para>
+
+                <para>
+                The XML generator may connect to a database using a specified URL and JDBC driver or an LDAP name. The <code>driver</code>
+                element specifies the driver to use when connecting to the database. The <code>url</code> is the URL of the database.
+                It is typically prefixed with <code>jdbc</code> to establish the protocol. The <code>ldapName</code> is the name of
+                LDAP server to which the generator is to connect.
+                </para>
+
+                <para>
+                    The <code>schema</code> element is optional. In Sybase, the generator's schema is the equivalent of the catalog in JDBC.
+                    In UDB, it is the equivalent of the schema in JDBC.
+                </para>
+
+                <para>
+                    The <code>includeTables</code> and <code>includeTablesFromFile</code> elements are optional. If not included,
+                    the generator will run on all tables present in the database (given the default schema or schema provided). <code>
+                    includeTables</code> is a comma-separated list of tables from which XML files should be generated. <code>
+                    includeTablesFromFile</code> is the URL of a file containing a newline-delimited list of tables from which XML files
+                    should be generated. <code>includeTables</code> and <code>includeTablesFromFile</code> should be used exclusively.
+                </para>
+            </sect2>
+
+            <sect2>
+                <title>Caveats</title>
+                <para>
+                Note that the generator currently accepts &quot;sybase&quot; and &quot;udb82&quot; as possible database
+                types. If no database type is specified or an invalid type is provided, the generator throws a
+                <code>BuildException</code>.
+                </para>
+                <para>
+                If no primary key is specified in a table, the generator will set the primary key in the object XML
+                file to be the first unique index retrieved from the database. This may not be the intended primary key.
+                To avoid such a problem, users should be careful to specifically set the primary key for every table.
+                </para>
+
+
+            </sect2>
+        </sect1>
+
+</article>

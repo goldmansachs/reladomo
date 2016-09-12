@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraPureObject objectType="transactional" superClassType="table-per-subclass">
+    <PackageName>com.gs.fw.common.mithra.test.domain.pure</PackageName>
+    <ClassName>PureType2TxnTypes</ClassName>
+
+    <Attribute name="pkBooleanAttribute" javaType="boolean" primaryKey="true"/>
+    <Attribute name="pkByteAttribute" javaType="byte" primaryKey="true"/>
+    <Attribute name="pkCharAttribute" javaType="char" primaryKey="true"/>
+    <Attribute name="pkDateAttribute" javaType="Date" primaryKey="true"/>
+    <Attribute name="pkDoubleAttribute" javaType="double" primaryKey="true"/>
+    <Attribute name="pkFloatAttribute" javaType="float" primaryKey="true"/>
+    <Attribute name="pkIntAttribute" javaType="int" primaryKey="true"/>
+    <Attribute name="pkLongAttribute" javaType="long" primaryKey="true"/>
+    <Attribute name="pkShortAttribute" javaType="short" primaryKey="true"/>
+    <Attribute name="pkStringAttribute" javaType="String" maxLength="10" primaryKey="true"/>
+    <Attribute name="pkTimestampAttribute" javaType="Timestamp" primaryKey="true"/>
+
+    <Attribute name="booleanAttribute" javaType="boolean"/>
+    <Attribute name="byteAttribute" javaType="byte"/>
+    <Attribute name="charAttribute" javaType="char"/>
+    <Attribute name="dateAttribute" javaType="Date"/>
+    <Attribute name="doubleAttribute" javaType="double"/>
+    <Attribute name="floatAttribute" javaType="float"/>
+    <Attribute name="intAttribute" javaType="int"/>
+    <Attribute name="longAttribute" javaType="long"/>
+    <Attribute name="shortAttribute" javaType="short"/>
+    <Attribute name="stringAttribute" javaType="String" maxLength="10"/>
+    <Attribute name="timestampAttribute" javaType="Timestamp"/>
+</MithraPureObject>

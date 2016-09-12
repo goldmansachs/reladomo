@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>BitemporalBigOrder</ClassName>
+    <Import>com.gs.fw.common.mithra.test.domain.InfinityTimestamp</Import>
+    <DefaultTable>BITEMPORAL_BIG_ORDER</DefaultTable>
+
+    <AsOfAttribute name="businessDate" fromColumnName="FROM_Z" toColumnName="THRU_Z" toIsInclusive="false"
+        infinityDate="[InfinityTimestamp.getParaInfinity()]" isProcessingDate="false"/>
+
+    <AsOfAttribute name="processingDate" fromColumnName="IN_Z" toColumnName="OUT_Z" toIsInclusive="false"
+        infinityDate="[InfinityTimestamp.getParaInfinity()]" isProcessingDate="true"
+        defaultIfNotSpecified="[InfinityTimestamp.getParaInfinity()]"/>
+
+    <Attribute name="orderId" javaType="int" columnName="ORDER_ID" primaryKey="true"/>
+    <Attribute name="orderDate" javaType="Timestamp" columnName="ORDER_DATE"/>
+    <Attribute name="userId" javaType="int" columnName="USER_ID"/>
+    <Attribute name="description" javaType="String" columnName="DESCRIPTION" maxLength="50" truncate="true" inPlaceUpdate="true"/>
+    <Attribute name="discountPercentage" javaType="BigDecimal" precision="3" scale="3" columnName="DISC_PCTG" />
+
+    <Relationship name="items" relatedObject="BitemporalBigOrderItem" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-many" >
+        BitemporalBigOrderItem.orderId = this.orderId
+    </Relationship>
+
+    <Relationship name="nineNineNineItems" relatedObject="BitemporalBigOrderItem" cardinality="one-to-many" >
+        BitemporalBigOrderItem.orderId = this.orderId and BitemporalBigOrderItem.price = 9.99
+    </Relationship>
+
+    <Relationship name="cheapItems" relatedObject="BitemporalBigOrderItem" cardinality="one-to-many" >
+        <![CDATA[
+        BitemporalBigOrderItem.orderId = this.orderId and BitemporalBigOrderItem.price <= 9.99
+        ]]>
+    </Relationship>
+
+    <Relationship name="itemsByPrice" relatedObject="BitemporalBigOrderItem"
+                  cardinality="one-to-many" parameters="BigDecimal price">
+        BitemporalBigOrderItem.orderId = this.orderId
+        and BitemporalBigOrderItem.price = {price}
+    </Relationship>
+
+     <Relationship name="itemsByDoublePrice" relatedObject="BitemporalBigOrderItem"
+                  cardinality="one-to-many" parameters="double price">
+        BitemporalBigOrderItem.orderId = this.orderId
+        and BitemporalBigOrderItem.price = {price}
+    </Relationship>
+</MithraObject>

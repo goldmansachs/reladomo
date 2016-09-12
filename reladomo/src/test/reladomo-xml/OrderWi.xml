@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<!--
+*
+*
+*
+*
+-->
+
+<MithraObject
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../mithraobject.xsd"
+        objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>OrderWi</ClassName>
+    <DefaultTable>ORDERS_WI</DefaultTable>
+
+    <Attribute name="orderId" javaType="int" columnName="ORDER_ID" primaryKey="true"/>
+    <Attribute name="orderDate" javaType="Timestamp" columnName="ORDER_DATE"/>
+    <Attribute name="userId" javaType="int" columnName="USER_ID"/>
+    <Attribute name="description" javaType="String" columnName="DESCRIPTION" maxLength="50" truncate="true"/>
+    <Attribute name="state" javaType="String" columnName="STATE" maxLength="20"/>
+    <Attribute name="trackingId" javaType="String" columnName="TRACKING_ID" maxLength="15"/>
+
+    <Relationship name="items" relatedObject="OrderItemWi" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-many" >OrderItemWi.orderId = this.orderId</Relationship>
+    <Relationship name="itemsWithoutInterfaces" relatedObject="OrderItem" relatedIsDependent="true" reverseRelationshipName="orderWithInterface" cardinality="one-to-many" >OrderItem.orderId = this.orderId</Relationship>
+    <Relationship name="orderStatus" relatedObject="OrderStatusWi" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-one" >OrderStatusWi.orderId = this.orderId</Relationship>
+    <Relationship name="orderStatusWithoutInterfaces" relatedObject="OrderStatus" relatedIsDependent="true" reverseRelationshipName="orderWithInterface" cardinality="one-to-one" >OrderStatus.orderId = this.orderId</Relationship>
+    <Relationship name="cheapItems" relatedObject="OrderItemWi" cardinality="one-to-many" parameters="double price" returnType="List">
+        <![CDATA[
+        OrderItemWi.orderId = this.orderId and OrderItemWi.originalPrice < {price}
+        ]]>
+    </Relationship>
+    <Relationship name="cheapItemsWithoutInterfaces" relatedObject="OrderItem" cardinality="one-to-many" parameters="double price" returnType="List">
+        <![CDATA[
+        OrderItem.orderId = this.orderId and OrderItem.originalPrice < {price}
+        ]]>
+    </Relationship>
+    <Relationship name="classifications" relatedObject="OrderClassificationWi" cardinality="one-to-many" reverseRelationshipName="order">
+        OrderClassificationWi.orderId = this.orderId
+    </Relationship>
+    <Relationship name="classificationById" relatedObject="OrderClassificationWi" cardinality="one-to-one" parameters="int classificationId">
+        OrderClassificationWi.orderId = this.orderId and
+        OrderClassificationWi.classificationId = {classificationId}
+    </Relationship>
+</MithraObject>

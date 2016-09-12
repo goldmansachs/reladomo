@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="../mithraobject.xsd"
+              objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>DirectRefOrder</ClassName>
+    <Import>com.gs.collections.impl.set.mutable.primitive.IntHashSet</Import>
+    <DefaultTable>DIR_REF_ORDER</DefaultTable>
+
+    <Attribute name="orderId" javaType="int" columnName="ORDER_ID" primaryKey="true"/>
+    <Attribute name="orderDate" javaType="Timestamp" columnName="ORDER_DATE"/>
+    <Attribute name="userId" javaType="int" columnName="USER_ID"/>
+    <Attribute name="description" javaType="String" columnName="DESCRIPTION" maxLength="50" truncate="true"/>
+    <Attribute name="state" javaType="String" columnName="STATE" maxLength="20"/>
+    <Attribute name="trackingId" javaType="String" columnName="TRACKING_ID" maxLength="15"/>
+
+    <Relationship name="items" relatedObject="DirectRefOrderItem" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-many" directReference="true" >DirectRefOrderItem.orderId = this.orderId</Relationship>
+    <Relationship name="orderStatus" relatedObject="DirectRefOrderStatus" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-one" directReference="true">DirectRefOrderStatus.orderId = this.orderId</Relationship>
+    <Relationship name="itemForProduct" relatedObject="DirectRefOrderItem" cardinality="one-to-one" parameters="int productId" directReference="true">DirectRefOrderItem.orderId = this.orderId and DirectRefOrderItem.productId = {productId}</Relationship>
+    <Relationship name="itemForProductSet" relatedObject="DirectRefOrderItem" cardinality="one-to-one" parameters="IntHashSet productIds" directReference="true">DirectRefOrderItem.orderId = this.orderId and DirectRefOrderItem.productId in {productIds}</Relationship>
+    <Relationship name="expensiveItems" relatedObject="DirectRefOrderItem" cardinality="one-to-many" parameters="double price" directReference="true">
+        <![CDATA[
+        DirectRefOrderItem.orderId = this.orderId and DirectRefOrderItem.originalPrice >= {price}
+        ]]>
+    </Relationship>
+    <Relationship name="cheapItems" relatedObject="DirectRefOrderItem" cardinality="one-to-many" parameters="double price" returnType="List" directReference="true">
+        <![CDATA[
+        DirectRefOrderItem.orderId = this.orderId and DirectRefOrderItem.originalPrice < {price}
+        ]]>
+    </Relationship>
+    <Relationship name="cheapItemsWithCheck" relatedObject="DirectRefOrderItem" cardinality="one-to-many" parameters="double price" returnType="List" directReference="true">
+        <![CDATA[
+        DirectRefOrderItem.orderId = this.orderId and DirectRefOrderItem.originalPrice < {price} and this.userId = 1
+        ]]>
+    </Relationship>
+    <Relationship name="itemsForUserFive" relatedObject="DirectRefOrderItem" cardinality="one-to-many" returnType="List" directReference="true">
+        DirectRefOrderItem.orderId = this.orderId and this.userId = 5
+    </Relationship>
+    <Relationship name="productsWithoutInProgress" relatedObject="Product" cardinality="one-to-many" directReference="true">
+        this.orderId = DirectRefOrderItem.orderId and
+        DirectRefOrderItem.quantity = 10.5 and
+        DirectRefOrderItem.state != "In-Progress" and
+        DirectRefOrderItem.productId = Product.productId
+    </Relationship>
+</MithraObject>

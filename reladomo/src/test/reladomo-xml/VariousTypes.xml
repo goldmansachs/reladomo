@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<!--
+ *
+ *
+ *
+ *
+-->
+<MithraObject objectType="transactional">
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>VariousTypes</ClassName>
+    <DefaultTable>VARIOUS_TYPES</DefaultTable>
+
+    <Attribute name="id" javaType="int" columnName="ID" primaryKey="true"/>
+    <Attribute name="booleanColumn" javaType="boolean" columnName="BOOLEAN_COLUMN"/>
+    <Attribute name="byteColumn" javaType="byte" columnName="BYTE_COLUMN"/>
+    <Attribute name="floatColumn" javaType="float" columnName="FLOAT_COLUMN"/>
+    <Attribute name="shortColumn" javaType="short" columnName="SHORT_COLUMN"/>
+    <Attribute name="longColumn" javaType="long" columnName="LONG_COLUMN"/>
+    <Attribute name="doubleColumn" javaType="double" columnName="DOUBLE_COLUMN"/>
+    <Attribute name="charColumn" javaType="char" columnName="CHAR_COLUMN"/>
+    <Attribute name="intColumn" javaType="int" columnName="INT_COLUMN"/>
+
+    <Relationship name="datatypesByIntColumn" relatedObject="DifferentDataTypes" cardinality="one-to-many" reverseRelationshipName="variousByIntColumn">
+        this.intColumn = DifferentDataTypes.intColumn
+    </Relationship>
+
+    <Relationship name="datatypesById" relatedObject="DifferentDataTypes" cardinality="one-to-one" reverseRelationshipName="variousById">
+        this.id = DifferentDataTypes.id
+    </Relationship>
+
+    <Relationship name="datatypesByBooleanColumn" relatedObject="DifferentDataTypes" cardinality="one-to-many" reverseRelationshipName="variousByBooleanColumn">
+        this.booleanColumn = DifferentDataTypes.booleanColumn
+    </Relationship>
+
+    <Relationship name="datatypesByByteColumn" relatedObject="DifferentDataTypes" cardinality="one-to-many" reverseRelationshipName="variousByByteColumn">
+        this.byteColumn = DifferentDataTypes.byteColumn
+    </Relationship>
+
+    <Relationship name="datatypesByFloatColumn" relatedObject="DifferentDataTypes" cardinality="one-to-many" reverseRelationshipName="variousByFloatColumn">
+        this.floatColumn = DifferentDataTypes.floatColumn
+    </Relationship>
+
+    <Relationship name="datatypesByShortColumn" relatedObject="DifferentDataTypes" cardinality="one-to-many" reverseRelationshipName="variousByShortColumn">
+        this.shortColumn = DifferentDataTypes.shortColumn
+    </Relationship>
+
+    <Relationship name="datatypesByLongColumn" relatedObject="DifferentDataTypes" cardinality="one-to-many" reverseRelationshipName="variousByLongColumn">
+        this.longColumn = DifferentDataTypes.longColumn
+    </Relationship>
+
+    <Relationship name="datatypesByDoubleColumn" relatedObject="DifferentDataTypes" cardinality="one-to-many" reverseRelationshipName="variousByDoubleColumn">
+        this.doubleColumn = DifferentDataTypes.doubleColumn
+    </Relationship>
+
+    <Relationship name="datatypesByCharColumn" relatedObject="DifferentDataTypes" cardinality="one-to-many" reverseRelationshipName="variousByCharColumn">
+        this.charColumn = DifferentDataTypes.charColumn
+    </Relationship>
+
+    <Index name="byId" unique="true">id</Index>
+    <Index name="byBooleanColumn">booleanColumn</Index>
+    <Index name="byByteColumn" unique="true">byteColumn</Index>
+    <Index name="byFloatColumn" unique="true">floatColumn</Index>
+    <Index name="byShortColumn" unique="true">shortColumn</Index>
+    <Index name="byLongColumn" unique="true">longColumn</Index>
+    <Index name="byDoubleColumn" unique="true">doubleColumn</Index>
+    <Index name="byCharColumn" unique="true">charColumn</Index>
+
+</MithraObject>
+

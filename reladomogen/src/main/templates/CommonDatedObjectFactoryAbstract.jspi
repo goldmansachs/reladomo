@@ -1,0 +1,67 @@
+<%--
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+--%>
+<%@ page import="com.gs.fw.common.mithra.generator.type.StringJavaType,
+                 com.gs.fw.common.mithra.generator.type.CharJavaType,
+                 com.gs.fw.common.mithra.generator.Attribute,
+                 com.gs.fw.common.mithra.generator.AsOfAttribute,
+                 com.gs.fw.common.mithra.generator.SourceAttribute,
+                 com.gs.fw.common.mithra.generator.util.StringUtility,
+                 java.util.Arrays"%>
+
+    public Timestamp[] getAsOfDates() {
+        return new Timestamp[<%= asOfAttributes.length%>];
+    }
+
+    public MithraDatedObject createObject(MithraDataObject data, Timestamp[] asOfDates)
+    {
+    <% if (wrapper.isTableForAllSubclasses()) { %>
+        <%= wrapper.getImplClassName() %> newObject = construct<%= wrapper.getImplClassName() %>(data, asOfDates[0]
+        <% for( int i=1;i<asOfAttributes.length;i++) { %>
+        , asOfDates[<%= i %>]
+        <% } %>
+        );
+    <% } else { %>
+        <%= wrapper.getImplClassName() %> newObject = new <%= wrapper.getImplClassName() %>(asOfDates[0]
+        <% for( int i=1;i<asOfAttributes.length;i++) { %>
+        , asOfDates[<%= i %>]
+        <% } %>
+        );
+    <% } %>
+        newObject.zSetFrom<%= wrapper.getClassName() %>Data((<%= wrapper.getClassName() %>Data) data);
+        <% if (wrapper.isTransactional()) { %>
+        <% } %>
+        return newObject;
+    }
+
+    <% if (wrapper.isTableForAllSubclasses()) { %>
+    protected abstract <%=wrapper.getImplClassName()%> construct<%= wrapper.getImplClassName() %>(MithraDataObject data,
+        Timestamp <%=asOfAttributes[0].getName()%>
+        <% for( int i=1;i<asOfAttributes.length;i++) { %>
+        , Timestamp <%=asOfAttributes[i].getName()%>
+        <% } %>
+        );
+    <% } %>
+
+    <% if (wrapper.isTransactional()) { %>
+
+    public TemporalContainer createContainer(MithraTransaction tx)
+    {
+        return new <%= wrapper.getTemporalContainerClass()%>(tx.getPerPortalTemporalContainer(<%= wrapper.getFinderClassName()%>.getMithraObjectPortal(),
+            <%= wrapper.hasProcessingDate() ? wrapper.getFinderClassName()+"."+wrapper.getProcessingDateAttribute().getName()+"()" : "null"%>)
+            <%= wrapper.hasBusinessDateAsOfAttribute() ? ","+wrapper.getFinderClassName()+"."+wrapper.getBusinessDateAsOfAttributeName()+"()" : ""%>);
+    }
+    <% } %>
+

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="../mithraobject.xsd" objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>OrderDenormalized</ClassName>
+    <DefaultTable>ORDERS_DENORMALIZED</DefaultTable>
+
+    <Attribute name="orderId" javaType="int" columnName="ORDER_ID" primaryKey="true"/>
+    <Attribute name="orderDate" javaType="Timestamp" columnName="ORDER_DATE"/>
+    <Attribute name="userId" javaType="int" columnName="USER_ID"/>
+    <Attribute name="description" javaType="String" columnName="DESCRIPTION" maxLength="50" truncate="true"/>
+    <Attribute name="state" javaType="String" columnName="STATE" maxLength="20"/>
+    <Attribute name="trackingId" javaType="String" columnName="TRACKING_ID" maxLength="15"/>
+    <Attribute name="productId" javaType="int" columnName="PRODUCT_ID"      readonly="true"/>
+    <Attribute name="quantity" javaType="double" columnName="QUANTITY"/>
+    <Attribute name="originalPrice" javaType="double" columnName="ORIGINAL_PRICE"/>
+    <Attribute name="discountPrice" javaType="double" columnName="DISCOUNT_PRICE"/>
+
+</MithraObject>

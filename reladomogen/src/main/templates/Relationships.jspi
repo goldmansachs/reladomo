@@ -1,0 +1,85 @@
+<%--
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+--%>
+    <% for (int i = 0; i < relationshipAttributes.length; i ++)	{ %>
+        <% if (relationshipAttributes[i].isStaticallyResolvableInCache()) { %>
+        private static final RelationshipHashStrategy for<%= relationshipAttributes[i].getName()%> = new <%= StringUtility.firstLetterToUpper(relationshipAttributes[i].getName()) %>Rhs();
+        <% } %>
+        <% if (relationshipAttributes[i].needsDirectRefExtractors()) { %>
+        private static final Extractor[] _from<%= relationshipAttributes[i].getName()%> = new Extractor[] { <%= relationshipAttributes[i].getFromDirectRefExtractors() %>};
+        private static final Extractor[] _to<%= relationshipAttributes[i].getName()%> = new Extractor[] { <%= relationshipAttributes[i].getToDirectRefExtractors() %>};
+        <% } %>
+    <% } %>
+    <% for (int i = 0; i < relationshipAttributes.length; i ++)	{ %>
+        <% if (relationshipAttributes[i].isResolvableInCache()) { %>
+        private static final class <%= StringUtility.firstLetterToUpper(relationshipAttributes[i].getName()) %>Rhs implements RelationshipHashStrategy
+        {
+            <%= relationshipAttributes[i].getRelatedAsOfAttributeVariables() %>
+            <% if (!relationshipAttributes[i].isStaticallyResolvableInCache()) { %>
+            <% for (int j = 0; j < relationshipAttributes[i].getNonAsOfDateParameterCount(); j++) { %>
+                private <%= relationshipAttributes[i].getNonAsOfDateParameterTypeAt(j) %> <%= relationshipAttributes[i].getNonAsOfDateParameterVariableAt(j) %>;
+            <% } %>
+            public <%= StringUtility.firstLetterToUpper(relationshipAttributes[i].getName()) %>Rhs(<%= relationshipAttributes[i].getNonAsOfDateParameters() %>)
+            {
+                <% for (int j = 0; j < relationshipAttributes[i].getNonAsOfDateParameterCount(); j++) { %>
+                    this.<%= relationshipAttributes[i].getNonAsOfDateParameterVariableAt(j)%> = <%= relationshipAttributes[i].getNonAsOfDateParameterVariableAt(j) %>;
+                <% } %>
+            }
+            <% } %>
+            public boolean equalsForRelationship(Object _srcObject, Object _srcData, Object _targetData, Timestamp _asOfDate0, Timestamp _asOfDate1)
+            {
+                <% if (relationshipAttributes[i].requiresSrcObjectForEquals()) { %>
+                <%= wrapper.getImplClassName() %> _castedSrcObject = (<%= wrapper.getImplClassName() %>) _srcObject;
+                <% } %>
+                <% if (relationshipAttributes[i].requiresSrcDataForEquals()) { %>
+                <%= wrapper.getDataClassName() %> _castedSrcData = (<%= wrapper.getDataClassName() %>) _srcData;
+                <% } %>
+                <%= relationshipAttributes[i].getRelatedObject().getDataClassNameIfHasData() %> _castedTargetData = (<%= relationshipAttributes[i].getRelatedObject().getDataClassNameIfHasData() %>) _targetData;
+                if (<%= relationshipAttributes[i].getEqualsConditions() %>)
+                {
+                    return <%= relationshipAttributes[i].getAsOfAttributesDataMatchesConditions() %>;
+                }
+                return false;
+            }
+
+            public int computeHashCodeFromRelated(Object _srcObject, Object _srcData)
+            {
+                <% if (relationshipAttributes[i].requiresSrcObjectForHashCode()) { %>
+                <%= wrapper.getImplClassName() %> _castedSrcObject = (<%= wrapper.getImplClassName() %>) _srcObject;
+                <% } %>
+                <% if (relationshipAttributes[i].requiresSrcDataForHashCode()) { %>
+                <%= wrapper.getDataClassName() %> _castedSrcData = (<%= wrapper.getDataClassName() %>) _srcData;
+                <% } %>
+                <%= relationshipAttributes[i].getHashCodeComputation() %>
+            }
+
+            public int computeOffHeapHashCodeFromRelated(Object _srcObject, Object _srcData)
+            {
+                <% if (relationshipAttributes[i].hasDifferentOffHeapHash()) { %>
+                    <% if (relationshipAttributes[i].requiresSrcObjectForHashCode()) { %>
+                    <%= wrapper.getImplClassName() %> _castedSrcObject = (<%= wrapper.getImplClassName() %>) _srcObject;
+                    <% } %>
+                    <% if (relationshipAttributes[i].requiresSrcDataForHashCode()) { %>
+                    <%= wrapper.getDataClassName() %> _castedSrcData = (<%= wrapper.getDataClassName() %>) _srcData;
+                    <% } %>
+                    <%= relationshipAttributes[i].getOffHeapHashCodeComputation() %>
+                <% } else { %>
+                    return computeHashCodeFromRelated(_srcObject, _srcData);
+                <% } %>
+            }
+        }
+        <% } %>
+    <% } %>
+

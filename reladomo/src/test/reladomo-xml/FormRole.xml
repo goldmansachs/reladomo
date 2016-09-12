@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="read-only">
+
+    <PackageName>com.gs.fw.common.mithra.test.tax</PackageName>
+    <ClassName>FormRole</ClassName>
+    <DefaultTable>FORM_ROLE</DefaultTable>   
+
+	<Attribute name="formRoleId" javaType="long" columnName="FORM_ROLE_ID" primaryKey="true"/>
+	<Attribute name="formRoleName" javaType="String" columnName="FORM_ROLE_NAME"  nullable="false"/>
+	<Attribute name="formRoleDesc" javaType="String" columnName="FORM_ROLE_DESC"  nullable="false"/>
+	<Attribute name="effectiveTo" javaType="Date" columnName="EFFECTIVE_TO" nullable="false"/>	
+	
+</MithraObject>

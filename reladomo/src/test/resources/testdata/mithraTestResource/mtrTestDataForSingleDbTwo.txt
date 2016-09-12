@@ -1,0 +1,52 @@
+/*
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+
+class com.gs.fw.common.mithra.test.domain.Sale
+saleId,saleDate,sellerId,description,discountPercentage,settleDate,activeBoolean
+6, "2004-02-14 00:00:00.0", 2, "Sale 0006", 0.07, "2004-02-14", true
+7, "2004-02-12 00:00:00.0", 3, "Sale 0007", 0.08, "2004-02-15", true
+8, "2004-02-12 01:00:00.0", 3, "Sale 0008", 0.09, "2004-02-17", true
+9, "2004-02-12 02:00:00.0", 4, "Sale 0009", 0.07, "2004-03-01", false
+10, "2004-02-12 00:00:0.0", 4, "Sale 0010", 0.07, "2004-04-01", false
+
+class com.gs.fw.common.mithra.test.domain.SalesLineItem
+itemId,saleId,productId,manufacturerId,quantity
+//Items for Sale 0006
+13, 6, 4, 2, 12
+14, 6, 5, 2, 15
+
+//Items for Sale 0007
+15, 7, 4, 1, 20
+16, 7, 5, 1, 10
+
+//Items for Sale 0008
+17, 8, 5, 1, 20
+18, 8, 6, 1, 10
+
+//Items for Sale 0009
+19, 9, 1, 1, 15
+20, 9, 4, 1, 16
+
+//Items for Sale 0010
+21, 10, 1, 1, 10
+22, 10, 4, 1, 12
+
+
+class com.gs.fw.common.mithra.test.domain.ProductSpecification
+productId,productCode,productName,originalPrice,discountPrice,otherPrice,minQuantity
+4, "BB", "PROD 4", 25.00, 25.00, 25, 150
+5, "AC", "PROD 5", 30.00, 25.00, 27, 500
+6, "CA", "PROD 6", 33.00, 28.00, 30, 600

@@ -1,0 +1,2542 @@
+<?xml version="1.0"?>
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<article class="faq"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../xsd/docbook.xsd">
+
+    <articleinfo>
+        <title>Frequently Asked Questions</title>
+    </articleinfo>
+
+    <qandaset defaultlabel="qanda">
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Relationships</keyword>
+                    <keyword>Reverse-Relationships</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>When should I use a reverse relationship?</para>
+            </question>
+            <answer>
+                <itemizedlist mark="1">
+                    <listitem>
+                        <para>It's optional</para>
+                    </listitem>
+                    <listitem>
+                        <para>It should never be put on both sides: the whole point of it is to
+                            avoid repeating yourself.</para>
+                    </listitem>
+                    <listitem>
+                        <para>If it's a dependency relationship (e.g. order to order item), then on
+                            the parent side makes more sense to me. If it's not a dependency
+                            relationship (e.g. user to group), then I don't know of a good rule of
+                            thumb.</para>
+                    </listitem>
+                    <listitem>
+                        <para>A relationship with a parameter can't have a reverse
+                            relationship.</para>
+                    </listitem>
+                </itemizedlist>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Relationships</keyword>
+                    <keyword>Many-to-Many</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How do I define a many-to-many relationship that's realized via a third table?
+                </para>
+            </question>
+            <answer>
+                <para>You need the third class, but after you create the xml for it, you can
+                    reference it in your many- to-many relationship. Here is an example from
+                    Reladomo's User.xml (used for testing):</para>
+                <programlisting language="xml"><![CDATA[
+<Relationship name="groups" relatedObject="Group" orderBy="name DESC"
+          cardinality="many-to-many" reverseRelationshipName="users">
+ UserGroup.ownerId = this.id and Group.id = UserGroup.dependentId
+</Relationship>     ]]></programlisting>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Operations</keyword>
+                    <keyword>Between</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Why does Reladomo generate a "between" clause when using an "in" clause?</para>
+            </question>
+            <answer>
+                <para>There is usually a performance benefit for Sybase: the proper index will get
+                    picked up. In rare cases, it is actually bad. It can be turned off, like
+                    so:</para>
+                <programlisting language="java"><![CDATA[
+Operation op = FooFinder.someAttribute().in(set);
+if (op instanceof InOperation)
+{
+    InOperation in = (InOperation) op;
+    in.setUseBetweenClause(false);
+}]]></programlisting>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Table-Inheritance</keyword>
+                    <keyword>Not Generally Recommended</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Can I use inheritance when two objects have very similar set of
+                    attributes?</para>
+            </question>
+            <answer>
+                <para>We've dealt with this type of situation using inheritance. We have an abstract
+                    XML that defines all the columns and two tiny xml files that are the concrete
+                    subtypes. To see an example, have a look at: </para>
+                <itemizedlist>
+                    <listitem>
+                        <para>InventoryItem.xml</para>
+                    </listitem>
+                    <listitem>
+                        <para>Book.xml</para>
+                    </listitem>
+                    <listitem>
+                        <para>Phone.xml</para>
+                    </listitem>
+                </itemizedlist>
+                <para>From an object perspective, that's a reasonable approach as well. It's
+                    conceivable that these two objects would have different behavior (e.g. one can
+                    be reprocessed, but the other cannot). </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Update</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How do I update an object?</para>
+            </question>
+            <answer>
+                <para>There is no update method. Calling setter methods writes to the database. Put
+                    several setters in a transaction if you intend them to be a single unit of work.
+                </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Primary Keys</keyword>
+                    <keyword>PK Generation</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How can I generate a primary key before inserting?</para>
+            </question>
+            <answer>
+                <para> You can assign it before insertion by using the method:
+                    <![CDATA[generateAndSet<attribute name>()]]> If you have not called that method,
+                    it will automatically be called when calling insert().</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Object XML</keyword>
+                    <keyword>Table Definition</keyword>
+                    <keyword>Column Definition</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Do I have to put every column in the Reladomo XML?</para>
+            </question>
+            <answer>
+                <para>You can define only the attributes you need. Caveat: you will not be able to
+                    write that object if those attributes are not nullable.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Caching</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Does Reladomo cache results?</para>
+            </question>
+            <answer>
+                <para>Yes, Reladomo will cache its results using soft references if you specify "partial"
+                    as the cacheType in the Object XML.
+                    If you know you must go to the database, you can:
+                </para>
+                <programlisting language="java"><![CDATA[
+FooList list = new FooList(someOp);
+list.setBypassCache(true);]]></programlisting>
+                <para>If you're using Finder.findOne, there is also:
+                    Finder.findOneBypassCache
+                </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Operations</keyword>
+                    <keyword>Math Operations</keyword>
+                    <keyword>String Operations</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Does Reladomo support math operations and other SQL functions?</para>
+            </question>
+            <answer>
+                <para>There is very limited support for just a couple of functions:</para>
+                <itemizedlist>
+                    <listitem>
+                        <para>Double attributes: absoluteValue, plus, minus, times, dividedBy.</para>
+                    </listitem>
+                    <listitem>
+                        <para>String attributes: startsWith, endsWith, contains, wildCard* (these translate to
+                            "like"); toLowerCase</para>
+                    </listitem>
+                </itemizedlist>
+                <para>Other than that, there is no support for functions in Reladomo right now. Please
+                    note that calling SQL functions usually means the data is not correctly
+                    normalized (first rule:all column values must be atomic). Databases also hate
+                    these queries because there is typically no way to use an index. If there are no
+                    other clauses, the query will almost certainly require a full table scan.
+                </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Primitives</keyword>
+                    <keyword>Nulls</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>What are the initial values of nullable primitives?</para>
+            </question>
+            <answer>
+                <para>Java rules apply here. Think of it this way: you're creating a Java object
+                    (not a row in a table). So integers will be zero, booleans will be false, etc.
+                    There is a convenience method to set all nullable primitives to null. </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Caching</keyword>
+                    <keyword>Cache Types</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>What cacheType should I use?</para>
+            </question>
+            <answer>
+                <para>cacheType="partial" is by far the best choice for almost any situation. Use
+                    cacheType="full" for tiny static tables. cacheType="full" is not supported for
+                    dated objects. Reladomo guarantees that in a transaction the cache is updated
+                    properly. You will never see a stale object in a transaction. I would advise
+                    against using cacheType="none". The "none" option should be reserved for rare
+                    cases where updates to the tables in questions are completely out of your control.
+                </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Transactions</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>If I start a transaction, then create a new Reladomo object and call insert on
+                    it. But before committing this transaction, I try to do a lookup for the just
+                    created Reladomo object using a Finder's find method; would I get the newly
+                    created and inserted object back? </para>
+            </question>
+            <answer>
+                <para>Yes, Reladomo will flush the transaction if it has to ensure proper
+                    results.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Library Dependencies</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para> What's echo 2 used for?</para>
+            </question>
+            <answer>
+                <para>The Echo 2 libraries are used in the Reladomo middle tier UI as a temporary
+                    measure before we unify the Controllers Technology UI framework. Once the new
+                    Controllers Technology framework is available, we'll convert our existing web
+                    based UI's (control panel, dashboard, etc). The Echo 2 libraries are not meant
+                    to be used for any other purpose. </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Dated Objects</keyword>
+                    <keyword>Business Dates</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para> What value do I have to choose for the business date of a newly created
+                    object before inserting it?</para>
+            </question>
+            <answer>
+                <para>The business date for which you want that object to start it's life. The
+                    object will be valid from that business date to infinity. Reladomo will
+                    automatically set the FROM and THRU values. </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Dated Objects</keyword>
+                    <keyword>Processing Dates</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>What value do I have to choose for the processing date for a newly created
+                    object before inserting it?</para>
+            </question>
+            <answer>
+                <para>Infinity. For the processing date dimension, only objects with infinity
+                    processing dates may be inserted (or modified). </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Dated Objects</keyword>
+                    <keyword>Termination</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>What happens if I set some values on a dated object and terminate it in the
+                    same transaction?</para>
+            </question>
+            <answer>
+                <para>In a single transaction, it makes no sense to set a value and then terminate.
+                    The atomic unit of work makes it so that only the termination happens.
+                    And no, it can't be implemented by inserting a row and immediately chaining out
+                    because it'll cause an index failure for good reason
+                    (the operation makes no sense). </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Relationships</keyword>
+                    <keyword>Cross-DB</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How do I join across two tables in two different databases? E.g.
+                    ReportedTraderPnl and Account.</para>
+            </question>
+            <answer>
+                <para> If this was all in the same database, you'd simply add a relationship from
+                    ReportedTraderPnl to Account and do: </para>
+                <programlisting language="java"><![CDATA[
+ReportedTraderPnlFinder.account().type().eq("XYZ")
+]]></programlisting>
+                <para>The above operation would then join the two tables. However, these are not in
+                    the same database, so you cannot do it like that. You'll have to do the join
+                    manually. </para>
+                <itemizedlist mark="1">
+                    <listitem>
+                        <para>Select the TAMS accounts that have the set of interesting accounts and
+                            that type: <programlisting language="java"><![CDATA[
+TamsAccountList accountList = new TamsAccountList(TamsAccountFinder.type().eq("XYZ"));
+]]></programlisting>
+                        </para>
+                    </listitem>
+                    <listitem>
+                        <para>do the join: <programlisting language="java"><![CDATA[
+ReportedTradePnlList pnlList =
+new ReportedTraderPnlList(ReportedTraderPnlFinder.accountId().in(accountList, TamsAccountFinder.accountId()));
+]]></programlisting>
+                        </para>
+                    </listitem>
+                </itemizedlist>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Dated Objects</keyword>
+                    <keyword>equalsEdgePoint</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How do I get dated objects for all dates?</para>
+            </question>
+            <answer>
+                <para>There is an as of attribute operation that is used to get one object per row
+                    in the database: </para>
+                <programlisting language="java"><![CDATA[
+FooFinder.businessDate().equalsEdgePoint()
+]]>             </programlisting>
+                <para>This special operation returns one object per row in the database (not one per
+                    milestone). </para>
+                <para>If you use this operation, Reladomo will not add the milestone information that
+                    it would normally add to the SQL it generates (e.g. 't1.OUT_Z = '9999-12-01
+                    23:59:00.000'). This means that you can specify the exact dates you want to
+                    retrieve objects for, rather than getting a single object using the AS OF
+                    date.</para>
+                <para>You then can add extra conditions, such as</para>
+                <programlisting language="java"><![CDATA[
+FooFinder.businessDateFrom().lessThan(date)
+FooFinder.businessDateTo().greaterThanEquals(date)
+]]></programlisting>
+                <para>Here is an example of using equalsEdgePoint to get all the objects between 2
+                    dates : </para>
+                <programlisting language="java"><![CDATA[
+Operation op = FooFinder.businessDate().equalsEdgePoint();
+if (endDate != infinity)
+{
+	op = op.and(FooFinder.businessDateFrom().lessThanEquals(endDate);
+}
+op = op.and(FooFinder.businessDateTo().greaterThanEquals(startDate));
+FooList foos = new FooList(op);
+]]></programlisting>
+                <para> foos will have all the foos between the dates. You can play with the equality
+                    signs (or the dates) to have open or closed ranges. </para>
+                <para>The exists() operation can be used in a similar way: </para>
+                <programlisting language="java"><![CDATA[
+ProductList list = new ProductList(ProductFinder.scrpCode().eq("ABC").and(ProductFinder.currencySynonym().exists());
+]]></programlisting>
+                <para>In plain English, this says: find products that have an SCRP code of "ABC"
+                    which also have at least one currency synonym exists.</para>
+                <para>Please note that for a x-to-one relationship, exists is the same as "has at
+                    least one", and that's how it should be interpreted for an x-to-many
+                    relationship. For example, Product has a one-to-many relationship to
+                    TipsIndexRatio. </para>
+                <para>The operation: </para>
+                <programlisting language="java"><![CDATA[
+ProductFinder.tipsIndexRatios().exists()
+]]></programlisting>
+                <para>is interpreted as: products that have at least one tipsIndexRatio.</para>
+                <para>It's because Reladomo guarantees that a persistent object (one that came from
+                    the database) exists as a single instance in the VM. In other words == is the
+                    same as equals.</para>
+                <para>But those objects are not "equal". They follow different sets of rules: </para>
+                <itemizedlist mark="1">
+                    <listitem>
+                        <para>the persistent object will write to the database when a set method is
+                            called. It can deleted, but not inserted.</para>
+                    </listitem>
+                    <listitem>
+                        <para>the non-persistent object will not write to the database when a set
+                            method is called. It can be inserted, but not deleted.</para>
+                    </listitem>
+                </itemizedlist>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Operations</keyword>
+                    <keyword>Distinct</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>When does Reladomo use "distinct" in the generated SQL?</para>
+            </question>
+            <answer>
+                <para>All the following must be true for Reladomo to issue distinct:</para>
+                <itemizedlist mark="1">
+                    <listitem>
+                        <para>There is join (via a relationship)</para>
+                    </listitem>
+                    <listitem>
+                        <para>The related table is accessed via a set of attributes that does not
+                            imply distinctness.</para>
+                    </listitem>
+                </itemizedlist>
+                <para>For example, if you have an order with a collection of orderItems
+                    (Order.orderId = OrderItem.orderId), then the following operation requires a
+                    distinct: </para>
+                <programlisting language="java"><![CDATA[
+OrderFinder.orderItems().status().eq("not shipped") // find all orders that have at least one unshipped order item
+]]></programlisting>
+                <para>We use distinct here because the join to order items is via the orderId,
+                    which is not a unique identifier for order item. If we don't use distinct, we'll
+                    get the same order repeated if it has multiple unshipped items.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Connections</keyword>
+                    <keyword>Not Generally Recommended</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>I need to do some raw JDBC queries before I get to the Reladomo objects and
+                    start working with them. Is there a way for me to get a DB connection from the
+                    MithraManager so I don't have to create my own connection for the raw JDBC
+                    stuff?</para>
+            </question>
+            <answer>
+                <para>The connection manager is your object, so feel free to call the
+                    getConnection() method on it. Be 100% sure to return the connection back to the
+                    pool. In general, you want your code to always look like: </para>
+                <programlisting language="java"><![CDATA[
+Connection con = null;
+try
+{
+    con = connectionManager.getConnection();
+    // do some stuff
+}
+finally
+{
+    if (con != null)
+    {
+        con.close();
+    }
+}]]></programlisting>
+                <para>Note: This code is not 3-tier safe.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Connections</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>I need to guarantee that the connection manager that I am using for my plain
+                    JDBC is the same as that used by Reladomo. I would like to avoid having to mention
+                    the connection manager class name twice - once in the Reladomo configuration XML
+                    file and once again in the code where plain JDBC stuff is done. We have several
+                    connection manager classes and it is possible to refer to 2 different connection
+                    manager classes in the 2 locations by mistake.</para>
+                <para>Is there a way where I can simply ask Reladomo to give me a reference to its
+                    connection manager? </para>
+            </question>
+            <answer>
+                <para>Every database object keeps a reference to the connection manager. You can get
+                    it via: </para>
+                <programlisting language="java"><![CDATA[
+FooFinder.getMithraObjectPortal().getDatabaseObject().getConnectionManager()]]></programlisting>
+                <para>Please note that this code is not 3-tier safe.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Operations</keyword>
+                    <keyword>Cursor</keyword>
+                    <keyword>Answer Out-of-Date</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>When we do a select all rows from Reladomo, it seems that Reladomo actually tries
+                    to load the whole table into memory at the first access to the loaded MithraList
+                    object. Is there a way to tune Reladomo so that it will only try to load the table
+                    in chunks? </para>
+            </question>
+            <answer>
+                <para>There is no real way to do chunks, but you can specify the maximum number of
+                    rows to get using the setMaxObjectsToRetrieve method on the list. </para>
+            </answer>
+            <answer>
+                <para>Moh to verify this answer: Yes, by using the list method forEachWithCursor().
+                    Do not access the list any other way, or the entire list will be forced into
+                    memory all at once. </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Caching</keyword>
+                    <keyword>Cache Invalidation</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>If we use cacheType="partial" then does that allow for the data rows to be
+                    changed (say by replication) and the cache to be refreshed dynamically? Here is
+                    the scenario: </para>
+                <itemizedlist mark="1">
+                    <listitem>
+                        <para>We read a few rows from a replicated Account table using Reladomo (with
+                            cacheType="partial").</para>
+                    </listitem>
+                    <listitem>
+                        <para>Replication causes some of those rows to change.</para>
+                    </listitem>
+                    <listitem>
+                        <para>We try to read some of the rows in #1 (within the same process as #1)
+                            using Reladomo.</para>
+                    </listitem>
+                </itemizedlist>
+            </question>
+            <answer>
+                <para>If you're in a transaction, you're guaranteed to get the new data, as long as
+                    the object has been marked as "transactional". Read only objects are not
+                    refreshed in a transaction. If you're not in a transaction, and the data is in
+                    cache, you have several choices: </para>
+                <itemizedlist mark="1">
+                    <listitem>
+                        <para>You can clear the cache using
+                            AmHubAccountFinder.clearQueryCache().</para>
+                        <para>Or</para>
+                    </listitem>
+                    <listitem>
+                        <para>You can set a single query to bypass the cache, using either
+                            findOneBypassCache, or constructing a list and using
+                            setBypassCache(true).</para>
+                        <para>Or</para>
+                    </listitem>
+                    <listitem>
+                        <para>Use cacheType="none" and take a serious speed hit.</para>
+                    </listitem>
+                </itemizedlist>
+                <para>For objects that are under your control (like the one I helped debug), partial
+                    cache is definitely better. If you setup Reladomo's notification feature separate
+                    processes that are using Reladomo to write to the database will notify each other
+                    of changes, so none of the above will be required. </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Caching</keyword>
+                    <keyword>Cache Invalidation</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>If I am mostly doing Reladomo lookups on data that can change via replication
+                    but I am doing these lookups in transactions, then do I get any benefit from
+                    setting cacheType="partial" over cacheType="none"? Seems like in this case your
+                    partial cache might degenerate to none cache or how else can it guarantee to
+                    provide the new data. </para>
+            </question>
+            <answer>
+                <para>The difference between cacheType="partial" and cacheType="none", is that with
+                    a partial cache, Reladomo will not have to re-read the same object over and over
+                    again in the same transaction; once in a transaction is enough. </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Object XML</keyword>
+                    <keyword>Processing Dates</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Is isProcessingDate="true" a mandatory attribute for "processingDate"?</para>
+            </question>
+            <answer>
+                <para> Reladomo tries to guess that using the attribute name, but you should specify
+                    it to be 100% sure.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Relationships</keyword>
+                    <keyword>Keys</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How do Keys and Relationships work in Reladomo? How do you find things?</para>
+            </question>
+            <answer>
+                <para> There are two things in Reladomo that catch people off guard, because, frankly,
+                    they are somewhat unusual: </para>
+                <itemizedlist mark="1">
+                    <listitem>
+                        <para>Reladomo is a key-less architecture; that is, there are no key objects.
+                            Of course, each object is identified by a primary key (which can be as
+                            complex as you like), but there is no encapsulation of the primary key
+                            into an object of its own. This immediately raises several questions:
+                            How do you find anything? The answer is finders. How do you cache and
+                            index? The answer is using TObjectHashStrategy. Reladomo defines a cache
+                            as a collection of indices. Indices are not maps, they are actually sets
+                            that have two extra properties: they are constructed using a hash
+                            strategy; they have an extra get method. (Java sets, curiously, have no
+                            get method. The only way to access any object using a regular java set
+                            is via iteration, which makes it unsuitable for lookups.) Many people
+                            seem to have a difficult time understanding this. </para>
+                    </listitem>
+                    <listitem>
+                        <para>Reladomo relationships are not pointer based. For example, an order
+                            object does not keep a list of order item objects. Of course, the order
+                            object still has a getOrderItems() method. To put it differently, the
+                            object graph is not physically connected, but the relationships are
+                            still present. Relationships are always dynamically resolved via
+                            finders. Is this fast enough? Yes, most of the time. There is one
+                            situation where we know where it's too slow and we may implement
+                            pointer-based relationships at some point in the future. The particular
+                            situation arises when a collection of objects is sorted by an attribute
+                            of a related object. So for example, if an adjustment history list is
+                            being sorted by it's product's description, the getProduct() method gets
+                            called O(nLog n) times, which can be very large. For a list of 15000
+                            items, the get method is called around 400,000 times. Even though the
+                            get method only takes a few micro (1 millionth) of a second, it's still
+                            about 100x slower returning a pointer. </para>
+                        <para>There are two things in Reladomo that make pointers-less relationships
+                            possible: finders and the query cache. Reladomo finders are object
+                            oriented. The usability advantages there are obvious, but there is a
+                            serious performance benefit as well: no parsing is required to evaluate
+                            an operation. The query cache is a map of Reladomo operations to
+                            previously found results. The operation knows what it depends on so the
+                            query cache can cleverly expire things out of cache. </para>
+                    </listitem>
+                </itemizedlist>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Relationships</keyword>
+                    <keyword>Reverse-Relationships</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>What is reverseRelationship for?</para>
+            </question>
+            <answer>
+                <para>This element in the Relationship clause of the Reladomo object XML is an
+                    optional item, which can be used to indicate which side is the 'boss' of the
+                    relationship, and so that the backwards relationship and the forewaqrds
+                    relationship are both declared in one place. Note the following: </para>
+                <itemizedlist>
+                    <listitem>
+                        <para>if it's a dependency relationship (e.g. order to order item), then on
+                            the parent (order) side makes more sense. If it's not a dependency
+                            relationship (e.g. user to group), then there is no good rule of thumb
+                            (maybe don't use it, instead do one - way relationships on each side)
+                        </para>
+                    </listitem>
+                    <listitem>
+                        <para>reverseRelationship should never be put on both sides: the whole point
+                            of it is to avoid repeating yourself </para>
+                    </listitem>
+                    <listitem>
+                        <para>a relationship with a parameter can't have a reverse
+                            relationship</para>
+                    </listitem>
+                </itemizedlist>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>What's the life cycle of a Reladomo object?</para>
+            </question>
+            <answer>
+                <para>Currently, Reladomo objects have a very simple life cycle. Everything is
+                    explicitly inserted or deleted via calling insert() or delete() respectively.
+                    This works out fairly well in the scenario below (where a Strategy has many
+                    StrategyPositions): The code looks like:</para>
+                <programlisting language="java"><![CDATA[
+StrategyPosition sp = new StrategyPosition();
+sp.setX(x);
+sp.setY(y);
+sp.insert();]]></programlisting>
+                <para>This is a little ugly, because you have to manually do things like
+                    sp.setStrategyId(strategy.getId()); It's not the end of the world, but I think
+                    we can do better. Note that you only have to set the primitive attributes and
+                    all relationships work automagically as described above. In a very real sense,
+                    Reladomo is a thinner layer over the database (at least at the moment) than object
+                    manager. </para>
+                <para>The next time you call strategy.getStrategyPositions(), the query cache knows
+                    that the previous answer is no longer valid (because a new strategy position has
+                    been inserted) and will take appropriate action to re-resolve that operation. If
+                    everything is cached and indexed (as happens in the Object Manager), this is a
+                    quick, all in-memory operation. If not, we'll hit the database (or 2nd tier
+                    cache). For 50,000 that could be pretty expensive. I have all sorts of ideas
+                    about how to make that better, but not a real plan yet. One approach would be to
+                    mark certain queries as expensive (e.g. the result is very large) and try to
+                    massage the result as relevant events happen (insert, update, delete). </para>
+                <para>BTW, delete works the same way (there is just no need to construct and
+                    populate the object). So the following code works: </para>
+                <programlisting language="java"><![CDATA[
+Strategy s;
+StrategyPosition sp = s.getStrategyPositions().get(0);
+sp.delete();]]></programlisting>
+                <para>Calling s.getStrategyPositions() will return a list that no longer contains
+                    the deleted element. If you keep a reference to the list that had the strategy
+                    position in it, it will not be removed from that list. </para>
+                <para>In the long run, we want to make certain life cycle handling more closely
+                    aligned with the way object manager handles things, which is nicer in many ways,
+                    especially because it's closer to Java's understanding of an object's life
+                    cycle. Specifically, we want to be able to have the following methods do the
+                    right thing: </para>
+                <para>
+                    <emphasis role="bold">strategy.getStrategyPositions().add(x)</emphasis>:
+                    equivalent to insert, but also sets the relevant fields to ensure consistency
+                    (e.g. strategyId) prior to insert<emphasis role="bold"
+                    >strategy.getStrategyPositions().remove(x)</emphasis>: equivalent to delete
+                    The implementation of these methods also creates a fast path for updating our
+                    query cache. </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Caching</keyword>
+                    <keyword>Runtime Configuration</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How do you set up caching options for each class?</para>
+            </question>
+            <answer>
+                <para>Reladomo requires a xml runtime configuration file. See the xsd for possible values.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Relationships</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Can I pass parameters to a relationship getter?</para>
+            </question>
+            <answer>
+                <para>We can declare parameterized relationships in the xml and deep fetch them as
+                    well. A parameterized relationship takes parameters. It's declared in the xml
+                    like so (from Order.xml): </para>
+                <programlisting language="xml"><![CDATA[
+<Relationship name="itemForProduct"
+          relatedObject="OrderItem"
+          cardinality="one-to-one"
+          parameters="int productId">
+ OrderItem.orderId = this.orderId and OrderItem.productId = {productId}
+</Relationship>]]></programlisting>
+                <para>There can be multiple parameters (E.g. parameters="Timestamp asOfDate, String
+                    foo, int bar"). Note the curly braces. This is a new addition: you can use curly
+                    braces for arbitrary java snippets of code, as well as parameters. The values
+                    within the curly braces must be a constant. For example, you can do: </para>
+                <programlisting language="java"><![CDATA[
+{com.example.foo.Bar.SOME_CONSTANT} or {Math.sin(1.4)+17}]]></programlisting>
+                <para>Note: if your relationship specification uses greater-than or less-than
+                    operations, you need to enclose the text in a CDATA section: </para>
+                <programlisting language="xml">
+&lt;![CDATA[
+... and EodAcctIfPnl.processingDateFrom > {checkpoint}
+]]&gt;</programlisting>
+                <para>The above relationship generates a method on Order that looks like</para>
+                <programlisting language="java"><![CDATA[public OrderItem getItemForProduct(int productId)]]></programlisting>
+                <para>To deep fetch this relationship, you can:</para>
+                <programlisting language="java"><![CDATA[
+OrderList list = new OrderList(...);
+list.deepFetch(OrderFinder.itemForProduct(12));]]></programlisting>
+                <para>So now, list.getOrderAt(0).getItemForProduct(12) will no longer hit the
+                    database. This can be used in many places, notably the dated details of product.
+                </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                    <keyword>Debugging</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How do I debug Reladomo generated sql?</para>
+            </question>
+            <answer>
+                <para>Add a line to your log4j configuration:</para>
+                <para>log4j.logger.com.gs.fw.common.mithra.sqllogs=DEBUG</para>
+                <para>for batched statements, you will need:</para>
+                <para>log4j.logger.com.gs.fw.common.mithra.batch.sqllogs=DEBUG</para>
+                <para>Warning: SQL logging is very expensive in terms of runtime performance.
+                    Do not turn these options on unless absolutely necessary.</para>
+                <para>Note: If you have an 'old' version of Log4J, you may need to change the '.logger.' for '.category.'.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Object XML</keyword>
+                    <keyword>Table Definition</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How can I tell what I can use in the xml for my Reladomo-enabled class?</para>
+            </question>
+            <answer>
+                <para>Look at the XML schema : mithraobject.xsd The Reladomo test
+                    code provides good examples, it is in the source tree at reladomo/test/src
+                    Also, copy and paste from other classes! </para>
+                <para>By providing a reference to the XSD, IDEs can usually help out by providing
+                    "code assist" type help. Consider adding a reference to the mithraobject.xsd
+                    to the MithraObject element:</para>
+                <programlisting language="xml"><![CDATA[
+<MithraObject objectType="transactional"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="mithraobject.xsd">]]></programlisting>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Relationships</keyword>
+                    <keyword>Many-to-Many</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How do you create many to many relationships utilizing a join table?</para>
+            </question>
+            <answer>
+                <para>This is an example:</para>
+                <para>Table RISK_POINT has a primary key of RISK_POINT.OBJECT_ID. Table DIMENSION
+                    has a primary key of DIMENSION.OBJECT_ID. Join table RISK_POINT_DIMENSION has
+                    columns of RISK_POINT_OID and DIMENSION_OID, and is used to relate RiskPoint to
+                    Dimension. </para>
+                <para>There is a many-to-many relationship between risk points and dimensions. This
+                    is what you do: </para>
+                <para>Create a Reladomo XML file for each table, e.g. RiskPoint.xml,
+                    RiskPointDimension.xml, Dimension.xml. In RiskPointDimension specify 2
+                    attributes - riskPointId that uses RISK_POINT_OID, and dimensionId that uses
+                    DIMENSION_OID.</para>
+                <para>Then in RiskPoint.xml you can specify:</para>
+                <programlisting language="xml"><![CDATA[
+<Relationship name="dimensions" relatedObject="Dimension" cardinality="many-to-many">
+RiskPointDimension.riskPointId = this.id and Dimension.id = RiskPointDimension.dimensionId
+</Relationship>]]></programlisting>
+                <para>And in Dimension.xml you can specify:</para>
+                <programlisting language="xml"><![CDATA[
+<Relationship name="riskPoints" relatedObject="RiskPoint" cardinality="many-to-many">
+RiskPointDimension.dimensionId = this.id and RiskPoint.id = RiskPointDimension.riskPointId
+</Relationship>]]></programlisting>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                    <keyword>CVS</keyword>
+                    <keyword>Subversion</keyword>
+                    <keyword>VCS</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Which Reladomo files do I check into my VCS (Version Control System)?</para>
+            </question>
+            <answer>
+                <para>The first time Reladomo generates code for a new class, it will also generate 3
+                    (initially empty) concrete classes: </para>
+                <itemizedlist>
+                    <listitem>
+                        <para>
+                            <![CDATA[
+                            <MithraClassName>.java
+                            ]]>
+                        </para>
+                    </listitem>
+                    <listitem>
+                        <para>
+                            <![CDATA[
+                            <MithraClassName>DatabaseObject.java
+                            ]]>
+                        </para>
+                    </listitem>
+                    <listitem>
+                        <para>
+                            <![CDATA[
+                            <MithraClassName>List.java
+                            ]]>
+                        </para>
+                    </listitem>
+                </itemizedlist>
+                <para>All 3 files should be checked into a VCS even if you do not make any changes to
+                    them. As a rule of thumb, the Reladomo generated files in the src directory needs
+                    to be checked into a VCS, while those generated in the generatedsrc directory do
+                    not have to be checked into a VCS. </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                    <keyword>Update</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>If I retrieve a Reladomo object (from the DB) and then proceed to do the
+                    following, what will happen?</para>
+                <itemizedlist mark="1">
+                    <listitem>
+                        <para>I set some of the attributes of the object to the same values that
+                            they already contain.</para>
+                    </listitem>
+                    <listitem>
+                        <para>I set some of the attributes of the object first to null and then back
+                            to their original values (within the same transaction).</para>
+                    </listitem>
+                </itemizedlist>
+                <para>Will Reladomo recognize that no material change has happened to the object in
+                    both cases?</para>
+            </question>
+            <answer>
+                <para>Case 1 is easy: no change will be done to the object or the database.</para>
+                <para>For case 2, there is really no way for Reladomo to detect that. In fact,
+                    theoretically, it should not be optimized. Consider the following sequence in a
+                    transaction: </para>
+                <programlisting language="java"><![CDATA[
+someObj = findSomeObjectByPrimaryKey();
+someObj.setSomeAttr(null);
+someObjList = findAllObjectsWithAttrNull();]]></programlisting>
+                <para>The last step depends on the change in the second step. Reladomo detects this
+                    and issues the update before doing the last find. </para>
+                <para>Reladomo does delay database operations as much as possible (to get better
+                    performance through batching), but only as long as the results can be guaranteed
+                    to be correct. Case #2 would be quite difficult to implement. I suggest you
+                    implement it in your code. One way to do it would be to get a temporary copy of
+                    the object, make *all* your changes and then set the values on the persistent
+                    (non-temporary) object. Reladomo objects have the following method that might
+                    help: getNonPersistentCopy() </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                    <keyword>Runtime Configuration</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Does Reladomo have support for schemas?</para>
+            </question>
+            <answer>
+                <para>Schemas can be declared in the runtime configuration. That way, it's easier to
+                    deploy into various environments (qa, prod, etc) where the schema names may not
+                    be the same. </para>
+                <para>See MithraConfigPartialCache.xml for an example.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Operations</keyword>
+                    <keyword>Not Generally Recommended</keyword>
+                    <keyword>Distinct</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>I have to do a query to select "distinct accounts" from a Reladomo table. I am
+                    pasting some code below to show you what I am doing so you can tell me if I
+                    should desist from doing similar stuff or if there is a better way to do
+                    this:</para>
+                <programlisting language="java"><![CDATA[
+List marketMakerAccountsList =
+   PrimeEntityProductRoleFinder.getMithraObjectPortal().computeFunction (PrimeEntityProductRoleFinder.role().eq("MM"),
+                                     null,
+                                     "distinct " + PrimeEntityProductRoleFinder.entityAccountNumber().getColumnName(),
+                                     new StringResultSetParser());
+]]></programlisting>
+                <para>Here "StringResultSetParser" is my own class built on the pattern of
+                    "IntegerResultSetParser".</para>
+            </question>
+            <answer>
+                <para>We would discourage this kind of use. You can still get distinct accounts if
+                    you have a relationship from Prime entity product role to an account object: </para>
+                <para>AccountFinder.primeEntityProductRole().role().eq("MM")</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Operations</keyword>
+                    <keyword>Primary Keys</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Why would a Reladomo Finder return the same Reladomo object over and over again in
+                    a Reladomo list?</para>
+            </question>
+            <answer>
+                <para>This problem stems from a bad primary key. The easiest way to ensure this
+                    doesn't happen is to make sure:</para>
+                <itemizedlist mark="a">
+                    <listitem>
+                        <para>The table has a unique index</para>
+                    </listitem>
+                    <listitem>
+                        <para>The same columns in the unique index are declared with
+                            primaryKey="true" in the Reladomo XML</para>
+                    </listitem>
+                </itemizedlist>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Operations</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Is there a way to have the returned list sorted by a particular attribute (the
+                    equivalent of "order by" in SQL)? </para>
+            </question>
+            <answer>
+                <programlisting language="java"><![CDATA[
+FooList list = new FooList(someOperation);
+list.setOrderBy(FooFinder.someAttribute().ascendingOrderBy().
+and(FooFinder.someOtherAttribute().descendingOrderBy()));
+]]></programlisting>
+                <para>You can even specify order by in a relationship declaration.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Dated Objects</keyword>
+                    <keyword>Processing Dates</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Why can't I order by the processing date?</para>
+            </question>
+            <answer>
+                <para>Processing date is a virtual attribute and it's typically the same for all
+                    objects in the query. </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Operations</keyword>
+                    <keyword>Source Attribute</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>What does the SourceAttribute tag in the Reladomo XML mean?</para>
+            </question>
+            <answer>
+                <para>A SourceAttribute is a logical attribute (that is, it's not persisted
+                    anywhere) that corresponds to the location of actual storage. </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Operations</keyword>
+                    <keyword>Source Attribute</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Can I have a single Reladomo object mapped to a table that resides in multiple
+                    databases?</para>
+                <para>Do I need to put the same class under 2 different DB connection managers
+                    within the MithraConfiguration.xml file? </para>
+            </question>
+            <answer>
+                <para>No, Reladomo has the ability to handle objects of the same type stored in tables
+                    residing in different databases. This is supported via the SourceAttribute tag. </para>
+                <para>Here are the steps to take:</para>
+                <itemizedlist mark="1">
+                    <listitem>
+                        <para>Add a <![CDATA[<SourceAttribute>]]> tag to the xml. Two types of
+                            source attributes are supported: string and int. Use string for now.
+                        </para>
+                    </listitem>
+                    <listitem>
+                        <para>Create a connection manager that implements
+                            ObjectSourceConnectionManager. The getConnection method now takes a
+                            parameter, which is the source attribute of the object in question.
+                            Based on this parameter, you should give out one connection or the
+                            other. </para>
+                    </listitem>
+                    <listitem>
+                        <para>All find operations must specify the source attribute as an extra
+                            operation.</para>
+                        <para>E.g.
+                            ProductFinder.source().eq("firstDb").and(ProductFinder.cusip().eq("1234"))</para>
+                    </listitem>
+                    <listitem>
+                        <para>You must set the source attribute on an object before
+                            inserting.</para>
+                    </listitem>
+                </itemizedlist>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                    <keyword>Lists</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Are the following 2 lines of code effectively equivalent (given that I am
+                    using JDK 1.5)?</para>
+                <programlisting language="java"><![CDATA[
+MyMithraClassList myObjectList = new MyMithraClassList(MyMithraClassFinder.all());
+
+List<MyMithraClass> myObjectList = new MyMithraClassList(MyMithraClassFinder.all());
+]]></programlisting>
+            </question>
+            <answer>
+                <para>No, they are not. The second form is just a genericised List, which doesn't
+                    have any of the Reladomo methods (e.g. insertAll(), relationship getters,
+                    deepFetch, etc) </para>
+                <programlisting language="java"><![CDATA[
+MithraList<MyMithraClass> myObjectList = new MyMithraClassList(...);
+]]></programlisting>
+                <para>Is a little bit better, as you get some common methods (deepFetch, setOrderBy,
+                    etc), but it still is not as good as the specific class, which has methods
+                    specific to that object (e.g. relationship getters) </para>
+                <para>As a rule-of-thumb, use the specific list-class generated by Reladomo for you,
+                    so that you always have access to all the appropriate Reladomo methods.
+                    The List&lt;T&gt; allows the MithraList to work fairly seamlessly with most
+                    libraries with genericised methods, including GS Collections.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Object XML</keyword>
+                    <keyword>Update</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Why do my generated Reladomo classes not have an insert() method?</para>
+            </question>
+            <answer>
+                <para>By default, a Reladomo object is read-only and methods for insert, update, or
+                    delete are not generated. If you wish to generate a transactional object (a
+                    Reladomo object that can be inserted, updated, or deleted) then you have to define
+                    it explicitly in the Reladomo xml using the objectType attribute in the
+                    MithraObject tag. </para>
+                <para>Example:</para>
+                <programlisting language="xml"><![CDATA[
+<MithraObject objectType="transactional">
+]]></programlisting>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Operations</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>What is the proper way to get everything from a database table if we are using
+                    Reladomo? In other words, how do you translate a relational query having no where
+                    clause to a Reladomo query? </para>
+            </question>
+            <answer>
+                <programlisting language="java"><![CDATA[FooList fooList = new FooList(FooFinder.all())]]></programlisting>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Connections</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>We are looking to use Reladomo in some of our feed processing flows. We
+                    currently have a ETL library (built in house) called ODIN that can insert input
+                    data (from any source) into DB tables. It doesn't do any milestoning though so
+                    we need to use Reladomo. Thus, our processing flow would look something like the
+                    following: </para>
+                <itemizedlist mark="1">
+                    <listitem>
+                        <para>Use ODIN to process records input data records into memory</para>
+                    </listitem>
+                    <listitem>
+                        <para>Pass the "in-memory record" to an adapter that will convert it to the
+                            appropriate Reladomo class (that maps to the correct DB table) </para>
+                    </listitem>
+                    <listitem>
+                        <para>Use Reladomo to insert into the database.</para>
+                    </listitem>
+                </itemizedlist>
+                <para>The complication in this scenario is that the input data records reside in a
+                    staging table in a database. Happily, Reladomo is supposed to write its output to
+                    the same database albeit to a different table. We want to share the DB
+                    connection between ODIN and Reladomo in this scenario. We know that ODIN can not
+                    accept a DB connection from outside. Can Reladomo be handed a DB connection to
+                    use? </para>
+            </question>
+            <answer>
+                <para>The short answer is: yes, you can hand the connection in. However, doing so
+                    is a little tricky. The good news is, the connection manager is a runtime
+                    configuration, so you won't have to make any changes to your Reladomo objects
+                    themselves. But you will have to write a custom connection manager for this
+                    purpose. </para>
+                <para>Here is what you need to do:</para>
+                <itemizedlist mark="1">
+                    <listitem>
+                        <para>Create a connection manager class that can be initialized with a
+                            connection (e.g. the one that comes from ODIN). </para>
+                    </listitem>
+                    <listitem>
+                        <para>the getConnection() method will not return the plain ODIN connection,
+                            but a simple wrapper connection around it. The wrapper delegates all
+                            methods to the ODIN connection, except for close(). Reladomo expects the
+                            close() method to return the connection back to the pool. So the close
+                            method in the wrapper connection would be empty. </para>
+                    </listitem>
+                </itemizedlist>
+                <para>In the long run, it would be good to have our entire infrastructure (OBJ,
+                    ODIN, etc) understand the concept of a connection pool. That way, different
+                    parts of our infrastructure can "play nice" and share the same connection by the
+                    virtue of having the same connection manager. </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Connections</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How can I get a handle to the Reladomo DB connection manager in my client code
+                    so I can set its connection attribute? </para>
+            </question>
+            <answer>
+                <para>That's up to you. You control the connection manager. A singleton pattern
+                    works well in these situations. </para>
+                <para>When Reladomo reads the configuration xml file, it does the following:</para>
+                <itemizedlist mark="1">
+                    <listitem>
+                        <para>call the static method "getInstance()" on the configured connection
+                            manager</para>
+                    </listitem>
+                    <listitem>
+                        <para>instantiate the database objects for all configured objects and set
+                            the connection manager (that was gotten in 1) on the database object
+                        </para>
+                    </listitem>
+                </itemizedlist>
+                <para>To get a reference to the connection manager, you should therefore call the
+                    same getInstance() method. </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Dated Objects</keyword>
+                    <keyword>Not Generally Recommended</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Is there any way to configure Reladomo such that it will accept FROM_Z and
+                    THRU_Z columns with column type "date" in the database (instead of datetime)?
+                </para>
+            </question>
+            <answer>
+                <para>That's not possible with the current code and it would be a significant
+                    departure from the current architecture. </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Object XML</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Is there a published XML schema for Reladomo (or even better, a sample XML
+                    document that includes all elements with comments to explain which are mandatory
+                    / optional and what they are for)? </para>
+            </question>
+            <answer>
+                <para>mithraobject.xsd is the schema definition for the MithraObject xml.</para>
+                <para>It is well documented and it does define mandatory and possible values. In
+                    addition, there is documentation on the mithraobject.xsd
+                </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Object XML</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>What does the following tag means?</para>
+                <para><![CDATA[<SuperClass name = "AbstractParaTransaction" generated="true"/> ]]></para>
+            </question>
+            <answer>
+                <para>It means two things:</para>
+                <itemizedlist mark="1">
+                    <listitem>
+                        <para>There is an "AbstractParaTransaction.xml" that defines
+                            AbstractParaTransaction</para>
+                    </listitem>
+                    <listitem>
+                        <para>This class extends AbstractParaTransaction and therefore inherits
+                            everything in it. Subclasses have an option to override attribute and
+                            relationship definitions in a compatible way. </para>
+                    </listitem>
+                </itemizedlist>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Object XML</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>What does the superclassType attribute in the MithraObject tag mean?</para>
+            </question>
+            <answer>
+                <para>An object's super class type can be "table-per-subclass" or
+                    "table-for-all-subclasses". For table-per-subclass objects, all the attributes
+                    of the object must appear in each table. </para>
+                <para>For table-for-all-subclasses, all objects live in the same table are
+                    differentiated typically by some attribute. It is up to the implementation to
+                    override the database object's createObject method. </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Inheritance</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How does table-for-all-subclasses work?</para>
+            </question>
+            <answer>
+                <para>Table for all subclasses works like this:</para>
+                <itemizedlist mark="1">
+                    <listitem>
+                        <para>Add superClassType="table-for-all-subclasses" to the object definition</para>
+                    </listitem>
+                    <listitem>
+                        <para>Create (in your IDE) subclasses of the concrete class.
+                            For example, if you have a class called Trade and you want two subclasses,
+                            SecurityTrade and ContractualTrade, you create those two file like any normal java class,
+                            subclassing Trade.</para>
+                    </listitem>
+                    <listitem>
+                        <para>After regenerating the code, there will be a new abstract method in the abstract
+                            database object that you must implement in your concrete database object.
+                            It'll look like this:</para>
+                    </listitem>
+                </itemizedlist>
+                <programlisting language="java"><![CDATA[
+protected Trade constructTrade(MithraDataObject data)
+]]></programlisting>
+                <para>Typically, you'd implement the method along the lines of:</para>
+                <programlisting language="java"><![CDATA[
+TradeData tradeData = (TradeData) data;
+if (tradeData.getType().equals(“SEC”)) // this can be any condition based on the data for this object
+{
+    return new SecurityTrade();
+}
+else if (tradeData.getType().equals(“CON”))
+{
+    return new ContractualTrade();
+}
+]]></programlisting>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Relationships</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>A Model has a list of account IDs for which it is Observable, but we don't
+                    want to have relationships with account, since model is living in a different
+                    database. Instead, we just want to persist account IDs as Strings. So the table
+                    for them would be model ID - account ID. And Model would have method List
+                    getObservableAccountIds() </para>
+            </question>
+            <answer>
+                <para>If I understand this correctly, you have an object called Model that
+                    corresponds to a MODEL table and another object called ModelAccount that
+                    corresponds to MODEL_ACCOUNT table (with just model id, account id in it). There
+                    is a natural relationship between these two objects: model.getModelAccounts()
+                    would return a list of ModelAccount objects. If you want just the account ID's,
+                    you'll have to write a trivial loop: </para>
+                <programlisting language="java"><![CDATA[
+public List getObservableAccountIds()
+{
+    List result = new ArrayList();
+    for(Iterator it = this.getModelAccounts().iterator(); it.hasNext(); )
+    {
+        result.add(it.next().getAccountId());
+    }
+    return result;
+}
+]]></programlisting>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Object XML</keyword>
+                    <keyword>Timezone</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How can I enable timezone conversion in Reladomo?</para>
+            </question>
+            <answer>
+                <para>You can enable UTC time for a timestamp or AsOf attribute by adding:
+                    timezoneConversion="convert-to-utc" or
+                    timezoneConversion="convert-to-database-timezone" to the attribute declaration. </para>
+                <para>The date will be stored as UTC in the database. I suggest you put UTC in the
+                    column name to avoid confusion (e.g. IN_UTC, OUT_UTC). The conversion is done at
+                    points of entry and exit into the VM. The infinity date is treated specially: it
+                    must be created in the VM's local timezone and Reladomo will take care not to
+                    convert it. This allows using the same infinity date for both business and
+                    processing dates. There is no need to do manual conversions for querying,
+                    inserts, updates or deletes. </para>
+                <para> Please don't create relationships between different types of dates. It will
+                    break.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Object XML</keyword>
+                    <keyword>Timezone</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How do I handle timezone conversion using Reladomo?</para>
+            </question>
+            <answer>
+                <para>Select the right conversion type in the xml definition. From then on, don't
+                    worry about it and imagine you live in one timezone. </para>
+                <para>Under the covers, this is what happens:</para>
+                <programlisting language="java"><![CDATA[
+now = new Timestamp(System.currentTimeMillis());  // e.g. 2005-10-10 1:05 pm EST
+]]></programlisting>
+                <para>Like all java dates, this is internally stored as a long, which is in
+                    UTC</para>
+                <programlisting language="java"><![CDATA[
+checkpoint.setTimestamp(now)
+]]></programlisting>
+                <para>Nothing interesting happens in the VM at this point. When we create the SQL
+                    statement, we make sure we do: </para>
+                <programlisting language="java"><![CDATA[
+update CHECKPOINT set TIMESTAMP='2005-10-10 6:05 pm'
+]]></programlisting>
+                <para>The thing to understand about the database is that you can't issue the
+                    statement:</para>
+                <programlisting language="java"><![CDATA[
+update CHECKPOINT set TIMESTAMP='2005-10-10 6:05 pm UTC'
+]]></programlisting>
+                <para>Because the database never stored timezones. That's why I recommend you put
+                    "UTC" in the column name.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Transactions</keyword>
+                    <keyword>Connections</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How can I do Reladomo and non-Reladomo database operations in the same
+                    transaction?</para>
+            </question>
+            <answer>
+                <para>You can do it. You need to flush the Reladomo transaction using the method
+                    executeBufferedOperations(). </para>
+                <para>Here is an example :</para>
+                <programlisting language="java"><![CDATA[
+MithraManager.getInstance().executeTransactionalCommand(new TransactionalCommand() {
+
+    public Object executeTransaction(MithraTransaction mithraTransaction) throws Throwable {
+
+        harsha.setFirstName(newName);
+        mithraTransaction.executeBufferedOperations();  // required to flush the Reladomo transaction
+
+        Connection conn = null;
+
+        try
+        {
+            conn = ((ObjectSourceConnectionManager)
+            	EmployeeFinder.getMithraObjectPortal().getDatabaseObject().
+            	getConnectionManager()).getConnection("NYC");
+            CallableStatement cstmt = conn.prepareCall(
+            " { call pri_tne_employee_card (?,?,?,?) } ");
+
+            cstmt.setString(1, "123456789");
+            cstmt.setString(2, harsha.getEmployeeId());
+            cstmt.setString(3, "AMXBAN");
+            cstmt.setString(4, "10-Jan-2008");
+
+            cstmt.execute();
+        }
+        finally
+        {
+            if(conn != null) conn.close();
+        }
+
+        return null;
+    }
+});]]></programlisting>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                    <keyword>Gradle</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Is there a Gradle plug-in for various Reladomo build tasks (generate code, graphs, etc)?</para>
+            </question>
+            <answer>
+                <para>No. Gradle supports ant tasks natively; use Reladomo's ant tasks directly in gradle.</para>
+                <para>For example :</para>
+                <programlisting language="java"><![CDATA[
+apply plugin: 'java'
+
+// Make sure apply plugin: 'java' is present
+configurations {
+  mithraGenConfig
+}
+
+dependencies {
+mithraGenConfig "com.gs.mithra:mithra:${versions.mithra}"
+  mithraGenConfig "com.gs.mithra:mithragen:${versions.mithra}"
+}
+
+task mithraGenerateSources<< {
+  ant.taskdef(name: 'mithraGen',
+          classname:'com.gs.fw.common.mithra.generator.MithraGenerator',
+          loaderRef: 'mithraGenerator',
+          classpath: configurations.mithraGenConfig.asPath,
+  )
+
+  ant.mithraGen(
+          xml:'src/main/resources/Mithra/database/MithraClassList.xml',
+          generatedDir:'generated/java',
+          nonGeneratedDir:'src/main/java',
+          generateConcreteClasses:'true',
+          generateGscListMethod:'true'
+  )
+}
+
+task mithraClean {
+  delete 'generated/java'
+}
+
+clean.dependsOn(mithraClean)
+
+build.dependsOn(mithraGenerateSources)
+
+compileJava.dependsOn mithraGenerateSources
+sourceSets {
+  main {
+    java {
+      srcDir 'generated/java'
+    }
+  }
+}]]></programlisting>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                    <keyword>Maven</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Is there a Maven plug-in to generate the Reladomo classes / DDL / GraphML-model?</para>
+            </question>
+            <answer>
+                <para>No. Use the Maven Antrun plugin instead.</para>
+                <para>Here is an example:</para>
+                <programlisting language="xml"><![CDATA[
+<properties>
+    <mithra-version>15.4.2</mithra-version>
+</properties>
+
+<dependencies>
+    <dependency>
+        <groupId>com.gs.mithra</groupId>
+        <artifactId>mithra</artifactId>
+        <version>${mithra.version}</version>
+    </dependency>
+
+    <dependency>
+        <groupId>com.gs.mithra</groupId>
+        <artifactId>mithragen</artifactId>
+        <version>${mithra.version}</version>
+    </dependency>
+
+    <dependency>
+        <groupId>com.gs.mithra</groupId>
+        <artifactId>mithragendb</artifactId>
+        <version>${mithra.version}</version>
+        <scope>compile</scope>
+    </dependency>
+</dependencies>
+
+<plugin>
+   <groupId>org.apache.maven.plugins</groupId>
+   <artifactId>maven-antrun-plugin</artifactId>
+   <executions>
+       <execution>
+           <id>generateMithra</id>
+           <phase>generate-sources</phase>
+           <goals>
+               <goal>run</goal>
+           </goals>
+           <configuration>
+               <tasks>
+                   <echo>Start of Reladomo code generation</echo>
+                   <taskdef name="mithra-gen"
+                            classname="com.gs.fw.common.mithra.generator.MithraGenerator"
+                            loaderRef="mithraGenerator">
+                       <classpath refid="maven.compile.classpath"/>
+                   </taskdef>
+                   <mithra-gen xml="${basedir}/src/main/resources/path-to-your-mithra-xml-files/FullMithraClassList.xml"
+                               generatedDir="${basedir}/target/mithra/generated/src/main/java"
+                               nonGeneratedDir="${basedir}/src/main/java"
+                               generateConcreteClasses="true">
+                   </mithra-gen>
+               </tasks>
+               <echo>End of Reladomo code generation</echo>
+           </configuration>
+       </execution>
+   </executions>
+</plugin>
+
+<plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>build-helper-maven-plugin</artifactId>
+    <executions>
+        <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+                <goal>add-source</goal>
+            </goals>
+            <configuration>
+                <sources>
+                    <source>src/main/java</source>
+                    <source>target/mithra/generated/src/main/java</source>
+                </sources>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+]]></programlisting>
+            </answer>
+        </qandaentry>
+
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                    <keyword>Maven</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Is there a Maven plug-in to reverse-engineer Reladomo object XML files from an existing database schema?</para>
+            </question>
+            <answer>
+                <para>No. Use the Maven Antrun plugin instead.</para>
+                <para>For more details, see the <ulink
+                    url="http://maven.apache.org/plugins/maven-antrun-plugin/usage.html"
+                    >Maven AntRun</ulink> documentation.
+                </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                    <keyword>Stored Procedure</keyword>
+                    <keyword>Not Generally Recommended</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How can I work with Stored Procedures in Reladomo?</para>
+            </question>
+            <answer>
+                <para>Short answer: You can't.</para>
+                <para>Long answer:</para>
+                <itemizedlist mark="1">
+                    <listitem>
+                        <para>Stored procedures are considered an anti-pattern.
+                              They are not supported by Reladomo, and never will be.</para>
+                    </listitem>
+                    <listitem>
+                        <para>When working with Stored Procedures, the core facilities of Reladomo
+                              are no longer meaningful:</para>
+                        <itemizedlist mark="1">
+                            <listitem>
+                                <para>Finders don't make sense</para>
+                            </listitem>
+                            <listitem>
+                                <para>&quot;transactional&quot; could not be supported</para>
+                            </listitem>
+                            <listitem>
+                                <para>Relationships become impossible (no deep fetch, no search)</para>
+                            </listitem>
+                            <listitem>
+                                <para>Caching is mostly meaningless</para>
+                            </listitem>
+                            <listitem>
+                                <para>Aggregation over is impossible</para>
+                            </listitem>
+                        </itemizedlist>
+                    </listitem>
+                    <listitem>
+                        <para>There is no easy way to test a Stored Procedure</para>
+                    </listitem>
+                    <listitem>
+                        <para>Stored procedures in Reladomo would introduce problems with the having
+                            duplicate/inconsistent values of objects in memory.
+                            Reladomo ensures that can’t happen, but if this stored procedure is reading
+                            some data that Reladomo has control over, there is a good chance for inconsistency.</para>
+                    </listitem>
+                </itemizedlist>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Caching</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Why does setMaxObjectsToRetrieve() sometimes work, and sometimes doesn't?</para>
+            </question>
+            <answer>
+                <para>This isn’t the first time this has come up.
+                    We could make them consistent, but the point of setMaxObjectsToRetrieve is to reduce IO,
+                    not artificially limit the length of the list.
+                    Obviously, with a cache hit, there is no point in reducing IO.
+                    The fact that you’re noticing this implies you’re retrieving this information anyway,
+                    so why are you limiting it in one spot, but not the other?
+                    Queries that use setMaxObjectsToRetrieve will not get cached,
+                    so your inconsistent usage is actually hurting the cache performance.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Bulk Insert</keyword>
+                    <keyword>Table Definition</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Can you bulk-insert to a table with nullable columns
+                    if those columns are not mapped in Reladomo?</para>
+            </question>
+            <answer>
+                <para>For bulk insert, all columns must be mapped.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Bulk Insert</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Why can't we bulk-insert varchar columns bigger than 256?</para>
+            </question>
+            <answer>
+                <para>The BCP protocol that bulk-insert is implemented upon is old,
+                    and simply doesn't support varchar columns larger than 256.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                    <keyword>Temporary Table</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>What schema spaces can Reladomo use to create temporary tables?
+                The runtime uses an application ID that is part of DACT_RW</para>
+            </question>
+            <answer>
+                <para>By default Reladomo is configured to create temporary tables  in SESSION.
+                    Your user ID must be granted create/drop table permissions for SESSION.</para>
+                <para>You can ask your DBA to give create table permission to DACT_RW on the SESSION schema
+                    (One needs to grant creattab on database to dact_rw group;
+                    createin, alterin, dropin schema permissions on SESSION schema to dact_rw group;
+                    and use of user tablespace(s) to dact_rw group). </para>
+                <para>Or, you can create a schema for Reladomo’s temporary usage,
+                    with proper permissions similar to above.
+                    You then have to create a subclass of Udb82DatabaseType that overrides all the methods
+                    that deal with SESSION (getTableNameForNonSharedTempTable,
+                    getSqlPrefixForNonSharedTempTableCreation, appendSharedTempTableCreatePreamble, createIndexSql).
+                    Use your subclass in your connection manager.</para>
+                <para>Or, you can use a different schema (as of Reladomo 12.5.0) for temp tables by calling
+                    Udb82DatabaseType.setTempSchemaName</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Caching</keyword>
+                    <keyword>Notification Server</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>I have multiple JVMs running Reladomo and accessing the same database, some reading,
+                      some writing, and some doing both.  How do I keep the caches up-to-date?</para>
+            </question>
+            <answer>
+                <para>Reladomo's TCP Notification Server is what you need, and easy to set up and try out.</para>
+                <itemizedlist mark="1">
+                    <listitem>
+                        <para>(a) Setup the notification server. It should be something like:
+                        </para>
+                        <programlisting language="xml"><![CDATA[
+java -classpath < all_the_required_jars > -Dport=< some_port_number > com.gs.fw.common.mithra.notification.server.NotificationServer
+]]></programlisting>
+                    </listitem>
+                    <listitem>
+                        <para>(b) In the processes that read or write Reladomo objects, configure them for notification:
+                        </para>
+                        <programlisting language="xml"><![CDATA[
+MithraManagerProvider.getMithraManager().setNotificationEventManager(
+    new MithraNotificationEventManagerImpl(new TcpMessagingAdapterFactory(host, port)));
+]]></programlisting>
+                    </listitem>
+                    <listitem>
+                        <para>The host and port in (b) should point to where (a) is running</para>
+                    </listitem>
+                </itemizedlist>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Caching</keyword>
+                    <keyword>Notification Server</keyword>
+                    <keyword>Debugging</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>I have set up a notification server -- how do I get transparency into what is happening?</para>
+            </question>
+            <answer>
+                <para>Set the notification logging level to "DEBUG" on each of the VMs.</para>
+                <programlisting language="java"><![CDATA[
+com.gs.fw.common.mithra.notification
+]]></programlisting>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Where can I get training for Reladomo?</para>
+            </question>
+            <answer>
+                <para>Look at all the documentation released with Reladomo.</para>
+                <para>Also take a look at the
+                    Reladomo Kata
+                    which is a combination of presentation material and hands-on exercises designed to get
+                    you working with the Reladomo API. This is offered as a solo, self-paced course, or with notice,
+                    can be given as a GSU-style training session to a group of developers at one-time.
+                </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Testing</keyword>
+                    <keyword>Deep-Fetch</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How can I test if my deep-fetch is working?</para>
+            </question>
+            <answer>
+                <para>You need to verify that the number of calls you make to a DB are as many as you expect.</para>
+                <programlisting language="java"><![CDATA[
+// deep-fetch a list
+EmployeeList employees = EmployeeFinder.findMany(EmployeeFinder.all());
+employees.deepFetch(EmployeeFinder.demographics());
+employees.deepFetch(EmployeeFinder.personalInfo().addresses());
+// ensure the resulting list is resolved, e.g. by calling forceResolve()
+// verify we got the expected number of employees
+assertEquals(15, employees.size());
+// Now grab a count of DB retrieves so far:
+int count = MithraManagerProvider.getMithraManager().getDatabaseRetrieveCount();
+// do something interesting that exercises the list you fetched, e.g.
+int totalAddressCount = 0; // (there's better ways of getting this, but this is just a made-up example)
+for (Employee employee : employees)
+{
+    totalAddressCount += employee.getAddresses().size();
+}
+// if your deep-fetches were good, then there should not have been any additional retrieves made, so:
+assertEquals(count, MithraManagerProvider.getMithraManager().getDatabaseRetrieveCount());
+]]></programlisting>
+
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Connections</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>What connection manager should I use?</para>
+            </question>
+            <answer>
+                <para>You only have two choices:
+                    <itemizedlist mark="1">
+                        <listitem>
+                            <para>XaConnectionManager that comes with Reladomo</para>
+                        </listitem>
+                        <listitem>
+                            <para>Jolt + its connection manager</para>
+                        </listitem>
+                    </itemizedlist>
+                    You must not use some random connection manager with Reladomo.
+                </para>
+                <para>Here is how to use XaConnectionManager (which is far more advanced than the pool in jndi-jdbc):</para>
+                <programlisting language="java"><![CDATA[
+connectionManager = new XAConnectionManager();
+connectionManager.setLdapName(ldapName);
+connectionManager.setJdbcUser(user);
+connectionManager.setJdbcPassword(password);
+connectionManager.setDefaultSchemaName(schemaName);
+connectionManager.setPoolName(ldapName + " connection pool");
+connectionManager.setInitialSize(1);
+connectionManager.setPoolSize(100);
+connectionManager.setUseStatementPooling(true);
+connectionManager.setProperty("com.gs.fw.aig.jdbc.global.DataSourceImpl", "com.sybase.jdbc4.jdbc.SybDataSource");
+connectionManager.setProperty("com.gs.fw.aig.jdbc.global.ConnectionPoolDataSourceImpl", "com.sybase.jdbc4.jdbc.SybConnectionPoolDataSource");
+connectionManager.setProperty("com.sybase.jdbc4.jdbc.SybDataSource.REPEAT_READ", "false");
+connectionManager.initialisePool();
+]]></programlisting>
+                <para>and your SourcelessConnection manager will hold that object and implement:</para>
+                <programlisting language="java"><![CDATA[
+public Connection getConnection()
+{
+    return this.connectionManager.getConnection();
+}
+]]>             </programlisting>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Transactions</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Is there a way that I can use Spring framework for transaction management?</para>
+            </question>
+            <answer>
+                <para>
+                    Although this is relatively straight forward to do (by providing implementation of a
+                    few Spring interfaces that delegate to Reladomo), we strongly recommend against this.
+                </para>
+                <para>
+                    Spring has no notion of full code re-execution on deadlock/timeout/optimistic
+                    lock failure. That's a significant reliability concern for production applications.
+                </para>
+                <para>
+                    Transaction management with Reladomo is simple, flexible and industrial strength.
+                    See the documentation for MithraManager.executeTransactionalCommand and the
+                    TransactionStyle object.
+                </para>
+                <para>
+                    There is not a significant need to use an IoC container with anything that Reladomo needs.
+                    For individual apps, that’s really up to each app; however, don’t mix the concerns of
+                    transaction management with the rest of what IoC containers provide.
+                </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Dated Objects</keyword>
+                    <keyword>Processing Dates</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How do I "restore" a previous version of a audit-only dated object?</para>
+            </question>
+            <answer>
+                <para>You need to assign the values of a old object to the current one,
+                      or create a new one if there is no current instance:
+                </para>
+                <programlisting language="java"><![CDATA[
+Foo oldFoo = ... // find it with processingDate().eq(restoreFromTime)
+Foo currentFoo = ... // find it with [implicit] processingDate().eq(infinity)
+if (currentfoo == null)
+{
+    currentFoo = new Foo();
+    currentFoo.copyNonPrimaryKeyValuesFrom(oldFoo);
+    currentFoo.setProcessingDateFrom(null);
+    currentFoo.setProcessingDateTo(null);
+    currentFoo.insert();
+}
+else
+{
+    currentFoo.copyNonPrimaryKeyValuesFrom(oldFoo);
+}
+]]>             </programlisting>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Operations</keyword>
+                    <keyword>String Operations</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How do I perform a case-insensitive search of a column? Should I use wildCardEq()?</para>
+            </question>
+            <answer>
+                <programlisting language="java"><![CDATA[
+// Reladomo supports toLowerCase() and contains() on attributes:
+description().toLowerCase().contains(searchString.toLowerCase());
+
+// The following also works, but is less elegant:
+description().toLowerCase().wildCardEq("*" + searchString.toLowerCase() + "*");
+]]></programlisting>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Connections</keyword>
+                    <keyword>DB2</keyword>
+                    <keyword>Performance</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>I am using DB2 and performance seems poor, particularly of prepared statements,
+                    and we don't think the indexes are being used. What's the problem?</para>
+            </question>
+            <answer>
+                <para>The basic configuration of DB2 makes some bad choices as its defaults, particularly around
+                    optimization of prepared statements.
+                    You may need the following lines in your connection manager configuration to tell DB2
+                    to behave the right way:
+                </para>
+                <programlisting language="java"><![CDATA[
+// Performance enhancement to tell DB2 to take distribution statistics into account
+// for query parameters, and to re-optimize parameterized queries
+String REOPT_OPTION = "NULLIDR1";
+this.connectionManager.setProperty("currentPackageSet", REOPT_OPTION);
+this.connectionManager.setProperty("jdbcCollection", REOPT_OPTION);
+]]></programlisting>
+                <para>
+                    You will also need to ensure that your DBAs have installed the "NULLIDR1" and "NULLIDRA"
+                    packages on your DB2 instance.
+                </para>
+                <para>
+                    Note: If REOPT_OPTION = "NULLIDR1" doesn't work for you, try "NULLIDRA" instead.
+                </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Operations</keyword>
+                    <keyword>Performance</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Why does Reladomo use IntHashSet instead of Set&lt;Integer&gt;?</para>
+            </question>
+            <answer>
+                <para>Primitives are far superior to boxed objects, e.g. int vs Integer.
+                    Ideally, IntHashSet would be part of the JDK.
+                </para>
+                <para>
+                    Reladomo uses GS Collections IntHashSet because:
+                    <itemizedlist mark="1">
+                        <listitem>
+                            <para>The runtime performance is much better</para>
+                        </listitem>
+                        <listitem>
+                            <para>IntSet has a much lower memory footprint than UnifiedSet&lt;Integer&gt;,
+                                which is in turn much better than JDK's HashSet, and moreover,
+                                has serious repercussions for cache coherency, locality and GC pauses
+                            </para>
+                        </listitem>
+                    </itemizedlist>
+                    Reladomo encourages usage of the efficient IntHashSet by providing the API to use it
+                    with finder operations, e.g. in(IntHashSet), notIn(IntHashSet).
+                    Reladomo discourages usage of the inefficient Set implementations by not providing
+                    direct support in it's API for them.
+                </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                    <keyword>Library Dependencies</keyword>
+                    <keyword>Maven</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Which repos can I get Reladomo from?</para>
+            </question>
+            <answer>
+                <para>Maven central.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                    <keyword>Performance</keyword>
+                    <keyword>Runtime Configuration</keyword>
+                    <keyword>Table Definition</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How can I tell if Reladomo's queries match up to the indexes I have declared on my database tables?</para>
+            </question>
+            <answer>
+                <para>Use the Reladomo Index Reconciliation Tool: this tool verifies your XML is consistent and well-formed,
+                    and validates Reladomo object dependencies. Additionally, it will verify that your DB tables and indexes
+                    match what Reladomo expects.
+                </para>
+                <para>Reladomo knows what attributes are used to define relationships between objects,
+                    and hence can tell you what indices it needs to perform efficiently.
+                </para>
+                <para>Class name is DatabaseIndexValidator.
+                It has a main method with usage example.
+                It can also be run as ant target. build.xml in Reladomo has ant target usage example:
+                </para>
+                <programlisting language="xml"><![CDATA[
+<target name="validate-mithra-db-indices-test" depends="compile-generate-mithra-xml">
+
+    <taskdef name="mithra-validate-xml"
+            classname="com.gs.fw.common.mithra.generator.objectxmlgenerator.DatabaseIndexValidator"
+            loaderRef="indexValidator">
+        <classpath refid="mithraxmlgen.classpath"/>
+    </taskdef>
+
+    <mkdir dir ="${mithra.home}/build/mithra/tmp/generated"/>
+
+    <mithra-validate-xml userName="username" password="password" databaseType="sybase"
+            xml="${mithra.home}/xml/mithra/test/maxlengenerator/TestClassList.xml"
+            driver="com.sybase.jdbc4.jdbc.SybDriver"
+            url="jdbc:sybase:Tds:host:port/schema"
+            schema="some_schema" />
+</target>
+]]></programlisting>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                    <keyword>Runtime Configuration</keyword>
+                    <keyword>Table Definition</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>How can I verify if the Reladomo xmls which I wrote match up the database table definitions?</para>
+            </question>
+            <answer>
+                <para>There are 4 utilities which can be used. These utilities verify if your XML is consistent and well-formed, and validates Reladomo object dependencies.
+                </para>
+                <para>All the classes viz. DatabaseTableValidator, DatabaseIndexValidator, MaxLenValidator, NullableColumnValidator have a main method with usage example.
+                    These can also be run as ant target. The build.xml in Reladomo has ant target usage example.
+                </para>
+                <itemizedlist>
+                    <listitem>
+                        <para>DatabaseTableValidator: This is used to verify the database columns and their data types.</para>
+                        <programlisting language="xml"><![CDATA[
+<target name="validate-mithra-xml-test">
+    <taskdef name="mithra-validate-xml" classname="com.gs.fw.common.mithra.generator.objectxmlgenerator.DatabaseTableValidator" loaderRef="mithraXmlGenerator">
+        <classpath refid="mithraxmlgen.classpath"/>
+    </taskdef>
+    <mkdir dir ="${mithra.home}/build/mithra/tmp/generated"/>
+    <mithra-validate-xml userName="username" password="password" databaseType="sybase"
+            xml="${mithra.home}/xml/mithra/test/maxlengenerator/TestClassList.xml"
+            driver="com.sybase.jdbc4.jdbc.SybDriver"
+            url="jdbc:sybase:Tds:host:port/schema"
+            schema="some_schema" />
+</target>
+]]></programlisting>
+                    </listitem>
+                    <listitem>
+                        <para>DatabaseIndexValidator: This is used to verify the defined indices.</para>
+                        <programlisting language="xml"><![CDATA[
+<target name="validate-mithra-xml-test">
+    <taskdef name="mithra-validate-xml" classname="com.gs.fw.common.mithra.generator.objectxmlgenerator.DatabaseIndexValidator" loaderRef="indexValidator">
+        <classpath refid="mithraxmlgen.classpath"/>
+    </taskdef>
+    <mkdir dir ="${mithra.home}/build/mithra/tmp/generated"/>
+    <mithra-validate-xml
+        userName="userName"
+        password="pass"
+        databaseType="sybase"
+        xml="${mithra.home}/xml/mithra/test/maxlengenerator/TestClassList.xml"
+        driver="com.sybase.jdbc4.jdbc.SybDriver"
+        url="jdbc:sybase:Tds:hostname.example.com:5000/mithra_qa/mithra_qa" schema="mithra_qa" />
+</target>
+]]></programlisting>
+                    </listitem>
+                    <listitem>
+                        <para>MaxLenValidator: This is used to verify the defined maxLength attribute of String columns.</para>
+                        <programlisting language="xml"><![CDATA[
+<target name="validate-mithra-xml-test">
+    <taskdef name="mithra-validate-xml" classname="com.gs.fw.common.mithra.generator.objectxmlgenerator.MaxLenValidator" loaderRef="mithraXmlGenerator">
+        <classpath refid="mithraxmlgen.classpath"/>
+    </taskdef>
+    <mkdir dir ="${mithra.home}/build/mithra/tmp/generated"/>
+    <mithra-validate-xml userName="username" password="password" databaseType="sybase"
+            xml="${mithra.home}/xml/mithra/test/maxlengenerator/TestClassList.xml"
+            driver="com.sybase.jdbc4.jdbc.SybDriver"
+            url="jdbc:sybase:Tds:host:port/schema"
+            schema="some_schema" />
+</target>
+]]></programlisting>
+                    </listitem>
+                    <listitem>
+                        <para>NullableColumnValidator: This is used to verify if the columns are defined as nullable or non-nullable correctly.</para>
+                        <programlisting language="xml"><![CDATA[
+<target name="validate-mithra-xml-test">
+    <taskdef name="mithra-validate-xml" classname="com.gs.fw.common.mithra.generator.objectxmlgenerator.NullableColumnValidator" loaderRef="mithraXmlGenerator">
+        <classpath refid="mithraxmlgen.classpath"/>
+    </taskdef>
+    <mkdir dir ="${mithra.home}/build/mithra/tmp/generated"/>
+    <mithra-validate-xml userName="username" password="password" databaseType="sybase"
+            xml="${mithra.home}/xml/mithra/test/maxlengenerator/TestClassList.xml"
+            driver="com.sybase.jdbc4.jdbc.SybDriver"
+            url="jdbc:sybase:Tds:host:port/schema"
+            schema="some_schema" />
+</target>
+]]></programlisting>
+                    </listitem>
+                </itemizedlist>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                    <keyword>Performance</keyword>
+                    <keyword>Update</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>What's the best way to update a set of existing data based on a new incoming set of detached data?</para>
+            </question>
+            <answer>
+                <para>First, you should avoid using List's contains/remove methods -- they require an equals contract,
+                    but it is usually not the best solution. Also, updating large (e.g. &gt; 100) lists of data
+                    will be slow, as it's multiple O(n^2) loops.
+                </para>
+                <para>The best practice is to use a FullUniqueIndex on your current/existing data to optimize access
+                    to help you create a delta. Something like the following:
+                </para>
+                <programlisting language="java"><![CDATA[
+FullUniqueIndex index = new FullUniqueIndex("", ProductFinder.getPrimaryKeyAttributes());
+index.addAll(fileProducts);
+for (int i = detachedDbProducts.size() - 1; i >= 0; i--)
+{
+    Product detachedDbProduct = detachedDbProducts.get(i);
+    Product fileProduct = index.remove(detachedDbProduct);
+    if (fileProduct == null)
+    {
+        // Removed item
+        detachedDbProducts.remove(i);
+    }
+    else
+    {
+        // Updated item -- typically this would be an update, e.g.
+        detachedDbProduct.copyNonPrimaryKeyValuesFrom(fileProduct);
+    }
+}
+// New items (i.e. anything remaining in the index after the loop has finished)
+detachedDbProducts.addAll(index.getAll());
+...
+detachedDbProducts.copyDetachedValuesToOriginalOrInsertIfNewOrDeleteIfRemoved();
+]]></programlisting>
+                <para>
+                    For larger amounts of data, the multi-threaded loader (mtloader) / matcher thread is the way to go.
+                </para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Does Reladomo support result-set paging?</para>
+            </question>
+            <answer>
+                <para>No. Not all database systems support pagination (notably Sybase and DB2).</para>
+                <para>The best we can do right now is limit the results fetched using <code>setMaxObjectsToRetrieve()</code></para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Not Generally Recommended</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Does Reladomo support Views?</para>
+            </question>
+            <answer>
+                <para>More or less. You are able to map a View to a Reladomo object, since from a SQL technical
+                    perspective a View is very similar to a Table, however it's behaviour is not guaranteed,
+                    especially with updates or when the underlying tables are mapped to other Reladomo objects.</para>
+                <para>In general, Views are an anti-pattern when using an ORM system, like Reladomo.
+                    They also tend to perform very poorly.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Object XML</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Text fields / How can I store long text values using Reladomo?</para>
+            </question>
+            <answer>
+                <para>In your DB schema, use &quot;text&quot; (or equivalent) as the column type,
+                    and in your Reladomo Object XML use javaType=&quot;String&quot;.</para>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">Caching</keyword>
+                    <keyword>Cache Invalidation</keyword>
+                    <keyword>Runtime Configuration</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>Do I have any control for clearing objects that Reladomo has cached?</para>
+            </question>
+            <answer>
+                <para>First, ask yourself why you need or _think_ you need to clear the cache
+                    -- quite often what you really need is your Reladomo-based app to work in
+                    a friendly way with other Reladomo-based apps. In this case, you
+                    should investigate Reladomo &quot;Notification&quot;, which is a powerful
+                    and efficient way of managing cache coherency across multiple JVM instances.</para>
+                <para>The programmatic way to clear all cache entries in the JVM is:</para>
+                <programlisting language="java"><![CDATA[
+MithraManager.getInstance().clearAllQueryCaches()
+]]></programlisting>
+                <para>You can clear the cache on an individual finder with:</para>
+                <programlisting language="java"><![CDATA[
+FooFinder.clearQueryCache()
+]]></programlisting>
+                <para>You can also set timeouts for caches on a per-object basis in the runtime XML.
+                    If you choose a decent timeout (several minutes),
+                    then you get most of the benefit of caching without having to worry about clearing it.
+                    For example, a 2 minute timeout:
+                </para>
+                <programlisting language="xml"><![CDATA[
+<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderItemWi"
+    cacheType="partial"
+    relationshipCacheTimeToLive="120000"
+    cacheTimeToLive="120000"/>
+]]></programlisting>
+            </answer>
+        </qandaentry>
+        <qandaentry>
+            <blockinfo>
+                <keywordset>
+                    <keyword role="Category">General</keyword>
+                    <keyword>Dated Objects</keyword>
+                    <keyword>Non-Dated Objects</keyword>
+                    <keyword>Termination</keyword>
+                </keywordset>
+            </blockinfo>
+            <question>
+                <para>What's the difference between <code>delete()</code>, <code>terminate()</code>, and <code>purge()</code>?</para>
+            </question>
+            <answer>
+                <para>All the methods are used for removing an object, but are used in different contexts and different actions:
+                    <itemizedlist>
+                        <listitem>
+                            <para>
+                                <emphasis role="bold"><code>delete()</code></emphasis>
+                                is used when the object is not dated (i.e. does not have an AsOfAttribute),
+                                and removes the data entirely from the DB.
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                <emphasis role="bold"><code>terminate()</code></emphasis>
+                                is used when an object is dated, and will &quot;chain out&quot; a record,
+                                meaning that it will no longer be visible to queries as-of &quot;now&quot;,
+                                but it’s history is still available and it can be queried &quot;as-of&quot;.
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                <emphasis role="bold"><code>purge()</code></emphasis>
+                                is used when you are saying I don’t want that history any more (and for most
+                                of our systems, it means it must be archived off someplace else beforehand
+                                -- hence, caution is required when using this method).
+                            </para>
+                        </listitem>
+                    </itemizedlist>
+                    The short of it is that delete() or terminate() is usually what you want, and if you feel
+                    the need to use purge() you should check with your team-lead and a Reladomo expert first
+                    to ensure it’s being used appropriately and correctly.
+                </para>
+            </answer>
+        </qandaentry>
+    </qandaset>
+</article>

@@ -1,0 +1,200 @@
+/*
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+
+class com.gs.fw.common.mithra.test.domain.TestOverlapFullyMilestoned
+overlapId,type,user,processingDateFrom,processingDateTo,businessDateFrom,businessDateTo
+
+// no milestoning
+1,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// good milestoning on processing date
+2,"Type A","whitba","2000-01-01 12:00:00.0","2010-01-01 12:00:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+2,"Type B","whitba","2010-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// good milestoning on business date
+3,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","2010-01-01 23:59:00.0"
+3,"Type B","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2010-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// milestone overlap on processing date
+4,"Type A","whitba","2000-01-01 12:00:00.0","2020-01-01 12:00:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+4,"Type B","whitba","2010-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// milestone overlap on business date
+5,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","2020-01-01 23:59:00.0"
+5,"Type B","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2010-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// more recent processing date row causing old row to split before and after new row
+6,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+6,"Type B","whitba","2010-01-01 12:00:00.0","2020-12-01 12:00:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// more recent business date row causing old row to split before and after new row
+7,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+7,"Type B","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2010-01-01 23:59:00.0","2020-01-01 23:59:00.0"
+
+// same as scenario 4 to cover update combination    ???
+8,"Type A","whitba","2000-01-01 12:00:00.0","2020-01-01 12:00:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+8,"Type B","whitba","2010-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// exact duplicate
+9,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+9,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// dupes with attribute differences uses natural order of attributes to select row
+10,"Type B","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+10,"Type A","whitbc","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+10,"Type A","whitbb","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+11,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+// in == out
+11,"Type A","whitba","2000-01-01 12:00:00.0","2000-01-01 12:00:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+// in > out
+11,"Type A","whitba","2001-01-01 12:00:00.0","2000-01-01 12:00:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+// from == thru
+11,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","2000-01-01 23:59:00.0"
+// from > thru
+11,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2001-01-01 23:59:00.0","2000-01-01 23:59:00.0"
+
+// code can handle deletion with null attribute (deleted because from == thru)
+12,null,"whitba","2000-01-01 12:00:00.0","2000-01-01 12:00:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// update where thru and out are not unique
+13,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+13,"Type B","whitba","2010-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// more than 2 exact duplicates
+14,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+14,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+14,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// code can handle deletion where string attribute has trailing space (deleted because from == thru)
+15,"Type A","whitba ","2000-01-01 12:00:00.0","2000-01-01 12:00:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// single row deletion at end of dataset (deleted because from == thru)
+999,"Type A","whitba","2000-01-01 12:00:00.0","2000-01-01 12:00:00.0","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+
+
+class com.gs.fw.common.mithra.test.domain.TestOverlapBusinessDateMilestoned
+overlapId,type,user,businessDateFrom,businessDateTo
+
+// no milestoning
+1,"Type A","whitba","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// good milestoning on business date
+3,"Type A","whitba","2000-01-01 23:59:00.0","2010-01-01 23:59:00.0"
+3,"Type B","whitba","2010-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// milestone overlap on business date
+5,"Type A","whitba","2000-01-01 23:59:00.0","2020-01-01 23:59:00.0"
+5,"Type B","whitba","2010-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// more recent business date row causing old row to split before and after new row
+7,"Type A","whitba","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+7,"Type B","whitba","2010-01-01 23:59:00.0","2020-01-01 23:59:00.0"
+
+// same as scenario 5 to cover update combination
+8,"Type A","whitba","2000-01-01 23:59:00.0","2020-01-01 23:59:00.0"
+8,"Type B","whitba","2010-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// exact duplicate
+9,"Type A","whitba","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+9,"Type A","whitba","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// dupes with attribute differences uses natural order of attributes to select row
+10,"Type B","whitba","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+10,"Type A","whitbc","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+10,"Type A","whitbb","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+11,"Type A","whitba","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+// from == thru     ,
+11,"Type A","whitba","2000-01-01 23:59:00.0","2000-01-01 23:59:00.0"
+// from > thru      ,
+11,"Type A","whitba","2001-01-01 23:59:00.0","2000-01-01 23:59:00.0"
+
+// code can handle deletion with null attribute (deleted because from == thru)
+12,null,"whitba","2000-01-01 23:59:00.0","2000-01-01 23:59:00.0"
+
+// update where thru is not unique
+13,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+13,"Type B","whitba","2010-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+
+// more than 2 exact duplicates
+14,"Type A","whitba","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+14,"Type A","whitba","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+14,"Type A","whitba","2000-01-01 23:59:00.0","9999-12-01 23:59:00.0"
+
+// code can handle deletion where string attribute has trailing space (deleted because from == thru)
+15,"Type A","whitba ","2000-01-01 23:59:00.0","2000-01-01 23:59:00.0"
+
+// single row deletion at end of dataset (deleted because from == thru)
+999,"Type A","whitba","2000-01-01 23:59:00.0","2000-01-01 23:59:00.0"
+
+
+
+class com.gs.fw.common.mithra.test.domain.TestOverlapProcessingDateMilestoned
+overlapId,type,user,processingDateFrom,processingDateTo
+
+// no milestoning
+1,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+
+// good milestoning on processing date
+2,"Type A","whitba","2000-01-01 12:00:00.0","2010-01-01 12:00:00.0"
+2,"Type B","whitba","2010-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+
+// milestone overlap on processing date
+4,"Type A","whitba","2000-01-01 12:00:00.0","2020-01-01 12:00:00.0"
+4,"Type B","whitba","2010-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+
+// more recent processing date row causing old row to split before and after new row
+6,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+6,"Type B","whitba","2010-01-01 12:00:00.0","2020-12-01 12:00:00.0"
+
+// same as scenario 4 to cover update combination
+8,"Type A","whitba","2000-01-01 12:00:00.0","2020-01-01 12:00:00.0"
+8,"Type B","whitba","2010-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+
+// exact duplicate
+9,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+9,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+
+// dupes with attribute differences uses natural order of attributes to select row
+10,"Type B","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+10,"Type A","whitbc","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+10,"Type A","whitbb","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+
+11,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+// in == out
+11,"Type A","whitba","2000-01-01 12:00:00.0","2000-01-01 12:00:00.0"
+// in > out
+11,"Type A","whitba","2001-01-01 12:00:00.0","2000-01-01 12:00:00.0"
+
+// code can handle deletion with null attribute (deleted because in == out)
+12,null,"whitba","2000-01-01 12:00:00.0","2000-01-01 12:00:00.0"
+
+// update where out is not unique
+13,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+13,"Type B","whitba","2010-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+
+// more than 2 exact duplicates
+14,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+14,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+14,"Type A","whitba","2000-01-01 12:00:00.0","9999-12-01 23:59:00.0"
+
+// code can handle deletion where string attribute has trailing space (deleted because in == out)
+15,"Type A","whitba ","2000-01-01 12:00:00.0","2000-01-01 12:00:00.0"
+
+// single row deletion at end of dataset (deleted because in == out)
+999,"Type A","whitba","2000-01-01 12:00:00.0","2000-01-01 12:00:00.0"

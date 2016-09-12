@@ -1,0 +1,101 @@
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="mithraobject.xsd">
+
+    <PackageName>com.gs.fw.common.mithra.test.mag</PackageName>
+    <ClassName>MagReportingAttributes</ClassName>
+    <DefaultTable>MagReportingAttributes</DefaultTable>
+
+    <SourceAttribute name="magellanSourceInstanceId" javaType="int"/>
+
+    <AsOfAttribute name="businessDate" fromColumnName="BusiFrom" toColumnName="BusiThru"
+                   toIsInclusive="false"
+                   isProcessingDate="false"
+                   futureExpiringRowsExist="true"
+                   infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"/>
+
+    <AsOfAttribute name="processingDate" fromColumnName="ProcIn" toColumnName="ProcOut"
+                   toIsInclusive="false"
+                   isProcessingDate="true"
+                   timezoneConversion="convert-to-utc"
+                   infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"
+                   defaultIfNotSpecified="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"/>
+
+    <!--Magellan standard transaction ID -->
+    <Attribute name="transactionId" javaType="long" columnName="TransactionId" primaryKey="true"/>
+    <Attribute name="magellanInstanceId" javaType="int" columnName="MagellanInstanceId"/>
+
+    <!-- Attributes currently NOT on settlement, journal, or trade tables -->
+    <Attribute name="confirmReference" javaType="String" columnName="ConfirmReference" maxLength="32"/>
+    <!--CBM  transaction ID - Renamed to avoid collision with standard Magellan transaction ID -->
+    <Attribute name="contractTransactionId" javaType="String" columnName="ContractTransactionId" maxLength="32"/>
+    <Attribute name="dealId" javaType="String" columnName="DealId" maxLength="32"/>
+    <Attribute name="parentTradeRefId" javaType="String" columnName="ParentTradeRefId" maxLength="32"/>
+    <Attribute name="sourceTransactionId" javaType="String" columnName="SourceTransactionId" maxLength="32"/>
+    <Attribute name="tradeRefId" javaType="String" columnName="TradeRefId" maxLength="32"/>
+
+
+    <!-- Attributes currently on settlement,journal, or trade tables -->
+    <Attribute name="batchNum" javaType="String" maxLength="6" columnName="BatchNum"/>
+    <Attribute name="brokerCode" javaType="String" columnName="BrokerCode" maxLength="10"/>
+    <Attribute name="buySell" javaType="String" columnName="BuySell" maxLength="4"/>
+    <Attribute name="caRefId" javaType="String" columnName="CARefId" maxLength="30"/>
+    <Attribute name="clearingAgent" javaType="String" columnName="ClearingAgent" maxLength="6"/>
+    <Attribute name="crossAccountNumber" javaType="String" columnName="CrossAccountNumber" maxLength="9"/>
+    <Attribute name="dealReferenceId" javaType="String" columnName="DealReferenceId" maxLength="30"/>
+    <Attribute name="dealVersionNumber" javaType="int" columnName="DealVersionNumber"/>
+    <Attribute name="description" javaType="String" columnName="Description" maxLength="255"/>
+    <Attribute name="desk" javaType="String" columnName="Desk" maxLength="20"/>
+    <Attribute name="doteSource" javaType="String" columnName="DoteSource" maxLength="4"/>
+    <Attribute name="doteMode" javaType="String" columnName="DoteMode" maxLength="4"/>
+    <Attribute name="doteId" javaType="String" columnName="DoteId" maxLength="4"/>
+    <Attribute name="dtcActivityCode" javaType="String" columnName="DtcActivityCode" maxLength="4"/>
+    <Attribute name="dtcReasonCode" javaType="String" columnName="DtcReasonCode" maxLength="4"/>
+    <Attribute name="exchangeCode" javaType="String" columnName="ExchangeCode" maxLength="4"/>
+    <Attribute name="intDivAmount" javaType="double" columnName="IntDivAmount"/>
+    <Attribute name="legRef" javaType="String" columnName="LegRef" maxLength="20"/>
+    <Attribute name="linkReferenceId" javaType="String" columnName="LinkReferenceId" maxLength="20"/>
+    <Attribute name="msgType" javaType="String" maxLength="4" columnName="MsgType"/>
+    <Attribute name="originalTradeId" javaType="String" columnName="OriginalTradeId" maxLength="32"/>
+    <Attribute name="originalSourceSystem" javaType="String" columnName="OriginalSourceSystem" maxLength="10"/>
+    <Attribute name="originalSourceId" javaType="String" columnName="OriginalSourceId" maxLength="32"/>
+    <Attribute name="postId" javaType="String" columnName="PostId" maxLength="32"/>
+    <Attribute name="postType" javaType="String" maxLength="3" columnName="PostType"/>
+    <Attribute name="price" javaType="double" columnName="Price"/>
+    <Attribute name="settlementType" javaType="String" columnName="SettlementType" maxLength="5"/>
+    <Attribute name="srcLinkId" javaType="String" columnName="SrcLinkId" maxLength="32"/>
+    <Attribute name="srcRef" javaType="String" columnName="SrcRef" maxLength="32"/>
+    <Attribute name="srcTradeId" javaType="String" columnName="SrcTradeId" maxLength="32"/>
+    <Attribute name="srcTrxId" javaType="String" columnName="SrcTrxId" maxLength="32"/>
+    <Attribute name="subMsgType" javaType="String" maxLength="10" columnName="SubMsgType"/>
+    <Attribute name="subPostType" javaType="String" maxLength="4" columnName="SubPostType"/>
+    <Attribute name="trailer1" javaType="String" columnName="Trailer1" maxLength="30"/>
+    <Attribute name="trailer2" javaType="String" columnName="Trailer2" maxLength="30"/>
+    <Attribute name="trailer3" javaType="String" columnName="Trailer3" maxLength="30"/>
+    <Attribute name="trailer4" javaType="String" columnName="Trailer4" maxLength="30"/>
+    <Attribute name="trailer5" javaType="String" columnName="Trailer5" maxLength="30"/>
+    <Attribute name="trailer6" javaType="String" columnName="Trailer6" maxLength="30"/>
+    <Attribute name="trailer7" javaType="String" columnName="Trailer7" maxLength="30"/>
+    <Attribute name="trailer8" javaType="String" columnName="Trailer8" maxLength="30"/>
+    <Attribute name="userId" javaType="String" maxLength="20" columnName="UserId"/>
+    <Attribute name="whenIssue" javaType="String" columnName="WhenIssue" maxLength="15"/>
+    <Attribute name="entity" javaType="String" columnName="Entity" maxLength="10"/>
+
+
+</MithraObject>

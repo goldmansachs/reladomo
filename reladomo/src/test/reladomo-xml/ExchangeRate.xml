@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>ExchangeRate</ClassName>
+    <DefaultTable>FXRATE</DefaultTable>
+
+    <SourceAttribute name="acmapCode" javaType="String"/>
+
+    <Attribute name="currency" javaType="String" columnName="PROD_CURRENCY_C" primaryKey="true" trim="true" maxLength="3"/>
+    <Attribute name="source" javaType="int" columnName="SOURCE_I" primaryKey="true" mutablePrimaryKey="true" nullable="true"/>
+    <Attribute name="date" javaType="Timestamp" columnName="THRU_Z" primaryKey="true" mutablePrimaryKey="true"/>
+    <Attribute name="exchangeRate" javaType="double" columnName="EXCH_RATE" />
+
+    <Relationship name="children" relatedObject="ExchangeRateChild" cardinality="one-to-many" relatedIsDependent="true" reverseRelationshipName="parent">
+        this.currency = ExchangeRateChild.currency and this.source = ExchangeRateChild.source and
+        this.date = ExchangeRateChild.dt
+    </Relationship>
+    <Relationship name="specificChild" relatedObject="ExchangeRateChild" cardinality="one-to-one" parameters="int source">
+        this.currency = ExchangeRateChild.currency and ExchangeRateChild.childNum = 0 and
+        this.date = ExchangeRateChild.dt and ExchangeRateChild.source = {source}
+    </Relationship>
+</MithraObject>

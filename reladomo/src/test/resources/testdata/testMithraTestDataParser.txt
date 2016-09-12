@@ -1,0 +1,216 @@
+/*
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+
+/* this is a multi-line
+
+comment */
+
+// single line comment
+
+//AccountTransactionMax table
+class com.gs.fw.common.mithra.test.domain.AccountTransactionMax
+transactionId,transactionDescription,transactionDate
+100,"Transaction 100","2002-11-28 18:30:00.0"
+101,"Transaction 101","2002-11-29 18:30:00.0"
+102,"Transaction 102","2002-11-29 18:40:00.0"
+
+//AccountTransaction table
+class com.gs.fw.common.mithra.test.domain.AccountTransaction
+transactionId,transactionDescription,transactionDate
+1,"Transaction 1","2002-11-28 18:30:00.0"
+100,"Transaction 100","2002-11-29 18:30:00.0"
+1000,"Transaction 1000","2002-11-29 18:40:00.0"
+
+//AccountTransactionException table
+class com.gs.fw.common.mithra.test.domain.AccountTransactionException
+exceptionId,exceptionDescription,exceptionDate
+996,"Exception 1","2002-11-28 18:30:00.0"
+999,"Exception 100","2002-11-29 18:30:00.0"
+1002,"Exception 1000","2002-11-29 18:40:00.0"
+
+//SpecialAccount table
+class com.gs.fw.common.mithra.test.domain.SpecialAccount
+specialAccountId, accountSpecialCode, specialAccountDescription, specialAccountOpeningDate
+1, 10, "Special Account 1", "2002-11-28 18:30:00.0"
+
+//AccountDescendingKey
+class com.gs.fw.common.mithra.test.domain.AccountDescendingKey
+accountId, accountDescription, accountOpeningDate
+13, "Account15", "2002-11-28 00:00:00.0"
+10, "Account14", "2002-11-28 00:00:00.0"
+7, "Account13", "2002-11-28 00:00:00.0"
+4, "Account12", "2002-11-28 00:00:00.0"
+1, "Account11", "2002-11-28 00:00:00.0"
+
+//Account Table
+class com.gs.fw.common.mithra.test.domain.Account
+accountNumber,code,trialId,pnlGroupId
+"7410161001", "74101610", "001A", "999A"
+"7410161101", "74101611", "001A", "999A"
+"7410161201", "74101612", "001A", "999A"
+"7410161301", "74101613", "001A", "999A"
+"null trial", "testnull", null, "NULLTEST"
+"with trial", "testnull", "001A", "NULLTEST"
+
+
+//TamsAccount
+class com.gs.fw.common.mithra.test.domain.TamsAccount
+accountNumber,code,trialId,pnlGroupId,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+"7410161001", "74101610", "001A", "999A", "1990-01-01 10:01:00.0", "9999-12-01 23:59:00.0", "1990-01-01 10:01:00.0", "9999-12-01 23:59:00.0"
+"7410162002", "74101620", "002A", "999B", "1990-01-01 10:01:00.0", "9999-12-01 23:59:00.0", "1990-01-01 10:01:00.0", "9999-12-01 23:59:00.0"
+
+"7616150501","76161505","001A", "999A", "2002-11-30 00:30:00.0","2003-11-30 00:30:00.0","2002-11-29 00:00:00.0","9999-12-01 23:59:00.0"
+"7616150501","76161505","002A", "999B", "2003-11-30 00:30:00.0","9999-12-01 23:59:00.0","2002-11-29 00:00:00.0","9999-12-01 23:59:00.0"
+"7616030301","76160303","003A", "888A", "2001-01-03 00:30:00.0","2003-01-03 00:30:00.0","2001-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+"7616030301","76160303","004A", "888B", "2003-01-03 00:30:00.0","9999-12-01 23:59:00.0","2003-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+"7616030401","76160304","004A", "777C", "2001-02-02 00:30:00.0","2001-12-01 23:59:00.0","2002-02-01 00:00:00.0","9999-12-01 23:59:00.0"
+"7616030601","76160306","005A", "666X", "2002-12-28 00:30:00.0","9999-12-01 23:59:00.0","2002-12-27 00:00:00.0","9999-12-01 23:59:00.0"
+"7616030701","76160307","006A", "555T", "2002-01-28 00:30:00.0","9999-12-01 23:59:00.0","2002-01-27 00:00:00.0","9999-12-01 23:59:00.0"
+
+
+class com.gs.fw.common.mithra.test.domain.Adjustment
+id,originalAmount,adjustmentAmount, accountId
+1, 10.0, 100.0, 1
+
+class com.gs.fw.common.mithra.test.domain.DatedAccount
+id,name,trialId,pnlGroupId,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+1, "743737222", 1, 1, "1981-06-08 02:01:00.0", "9999-12-01 23:59:00.0", "1981-06-08 02:01:00.0", "9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.DatedTrial
+id,name,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+1, "001A", "1981-06-08 02:01:00.0", "9999-12-01 23:59:00.0", "1981-06-08 02:01:00.0", "9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.DatedPnlGroup
+id,name,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+1, "trading", "1981-06-08 02:01:00.0", "9999-12-01 23:59:00.0", "1981-06-08 02:01:00.0", "9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.ExchangeRate
+currency,source,date,exchangeRate
+"EUR",10, "2004-09-30 18:30:00.0", 1.25
+"USD",10, "2004-09-30 18:30:00.0", 1
+
+"GBP",10, "2004-09-30 18:30:00.0", 1.81
+"JPY",10, "2004-09-30 18:30:00.0", .009
+
+class com.gs.fw.common.mithra.test.domain.adjustmenthistory.PositionAdjustmentHistory
+referenceId,accountId,adjustmentTypeId,productId,userId,businessDate,entryDate,comment,originalValue,adjustmentDelta
+8004,"7616150501",9000,1522,"kuriaje","2002-11-29 18:30:00.0","2002-11-30 00:30:00.0","",0.0,104.5
+8007,"7616030301",9000,1522,"kuriaje","2003-01-01 18:30:00.0","2003-01-03 00:30:00.0","",10000,-104.5
+8008,"7616030401",9000,1522,"kuriaje","2002-02-01 18:30:00.0","2002-02-02 00:30:00.0","",-21000,10000
+8009,"7616030601",9000,1522,"kuriaje","2002-12-27 18:30:00.0","2002-12-28 00:30:00.0","",-21000,25000
+9000,"7616030701",9000,1522,"kuriaje","2002-01-27 18:30:00.0","2002-01-28 00:30:00.0","not priced",0,-100
+
+class com.gs.fw.common.mithra.test.domain.desk.balance.position.PositionQuantity
+accountId,productId,positionType,quantity,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+"7616150501",1522,1800,-6851, "2002-11-29 00:00:00.0","9999-12-01 23:59:00.0","2002-11-30 00:30:00.0","9999-12-01 23:59:00.0"
+"7616030301",1522,1800,0,"2003-01-01 00:00:00.0","9999-12-01 23:59:00.0","2003-01-03 00:30:00.0","9999-12-01 23:59:00.0"
+"7616030401",1522,1800,1000,"2002-02-01 00:00:00.0","9999-12-01 23:59:00.0","2002-02-02 00:30:00.0","9999-12-01 23:59:00.0"
+"7616030601",1522,1800,-3000,"2002-12-27 00:00:00.0","9999-12-01 23:59:00.0","2002-12-28 00:30:00.0","9999-12-01 23:59:00.0"
+"7616030701",1522,1800,10,"2002-01-27 00:00:00.0","9999-12-01 23:59:00.0","2002-01-28 00:30:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.TestBalance
+accountId,productId,positionType,quantity,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+"7616150501",1522,1800,-6851,"2002-11-30 00:30:00.0","2004-11-30 00:30:00.0","2002-11-29 00:00:00.0","9999-12-01 23:59:00.0"
+"7616150501",1522,1800,-6851,"2004-11-30 00:30:00.0","9999-12-01 23:59:00.0","2002-11-29 00:00:00.0","9999-12-01 23:59:00.0"
+"7616030301",1522,1800,0,"2001-01-03 00:30:00.0","2003-01-03 00:30:00.0","2001-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+"7616030301",1522,1800,0,"2003-01-03 00:30:00.0","9999-12-01 23:59:00.0","2003-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+"7616030401",1522,1800,1000,"2002-02-02 00:30:00.0","9999-12-01 23:59:00.0","2002-02-01 00:00:00.0","9999-12-01 23:59:00.0"
+"7616030601",1522,1800,-3000,"2002-12-28 00:30:00.0","9999-12-01 23:59:00.0","2002-12-27 00:00:00.0","9999-12-01 23:59:00.0"
+"7616030701",1522,1800,10,"2002-01-28 00:30:00.0","9999-12-01 23:59:00.0","2002-01-27 00:00:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.TinyBalance
+balanceId,quantity,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+1,-6851,"2002-11-29 00:00:00.0","9999-12-01 23:59:00.0","2002-11-30 00:30:00.0","9999-12-01 23:59:00.0"
+2,11.2,"2003-01-01 00:00:00.0","9999-12-01 23:59:00.0","2003-01-03 00:30:00.0","9999-12-01 23:59:00.0"
+3,1000,"2002-02-01 00:00:00.0","9999-12-01 23:59:00.0","2002-02-02 00:30:00.0","9999-12-01 23:59:00.0"
+4,-3000,"2002-12-27 00:00:00.0","9999-12-01 23:59:00.0","2002-12-28 00:30:00.0","9999-12-01 23:59:00.0"
+5,10,"2002-01-27 00:00:00.0","9999-12-01 23:59:00.0","2002-01-28 00:30:00.0","9999-12-01 23:59:00.0"
+10,100,"2005-01-14 18:30:00.0","2005-01-24 18:30:00.0","2004-01-15 00:30:00.0","2005-01-15 00:30:00.0" // outzed
+10,100,"2005-01-14 18:30:00.0","2005-01-24 18:30:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+10,200,"2005-01-24 18:30:00.0","9999-12-01 23:59:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+20,50,"2005-01-10 18:30:00.0","2005-01-14 18:30:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+20,100,"2005-01-14 18:30:00.0","2005-01-24 18:30:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+20,200,"2005-01-24 18:30:00.0","9999-12-01 23:59:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+40,-6851,"2002-11-29 00:00:00.0","2003-01-01 00:00:00.0","2002-11-30 00:30:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.TinyBalanceUtc
+balanceId,quantity,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+1,-6851,"2002-11-29 00:00:00.0","9999-12-01 23:59:00.0","2002-11-30 00:30:00.0","9999-12-01 23:59:00.0"
+2,11.2,"2003-01-01 00:00:00.0","9999-12-01 23:59:00.0","2003-01-03 00:30:00.0","9999-12-01 23:59:00.0"
+3,1000,"2002-02-01 00:00:00.0","9999-12-01 23:59:00.0","2002-02-02 00:30:00.0","9999-12-01 23:59:00.0"
+4,-3000,"2002-12-27 00:00:00.0","9999-12-01 23:59:00.0","2002-12-28 00:30:00.0","9999-12-01 23:59:00.0"
+5,10,"2002-01-27 00:00:00.0","9999-12-01 23:59:00.0","2002-01-28 00:30:00.0","9999-12-01 23:59:00.0"
+10,100,"2005-01-14 18:30:00.0","2005-01-24 18:30:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+10,200,"2005-01-24 18:30:00.0","9999-12-01 23:59:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+20,50,"2005-01-10 18:30:00.0","2005-01-14 18:30:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+20,100,"2005-01-14 18:30:00.0","2005-01-24 18:30:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+20,200,"2005-01-24 18:30:00.0","9999-12-01 23:59:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+40,-6851,"2002-11-29 00:00:00.0","2003-01-01 00:00:00.0","2002-11-30 00:30:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.NonAuditedBalance
+balanceId,quantity,interest,businessDateFrom,businessDateTo
+1,-6851,12,"2002-11-29 00:00:00.0","9999-12-01 23:59:00.0" // used for single segment tests
+// the following are for multi-segment tests
+10,100,13,"2005-01-14 18:30:00.0","2005-01-24 18:30:00.0"
+10,200,14,"2005-01-24 18:30:00.0","9999-12-01 23:59:00.0"
+20,50,15,"2005-01-10 18:30:00.0","2005-01-14 18:30:00.0"
+20,100,15,"2005-01-14 18:30:00.0","2005-01-24 18:30:00.0"
+20,200,15,"2005-01-24 18:30:00.0","9999-12-01 23:59:00.0"
+// already terminated:
+40,-6851,25,"2002-11-29 00:00:00.0","2003-01-01 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.AuditOnlyBalance
+balanceId,quantity,interest,processingDateFrom,processingDateTo
+1,-100,550,"2002-11-29 00:00:00.0","9999-12-01 23:59:00.0"
+2,-200,500,"2002-01-01 00:00:00.0","2003-01-01 00:00:00.0"
+2,-300,-1000,"2003-01-01 00:00:00.0","2004-01-01 00:00:00.0"
+2,-400,600,"2004-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.TimezoneTestWithSource
+timezoneTestId, insensitiveDate, databaseDate, utcDate
+1, "2005-10-01 10:12:30.150", "2005-10-01 10:12:30.150", "2005-10-01 10:12:30.150"
+
+class com.gs.fw.common.mithra.test.domain.TestPositionPrice
+accountId, productId, positionType, balanceType, currency, sourceId, priceType, marketValue, businessDateFrom, businessDateTo, processingDateFrom, processingDateTo
+"7600003701", 201, 1800, 901, "USD", 999, 6, 1.34, "2002-11-30 00:00:00.0", "9999-12-01 23:59:00.0", "2002-11-29 00:00:00.0", "9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.Division
+divisionId,divisionName,city,state
+100, "Division 100", "New York", "New York"
+101, "Division 101", "Jersey City", "New Jersey"
+
+class com.gs.fw.common.mithra.test.domain.Team
+teamId,divisionId,name
+999,100,"Para"
+998,100,"Reg"
+997,101,"Compliance"
+
+class com.gs.fw.common.mithra.test.domain.Player
+id,teamId,name,designation,email
+100,999,"John Doe", null, "john.doe@abc.com"
+101,999,"Robert Doe",null,"robert.doe@abc.com"
+102,998,"Joe Smith",null,"joe.smith@abc.com"
+103,997,"Ali G",null,"ali.g@abc.com"
+
+//This is the end of the file
+
+/*
+
+This is the actual EOF
+
+*/
+
+

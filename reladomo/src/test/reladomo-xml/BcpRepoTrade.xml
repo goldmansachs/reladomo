@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject
+        objectType="transactional"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../mithraobject.xsd">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain.bcp</PackageName>
+    <ClassName>BcpRepoTrade</ClassName>
+    <DefaultTable>BCP_REPO_TRADE</DefaultTable>
+
+    <AsOfAttribute name="businessDate" fromColumnName="from_z" toColumnName="thru_z" toIsInclusive="false"
+                   infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getFundingInfinity()]"
+                   defaultIfNotSpecified="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getFundingInfinity()]"/>
+    <AsOfAttribute name="processingDate" fromColumnName="in_z" toColumnName="out_z"
+                   infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getFundingInfinity()]"
+                   defaultIfNotSpecified="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getFundingInfinity()]"/>
+
+    <Attribute name="repoId"              columnName="repo_id"               javaType="String"    trim="true" primaryKey="true" maxLength="23"/>
+    <Attribute name="refDate"             columnName="ref_date"              javaType="int"       nullable="false"/>
+    <Attribute name="refSeqNum"           columnName="ref_seq_num"           javaType="int"       nullable="false"/>
+    <Attribute name="refPieceNum"         columnName="ref_piece_num"         javaType="int"       nullable="false"/>
+    <Attribute name="refGenNum"           columnName="ref_gen_num"           javaType="int"       nullable="false"/>
+    <Attribute name="accountId"           columnName="account_id"            javaType="int"/>
+    <Attribute name="tradingAcctCode"     columnName="trading_acct_code"     javaType="String"    trim="true" maxLength="3" nullable="false"/>
+    <Attribute name="companyId"           columnName="company_id"            javaType="int"       primaryKey="true" nullable="false"/>
+    <Attribute name="account2Id"          columnName="account2_id"           javaType="int"/>
+    <Attribute name="account2Num"         columnName="account2_num"          javaType="String"    trim="true" maxLength="10"/>
+    <Attribute name="customerAcctNum"     columnName="customer_acct_num"     javaType="String"    trim="true" maxLength="10"/>
+    <Attribute name="customerAcctName"    columnName="customer_acct_name"    javaType="String"    trim="true" maxLength="40"/>
+    <Attribute name="productId"           columnName="product_id"            javaType="int"       nullable="false"/>
+    <Attribute name="buySellInd"          columnName="buy_sell_ind"          javaType="String"    trim="true" maxLength="1"/>
+    <Attribute name="commitmentTypeCode"  columnName="commitment_type"       javaType="int"       nullable="false"/>
+    <Attribute name="startDate"           columnName="start_date"            javaType="Timestamp" nullable="false"/>
+    <Attribute name="tradeDate"           columnName="trade_date"            javaType="Timestamp" nullable="false"/>
+    <Attribute name="endDate"             columnName="end_date"              javaType="Timestamp" nullable="false"/>
+    <Attribute name="accrualStartDate"    columnName="accrual_start_date"    javaType="Timestamp"/>
+    <Attribute name="repoRate"            columnName="repo_rate"             javaType="double"    nullable="false"/>
+    <Attribute name="quantity"            columnName="quantity"              javaType="double"    nullable="false"/>
+    <Attribute name="amount"              columnName="amount"                javaType="double"    nullable="false"/>
+    <Attribute name="marketValue"         columnName="market_value"          javaType="double"/>
+    <Attribute name="tradeCurrencyCode"   columnName="trade_currency"        javaType="String"    trim="true" maxLength="3" nullable="false"/>   <!--**-->
+    <Attribute name="tradeCurrencyRate"   columnName="trade_currency_rate"   javaType="double"/>
+    <Attribute name="foreignAmt"          columnName="foreign_amt"           javaType="double"/>
+    <Attribute name="endAmount"           columnName="end_amount"            javaType="double"/>
+    <Attribute name="clearingAgent"       columnName="clearing_agent"        javaType="String"    trim="true" maxLength="3"/>
+    <Attribute name="transactionCodes"    columnName="transaction_codes"     javaType="String"    trim="true" maxLength="20"/>
+    <Attribute name="specialTradeType"    columnName="special_trade_type"    javaType="int"/>
+    <Attribute name="source"              columnName="source"                javaType="String"    trim="true" maxLength="1" nullable="false"/>
+    <Attribute name="couponPaymentMethod" columnName="coupon_payment_method" javaType="int"/>
+    <Attribute name="acctAggType"         columnName="acct_agg_type"         javaType="String"    trim="true" maxLength="10" nullable="false"/>
+    <Attribute name="recordType"          columnName="record_type"           javaType="int"       nullable="false"/>
+    <Attribute name="repoClass"           columnName="repo_class"            javaType="String"    trim="true" maxLength="2"/>
+    <Attribute name="isHic"               columnName="is_hic"                javaType="int"       nullable="false"/>
+    <Attribute name="hicAcctNum"          columnName="hic_acct_num"          javaType="String"    trim="true" maxLength="10"/>
+    <Attribute name="isPermanent"         columnName="is_permanent"          javaType="int"       nullable="false"/>
+    <Attribute name="isTriParty"          columnName="is_tri_party"          javaType="int"       nullable="false"/>
+    <Attribute name="isInternalTrade"     columnName="is_internal_trade"     javaType="int"       nullable="false"/>
+    <Attribute name="isMatchBook"         columnName="is_match_book"         javaType="int"       nullable="false"/>
+    <Attribute name="isInterestOnly"      columnName="is_interest_only"      javaType="int"       nullable="false"/>
+    <Attribute name="isGsccNetted"        columnName="is_gscc_netted"        javaType="int"/>
+    <Attribute name="hasCollateral"       columnName="has_collateral"        javaType="int"       nullable="false"/>
+    <Attribute name="exclusionTypeCode"   columnName="exclusion_type_code"   javaType="int"/>
+
+</MithraObject>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

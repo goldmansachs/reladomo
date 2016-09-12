@@ -1,0 +1,3747 @@
+<?xml version='1.0'?>
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<dbs:slides xmlns="http://docbook.org/ns/docbook"
+    xmlns:dbs="http://docbook.org/ns/docbook-slides">
+
+    <slidesinfo>
+        <title>Reladomo Kata</title>
+        <copyright>
+            <year>2016</year>
+            <holder>Goldman Sachs &amp; Co.</holder>
+        </copyright>
+    </slidesinfo>
+
+    <dbs:foilgroup>
+        <title>Intro
+        </title>
+        <dbs:foil>
+            <title>10 Second Intro</title>
+            <itemizedlist>
+                <listitem>
+                    <para>What is Reladomo?
+                        <para>
+                            <emphasis role="strong">
+                                <emphasis>A Java Object Relational Mapping Framework.</emphasis>
+                            </emphasis>
+                        </para>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>What is a Code Kata?
+                        <para>
+                            <emphasis role="strong">
+                                <emphasis>A programming exercise which helps hone your skills through practice.</emphasis>
+                            </emphasis>
+                        </para>
+                    </para>
+                </listitem>
+
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>What is Reladomo?</title>
+            <para>Reladomo, not your typical ORM:
+            </para>
+            <itemizedlist>
+                <listitem>
+                    <para>Chaining logic
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Object oriented, compiled, type-checked, query language
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Transparent multi-schema support
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Object oriented batch operations
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Unit testable code
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Flexible object relationship inflation
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+
+        <dbs:foil>
+            <title>What is a Code Kata?</title>
+            <itemizedlist>
+                <listitem>
+                    <para>A programming exercise which helps hone your skills through practice.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>This one is set up as a series of unit tests which fail.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Your task is to make them pass, using Reladomo –
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>
+                                <emphasis>I hear and I forget.</emphasis>
+                            </para>
+                            <para>
+                                <emphasis>I see and I remember.</emphasis>
+                            </para>
+                            <para>
+                                <emphasis>I do and I understand.</emphasis>
+                            </para>
+                            <para>- Confucius</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+                <listitem>
+                    <para>New concepts are introduced in the slides.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Coding exercises are at the end of each section.
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>Work in pairs.
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>Switch off who is in the driver's seat frequently.</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>A Simple Reladomo Example</title>
+        <dbs:foil>
+            <title>A first object: Person
+            </title>
+            <itemizedlist>
+                <listitem>
+                    <para>Consider a simple object representing a person:
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>First thing to do, is create the Reladomo XML that describes this object.
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <para>Diagram</para>
+            <imageobject>
+                <imagedata fileref="PersonUML.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+        </dbs:foil>
+
+        <dbs:foil>
+            <title>A first object: Person
+            </title>
+            <itemizedlist>
+                <listitem>
+                    <para>First thing to do, is create the Reladomo XML that describes this object.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>For the Kata, we have created this object for you.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>You can see this definition in the Person.xml file.</para>
+                </listitem>
+            </itemizedlist>
+            <para>Person.xml</para>
+            <imageobject>
+                <imagedata fileref="PersonXML.png" align="center" format="png" />
+            </imageobject>
+        </dbs:foil>
+        <dbs:foil>
+            <title>A first object: Person</title>
+
+            <itemizedlist>
+                <listitem>
+                    <para>Your IDE can help you determine what elements, attributes, and values
+                        the Reladomo XML can accept, for example, in IntelliJ:
+                    </para>
+                    <para>
+                        &lt;ctrl&gt;&lt;space&gt; will show you options
+                    </para>
+                    <para>
+                        &lt;ctrl&gt;Q will show you documentation
+                    </para>
+                </listitem>
+            </itemizedlist>
+
+            <para>Reladomo XML</para>
+            <imageobject>
+                <imagedata fileref="MithraXMLAutoComplete.png" align="center" format="png" />
+            </imageobject>
+            <para></para>
+            <imageobject>
+                <imagedata fileref="MithraXMLDocumentation.png" align="center" format="png" />
+            </imageobject>
+        </dbs:foil>
+
+        <dbs:foil>
+            <title>Reladomo Class List
+            </title>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo needs to know the list of objects you want to work with.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Use a Reladomo "class list" XML file to declare this
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>For the kata, it's defined in: MithraTestAppClassList.xml</para>
+                    <para>Example Reladomo "class list" XML</para>
+                    <programlisting language="xml"><![CDATA[<Mithra xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="mithraobject.xsd">
+        <MithraObjectResource name="Person" />
+</Mithra>]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+
+        <dbs:foil>
+            <title>Reladomo Generation</title>
+            <itemizedlist>
+                <listitem>
+                    <para>The next step is to convert these definitions into objects we can use
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>We call this step Reladomo Generation, and it results in Java source files</para>
+                </listitem>
+            </itemizedlist>
+            <para>Reladomo Generation Diagram</para>
+            <imageobject>
+                <imagedata fileref="MithraGenerationDiagram.png" align="center" format="png" />
+            </imageobject>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Reladomo Generation</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Items above the dashed line are always generated by Reladomo, and are never checked in to VCS (i.e. never committed to CVS or Subversion
+                        or
+                        Git)
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Items below the dashed line are generated
+                        <emphasis>only once</emphasis>
+                    </para>
+                    <para>You add your business specific code here, and check them in</para>
+                </listitem>
+            </itemizedlist>
+            <imageobject>
+                <imagedata fileref="MithraClassGeneration.png" align="center" format="png" />
+            </imageobject>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Reladomo Generation</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Ant: clean-compile-all
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Maven: clean compile</para>
+                </listitem>
+                <listitem>
+                    <para>Example Reladomo Generation Targets</para>
+                </listitem>
+            </itemizedlist>
+            <para>
+                <imageobject>
+                    <imagedata fileref="MithraBuildTargets.png" width="8in" depth="2.8in" align="center" format="png" />
+                </imageobject>
+            </para>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Reladomo Runtime Class List</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo needs to know the list of objects you want to use at runtime.</para>
+                </listitem>
+                <listitem>
+                    <para>Typically this is the same as those listed in the Reladomo "class list", however, they can be different, like a subset, for example.
+                    </para>
+                </listitem>
+                <itemizedlist>
+                    <listitem>
+                        <para>For the kata, it's defined in:
+                            <emphasis>TestMithraRuntimeConfig.xml</emphasis>
+                        </para>
+                        <para>Example Reladomo "class list" XML</para>
+                        <programlisting language="xml"><![CDATA[<MithraRuntime
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../mithra/mithraruntime.xsd">
+        <ConnectionManager
+            className="com.gs.fw.common.mithra.test.ConnectionManagerForTests">
+                <MithraObjectConfiguration
+                    cacheType="partial"
+                    className="kata.domain.Person"
+                />
+        </ConnectionManager>
+</MithraRuntime>]]></programlisting>
+                    </listitem>
+                </itemizedlist>
+            </itemizedlist>
+        </dbs:foil>
+
+        <dbs:foil>
+            <title>Other generated files</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo can also generate DDL for you</para>
+                </listitem>
+                <listitem>
+                    <para>Call the
+                        <emphasis>MithraDbDefinitionGenerator</emphasis>
+                        build task
+                    </para>
+                    <imageobject>
+                        <imagedata fileref="MithraDDLGeneration.png" width="8in" depth="2.8in" align="center" format="png" />
+                    </imageobject>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+
+    <dbs:foilgroup>
+        <title>Basic Finder Patterns</title>
+        <dbs:foil>
+            <title>Setting up test data</title>
+            <itemizedlist>
+                <listitem>
+                    <para>In the Reladomo Kata, we are using MithraTestResource to help us set up a test database to run our tests and examples against.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Test data is defined as a simple text file, with comma-delimited values which represent the DB data</para>
+                    <para>Example Test Data for the Person object</para>
+                    <programlisting language="php"><![CDATA[class kata.domain.Person
+personId, name           , country, age
+0       , "Hiro Tanaka"  , "JPN"  , 24
+1       , "John Smith"   , "USA"  , 36
+2       , "Yusuke Sato"  , "JPN"  , 11
+3       , "Yuki Suzuki"  , "JPN"  , 100
+4       , "Yuri Clark"   , "JPN"  , 37
+5       , "Clark Kent"   , "USA"  , 38
+6       , "Kent Beck"    , "USA"  , 52
+7       , "Bob Martin"   , "USA"  , 55
+8       , "Ada Lovelace" , "UK"   , 24]]>
+                    </programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Basic fetch all</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Let's fetch all the rows for Person from the DB, and get them as Person objects</para>
+                </listitem>
+                <listitem>
+                    <para>We use a List to hold many objects</para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo generates a typed-list for us, called
+                        <emphasis>PersonList</emphasis>
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>How do we tell Reladomo which rows to fetch?</para>
+                    <itemizedlist>
+                        <listitem>
+                            <programlisting language="java"><![CDATA[PersonList people = new PersonList( ??? );]]></programlisting>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Basic fetch all</title>
+            <itemizedlist>
+                <listitem>
+                    <para>"Finder" is your friend.</para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo generated a
+                        <emphasis>PersonFinder</emphasis>
+                        class for us.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>PersonFinder is how we describe the criteria of what we want.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>PersonFinder.all() is like a SQL SELECT with no WHERE clause</para>
+                    <itemizedlist>
+                        <listitem>
+                            <programlisting language="java"><![CDATA[PersonList people = new PersonList(PersonFinder.all());
+// Reladomo executes: SELECT * FROM Person
+Verify.assertSize(9, people);
+List<Person>jdkListInterface = people;]]></programlisting>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Basic fetch one</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Let's try to find a specific row, and fetch just that one row as an object.</para>
+                </listitem>
+                <listitem>
+                    <para>How can we specify we want the row with personId = 5 ?</para>
+                </listitem>
+                <listitem>
+                    <para>In SQL, this would be:</para>
+                    <programlisting language="sql"><![CDATA[SELECT * FROM PERSON WHERE PERSON_ID = 5]]></programlisting>
+
+                    <programlisting language="java"><![CDATA[Person person5 = ??? ;]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Basic fetch one</title>
+            <itemizedlist>
+                <listitem>
+                    <para>How can we specify we want the row with personId = 5 ?</para>
+                </listitem>
+                <listitem>
+                    <para>"Finder" is your friend.</para>
+                </listitem>
+                <listitem>
+                    <para>PersonFinder is how we describe the criteria of what we want.</para>
+                </listitem>
+                <listitem>
+                    <para>A finder has a method for every attribute on your object:</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>PersonFinder.personId()</para>
+                        </listitem>
+                        <listitem>
+                            <para>PersonFinder.name()</para>
+                        </listitem>
+                        <listitem>
+                            <para>etc.</para>
+                        </listitem>
+                    </itemizedlist>
+
+                    <programlisting language="java"><![CDATA[Person person5 = ??? ;
+PersonFinder.personId() ???;]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Basic fetch one</title>
+            <itemizedlist>
+                <listitem>
+                    <para>How can we specify we want the row with personId = 5 ?</para>
+                </listitem>
+                <listitem>
+                    <para>Every Reladomo attribute has methods on it to define common operations:</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>eq()</para>
+                        </listitem>
+                        <listitem>
+                            <para>greaterThan()</para>
+                        </listitem>
+                        <listitem>
+                            <para>etc.</para>
+                        </listitem>
+                    </itemizedlist>
+
+                    <programlisting language="java"><![CDATA[Person person5 = ??? ;
+PersonFinder.personId().eq(5);]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Basic fetch one</title>
+            <itemizedlist>
+                <listitem>
+                    <para>How can we specify we are expecting one object?</para>
+                </listitem>
+                <listitem>
+                    <para>Previously, we fetched a list.</para>
+                </listitem>
+                <listitem>
+                    <para>Finder is your friend.</para>
+                </listitem>
+                <listitem>
+                    <para>Finder defines the
+                        <emphasis>findOne()</emphasis>
+                        method.
+                    </para>
+
+                    <programlisting language="java"><![CDATA[Person person5 = PersonFinder.findOne(PersonFinder.personId().eq(5));
+Verify.assertNotNull(person5);
+Verify.assertEquals(5, person5.getPersonId());
+Verify.assertEquals("Clark Kent", person5.getName());
+System.out.println(person5);
+// Person:name=Clark Kent; country=USA; age=38]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Attributes, Operations, Lists</title>
+            <itemizedlist>
+                <listitem>
+                    <para>We can break down what we wrote into more component parts.</para>
+                </listitem>
+                <listitem>
+                    <para>Finders have Attributes representing columns in the DB</para>
+                </listitem>
+                <listitem>
+                    <para>If you call an operator method on the Attribute, you get an Operation back</para>
+                </listitem>
+                <listitem>
+                    <para>An Operation can be used with both new PersonList(operation) and PersonFinder.findOne(operation)</para>
+
+                    <programlisting language="java"><![CDATA[IntegerAttribute personIdAttribute = PersonFinder.personId();
+Operation operation = personIdAttribute.eq(5);
+Person person5 = PersonFinder.findOne(operation);
+PersonList people = new PersonList(operation);
+PersonList people = PersonFinder.findMany(operation); //synonym for above
+Verify.assertSize(1, people);]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Attribute features</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Different types of attributes have different features</para>
+                </listitem>
+                <listitem>
+                    <para>Numeric attributes have mathematical functions available</para>
+
+                    <programlisting language="java"><![CDATA[IntegerAttribute ageAttribute = PersonFinder.age();
+IntegerAttribute ageIn10Years = ageAttribute.plus(10);]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Attribute features</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Different types of attributes have different features</para>
+                </listitem>
+                <listitem>
+                    <para>Numeric attributes have mathematical functions available</para>
+                </listitem>
+                <listitem>
+                    <para>StringAttributes have String functions</para>
+
+                    <programlisting language="java"><![CDATA[Person clarkNormalNormal = PersonFinder.findOne(
+    PersonFinder.name().eq("Clark Kent"));
+Verify.assertEquals("Clark Kent", clarkNormalNormal.getName());
+
+Person clarkNormalLower = PersonFinder.findOne(
+    PersonFinder.name().eq("clark kent"));
+Verify.assertNull(clarkNormalLower);
+
+StringAttribute lowercaseName = PersonFinder.name().toLowerCase();
+Person clarkLowerLower = PersonFinder.findOne(
+    lowercaseName.eq("clark kent"));
+Verify.assertEquals("Clark Kent", clarkLowerLower);
+
+Person clarkLowerNormal = PersonFinder.findOne(
+    lowercaseName.eq("Clark Kent"));
+Verify.assertNull(clarkLowerNormal);]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Attribute features</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Different types of attributes have different features</para>
+                </listitem>
+                <listitem>
+                    <para>Numeric attributes have mathematical functions available</para>
+                </listitem>
+                <listitem>
+                    <para>StringAttributes have String functions</para>
+
+                    <programlisting language="java"><![CDATA[Person personContains = PersonFinder.findOne(
+    PersonFinder.name().contains("k Ken"));
+// SQL: WHERE name LIKE '%k Ken%'
+Verify.assertEquals("Clark Kent", personContains.getName());
+
+Person personWildcard = PersonFinder.findOne(
+    PersonFinder.name().wildcardEq("*l?r*ent"));
+// SQL: WHERE name LIKE '%l?r%ent'
+Verify.assertEquals("Clark Kent", personWildcard.getName());]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Attribute features</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Different types of attributes have different features</para>
+                </listitem>
+                <listitem>
+                    <para>Numeric attributes have mathematical functions available</para>
+                </listitem>
+                <listitem>
+                    <para>StringAttributes have String functions</para>
+                </listitem>
+                <listitem>
+                    <para>Operations can be combined</para>
+
+                    <programlisting language="java"><![CDATA[Operation thisOperation = PersonFinder.name().eq("Kent Beck");
+Operation thatOperation = PersonFinder.country().eq("USA");
+Operation thisOrThatOperation = thisOperation.or(thatOperation);
+Verify.assertSize(4, new PersonList(thisOrThatOperation));
+
+Operation thisAndThatOperation = thisOperation.and(thatOperation);
+Verify.assertSize(1, new PersonList(thisAndThatOperation));]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Attribute features</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Different types of attributes have different features</para>
+                </listitem>
+                <listitem>
+                    <para>Numeric attributes have mathematical functions available</para>
+                </listitem>
+                <listitem>
+                    <para>StringAttributes have String functions</para>
+                </listitem>
+                <listitem>
+                    <para>Operations can be combined</para>
+                </listitem>
+                <listitem>
+                    <para>Other operations:</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>filterEq() – two columns of an object are the same value</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+            <programlisting language="java"> <![CDATA[PersonList parentsSameAge = PersonFinder.findMany(
+    PersonFinder.mothersAge().filterEq(PersonFinder.fathersAge()));]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>IntSet</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo uses an efficient type of set to deal with primitives.</para>
+                    <para>GS Collections' Primitive Sets:</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>Integers: IntSet</para>
+                        </listitem>
+                        <listitem>
+                            <para>Double: DoubleSet</para>
+                        </listitem>
+                        <listitem>
+                            <para>Float: FloatSet</para>
+                        </listitem>
+                        <listitem>
+                            <para>Long: LongSet</para>
+                        </listitem>
+                        <listitem>
+                            <para>Short: ShortSet</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+                <listitem>
+                    <para>Use a regular Set for String, BigDecimal, Date, Timestamp.</para>
+                </listitem>
+            </itemizedlist>
+
+            <programlisting language="java"><![CDATA[IntSet intSet = IntSets.mutable.of(1, 2);
+
+DoubleSet doubleSet = DoubleSets.mutable.of(1.0, 2.0);
+
+FloatSet floatSet = FloatSets.mutable.of(1.0f, 2.0f);
+
+LongSet longSet = LongSets.mutable.of(1L, 2L);
+
+ShortSet shortSet = ShortSets.mutable.of((short)1, (short)2);
+
+Set<String>stringSet = Sets.mutable.of("1", "2");]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Basic Finder Patterns</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo uses an efficient type of set to deal with primitives.</para>
+                    <para>GS Collections' Primitive Sets:</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>Integers: IntSet</para>
+                        </listitem>
+                        <listitem>
+                            <para>Double: DoubleSet</para>
+                        </listitem>
+                        <listitem>
+                            <para>Float: FloatSet</para>
+                        </listitem>
+                        <listitem>
+                            <para>Long: LongSet</para>
+                        </listitem>
+                        <listitem>
+                            <para>Short: ShortSet</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+                <listitem>
+                    <para>Use a regular Set for String, BigDecimal, Date, Timestamp.</para>
+                </listitem>
+            </itemizedlist>
+
+            <programlisting language="java"><![CDATA[PersonList people = PersonFinder.findMany(
+    PersonFinder.personId().in(IntHashSet.newSetWith(1, 2, 3)));
+
+PersonList people = PersonFinder.findMany(
+    PersonFinder.name().in(Sets.mutable.with("John Doe", "Jane Doe")));]]></programlisting>
+        </dbs:foil>
+    </dbs:foilgroup>
+
+    <dbs:foilgroup>
+        <title>Kata Exercise 1</title>
+        <dbs:foil>
+            <title>Kata Exercise 1</title>
+            <para>Basic Finder Patterns</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Find ExercisesBasicFinder.java; it has assertion failures if you run it as a test.</para>
+                </listitem>
+                <listitem>
+                    <para>Figure out how to get the tests to pass using what you have seen so far.</para>
+                </listitem>
+                <listitem>
+                    <para>Should take about 15 minutes.</para>
+                </listitem>
+            </itemizedlist>
+            <para>Example:</para>
+            <programlisting language="java"><![CDATA[// Question 1
+// Get all people.
+public PersonList getAllPeople()
+{
+    Verify.fail("Implement this functionality to make the test pass");
+    return null;
+}
+
+public void testQ1()
+{
+    Verify.assertSize(16, this.getAllPeople());
+}]]></programlisting>
+        </dbs:foil>
+    </dbs:foilgroup>
+
+    <dbs:foilgroup>
+        <title>CREATE, UPDATE, DELETE Patterns</title>
+        <dbs:foil>
+            <title>Creating an object</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use the Java keyword
+                        <emphasis>new</emphasis>
+                    </para>
+
+                    <programlisting language="java"><![CDATA[Person snoopy = new Person();]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Creating an object</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use the Java keyword new</para>
+                </listitem>
+                <listitem>
+                    <para>Call setters to assign values to the object attributes</para>
+
+                    <programlisting language="java"><![CDATA[Person snoopy = new Person();
+snoopy.setName("Snoopy");
+snoopy.setCountry("USA");
+snoopy.setAge(12);
+Verify.assertEquals("Snoopy", snoopy.getName());
+Verify.assertEquals(12, snoopy.getAge());]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Creating an object</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use the Java keyword new</para>
+                </listitem>
+                <listitem>
+                    <para>Call setters to assign values to the object attributes</para>
+                </listitem>
+                <listitem>
+                    <para>Creating a custom constructor may help correctness, and aid refactoring
+                    </para>
+
+                    <programlisting language="java"><![CDATA[Person snoopy = new Person("Snoopy", "USA", 12);
+Verify.assertEquals("Snoopy", snoopy.getName());
+Verify.assertEquals(12, snoopy.getAge());]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Creating an object</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use the Java keyword new
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Call setters to assign values to the object attributes
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Creating a custom constructor may help correctness, and aid refactoring
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <emphasis>Never change the no-arg constructor – Reladomo needs that!</emphasis>
+                    </para>
+
+                    <programlisting language="java"><![CDATA[public class Person extends PersonAbstract
+{
+    public Person()
+    {
+        super();
+        // You must not modify this constructor.
+        // Reladomo calls this internally.
+        // You can call this constructor.
+        // You can also add new constructors.
+    }
+}]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Creating an object</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use the Java keyword new
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Call setters to assign values to the object attributes
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Creating a custom constructor may help correctness, and aid refactoring
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        <emphasis>Never change the no-arg constructor – Reladomo needs that!</emphasis>
+                    </para>
+
+                    <programlisting language="java"><![CDATA[public class Person extends PersonAbstract
+{
+    public Person()
+    {
+        super();
+        // You must not modify this constructor.
+        // Reladomo calls this internally.
+        // You can call this constructor.
+        // You can also add new constructors.
+    }
+
+    public Person(String name, String country, int age)
+    {
+        super();
+        this.setName(name);
+        this.setCountry(country);
+        this.setAge(age);
+    }
+}]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Inserting an object</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use the Reladomo provided method insert()</para>
+
+                    <programlisting language="java"><![CDATA[Person snoopy = new Person("Snoopy", "USA", 12);
+snoopy.insert();]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Inserting an object</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use the Reladomo provided method insert()</para>
+
+                    <programlisting language="java"><![CDATA[int peopleBeforeInsert = new PersonList(PersonFinder.all()).count();
+Person snoopy = new Person("Snoopy", "USA", 12);
+snoopy.insert();
+
+int peopleAfterInsert = new PersonList(PersonFinder.all()).count();
+Verify.assertEquals(peopleAfterInsert, peopleBeforeInsert + 1);]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Inserting an object</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use the Reladomo provided method insert()</para>
+                    <programlisting language="java"><![CDATA[// Verify he's not there to start with:
+Verify.assertNull(PersonFinder.findOne(PersonFinder.name().eq("Snoopy")));
+new Person("Snoopy", "USA", 12).insert();
+
+// Now see if he's in the DB:
+Person snoopy = PersonFinder.findOne(PersonFinder.name().eq("Snoopy"));
+Verify.assertEquals("Snoopy", snoopy.getName());
+Verify.assertEquals(12, snoopy.getAge());]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Inserting an object</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use the Reladomo provided method insert()
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Did Reladomo inflate a new copy of Snoopy from the DB?
+                    </para>
+
+                    <programlisting language="java"><![CDATA[Person originalSnoopy = new Person("Snoopy", "USA", 12);
+originalSnoopy.insert();
+Person snoopyFromDb = PersonFinder.findOne(
+    PersonFinder.name().eq("Snoopy"));
+Assert.assertTrue(originalSnoopy.equals(snoopyFromDb)); // ???
+Assert.assertTrue(originalSnoopy == snoopyFromDb); // ???]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Inserting an object</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use the Reladomo provided method insert()
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo guarantees there is only one copy of a given object in memory a any one given time</para>
+
+                    <programlisting language="java"><![CDATA[Person originalSnoopy = new Person("Snoopy", "USA", 12);
+originalSnoopy.insert();
+Person snoopyFromDb = PersonFinder.findOne(
+    PersonFinder.name().eq("Snoopy"));
+Assert.assertTrue(originalSnoopy.equals(snoopyFromDb)); // true
+Assert.assertTrue(originalSnoopy == snoopyFromDb); // true]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Inserting an object</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use the Reladomo provided method insert()
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo guarantees there is only one copy of a given object in memory a any one given time</para>
+
+                    <programlisting language="java"><![CDATA[Person snoopy = new Person("Snoopy", "USA", 12);
+snoopy.insert();
+/*
+* Generated SQL:
+* insert into PERSON(PERSON_ID,NAME,COUNTRY,AGE)
+* values (9,'Snoopy','USA',12)
+**/]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Inserting an object</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use the Reladomo provided method insert()
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo guarantees there is only one copy of a given object in memory a
+                        any one given time
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo sets the sequence ID for the new Person we created</para>
+
+                    <programlisting language="java"><![CDATA[Person snoopy = new Person("Snoopy", "USA", 12);
+snoopy.insert();
+/*
+* Generated SQL:
+* insert into PERSON(PERSON_ID,NAME,COUNTRY,AGE)
+* values (9,'Snoopy','USA',12)
+**/
+System.out.println(snoopy.getPersonId());
+// Prints 9]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Inserting an object</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use the Reladomo provided method insert()
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo guarantees there is only one copy of a given object in memory a
+                        any one given time
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo sets the sequence ID for the new Person we created
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Sequence IDs are declared in the Reladomo XML Object definition
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>In this case, it's in the Person.xml file</para>
+                    <para>Reladomo Object XML</para>
+                    <programlisting language="xml"><![CDATA[<MithraObject objectType="transactional"
+    ...
+    <Attribute name="personId" javaType="int"
+        columnName="PERSON_ID" primaryKey="true"
+    primaryKeyGeneratorStrategy="SimulatedSequence">
+        <SimulatedSequence sequenceName="Person"
+            sequenceObjectFactoryName=
+                "kata.util.ObjectSequenceObjectFactory"
+            hasSourceAttribute="false"
+            batchSize="1"
+            initialValue="1"
+            incrementSize="1" />
+    </Attribute>]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Inserting lots of objects</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use the MithraList provided method insertAll()</para>
+
+                    <programlisting language="java"><![CDATA[PersonList spiceGirls = new PersonList();
+spiceGirls.add(new Person("Emma Bunton", "UK", 20));
+spiceGirls.add(new Person("Geri Halliwell", "UK", 21));
+spiceGirls.add(new Person("Melanie Brown", "UK", 22));
+spiceGirls.add(new Person("Melanie Crisholm", "UK", 21));
+spiceGirls.add(new Person("Victoria Beckham", "UK", 20));
+spiceGirls.insertAll();]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Updating an object</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Just make the change!</para>
+
+                    <programlisting language="java"><![CDATA[Person superman = PersonFinder.findOne(
+    PersonFinder.name().eq("Clark Kent"));
+Verify.assertEquals("Clark Kent", superman.getName());
+superman.setName("Christopher Reeve");
+superman.setAge(49);]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Updating an object</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Just make the change!
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo identifies the correct row to change in the DB via the primary key
+                        you declared in the Reladomo Object XML
+                    </para>
+
+                    <programlisting language="java"><![CDATA[Person superman = PersonFinder.findOne(
+    PersonFinder.name().eq("Clark Kent"));
+Verify.assertEquals("Clark Kent", superman.getName());
+superman.setName("Christopher Reeve");
+// SQL:update PERSON set NAME = 'Christopher Reeve' where PERSON_ID=5
+superman.setAge(49);
+// SQL: update PERSON set AGE = 49 where PERSON_ID = 5]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Updating lots of objects</title>
+            <itemizedlist>
+                <listitem>
+                    <para>What if we want to update a whole bunch of objects, setting the same
+                        attribute value to all of them?
+                    </para>
+
+                    <programlisting language="java"><![CDATA[PersonList people = new PersonList(PersonFinder.all());
+for (Person person : people)
+{
+    person.setCountry("USA");
+}]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Updating lots of objects</title>
+            <itemizedlist>
+                <listitem>
+                    <para>What if we want to update a whole bunch of objects, setting the same
+                        attribute value to all of them?
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo provides set___() methods on the generated list implementations</para>
+
+                    <programlisting language="java"><![CDATA[PersonList people = new PersonList(PersonFinder.all());
+people.setCountry("USA");]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Updating lots of objects</title>
+            <itemizedlist>
+                <listitem>
+                    <para>What if we want to update a whole bunch of objects, setting the same
+                        attribute value to all of them?
+                    </para>
+                    <para>Reladomo provides set___() methods on the generated list implementations</para>
+
+                    <programlisting language="java"><![CDATA[PersonList people = new PersonList(PersonFinder.all());
+people.setCountry("USA");
+// SQL:
+// update with: update PERSON set COUNTRY = 'USA' where PERSON_ID = 0
+// update with: update PERSON set COUNTRY = 'USA' where PERSON_ID = 2
+// update with: update PERSON set COUNTRY = 'USA' where PERSON_ID = 3
+// update with: update PERSON set COUNTRY = 'USA' where PERSON_ID = 4
+// update with: update PERSON set COUNTRY = 'USA' where PERSON_ID = 8]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Deleting an object</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use the Reladomo method delete()</para>
+
+                    <programlisting language="java"><![CDATA[Person superman = PersonFinder.findOne(
+    PersonFinder.name().eq("Clark Kent"));
+superman.delete();]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Deleting lots of objects</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use the MithraList method deleteAll()</para>
+
+                    <programlisting language="java"><![CDATA[new PersonList(PersonFinder.country().eq("UK")).deleteAll();]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Adding indexes Reladomo knows about</title>
+            <itemizedlist>
+                <listitem>
+                    <para>The end of a Reladomo Object XML description can include indexes
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Can be unique, or not; Can be single column, or many columns
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Will add a convenience method to the Finder for you
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Warning: You still need to remember to add the index to your DB table to get the performance benefit
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo will generate the template DDL for the index
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>And correctness, if it is a "unique" constrain
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>XML and Java</para>
+                    <programlisting language="xml"><![CDATA[<Index name="socSecNumIndex" unique="true">ssn</Index>
+<Index name="productIndex" unique="false">productGroup, productName
+</Index>]]></programlisting>
+                    <programlisting language="java"><![CDATA[Person fred = PersonFinder.getBySocSecNumIndex("123-45-6789");
+ProductList products = PersonFinder.getByProductIndex(
+    "Ford", "Edsel");]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>Transactions</title>
+        <dbs:foil>
+            <title>Introduction to Transactions</title>
+            <itemizedlist>
+                <listitem>
+                    <para>A "transaction" is used to cause a set of operations to happen together – they either all happen, or none of them happen.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>In SQL terms:
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>You would BEGIN TRANSACTION, and then perform queries and updates as necessary
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>If all your changes were successful you can COMMIT TRANSACTION, which makes your changes in the DB
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>If something went wrong, you could ROLLBACK TRANSACTION</para>
+                    <para>SQL</para>
+                    <programlisting language="sql"><![CDATA[BEGIN TRANSACTION
+-- Do some stuff
+-- If successful
+COMMIT TRANSACTION
+-- Else, don't change anything
+ROLLBACK TRANSACTION]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Introduction to Transactions</title>
+            <itemizedlist>
+                <listitem>
+                    <para>A Reladomo transaction is defined by an implementation of the TransactionalCommand interface</para>
+
+                    <programlisting language="java"><![CDATA[new TransactionalCommand()
+{
+    public Object executeTransaction(MithraTransaction tx)
+    throws Throwable
+    {
+        new Person("Tweedle Dee", "UK", 10).insert();
+        new Person("Tweedle Dum", "UK", 10).insert();
+        return null;
+    }
+}]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Introduction to Transactions</title>
+            <itemizedlist>
+                <listitem>
+                    <para>A Reladomo transaction is defined by an implementation of the TransactionalCommand interface
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>A TransactionalCommand is executed using the MithraManager</para>
+
+                    <programlisting language="java"><![CDATA[MithraManagerProvider.getMithraManager().executeTransactionalCommand(
+new TransactionalCommand()
+{
+    public Object executeTransaction(MithraTransaction tx)
+    throws Throwable
+    {
+        new Person("Tweedle Dee", "UK", 10).insert();
+        new Person("Tweedle Dum", "UK", 10).insert();
+        return null;
+    }
+});]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+
+        <dbs:foil>
+            <title>Transactions and Updates</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo will batch up changes where possible within transactions to make updates more efficient</para>
+                    <programlisting language="java"><![CDATA[Person superman = PersonFinder.findOne(
+    PersonFinder.name().eq("Clark Kent"));
+Verify.assertEquals("Clark Kent", superman.getName());
+superman.setName("Christopher Reeve");
+// SQL:update PERSON set NAME = 'Christopher Reeve' where PERSON_ID=5
+superman.setAge(49);
+// SQL: update PERSON set AGE = 49 where PERSON_ID = 5]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Transactions and Updates</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo will batch up changes where possible within transactions to make updates more efficient</para>
+
+                    <programlisting language="java"><![CDATA[MithraManagerProvider.getMithraManager().executeTransactionalCommand(
+new TransactionalCommand()
+{
+    public Object executeTransaction(MithraTransaction tx)
+    throws Throwable
+    {
+        Person superman = PersonFinder.findOne(
+            PersonFinder.name().eq("Clark Kent"));
+        superman.setName("Christopher Reeve");
+        superman.setAge(49);
+        return null;
+    }
+});]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Transactions Example</title>
+            <programlisting language="java"><![CDATA[/*
+* DEBUG com.gs.fw.common.mithra.transaction.MithraRootTransaction –
+* Starting transaction
+* select t0.PERSON_ID,t0.NAME,t0.COUNTRY,t0.AGE from PERSON t0
+* where t0.NAME = 'Clark Kent'
+* update PERSON set NAME = 'Christopher Reeve' , AGE = 49
+* where PERSON_ID = 5
+* DEBUG com.gs.fw.common.mithra.transaction.MithraRootTransaction -
+* Committing transaction
+**/
+
+MithraManagerProvider.getMithraManager().executeTransactionalCommand(
+new TransactionalCommand()
+{
+    public Object executeTransaction(MithraTransaction tx)
+    throws Throwable
+    {
+        Person superman = PersonFinder.findOne(
+            PersonFinder.name().eq("Clark Kent"));
+        superman.setName("Christopher Reeve");
+        superman.setAge(49);
+        return null;
+    }
+});]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Transactions and Updates</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo will batch up changes where possible within transactions to make updates more efficient</para>
+                    <programlisting language="java"><![CDATA[PersonList people = new PersonList(PersonFinder.all());
+people.setCountry("USA");
+// SQL:
+// update with: update PERSON set COUNTRY = 'USA' where PERSON_ID = 0
+// update with: update PERSON set COUNTRY = 'USA' where PERSON_ID = 2
+// update with: update PERSON set COUNTRY = 'USA' where PERSON_ID = 3
+// update with: update PERSON set COUNTRY = 'USA' where PERSON_ID = 4
+// update with: update PERSON set COUNTRY = 'USA' where PERSON_ID = 8]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Transactions and Updates</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo will batch up changes where possible within transactions to make updates more efficient
+                    </para>
+                    <programlisting language="java"><![CDATA[MithraManagerProvider.getMithraManager().executeTransactionalCommand(
+new TransactionalCommand()
+{
+    public Object executeTransaction(MithraTransaction tx)
+    throws Throwable
+    {
+        new PersonList(PersonFinder.all()).setCountry("USA"));
+        return null;
+    }
+});]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Transactions Example</title>
+            <programlisting language="java"><![CDATA[/*
+*DEBUG com.gs.fw.common.mithra.transaction.MithraRootTransaction -
+*Starting transaction
+*find with:
+*select PERSON_ID,NAME,COUNTRY,AGE from PERSON retrieved 9 objects
+*multi updating with:
+*update PERSON set COUNTRY = 'USA' where PERSON_ID in (0,2,3,4,8)
+*DEBUG com.gs.fw.common.mithra.transaction.MithraRootTransaction -
+*Committing transaction
+**/
+
+MithraManagerProvider.getMithraManager().executeTransactionalCommand(
+new TransactionalCommand()
+{
+    public Object executeTransaction(MithraTransaction tx)
+    throws Throwable
+    {
+        new PersonList(PersonFinder.all()).setCountry("USA"));
+        return null;
+    }
+});]]></programlisting>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>Kata Exercise 2</title>
+        <dbs:foil>
+            <title>Kata Exercise 2</title>
+            <para>Create, Update, Delete, Transactions</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Find ExercisesCrud.java; it has assertion failures if you run it as a test.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Figure out how to get the tests to pass using what you have seen so far.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Should take about 25 minutes.</para>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+
+    <dbs:foilgroup>
+        <title>Relationships</title>
+        <dbs:foil>
+            <title>Introduction to Relationships</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Consider two objects</para>
+                    <imageobject>
+                        <imagedata fileref="Relationships1.png" align="center" format="png" />
+                    </imageobject>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Introduction to Relationships</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Consider two objects</para>
+                    <imageobject>
+                        <imagedata fileref="Relationships2.png" align="center" format="png" />
+                    </imageobject>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Introduction to Relationships</title>
+            <itemizedlist>
+                <listitem>
+                    <para>For a given Customer, we could write the query explicitly ourselves
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Not very manageable</para>
+                    <programlisting language="java"><![CDATA[Customer smith = ...;
+CustomerAccountList smithAccounts = new CustomerAccountList(
+    CustomerAccountFinder.customerId().eq(smith.getCustomerId()));]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Introduction to Relationships</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Relationships can be expressed in Reladomo's object XML</para>
+                    <programlisting language="xml"><![CDATA[<MithraObject objectType="transactional">
+    <ClassName>Customer</ClassName>
+        ...
+    <Relationship name="accounts"
+        relatedObject="CustomerAccount"
+        cardinality="one-to-many">
+            this.customerId = CustomerAccount.customerId
+    </Relationship>]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Introduction to Relationships</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo generates your relationship description into methods on the business objects</para>
+                    <programlisting language="java"><![CDATA[Customer smith = ...;
+// Before
+CustomerAccountList smithAccounts = new CustomerAccountList(
+    CustomerAccountFinder.customerId().eq(smith.getCustomerId()));
+// After
+CustomerAccountList smithAccounts = smith.getAccounts();]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Introduction to Relationships</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo generates your relationship description into methods on the business objects
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>How can we find Customers based on some related object?</para>
+                    <programlisting language="java"><![CDATA[CustomerList customers = ???
+// fetch customers with accounts called "My Account"]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Introduction to Relationships</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo generates your relationship description into methods on the business objects
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>How can we find Customers based on some related object?
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Finder is your friend!
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Relationships are navigable via the Finder</para>
+                    <programlisting language="java"><![CDATA[CustomerList customers = new CustomerList(
+    CustomerFinder.accounts().accountName().eq("My Account"));]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Introduction to Relationships</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo generates your relationship description into methods on the business objects
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>How can we find Customers based on some related object?
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Finder is your friend!
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Relationships are navigable via the Finder</para>
+                    <programlisting language="java"><![CDATA[CustomerList customers = new CustomerList(
+    CustomerFinder.accounts().accountName().eq("My Account"));
+/* SQL:
+* select t0.CUSTOMER_I,t0.NAME_C,t0.COUNTRY_I
+* from CUSTOMER t0 inner join
+* (select t1.CUSTOMER_I c0 from CUSTOMER_ACCOUNT t1
+* where t1.ACCOUNT_NAME_C = 'My Account'
+* group by t1.CUSTOMER_I)
+* as d1 on t0.CUSTOMER_I = d1.c0
+**/]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Introduction to Relationships</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Relationships can be expressed in Reladomo's object XML
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Dependent relationships can be marked as such
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Dependent objects can only exist while the parent exists
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>If a parent is inserted, so are all it's children
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>If the parent is removed, then the dependent objects are also removed</para>
+                    <programlisting language="xml"><![CDATA[<MithraObject objectType="transactional">
+    <ClassName>Customer</ClassName>
+        ...
+    <Relationship name="accounts"
+        relatedObject="CustomerAccount"
+        relatedIsDependent="true"
+        cardinality="one-to-many">
+            this.customerId = CustomerAccount.customerId
+    </Relationship>]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Introduction to Relationships</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Relationships can be expressed in Reladomo's object XML
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Dependent relationships can be marked as such
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Dependent objects can only exist while the parent exists
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>If the parent is removed, then the dependent objects are also removed
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>You can also specify a reverse relationship name, if appropriate
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo can figure out the reverse join for itself</para>
+                    <programlisting language="xml"><![CDATA[<MithraObject objectType="transactional">
+    <ClassName>Customer</ClassName>...
+    <Relationship name="accounts"
+        relatedObject="CustomerAccount"
+        relatedIsDependent="true"
+        cardinality="one-to-many"
+        reverseRelationshipName="customer">
+            this.customerId = CustomerAccount.customerId
+    </Relationship>]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Introduction to Relationships</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Relationships can be expressed in Reladomo's object XML
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Dependent relationships can be marked as such
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Dependent objects can only exist while the parent exists
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>If the parent is removed, then the dependent objects are also removed
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>You can also specify a reverse relationship name, if appropriate
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo can figure out the reverse join for itself</para>
+                    <programlisting language="java"><![CDATA[Customer customer = new Customer(...);
+CustomerAccount account = new CustomerAccount();
+account.setAccountName("Vacation Account");
+account.setAccountType("Savings Account");
+account.setCustomer(customer);
+customer.cascadeInsert();]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Introduction to Relationships</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Relationships can be expressed in Reladomo's object XML
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Dependent relationships can be marked as such
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Dependent objects can only exist while the parent exists
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>If the parent is removed, then the dependent objects are also removed
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>You can also specify a reverse relationship name, if appropriate
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo can figure out the reverse join for itself</para>
+                    <programlisting language="java"><![CDATA[CustomerAccount account = ...
+Customer customer = account.getCustomer();]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Introduction to Relationships</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Relationships can be expressed in Reladomo's object XML
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Dependent relationships can be marked as such
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>You can also specify a reverse relationship name, if appropriate
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Relationships can be parameterized
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>A parameterized relationship has one or more "constraints"</para>
+                    <programlisting language="xml"><![CDATA[<MithraObject objectType="transactional">
+    <ClassName>Customer</ClassName>...
+    <Relationship name="accountsOfType"
+        relatedObject="CustomerAccount"
+        cardinality="one-to-many"
+        parameters="String accountType">
+            this.customerId = CustomerAccount.customerId and
+            CustomerAccount.accountType = { accountType }
+    </Relationship>]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Introduction to Relationships</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Relationship existence:
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>You are interested in whether a relationship exists, but you are not interested in any part of the related object
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Finder is your friend:
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>exists()
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>notExists()</para>
+                    <programlisting language="java"><![CDATA[CustomerList customersWithAtLeastOneAccount =
+    new CustomerList(CustomerFinder.accounts().exists());
+CustomerList customersWithNoAccounts =
+    new CustomerList(CustomerFinder.accounts().notExists());
+/*
+* select t0.CUSTOMER_I,t0.NAME_C,t0.COUNTRY_I from CUSTOMER t0
+* left join (select t1.CUSTOMER_I c0 from CUSTOMER_ACCOUNT t1) as d1
+* on t0.CUSTOMER_I = d1.c0 where d1.c0 is null
+**/
+CustomerList customersWithNoSavingAccounts = new CustomerList(
+    CustomerFinder.accountsOfType("Saving").notExists());]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Introduction to Relationships</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo can also generate DDL for you
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Call the MithraDbDefinitionGenerator build task</para>
+                </listitem>
+                <listitem>
+                    <para>Note: Reladomo generated the foreign-key relationship for you
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Because of the relationship from Customer to CustomerAccount which is parameterized by accountType, Reladomo can infer that you need an
+                        index to make the query efficient
+                    </para>
+                    <imageobject>
+                        <imagedata fileref="RelationshipsDDLs.png" align="center" format="png" />
+                    </imageobject>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>Sorting</title>
+        <dbs:foil>
+            <title>Sorting</title>
+            <itemizedlist>
+                <listitem>
+                    <para>How can we get objects in a certain order?</para>
+                    <programlisting language="java"><![CDATA[PersonList peopleByName = ??? ;
+PersonList peopleByAge = ??? ;]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Sorting</title>
+            <itemizedlist>
+                <listitem>
+                    <para>How can we get objects in a certain order?
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Use MithraList's addOrderBy() method
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Finder is your friend</para>
+                    <programlisting language="java"><![CDATA[PersonList peopleByName = new PersonList(PersonFinder.all());
+peopleByName.addOrderBy(PersonFinder.name().ascendingOrderBy());
+PersonList peopleByAgeDescending = new PersonList(PersonFinder.all());
+peopleByAgeDescending.addOrderBy(
+    PersonFinder.age().descendingOrderBy());]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Sorting</title>
+            <itemizedlist>
+                <listitem>
+                    <para>How can we get objects in a certain order?
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Use MithraList's addOrderBy() method
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Finder is your friend
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>You can order by many different levels
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Call addOrderBy() many times
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Or: call setOrderBy() with a complex specification</para>
+                    <programlisting language="java"><![CDATA[PersonList peopleByAgeThenName = new PersonList(PersonFinder.all());
+peopleByName.addOrderBy(PersonFinder.age().descendingOrderBy());
+peopleByName.addOrderBy(PersonFinder.name().ascendingOrderBy());
+// _or_
+peopleByAgeThenName.setOrderBy(
+    PersonFinder.age().descendingOrderBy()
+        .and(PersonFinder.name().ascendingOrderBy()));]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>Deep Fetching</title>
+        <dbs:foil>
+            <title>Deep Fetching</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Deep fetching means retrieving not just immediate target objects, but also some or all of their related objects</para>
+                    <programlisting language="java"><![CDATA[PersonList people= new PersonList(PersonFinder.age().greaterThan(18));
+// One hit to DB
+for (Person person : people)
+{
+    AddressList addresses= person.getAddresses();
+    // Another hit to the DB for each person's set of addresses
+    System.out.println(person.getName() + " :: " + addresses.size())
+}]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Deep Fetching</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Deep fetching means retrieving not just immediate target objects, bu
+                        also some or all of their related objects
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo supports deep fetching via MithraList.deepFetch()
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Easier than writing code to fetch each set of objects yourself
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Allows Reladomo to perform optimizations to keep the query efficient</para>
+                    <programlisting language="java"><![CDATA[PersonList people= new PersonList(PersonFinder.age().greaterThan(18));
+people.deepFetch(PersonFinder.addresses());
+// Two hits to the DB, one for People, one for the related Addresses
+for (Person person : people)
+{
+    AddressList addresses= person.getAddresses();
+    // No DB hit here, the accounts are all in cache already
+    System.out.println(person.getName() + " :: " + addresses.size())
+}]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>Kata Exercise 3</title>
+        <dbs:foil>
+            <title>Kata Exercise 3</title>
+            <para>Relationships</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Find ExercisesRelationships.java; it has assertion failures if you run it as a test.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Don't forget that in questions 3 and 4, you will be changing XML, so you will have to generate the Reladomo objects again (ant:
+                        clean-compile-all).
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Figure out how to get the tests to pass using what you have seen so far.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Should take about 20 minutes.</para>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+
+    <dbs:foilgroup>
+        <title>Advanced Finder</title>
+        <dbs:foil>
+            <title>Using objects as matching criteria</title>
+            <itemizedlist>
+                <listitem>
+                    <para>So far we have specified attributes to match and uniquely identify a given object
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Let's pretend a RegistrationRenewal has a relationship back to a VehicleRegistration</para>
+                    <programlisting language="java"><![CDATA[Customer customer = ...;
+CustomerAccountList accounts = new CustomerAccountList(
+CustomerAccountFinder.customerId().eq(customer.getCustomerId());
+VehicleRegistration registration = ...;
+// PK is on licencePlate *and* stateOfIssue
+RegistrationRenewalList records = new RegistrationRenewalList(
+    RegistrationRenewalFinder.licencePlate().eq(
+        registration.getLicencePlate()
+            .and(RegistrationRenewalFinder.stateOfIssue()
+                .eq(registration.getStateOfIssue()));]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Using objects as matching criteria</title>
+            <itemizedlist>
+                <listitem>
+                    <para>So far we have specified attributes to match and uniquely identify a given object
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo can infer the equality attributes of an objects primary key for us</para>
+                    <programlisting language="java"><![CDATA[Customer customer = ...;
+CustomerAccountList accounts = new CustomerAccountList(
+CustomerAccountFinder.customer().eq(customer);
+VehicleRegistration registration = ...;
+// PK is on licencePlate *and* stateOfIssue
+RegistrationRenewalList records = new RegistrationRenewalList(
+    RegistrationRenewalFinder.registration().eq(registration));]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Tuples</title>
+            <itemizedlist>
+                <listitem>
+                    <para>A Tuple is an ordered list of elements</para>
+                    <programlisting language="java"><![CDATA[// tupleType { month, year }
+// tupleData {"May", 2009 }
+// tupleData {"August", 2011 }]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Tuples</title>
+            <itemizedlist>
+                <listitem>
+                    <para>A Tuple is an ordered list of elements
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>A Tuple's type (TupleAttribute) can be specified using Reladomo
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>The Finder is your friend</para>
+                    <programlisting language="java"><![CDATA[// tupleType { month, year }
+TupleAttribute calendarMonthYear =
+    CalendarEventFinder.month().tupleWith(CalendarEventFinder.year());
+// tupleData {"May", 2009 }
+// tupleData {"August", 2011 }]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Tuples</title>
+            <itemizedlist>
+                <listitem>
+                    <para>A Tuple is an ordered list of elements
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>A Tuple's type (TupleAttribute) can be specified using Reladomo
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>The Finder is your friend
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>You create tuple data set by adding elements to a MithraArrayTupleTupleSet</para>
+                    <programlisting language="java"><![CDATA[// tupleType { month, year }
+TupleAttribute calendarMonthYear =
+    CalendarEventFinder.month().tupleWith(CalendarEventFinder.year());
+MithraArrayTupleTupleSet requestedMonthYears =
+    new MithraArrayTupleTupleSet();
+// tupleData {"May", 2009 }
+requestedMonthYears.add("May", 2009);
+// tupleData {"August", 2011 }
+requestedMonthYears.add("August", 2011);]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Tuples</title>
+            <itemizedlist>
+                <listitem>
+                    <para>A Tuple is an ordered list of elements
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>A Tuple's type (TupleAttribute) can be specified using Reladomo
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>The Finder is your friend
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>You create tuple data set by adding elements to a MithraArrayTupleTupleSet
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>You can combine the tuple type with the tuple data set using an in() query</para>
+                    <programlisting language="java"><![CDATA[// tupleType { month, year }
+TupleAttribute calendarMonthYear =
+    CalendarEventFinder.month().tupleWith(CalendarEventFinder.year());
+MithraArrayTupleTupleSet requestedMonthYears =
+    new MithraArrayTupleTupleSet();
+// tupleData {"May", 2009 }
+requestedMonthYears.add("May", 2009);
+// tupleData {"August", 2011 }
+requestedMonthYears.add("August", 2011);
+CalendarEventList events =
+    new CalendarEventList(calendarMonthYear.in(requestedMonthYears));]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Tuples</title>
+            <itemizedlist>
+                <listitem>
+                    <para>A Tuple is an ordered list of elements
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>A Tuple's type (TupleAttribute) can be specified using Reladomo
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>The Finder is your friend
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>You create tuple data set by adding elements to a MithraArrayTupleTupleSet
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>You can combine the tuple type with the tuple data set using an in() query
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <programlisting language="java"><![CDATA[Operation date1 = CalendarEventFinder.month().eq("May")
+    .and(CalendarEventFinder.year().eq(2009));
+Operation date2 = CalendarEventFinder.month().eq("August")
+    .and(CalendarEventFinder.year().eq(2011) );
+Operation operation = date1.or(date2);
+CalendarEventList events = new CalendarEventList(operation);]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Counting rows</title>
+            <itemizedlist>
+                <listitem>
+                    <para>List.size() will cause the list to be populated with data</para>
+                    <programlisting language="java"><![CDATA[int customerCount = new CustomerList(CustomerFinder.all()).size();]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Counting rows</title>
+            <itemizedlist>
+                <listitem>
+                    <para>MithraList.size() will cause the list to be populated with data
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>MithraList.count() will issue a SELECT COUNT(*) call and return only
+                        the count
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Only use count() when you know you will not need any of the
+                        contents of the list
+                    </para>
+                    <programlisting language="java"><![CDATA[int customerCount = new CustomerList(CustomerFinder.all()).size();
+int customerCount = new CustomerList(CustomerFinder.all()).count();]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Aggregates</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Gives you access to SQL-like features for sum(), average(), min(), max(), etc.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Finder is your friend</para>
+                    <programlisting language="java"><![CDATA[AggregateList aggregateList = new AggregateList(StockFinder.all());
+aggregateList.addAggregateAttribute(
+    "sumQuantity", StockFinder.quantity().sum());]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Aggregates</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Gives you access to SQL-like features for sum(), average(), min(), max(),
+                        etc.
+                    </para>
+                    <programlisting language="java"><![CDATA[AggregateList aggregateList = new AggregateList(StockFinder.all());
+aggregateList .addAggregateAttribute(
+    "sumQuantity", StockFinder.quantity().sum());
+Verify.assertSize(1, aggregateList);
+int sumQuantity = aggregateList.get(0)
+    .getAttributeAsInt("sumQuantity");]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Aggregates</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Gives you access to SQL-like features for sum(), average(), min(), max(),
+                        etc.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Different data types are also supported</para>
+                    <programlisting language="java"><![CDATA[AggregateList aggregateList = new AggregateList(StockFinder.all());
+aggregateList.addAggregateAttribute(
+    "sumQuantity", StockFinder.quantity().sum());
+aggregateList.addAggregateAttribute(
+    "averageQuantity", StockFinder.quantity().avg());
+int sumQuantity = aggregateList.get(0)
+    .getAttributeAsInt("sumQuantity");
+double averageQuantity = aggregateList.get(0)]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Aggregates</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Gives you access to SQL-like features for sum(), average(), min(), max(),
+                        etc.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Different data types are supported also
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>You can also group by attributes, similar to SQL's: GROUP BY clause</para>
+                    <programlisting language="java"><![CDATA[AggregateList aggregateList = new AggregateList(StockFinder.all());
+aggregateList.addAggregateAttribute(
+    "value", StockFinder.tradeDateValue().sum());
+aggregateList.addGroupBy("code", StockFinder.classificationCode());
+for (AggregateData row : aggregateList)
+{
+    String code = row.getAttributeAsString("code");
+    double value = row.getAttributeAsDouble("value");
+    System.out.println(code + '\t' + value);
+}
+/*
+* Prints:
+* EQTY 200.0
+* BOND 1600.0
+* CCY 13425.62
+**/]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Custom List Methods</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Just as you can add your own methods to the business objects, you can
+                        also add your own methods to the lists
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Always add your methods to the concrete class, never to the *Abstract classes</para>
+                    <programlisting language="java"><![CDATA[public class DogList extends DogListAbstract
+{
+    ...
+    public void walkAll()
+    {
+        for (Dog dog : this)
+        {
+            System.out.println(dog.getName()
+                + " walked around the park");
+        }
+    }
+}]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Cursors</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Cursor is a concept where data is only fetched a row at a time as needed
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Most use-cases don't need this – verify with a senior TA before using in a real
+                        project
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Applies when:
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>You may only need the first part of a List
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>The List may be very large (and risk filling your heap-space)
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>You need to reduce peak memory usage</para>
+                        </listitem>
+                    </itemizedlist>
+                    <programlisting language="java"><![CDATA[CustomerList allCustomers = new CustomerList(CustomerFinder.all());
+final Counter counter = new Counter();
+customer.forEachWithCursor(new DoWhileBlock<Customer>()
+{
+    public boolean value(Customer customer)
+    {
+        doSomethingWith(customer);
+        counter.increment();
+        return isNextCustomerNeeded(customer);
+    }
+});]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>Attributes and Metadata</title>
+        <dbs:foil>
+            <title>Attributes and Metadata</title>
+            <para>Reladomo Finders</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo Finders and Attributes are a rich source of MetaData
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Hold on to Finder references using AbstractRelatedFinder
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>From a Finder, you can:
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>getPersistentAttributes(): Attribute[]</para>
+                        </listitem>
+                    </itemizedlist>
+                    <programlisting language="java"><![CDATA[AbstractRelatedFinder finder = PersonFinder.getFinderInstance();
+for (Attribute attribute : finder.getPersistentAttributes())
+{
+    System.out.println(attribute.getAttributeName());
+}]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Attributes and Metadata</title>
+            <para>Reladomo Attributes</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo Finders and Attributes are a rich source of MetaData
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>From an Attribute, you can:
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>getAttributeName(): String
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>valueType(): Class
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>getMaxLength(): integer
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>isNullable(): boolean
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>getMetaData(): AttributeMetaData</para>
+                        </listitem>
+                    </itemizedlist>
+                    <programlisting language="java"><![CDATA[System.out.println(PersonFinder.personId().getAttributeName());
+// personId
+StringAttribute nameAttribute = CustomerFinder.name();
+System.out.println(nameAttribute.getMaxLength()
+    + '\t' + nameAttribute.isNullable()
+    + '\t' + nameAttribute.valueType());
+// Prints: 64 false String]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Attributes and Metadata</title>
+            <para>Reladomo Attributes</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo Finders and Attributes are a rich source of MetaData
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>From an attribute, you can also:
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>valueOf(&lt;MT&gt;): &lt;AVT&gt;
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>Gets the attribute value associated with an object
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>setValue(&lt;MT&gt;, &lt;AVT&gt;): void
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>Sets the attribute value for a given object</para>
+                        </listitem>
+                    </itemizedlist>
+                    <programlisting language="java"><![CDATA[Dog fido = ...;
+System.out.println(DogFinder.name().valueOf(fido));
+// The Grand Marquis Fido Of Paris
+DogFinder.name().setValue(fido, "Supreme Champion Fido of Crufts");
+System.out.println(DogFinder.name().valueOf(fido));
+// Supreme Champion Fido of Crufts]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Attributes and Metadata</title>
+            <itemizedlist>
+                <listitem>
+                    <para>You can define custom meta-data for your attributes
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>&lt;Property&gt;element in the Reladomo Object XML</para>
+                    <para>Dog.xml</para>
+                    <programlisting language="xml"><![CDATA[...
+<Attribute name="name" javaType="String" nullable="false"
+    maxLength="50" columnName="NAME">
+    <Property key="&quot;integerProperty&quot;" value="256" />
+    <Property key="&quot;stringProperty&quot;"
+    value="&quot;Froo-froo ref&quot;" />
+</Attribute>
+...]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Attributes and Metadata</title>
+            <itemizedlist>
+                <listitem>
+                    <para>You can define custom meta-data for your attributes
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        &lt;Property&gt; element in the Reladomo Object XML
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Access properties using: attribute.getProperty(String key): Object</para>
+                    <programlisting language="java"><![CDATA[for (Attribute attribute :
+    DogFinder.getFinderInstance().getPersistentAttributes())
+{
+    Object intProperty = attribute.getProperty("integerProperty");
+    if (intProperty instanceof Integer)
+    {
+        System.out.println(intProperty);
+    }
+}
+// Prints: 256]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>Kata Exercise 4</title>
+        <dbs:foil>
+            <title>Kata Exercise 4</title>
+            <para>Advanced Finder</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Find ExercisesAdvancedFinder.java; it has assertion failures if you run it as a test.</para>
+                </listitem>
+                <listitem>
+                    <para>Figure out how to get the tests to pass using what you have seen so far.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Should take about 20 minutes.</para>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+
+    <dbs:foilgroup>
+        <title>Chaining: Audit Only</title>
+        <dbs:foil>
+            <title>Chaining: Introduction</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Chaining:</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>Umbrella term to describe a way of storing time series data, audit data, or both, in a relational database
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>Referred by different terminologies for same or similar functionality.</para>
+                        </listitem>
+                        <listitem>
+                            <para>Most common is milestoning.</para>
+                        </listitem>
+                        <listitem>
+                            <para>Milestoning gives the wrong impression that the data can be snapshotted at various milestones.</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+
+                <listitem>
+                    <para>Chaining, or Bi-temporal data, is a super set (and in many instances a more efficient implementation) of milestoning.
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining Audit Only: Introduction</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Audit Only:</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>All edits to an object must be tracked</para>
+                        </listitem>
+                        <listitem>
+                            <para>Although this audit trail is important, it is rarely, if ever queried</para>
+                        </listitem>
+                        <listitem>
+                            <para>An audit trail is immutable. It's akin to a history book</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+                <listitem>
+                    <para>Terminology:</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>Academic literature calls the time that a particular piece of data changed as the transaction time, but we often call it
+                                processing date (even though it's a date-time)
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>We tend to call the actual date-times that changes happen, in and out, or sometimes, IN_Z and OUT_Z</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining Audit Only: Introduction</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Consider an Account object
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>First we insert the new object, say on 1-Jan-2005 10:06 am
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>We can read this as:
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>The row came IN existence at 1-Jan-2005 10:06 am, and is valid through "infinity"
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>Databases can't store "infinity", so we typically choose an
+                                arbitrary date-time, such as 1-Dec-9999 11:59:00 pm
+                            </para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+            <imageobject>
+                <imagedata fileref="AuditOnly1.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining Audit Only: Introduction</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Consider an Account object
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>First we insert the new object, say on 1-Jan-2005 10:06 am
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>We can read this as:
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>First we insert the new object, say on 1-Jan-2005 10:06 am</para>
+                        </listitem>
+                        <listitem>
+                            <para>The Trader changes on 4-Feb-2005 3:00 pm</para>
+                        </listitem>
+                        <listitem>
+                            <para>The existing row stops being valid, so we update it's OUT value with "now"
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>We insert a new row, valid from "now" through "infinity"</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+            <imageobject>
+                <imagedata fileref="AuditOnly2.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Audit Only: XML Definition</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo Object XML defines an AsOfAttribute element
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Define one of these for your processingDate below the
+                        DefaultTable element, and before the regular Attribute
+                        elements
+                    </para>
+                    <programlisting language="xml"><![CDATA[<AsOfAttribute name="processingDate"
+    fromColumnName="IN_Z" toColumnName="OUT_Z"
+    toIsInclusive="false"
+    isProcessingDate="true"
+    infinityDate="[kata.util.TimestampProvider.getInfinityDate()]"
+    defaultIfNotSpecified=
+        "[kata.util.TimestampProvider.getInfinityDate()]"
+    timezoneConversion="convert-to-utc"
+/>]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Audit Only</title>
+            <para>Chaining: Audit Only: Queries</para>
+            <para>Query for "current" data</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Query just as you would any other data</para>
+                </listitem>
+            </itemizedlist>
+            <imageobject>
+                <imagedata fileref="AuditOnly2.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+            <programlisting language="java"><![CDATA[Account account = AccountFinder.findOne(
+    AccountFinder.accountId().eq(1234));
+/*
+* SQL
+* SELECT * FROM ACCOUNT t0
+* WHERE t0.ACCOUNT_ID = 1234
+* AND t0.OUT_Z = '9999-12-01 23:59:00.000' -- Reladomo adds this for you!
+* */
+System.out.println(account);
+// Prints: 1234 Helen Brown 4-Feb-2005 3:00pm 1-Dec-9999 11:59pm]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Audit Only</title>
+            <para>Chaining: Audit Only: Queries</para>
+            <para>Query for an as-of processingDate</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Query just as you would any other data
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Additionally add the processing date you are interested in</para>
+                </listitem>
+            </itemizedlist>
+            <imageobject>
+                <imagedata fileref="AuditOnly2.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+            <programlisting language="java"><![CDATA[Account account = AccountFinder.findOne(
+    AccountFinder.accountId().eq(1234)
+        .and(AccountFinder.processingDate().eq(timestamp4Feb2005)));
+
+/*
+* SQL:
+* SELECT * FROM ACCOUNT t0 WHERE t0.ACCOUNT_ID = 1234
+* AND t0.IN_Z <= '2005-02-04 13:00:00.000'
+* AND t0.OUT_Z > '2005-02-04 13:00:00.000'
+* */
+
+System.out.println(account);
+// Prints: 1234 Joe Smith 1-Jan-2005 10:06am 4-Feb-2005 3:00pm]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Audit Only</title>
+            <para>Chaining: Audit Only: Queries</para>
+            <para>Query for all processingDate history
+            </para>
+            <itemizedlist>
+                <listitem>
+                    <para>Query just as you would any other data
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Additionally add the processingDate.equalsEdgePoint()</para>
+                </listitem>
+            </itemizedlist>
+            <imageobject>
+                <imagedata fileref="AuditOnly2.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+            <programlisting language="java"><![CDATA[AccountList accounts = new AccountList(
+    AccountFinder.accountId().eq(1234)
+        .and(AccountFinder.processingDate().equalsEdgePoint()));
+
+/*
+* SQL:
+* SELECT * FROM ACCOUNT t0 WHERE t0.ACCOUNT_ID = 1234
+*
+* Returns
+* 1234 Joe Smith 1-Jan-2005 10:06am 4-Feb-2005 3:00pm
+* 1234 Helen Brown 4-Feb-2005 5:00pm 1-Dec-9999 11:59pm
+**/]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Audit Only</title>
+            <para>Chaining: Audit Only: Creating</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Construct with the processingDate of "infinity"
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Set data and insert as normal</para>
+                </listitem>
+            </itemizedlist>
+            <imageobject>
+                <imagedata fileref="AuditOnly1.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+            <programlisting language="java"><![CDATA[Account account = new Account(TimestampProvider.getInfinityDate());
+account.setTrader("Joe Smith");
+account.insert();]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Audit Only</title>
+            <para>Chaining: Audit Only: Updating</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Update as normal
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>However, perform inside a transaction</para>
+                </listitem>
+            </itemizedlist>
+            <imageobject>
+                <imagedata fileref="AuditOnly2.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+            <programlisting language="java"><![CDATA[MithraManagerProvider.getMithraManager().executeTransactionalCommand(
+new TransactionalCommand()
+{
+    public Object executeTransaction(MithraTransaction tx)
+        throws Throwable
+    {
+        Account account = AccountFinder.findOne(
+            AccountFinder.accountId().eq(1234));
+        account.setTrader("Helen Brown");
+        return null;
+    }
+});]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Audit Only</title>
+            <para>Chaining: Audit Only: Terminating</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Rows cannot be "deleted" as they are required for audit purposes
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>However, we can "terminate" and object instead</para>
+                </listitem>
+            </itemizedlist>
+            <imageobject>
+                <imagedata fileref="AuditOnly3.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+            <programlisting language="java"><![CDATA[MithraManagerProvider.getMithraManager().executeTransactionalCommand(
+new TransactionalCommand()
+{
+    public Object executeTransaction(MithraTransaction tx)
+        throws Throwable
+    {
+        Account account = AccountFinder.findOne(
+            AccountFinder.accountId().eq(1234));
+        account.terminate();
+        return null;
+    }
+});]]></programlisting>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>Kata Exercise 5</title>
+        <dbs:foil>
+            <title>Kata Exercise 5</title>
+            <para>Chaining: Audit Only</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Find ExercisesAuditOnly.java; it has assertion failures if you run it as a test.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Figure out how to get the tests to pass using what you have seen so far.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Should take about 25 minutes.</para>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>Chaining: Bi-Temporal</title>
+        <dbs:foil>
+            <title>Chaining: Bi-Temporal</title>
+            <para>Bi-Temporal:
+            </para>
+            <itemizedlist>
+                <listitem>
+                    <para>Time Series as well as Audit
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>The two time axes are identified as "valid time" and "transaction time"</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>We call these business date and processing date respectively</para>
+                        </listitem>
+                        <listitem>
+                            <para>Business dates usually have a fixed "time" portion For Example: 6:30 PM</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+                <listitem>
+                    <para>A row in the database represents a rectangle in the two dimensional phase space
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>No two rectangles (for the same data) may overlap</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+                <listitem>
+                    <para>The accepted way to implement this scenario is via four date columns
+                        (valid_from, valid_to, transaction_from, transaction_to)
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>For Example: these columns are (FROM_Z, THRU_Z, IN_Z, OUT_Z)</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+                <listitem>
+                    <para>Terminology:</para>
+                    <itemizedlist>
+
+                        <listitem>
+                            <para>Academic literature refers to this scenario as "bi-temporal data"</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Bi-Temporal: Introduction</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Consider a simple Balance example
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>On 1-Jan-2005, we insert a new row valid from 1-Jan-2005, for 100</para>
+                </listitem>
+            </itemizedlist>
+            <imageobject>
+                <imagedata fileref="BiTemporal1.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Bi-Temporal</title>
+            <para>Diagram for balanceId = 1234</para>
+            <imageobject>
+                <imagedata fileref="BiTemporalGraph1.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+            <imageobject>
+                <imagedata fileref="BiTemporal1.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+        </dbs:foil>
+
+        <dbs:foil>
+            <title>Chaining: Bi-Temporal: Introduction</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Consider a simple Balance example
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>On 1-Jan-2005, we insert a new row valid from 1-Jan-2005, for 100
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>On 5-Feb-2005, we change the amount to 250, valid from 5-Feb-2005
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>The original row gets chained out
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>A new row shows the finite valid time that the object was 100
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>A new row shows the valid time that the object is 250</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+            <imageobject>
+                <imagedata fileref="BiTemporal2.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Bi-Temporal</title>
+            <para>Diagram for balanceId = 1234</para>
+            <imageobject>
+                <imagedata fileref="BiTemporalGraph2.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+            <imageobject>
+                <imagedata fileref="BiTemporal2.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Bi-Temporal: Introduction</title>
+            <itemizedlist>
+                <listitem>
+                    <para>On 16-Feb-2005, we find a trade for 40 shares that hadn't been input when it was executed on 12-Jan-2005
+                    </para>
+                </listitem>
+                <itemizedlist>
+                    <listitem>
+                        <para>Any rows valid on 12-Jan will need to be adjusted!
+                        </para>
+                        <itemizedlist>
+                            <listitem>
+                                <para>The two valid existing rows will be chained out
+                                </para>
+                            </listitem>
+                        </itemizedlist>
+                    </listitem>
+                    <listitem>
+                        <para>A new row is added up to 12-Jan indicating the original amoun
+                        </para>
+                    </listitem>
+                    <listitem>
+                        <para>A new row is added 12-Jan -> 5-Feb indicating amount 140
+                        </para>
+                    </listitem>
+                    <listitem>
+                        <para>A new row is added 5-Feb onwards indicating amount 290</para>
+                    </listitem>
+                </itemizedlist>
+            </itemizedlist>
+            <imageobject>
+                <imagedata fileref="BiTemporal3.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Bi-Temporal</title>
+            <para>Diagram for balanceId = 1234</para>
+            <imageobject>
+                <imagedata fileref="BiTemporalGraph3.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+            <imageobject>
+                <imagedata fileref="BiTemporal3.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Querying Bi-Temporal data</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Currently, what is the latest balance for 1234?
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>businessDate = "now"
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>processingDate = "now"
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <programlisting language="java"><![CDATA[Balance balance =
+    BalanceFinder.findOne(BalanceFinder.balanceId().eq(1234)
+        .and(BalanceFinder.businessDate().eq(timestamp16March2011)));
+/*
+* SQL:
+* SELECT * FROM BALANCE t0
+* WHERE t0.ACCOUNT_I = 100
+* AND t0.FROM_Z < '2011-03-15 18:30:00.000'
+* AND t0.THRU_Z >= '2011-03-15 18:30:00.000'
+* AND t0.OUT_Z = '9999-12-01 23:59:00.000'
+**/]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Bi-Temporal</title>
+            <para>Diagram for balanceId = 1234</para>
+            <imageobject>
+                <imagedata fileref="BiTemporalGraph3.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+            <programlisting language="java"><![CDATA[Balance balance =
+    BalanceFinder.findOne(BalanceFinder.balanceId().eq(1234));
+/*
+* SQL:
+* SELECT * FROM BALANCE t0
+* WHERE t0.ACCOUNT_I = 100
+* AND t0.FROM_Z < '2011-03-15 18:30:00.000'
+* AND t0.THRU_Z >= '2011-03-15 18:30:00.000'
+* AND t0.OUT_Z = '9999-12-01 23:59:00.000'
+**/
+
+System.out.println(balance.getAmount());
+// Prints: 290.0]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Bi-Temporal</title>
+            <para>Querying Bi-Temporal data</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Taking revisions into account, what was the balance on 30-Jan-2005?
+                    </para>
+                </listitem>
+                <itemizedlist>
+                    <listitem>
+                        <para>businessDate = 30-Jan-2005
+                        </para>
+                    </listitem>
+                    <listitem>
+                        <para>processingDate = "now"</para>
+                    </listitem>
+                </itemizedlist>
+            </itemizedlist>
+            <programlisting language="java"><![CDATA[Balance balance =
+    BalanceFinder.findOne(BalanceFinder.balanceId().eq(1234)
+        .and(BalanceFinder.businessDate().eq(timestamp30Jan2005)));
+
+/*
+* SQL:
+* SELECT * FROM BALANCE t0
+* WHERE t0.ACCOUNT_I = 100
+* AND t0.FROM_Z < '2005-01-30 18:30:00.000'
+* AND t0.THRU_Z >= '2005-01-30 18:30:00.000'
+* AND t0.OUT_Z = '9999-12-01 23:59:00.000'
+**/]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Bi-Temporal</title>
+            <para>Diagram for balanceId = 1234</para>
+            <imageobject>
+                <imagedata fileref="BiTemporalGraph5.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+            <programlisting language="java"><![CDATA[Balance balance =
+    BalanceFinder.findOne(BalanceFinder.balanceId().eq(1234)
+        .and(BalanceFinder.businessDate().eq(timestamp30Jan2005)));
+
+/*
+* SQL:
+* SELECT * FROM BALANCE t0
+* WHERE t0.ACCOUNT_I = 100
+* AND t0.FROM_Z < '2005-01-30 18:30:00.000'
+* AND t0.THRU_Z >= '2005-01-30 18:30:00.000'
+* AND t0.OUT_Z = '9999-12-01 23:59:00.000'
+**/
+System.out.println(balance.getAmount());
+// Prints: 140.0]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Bi-Temporal</title>
+            <para>Querying Bi-Temporal data</para>
+            <itemizedlist>
+                <listitem>
+                    <para>What was the balance when we looked at the system on 28-Jan-2005?
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>businessDate = 28-Jan-2005
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>processingDate = 28-Jan-2005</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+            <programlisting language="java"><![CDATA[Balance balance =
+    BalanceFinder.findOne(BalanceFinder.balanceId().eq(1234)
+        .and(BalanceFinder.businessDate().eq(timestamp28Jan2005))
+        .and(BalanceFinder.processingDate().eq(timestamp28Jan2005)));
+
+/*
+* SQL:
+* SELECT * FROM BALANCE t0
+* WHERE t0.ACCOUNT_I = 100
+* AND t0.FROM_Z < '2005-01-28 18:30:00.000'
+* AND t0.THRU_Z >= '2005-01-28 18:30:00.000'
+* AND t0.IN_Z < '2005-01-28 18:30:00.000'
+* AND t0.OUT_Z >= '2005-01-28 18:30:00.000'
+**/]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Bi-Temporal</title>
+            <para>Diagram for balanceId = 1234</para>
+            <imageobject>
+                <imagedata fileref="BiTemporalGraph6.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+            <programlisting language="java"><![CDATA[Balance balance =
+    BalanceFinder.findOne(BalanceFinder.balanceId().eq(1234)
+        .and(BalanceFinder.businessDate().eq(timestamp28Jan2005))
+        .and(BalanceFinder.processingDate().eq(timestamp28Jan2005)));
+
+/*
+* SQL:
+* SELECT * FROM BALANCE t0 WHERE t0.ACCOUNT_I = 100
+* AND t0.FROM_Z < '2005-01-28 18:30:00.000'
+* AND t0.THRU_Z >= '2005-01-28 18:30:00.000'
+* AND t0.IN_Z < '2005-01-28 18:30:00.000'
+* AND t0.OUT_Z >= '2005-01-28 18:30:00.000'
+**/
+
+System.out.println(balance.getAmount());
+//Prints: 100]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Bi-Temporal</title>
+            <para>Querying Bi-Temporal data</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Fetch all the history for a balance
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>Finder.businessDate().equalsEdgePoint() is your special friend</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+            <programlisting language="java"><![CDATA[BalanceList balances =
+    BalanceFinder.findMany(BalanceFinder.balanceId().eq(1234)
+        .and(BalanceFinder.businessDate().equalsEdgePoint()));
+/*
+* SQL:
+* SELECT * FROM BALANCE t0 WHERE t0.ACCOUNT_I = 100
+* AND t0.OUT_Z = '9999-12-01 23:59:00.000'
+**/]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Bi-Temporal</title>
+            <para>Diagram for balanceId = 1234</para>
+            <imageobject>
+                <imagedata fileref="BiTemporalGraph7.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+            <programlisting language="java"><![CDATA[BalanceList balances =
+    BalanceFinder.findMany(BalanceFinder.balanceId().eq(1234)
+        .and(BalanceFinder.businessDate().equalsEdgePoint()));
+
+/*
+* SQL:
+* SELECT * FROM BALANCE t0 WHERE t0.ACCOUNT_I = 100
+* AND t0.OUT_Z = '9999-12-01 23:59:00.000'
+**/
+
+System.out.println(balances);
+/*
+* Prints:
+* 1234 100.0 1-Jan-2005 12-Jan-2005
+* 1234 140.0 12-Jan-2005 5-Feb-2005
+* 1234 290.0 5-Feb-2005 1-Dec-9999
+**/]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Bi-Temporal</title>
+            <para>Chaining: Bi-Temporal: Other Methods</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Reladomo offers special methods on dated objects:
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>insertUntil(Timestamp)
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>insertWithIncrement(), insertWithIncrementUntil(Timestamp)
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>increment___(T), increment___Until(T, Timestamp)
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>set___Until(T, Timestamp)
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>insertForRecovery(), purge(): beyond scope of this session</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Chaining: Bi-Temporal</title>
+            <para>Chaining: Bi-Temporal: Special Considerations</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Bi-Temporal operations require transactions.</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>A single update or even insert could cause multiple rows to change / be inserted. The operations should happen atomically.
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>So, operations must occur in a transaction.</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+
+                <listitem>
+                    <para>Relationships between tables are typically done via a foreign key.</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>Chaining as described here for a single table, makes it impossible to have enforced foreign keys between tables. The virtual
+                                relationship between chained tables is therefore qualitatively different than non-chained tables.
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>It is important to realize that chained operation on a particular table must not be propagated to its dependent tables.</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>Kata Exercise 6</title>
+        <dbs:foil>
+            <title>Kata Exercise 6</title>
+            <para>Chaining: Bi-Temporal</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Find ExercisesBiTemporal.java; it has assertion failures if you run it as a test.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Figure out how to get the tests to pass using what you have seen so far.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Should take about 25 minutes.</para>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>Reladomo Objects From Scratch</title>
+        <dbs:foil>
+            <title>Create Reladomo Object from Scratch: Checklist</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Create Reladomo Object XML file.</para>
+                    <para>Example: MyObject.xml</para>
+                </listitem>
+                <listitem>
+                    <para>Set PackageName, ClassName, and DefaultTableName</para>
+                </listitem>
+                <listitem>
+                    <para>Add any AsOfAttributes as necessary.</para>
+                    <para>Example: businessDate and processingDate</para>
+                </listitem>
+                <listitem>
+                    <para>Mark Primary Key ID attributes with SimulatedSequences as needed</para>
+                </listitem>
+                <listitem>
+                    <para>Add regular Attributes</para>
+                </listitem>
+                <listitem>
+                    <para>Create Relationships as appropriate</para>
+                </listitem>
+                <listitem>
+                    <para>Add entry to Reladomo Class List file.</para>
+                    <para>Example: MithraTestAppClassList.xml</para>
+                </listitem>
+                <listitem>
+                    <para>Add entry to the Reladomo Runtime Configuration.</para>
+                    <para>Example: TestMithraRuntimeConfig.xml</para>
+                </listitem>
+                <listitem>
+                    <para>Compile and Test – make sure you didn't break anything else.</para>
+                </listitem>
+                <listitem>
+                    <para>Write tests for your new object.</para>
+                </listitem>
+                <listitem>
+                    <para>Add data to your test data file.</para>
+                    <para>Example: data_ObjectFromScratch.txt</para>
+                </listitem>
+                <listitem>
+                    <para>Test again!</para>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>Kata Exercise 7</title>
+        <dbs:foil>
+            <title>Kata Exercise 7</title>
+            <para>Reladomo Object from Scratch</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Find ExercisesObjectFromScratch.java; it has assertion failures if you run it as a test.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Figure out how to get the tests to pass using what you have seen so far.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Should take about 25 minutes.</para>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>Detached Objects</title>
+        <dbs:foil>
+            <title>Detached Objects: Introduction</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Detached Objects are copies of Reladomo objects that support a lot of the original methods, but modifications are not immediately
+                        persisted.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>A prime use-case for Detached Objects is where an object backs a GUI form</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>The user may change and edit the form fields several times before submitting or cancelling</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+            <programlisting language="java"><![CDATA[Automobile car = AutomobileFinder.findOne(...);
+boolean shouldSave = editUsingGui(car);
+if (shouldSave)
+{
+    // Persist changes to DB
+}
+else
+{
+    // Don't save changes
+}]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Detached Objects: Introduction</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Detached Objects are copies of Reladomo objects that support a lot of the originals methods, but do not cause immediate changes to the
+                        database/cache
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>.getDetachedCopy()</para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                .copyDetachedObjectToOriginalOrInsertIfNew()
+                            </para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+            <programlisting language="java"><![CDATA[Automobile car = AutomobileFinder.findOne(...).getDetachedCopy();
+boolean shouldSave = editUsingGui(car);
+if (shouldSave)
+{
+    // Persist changes to DB
+    car.copyDetachedValuesToOriginalOrInsertIfNew();
+}
+else
+{
+    // Don't save changes
+}]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Detached Objects: Introduction</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Detached Objects are copies of Reladomo objects that support a lot of the
+                        originals methods, but do not cause immediate changes to the database/cache
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>.getDetachedCopy()</para>
+                        </listitem>
+                        <listitem>
+                            <para>.copyDetachedObjectToOriginalOrInsertIfNew()</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+            <programlisting language="java"><![CDATA[Automobile car = new Automobile();
+// don't even need getDetachedObject() here
+boolean shouldSave = editUsingGui(car);
+if (shouldSave)
+{
+    // Persist changes to DB
+    car.copyDetachedValuesToOriginalOrInsertIfNew();
+}
+else
+{
+    // Don't save changes
+}]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Detached Objects: Introduction</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Detached Objects are copies of Reladomo objects that support a lot of the
+                        originals methods, but do not cause immediate changes to the database/cache
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>.getDetachedCopy()</para>
+                        </listitem>
+                        <listitem>
+                            <para>.copyDetachedObjectToOriginalOrInsertIfNew()</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+                <listitem>
+                    <para>Detached objects can be reset</para>
+                </listitem>
+            </itemizedlist>
+            <programlisting language="java"><![CDATA[Automobile car = AutomobileFinder.findOne(...).getDetachedCopy();
+UserAction action = editUsingGui(car);
+switch (action)
+{
+    case UserAction.SAVE:
+        car.copyDetachedValuesToOriginalOrInsertIfNew();
+        break;
+    case UserAction.RESET_FORM:
+        car.resetFromOriginalPersistentObject();
+        break;
+    ...
+}]]></programlisting>
+        </dbs:foil>
+        <dbs:foil>
+            <title>Detached Objects: Introduction</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Detached Objects are copies of Reladomo objects that support a lot of the
+                        originals methods, but do not cause immediate changes to the database/cache
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>.getDetachedCopy()</para>
+                        </listitem>
+                        <listitem>
+                            <para>.copyDetachedObjectToOriginalOrInsertIfNew()</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+                <listitem>
+                    <para>Detached objects can be reset</para>
+                </listitem>
+
+                <listitem>
+                    <para>You can "clone" data: getNonPersistentCopy();
+                        <para>generateAndSet___();</para>
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <programlisting language="java"><![CDATA[Automobile mitsubishiEclipse = AutomobileFinder.findOne(...);
+Automobile eagleTalon = mitsubishiEclipse.getNonPersistentCopy();
+eagleTalon.setBrandName("Eagle");
+eagleTalon.setModelName("Talon");
+// all other attributes remain same.
+// Example: engine size, number of seats, safety rating, etc.
+eagleTalon.generateAndSetAutomobileId();
+eagleTalon.insert();]]></programlisting>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>Kata Exercise 8</title>
+        <dbs:foil>
+            <title>Kata Exercise 8</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Find ExercisesDetachedObjects.java; it has assertion failures if you run it as a test.</para>
+                </listitem>
+                <listitem>
+                    <para>Figure out how to get the tests to pass using what you have seen so far.</para>
+                </listitem>
+                <listitem>
+                    <para>Should take about 10 minutes.</para>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>MT Loader</title>
+        <dbs:foil>
+            <title>MT Loader</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Consider, a "feed" file which contains updates for a set of tables in the database.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Feed data needs to be loaded in the database as fast as possible.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Feed data can be in any form:</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>File, Web-Service endpoint output, EJB output, even other Database</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+                <listitem>
+                    <para>Assumption:</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>Feed contains all the new information for a known subset of the data in our tables</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+                <listitem>
+                    <para>Operations to perform:</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>Close out whatever is not in the feed</para>
+                        </listitem>
+                        <listitem>
+                            <para>Insert whatever is in the feed but not in the database</para>
+                        </listitem>
+                        <listitem>
+                            <para>Update anything that matches</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+                <listitem>
+                    <para>All this should happen asynchronously and very fast. Let's see how!</para>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>MT Loader</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Consider a simple table, Pet with pet's name and age
+                    </para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>Primary key – name: used to decide whether two sets match
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>Existing data DSet. Update feed FSet
+                            </para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+                <listitem>
+                    <para>Operations which should be performed</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>Chirpy is in FSet but not in DSet -> Insert Row
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>Speedy, Wuzzy are in DSet but not in FSet -> Closed Out Rows.
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>Tabby is in both sets, but age is different -> Update only age.
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>Fuzzy is in both sets but nothing has changed -> Do Nothing.
+                            </para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+            <imageobject>
+                <imagedata fileref="MTLoader.png" width="8in" depth="2.8in" align="center" format="png" />
+            </imageobject>
+        </dbs:foil>
+        <dbs:foil>
+            <title>MT Loader</title>
+            <para>D/b data in SERIAL. Input data in SERIAL.</para>
+            <programlisting language="java"><![CDATA[SingleQueueExecutor singleQueueExecutor =
+    new SingleQueueExecutor(
+        NUMBER_OF_THREADS,
+        PetFinder.petName().ascendingOrderBy(),
+        BATCH_SIZE,
+        PetFinder.getFinderInstance(),
+        INSERT_THREADS);
+
+MatcherThread <Pet> matcherThread = new MatcherThread<>(
+    singleQueueExecutor,
+    new Extractor[]{PetFinder.petName()});
+matcherThread.start();
+
+PetList dbList = PetFinder.findMany(PetFinder.all());
+matcherThread.addDbRecords(dbList);
+matcherThread.setDbDone();
+
+matcherThread.addFileRecords(getInputPetList());
+matcherThread.setFileDone();
+
+matcherThread.waitTillDone();]]></programlisting>
+            <itemizedlist>
+                <listitem>
+                    <para>singleQueueExecutor is the Executor which MatcherThread requires</para>
+                </listitem>
+                <listitem>
+                    <para>Extractor is the entity on which matcher thread will match</para>
+                </listitem>
+                <listitem>
+                    <para>dbList are the database records</para>
+                </listitem>
+                <listitem>
+                    <para>FileRecords are the input data</para>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>MT Loader</title>
+            <para>D/b data in PARALLEL. Input data in SERIAL.</para>
+            <programlisting language="java"><![CDATA[SingleQueueExecutor singleQueueExecutor =
+    new SingleQueueExecutor(
+        NUMBER_OF_THREADS,
+        PetFinder.petName().ascendingOrderBy(),
+        BATCH_SIZE,
+        PetFinder.getFinderInstance(),
+        INSERT_THREADS);
+
+MatcherThread <Pet> matcherThread = new MatcherThread<>(
+    singleQueueExecutor,
+    new Extractor[]{PetFinder.petName()});
+matcherThread.start();
+
+PetList dbList = PetFinder.findMany(PetFinder.all());
+DbLoadThread dbLoadThread = new DbLoadThread(dbList, null, matcherThread);
+dbLoadThread.start();
+
+matcherThread.addFileRecords(getInputPetList());
+matcherThread.setFileDone();
+
+matcherThread.waitTillDone();]]></programlisting>
+            <itemizedlist>
+                <listitem>
+                    <para>singleQueueExecutor is the Executor which MatcherThread requires</para>
+                </listitem>
+                <listitem>
+                    <para>Extractor is the entity on which matcher thread will match</para>
+                </listitem>
+                <listitem>
+                    <para>dbList are the database records</para>
+                </listitem>
+                <listitem>
+                    <para>FileRecords are the input data</para>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+        <dbs:foil>
+            <title>MT Loader</title>
+            <para>D/b data in PARALLEL. Input data in PARALLEL.</para>
+            <programlisting language="java"><![CDATA[SingleQueueExecutor singleQueueExecutor =
+    new SingleQueueExecutor(
+        NUMBER_OF_THREADS,
+        PetFinder.petName().ascendingOrderBy(),
+        BATCH_SIZE,
+        PetFinder.getFinderInstance(),
+        INSERT_THREADS);
+
+MatcherThread <Pet> matcherThread = new MatcherThread<>(
+    singleQueueExecutor,
+    new Extractor[]{PetFinder.petName()});
+matcherThread.start();
+
+PetList dbList = PetFinder.findMany(PetFinder.all());
+DbLoadThread dbLoadThread = new DbLoadThread(dbList, null, matcherThread);
+dbLoadThread.start();
+
+PlainInputThread inputThread = new PlainInputThread(new InputDataLoader(), matcherThread);
+inputThread.run();
+
+matcherThread.waitTillDone();]]></programlisting>
+            <itemizedlist>
+                <listitem>
+                    <para>singleQueueExecutor is the Executor which MatcherThread requires</para>
+                </listitem>
+                <listitem>
+                    <para>Extractor is the entity on which matcher thread will match</para>
+                </listitem>
+                <listitem>
+                    <para>dbList are the database records</para>
+                </listitem>
+                <listitem>
+                    <para>inputThread is for the input data. PlainInputThread can be used for input sources like files.</para>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+    <dbs:foilgroup>
+        <title>Kata Exercise 9</title>
+        <dbs:foil>
+            <title>Kata Exercise 9</title>
+            <para>MT Loader</para>
+            <itemizedlist>
+                <listitem>
+                    <para>Find ExercisesMTLoader.java; it has assertion failures if you run it as a test.</para>
+                </listitem>
+                <listitem>
+                    <para>Figure out how to get the tests to pass using what you have seen so far.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Should take about 15 minutes.</para>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+    </dbs:foilgroup>
+</dbs:slides>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject superClassType="table-for-all-subclasses">
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>User</ClassName>
+    <DefaultTable>USER_TBL</DefaultTable>
+    <SourceAttribute name="sourceId" javaType="int" />
+    <Attribute name="id" javaType="int" columnName="OBJECTID" primaryKey="true"/>
+    <Attribute name="userId" javaType="String" poolable="false" columnName="USERID" maxLength="40"/>
+    <Attribute name="name" javaType="String" columnName="NAME" maxLength="128"/>
+    <Attribute name="active" javaType="boolean" columnName="ACTIVE" defaultIfNull="true"/>
+    <Attribute name="lastUpdate" nullable="false" javaType="Timestamp" columnName="LAST_UPDATE"/>
+    <Attribute name="profileId" nullable="false" javaType="int" columnName="PROFILE_OID"/>
+    <Attribute name="defaultGroupId" javaType="int" columnName="DEFAULT_GROUP_OID"/>
+    <Relationship name="groups" relatedObject="Group" orderBy="name DESC" cardinality="many-to-many" reverseRelationshipName="users">UserGroup.ownerId = this.id and Group.id = UserGroup.dependentId</Relationship>
+    <Relationship name="groups2" relatedObject="Group" orderBy="name DESC" cardinality="many-to-many">UserGroup.ownerId = this.id and Group.id = UserGroup.dependentId and UserGroup.dependentId = 2</Relationship>
+    <Relationship name="sourceGroups"
+        relatedObject="Group"
+        cardinality="many-to-many"
+        reverseRelationshipName="sourceUsers">
+                    UserGroup.ownerId = this.id
+                    and UserGroup.sourceId = 1
+                    and Group.id = UserGroup.dependentId
+                    and Group.sourceId = 2
+    </Relationship>
+    <Relationship name="profile" relatedObject="Profile" cardinality="many-to-one" reverseRelationshipName="users">Profile.id = this.profileId</Relationship>
+    <Relationship name="defaultGroup" relatedObject="Group" cardinality="many-to-one" reverseRelationshipName="defaultUsers">(Group.id = this.defaultGroupId)</Relationship>
+    <Relationship name="group7" relatedObject="Group" reverseRelationshipName="group7activeUsers" cardinality="many-to-one">this.defaultGroupId = Group.id and (Group.type = 7)</Relationship>
+    <Relationship name="managedDefaultGroup" relatedObject="Group" cardinality="many-to-one">(this.id = Group.managerId) and (this.defaultGroupId = Group.id)</Relationship>
+    <Relationship name="defaultGroupManager" relatedObject="User" cardinality="many-to-one">this.defaultGroupId = Group.id and (User.id = Group.managerId)</Relationship>
+    <Relationship name="groupsWithManagers" relatedObject="Group" cardinality="many-to-many">UserGroup.ownerId = this.id and Group.id = UserGroup.dependentId and User.id = Group.managerId</Relationship>
+    <Relationship name="userGroups2" relatedObject="UserGroup" cardinality="many-to-one">UserGroup.ownerId = this.id and UserGroup.dependentId = 2</Relationship>
+    <Relationship name="userGroups" relatedObject="UserGroup" cardinality="many-to-one">UserGroup.ownerId = this.id</Relationship>
+    <Index name="byUserId" unique="true">userId</Index>
+
+</MithraObject>
+

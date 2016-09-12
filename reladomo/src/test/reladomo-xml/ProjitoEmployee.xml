@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>ProjitoEmployee</ClassName>
+    <DefaultTable>PROJITO_EMPLOYEE</DefaultTable>
+    <AsOfAttribute name="processingDate" toIsInclusive="false"
+                   infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getSybaseIqInfinity()]"
+                   defaultIfNotSpecified="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getSybaseIqInfinity()]"
+                   isProcessingDate="true" timezoneConversion="convert-to-utc" fromColumnName="IN_Z"
+                   toColumnName="OUT_Z"/>
+
+    <Attribute name="kerberos" javaType="String" primaryKey="true" nullable="false" columnName="KERBEROS"/>
+    <Attribute name="name" javaType="String" nullable="true" maxLength="255" columnName="NAME"/>
+
+    <Relationship name="memberships" reverseRelationshipName="employee" relatedObject="ProjitoMembership"
+                  relatedIsDependent="true" cardinality="one-to-many">this.kerberos = ProjitoMembership.kerberos
+    </Relationship>
+
+    <Relationship name="measuresOfSuccess" reverseRelationshipName="accountableEmployee" relatedObject="ProjitoMeasureOfSuccess"
+                  relatedIsDependent="false" cardinality="one-to-many">this.kerberos = ProjitoMeasureOfSuccess.accountableKerberos
+    </Relationship>
+
+    <Relationship name="addresses" reverseRelationshipName="employee" relatedObject="ProjitoAddress"
+                  relatedIsDependent="true" cardinality="one-to-many" orderBy="id DESC">this.kerberos = ProjitoAddress.kerberos
+    </Relationship>
+</MithraObject>

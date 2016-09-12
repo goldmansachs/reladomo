@@ -1,0 +1,255 @@
+<%--
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+--%>
+<% if(wrapper.hasMutablePk()){%>
+
+    public boolean zAnyAttributesChanged(MithraDataObject newData)
+    {
+        return this.zAnyAttributesChanged(newData, 0.0);
+    }
+
+    public boolean zAnyAttributesChanged(MithraDataObject newData, double toleranceForFloatingPointFields)
+    {
+        boolean result = zMutablePrimaryKeyAttributesChanged(newData);
+        if(result) return true;
+        return zNonPrimaryKeyAttributesChanged(newData, toleranceForFloatingPointFields);
+    }
+
+    public boolean zMutablePrimaryKeyAttributesChanged(MithraDataObject newData)
+    {
+        <% if (wrapper.isTablePerClassSubClass()) { %>
+        if (super.zMutablePrimaryKeyattributesChanged(newData)) return true;
+        <% } %>
+        final <%=className%> <%=classNameAsVariable%> = (<%=className%>) newData;
+
+        <% for (int i = 0; i < pkAttributes.length; i ++) {%>
+           <% if(pkAttributes[i].isMutablePrimaryKey()){%>
+              <% if (pkAttributes[i].isPrimitive()){%>
+                  <% if (pkAttributes[i].isNullable()){ %>
+        if (<%=pkAttributes[i].getNullGetter()%>)
+        {
+           if(!<%=classNameAsVariable%>.<%=pkAttributes[i].getNullGetter()%>)
+           {
+              return true;
+           }
+        }
+        else
+                  <%}%>
+        if (<%if(pkAttributes[i].isNullable()){%><%=classNameAsVariable%>.<%=pkAttributes[i].getNullGetter()%> || <%}%><%=pkAttributes[i].getType().getPrimitiveComparisonString(pkAttributes[i].getGetter()+"()",classNameAsVariable+"."+pkAttributes[i].getGetter()+"()")%>)
+            {return true;}
+
+              <% } else { %>
+        if (!<%=pkAttributes[i].getNullGetter()%> ? !<%=pkAttributes[i].getType().getObjectComparisonString(pkAttributes[i].getGetter()+"()",classNameAsVariable+"."+pkAttributes[i].getGetter()+"()")%> : !<%=classNameAsVariable%>.<%=pkAttributes[i].getNullGetter()%>)
+            {return true;}
+              <% } %>
+           <% } %>
+        <% } %>
+        return false;
+    }
+    <%} // hasMutablePK %>
+
+    <% if (!wrapper.hasAsOfAttributes()) { %>
+        public byte zGetDataVersion() { return (byte)0; }
+
+        public void zSetDataVersion(byte version) { } // only used by dated objects
+
+        public void zIncrementDataVersion() {}
+    <% } %>
+
+    public boolean zNonPrimaryKeyAttributesChanged(MithraDataObject newData)
+    {
+        return this.zNonPrimaryKeyAttributesChanged(newData, 0.0);
+    }
+
+    public boolean zNonPrimaryKeyAttributesChanged(MithraDataObject newData, double toleranceForFloatingPointFields)
+    {
+    <% if (wrapper.isTablePerClassSubClass()) { %>
+        if (super.zNonPrimaryKeyAttributesChanged(newData, toleranceForFloatingPointFields)) return true;
+    <% } %>
+        final <%=className%> other = (<%=className%>) newData;
+
+        <% for (int i = 0; i < attributes.length; i ++) {%>
+            <% if (!attributes[i].isPrimaryKey() && !attributes[i].isAsOfAttributeFrom() && !attributes[i].isAsOfAttributeTo()) { %>
+                <% if (attributes[i].isPrimitive()) {  %>
+        if ( <%= attributes[i].isNullable() ? attributes[i].getNullGetter() + " != "+"other."+attributes[i].getNullGetter()+" || " : "" %> <%=attributes[i].getType().getPrimitiveComparisonString(attributes[i].getGetter()+"()","other."+attributes[i].getGetter()+"()")%>)
+            {return true;}
+                <% } else { %>
+
+        if (!<%=attributes[i].getNullGetter()%> ? !<%=attributes[i].getType().getObjectComparisonString(attributes[i].getGetter()+"()","other."+attributes[i].getGetter()+"()")%> : !other.<%=attributes[i].getNullGetter()%>)
+            {return true;}
+                <% } %>
+            <% } %>
+        <% } %>
+        return false;
+    }
+
+    public MithraDataObject copy()
+    {
+        <%=onHeapClassName%> copy = new <%=onHeapClassName%>();
+        this.copyInto(copy, true);
+        return copy;
+    }
+
+    public MithraDataObject copy(boolean withRelationships)
+    {
+        <%=onHeapClassName%> copy = new <%=onHeapClassName%>();
+        this.copyInto(copy, withRelationships);
+        return copy;
+    }
+
+
+<% if (!wrapper.isTablePerClassSubClass()) { %>
+    public String zGetPrintablePrimaryKey()
+    {
+        String result = "";
+        <% for (int i=0;i<attributes.length;i++)
+        {
+            if (attributes[i].isPrimaryKey() || attributes[i].isSourceAttribute() || attributes[i].isAsOfAttributeFrom() || attributes[i].isAsOfAttributeTo())
+            {
+        %>
+        result += <%= attributes[i].getPrintableForm() %>+ " / ";
+        <%  }
+        }
+        %>
+        return result;
+    }
+
+    public boolean zAsOfAttributesFromEquals(MithraDataObject other)
+    {
+        <% if (wrapper.hasAsOfAttributes()) { %>
+            boolean result = true;
+            <%= wrapper.getDataClassName()%> otherData = (<%= wrapper.getDataClassName()%>) other;
+            <% for(int i=0;i<asOfAttributes.length;i++) { %>
+            result &= <%= asOfAttributes[i].getTimestampLongFromGetter() %> == otherData.<%= asOfAttributes[i].getTimestampLongFromGetter() %>;
+            <% } %>
+            return result;
+        <% } else { %>
+        return true;
+        <% } %>
+    }
+
+    public boolean zAsOfAttributesChanged(MithraDataObject other)
+    {
+        <% if (wrapper.hasAsOfAttributes()) { %>
+            <%= wrapper.getDataClassName()%> otherData = (<%= wrapper.getDataClassName()%>) other;
+            <% for(int i=0;i<asOfAttributes.length;i++) { %>
+            <% if (asOfAttributes[i].isInfinityNull()) { %>
+                if ((is<%= StringUtility.firstLetterToUpper(asOfAttributes[i].getName()) %>ToNull() ? NullDataTimestamp.getInstance().getTime():<%= asOfAttributes[i].getTimestampLongToGetter() %>) != (otherData.is<%= StringUtility.firstLetterToUpper(asOfAttributes[i].getName()) %>ToNull() ? NullDataTimestamp.getInstance().getTime():otherData.<%= asOfAttributes[i].getTimestampLongToGetter() %>))
+            <% } else { %>
+                if (<%= asOfAttributes[i].getTimestampLongToGetter() %> != otherData.<%= asOfAttributes[i].getTimestampLongToGetter() %>)
+            <% }%>
+            {
+                return true;
+            }
+            if (<%= asOfAttributes[i].getTimestampLongFromGetter() %> != otherData.<%= asOfAttributes[i].getTimestampLongFromGetter() %>)
+            {
+                return true;
+            }
+            <% } %>
+        <% } %>
+        return false;
+    }
+
+    public void zWriteDataClassName(ObjectOutput out) throws IOException
+    {
+    <% if (wrapper.isTablePerClassRootClass()) { %>
+        out.writeObject(this.getClass().getName());
+    <% } %>
+    }
+
+    public String zReadDataClassName(ObjectInput in) throws IOException, ClassNotFoundException
+    {
+    <% if (wrapper.isTablePerClassRootClass()) { %>
+        return (String) in.readObject();
+    <% } else { %>
+        return "<%= wrapper.getPackageName()%>.<%= wrapper.getDataClassName()%>";
+    <% } %>
+    }
+
+    public boolean changed(MithraDataObject newData)
+    {
+        <% if(wrapper.hasMutablePk()){%>
+        if(zAnyAttributesChanged(newData))
+        <%}else{%>
+        if(zNonPrimaryKeyAttributesChanged(newData))
+        <%}%>
+        {
+            return true;
+        }
+        else
+        {
+            return zAsOfAttributesChanged(newData);
+        }
+    }
+
+    public boolean zHasSameNullPrimaryKeyAttributes(MithraDataObject newData)
+    {
+        <% if( wrapper.hasNullablePrimaryKeys() ){ %>
+        final <%=className%> <%=classNameAsVariable%> = (<%=className%>) newData;
+            <% for (int i = 0; i < pkAttributes.length; i ++) {%>
+               <% if(pkAttributes[i].isNullable()) {%>
+               if (<%=pkAttributes[i].getNullGetterUseMutableIfApplicable()%> != <%=classNameAsVariable%>.<%=pkAttributes[i].getNullGetterUseMutableIfApplicable()%>)
+                   {return false;}
+               <% } %>
+            <% } %>
+        <% } %>
+        <%for (int i = 0; i<wrapper.getAsOfAttributes().length ; i++) {
+            if (wrapper.getAsOfAttributes()[i].isInfinityNull()){
+                Attribute attribute = wrapper.getAttributeByName(wrapper.getAsOfAttributes()[i].getName()+"To");
+        %>
+
+                if (<%=attribute.getNullGetterUseMutableIfApplicable()%> != ((<%=className%>) newData).<%=attribute.getNullGetterUseMutableIfApplicable()%>)
+                    {return false;}
+            <% } %>
+        <% } %>
+        return true;
+    }
+<% } // if not inherited %>
+
+    public MithraObjectPortal zGetMithraObjectPortal(int hierarchyDepth)
+    {
+    <% if (wrapper.isTablePerClassSubClass()) { %>
+        return _allFinders[hierarchyDepth].getMithraObjectPortal();
+    <% } else { %>
+        return <%= wrapper.getFinderClassName()%>.getMithraObjectPortal();
+    <% } %>
+    }
+
+    public MithraObjectPortal zGetMithraObjectPortal()
+    {
+        return <%= wrapper.getFinderClassName()%>.getMithraObjectPortal();
+    }
+
+    public Number zGetIdentityValue()
+    {
+        return <%=identityValue%>;
+    }
+
+    public boolean zHasIdentity()
+    {
+        return <%=hasIdentity.toString()%>;
+    }
+
+    public void zSetIdentity(Number identityValue)
+    {
+        <% if (wrapper.getIdentityCount() > 0) { %>
+        this.<%= wrapper.getIdentityAttribute().getSetter()%>(identityValue.<%= wrapper.getIdentityAttribute().getTypeAsString() %>Value());
+        <% } %>
+    }
+
+    public String zGetSerializationClassName()
+    {
+        return "<%= wrapper.getPackageName()+"."+wrapper.getClassName()+"Data" %>";
+    }

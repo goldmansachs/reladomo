@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain.bcp</PackageName>
+    <ClassName>TlewTrial</ClassName>
+    <DefaultTable>TLEW_TRIAL</DefaultTable>
+
+    <AsOfAttribute name="processingDate" fromColumnName="IN_Z" toColumnName="OUT_Z" toIsInclusive="false"
+                   infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                   defaultIfNotSpecified="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]" isProcessingDate="true"/>
+    <Attribute name="acctId" javaType="int" columnName="ACCT_I" primaryKey="true"/>
+    <Attribute name="instrument" javaType="int" columnName="INSTRUMENT_I" primaryKey="true"/>
+    <Attribute name="positionType" javaType="String" maxLength="2" columnName="POS_TYP_C" nullable="false"/>
+    <Attribute name="instrumentType" javaType="String" maxLength="1" columnName="INSTR_TYP_C" primaryKey="true" nullable="false"/>
+    <Attribute name="instrumentSubType" javaType="String" maxLength="1" columnName="INSTR_SUB_TYP_C"/>
+    <Attribute name="accountNumber" javaType="String" maxLength="12" columnName="ACCT_N" nullable="false"/>
+    <Attribute name="trial" javaType="String" maxLength="4" columnName="TRIAL_C" nullable="false"/>
+    <Attribute name="legalEntity" javaType="int" columnName="LEGAL_ENTITY_I" nullable="false"/>
+    <Attribute name="baseCurrency" javaType="String" maxLength="3" columnName="BASE_CURR_C"/>
+    <Attribute name="accountTypeB" javaType="int" columnName="ACCT_TYP_B" nullable="false"/>
+    <Attribute name="accountTypeC" javaType="String" maxLength="3" columnName="ACCT_TYP_C" nullable="false"/>
+    <Attribute name="primaryIncomeFunction" javaType="String" maxLength="6" columnName="PRIM_INCOME_FUNC_C" nullable="false"/>
+    <Attribute name="carryTransferFlag" javaType="short" columnName="CARRY_TRANSF_FLAG_C" nullable="false"/>
+    <Attribute name="accountDescription" javaType="String" maxLength="80" columnName="ACCT_DESC_T"/>
+    <Attribute name="prodSyn" javaType="String" maxLength="33" columnName="PROD_SYN_N"/>
+    <Attribute name="prodStkPx" javaType="double" columnName="PROD_STK_PX_M"/>
+    <Attribute name="productDescription" javaType="String" maxLength="80" columnName="PROD_DESC_T"/>
+    <Attribute name="productIssueCurrency" javaType="String" maxLength="3" columnName="PROD_ISS_CCY_C"/>
+    <Attribute name="productProfile" javaType="String" maxLength="45" columnName="PROD_PROFILE_C"/>
+    <Attribute name="prodFutCntrctSize" javaType="double" columnName="PROD_FUT_CNTRCT_SIZE_Q"/>
+    <Attribute name="productMaturityDate" javaType="Timestamp" columnName="PROD_XPR_MTY_D"/>
+    <Attribute name="productIssueCountry" javaType="String" maxLength="4" columnName="PROD_ISS_CNTRY_C"/>
+    <Attribute name="productPrimaryMarket" javaType="String" maxLength="4" columnName="PROD_PRM_MKT_C"/>
+    <Attribute name="productUnderlierReferenceId" javaType="int" columnName="PROD_UNDRLR_REF_I"/>
+    <Attribute name="prodXplRltn" javaType="String" maxLength="3" columnName="PROD_XPL_RLTN_C"/>
+    <Attribute name="prodRelHost" javaType="double" columnName="PROD_REL_HOST_Q"/>
+    <Attribute name="prodUndrlrPx" javaType="double" columnName="PROD_UNDRLR_PX_M"/>
+    <Attribute name="positionQuantity" javaType="double" columnName="POS_SHR_Q"/>
+    <Attribute name="posMktvlBase" javaType="double" columnName="POS_MKTVL_BASE_M"/>
+    <Attribute name="posCostBase" javaType="double" columnName="POS_COST_BASE_M"/>
+    <Attribute name="posAccrIntBase" javaType="double" columnName="POS_ACCR_INT_BASE_M"/>
+    <Attribute name="posPurchIntBase" javaType="double" columnName="POS_PURCH_INT_BASE_M"/>
+    <Attribute name="posNotvlBase" javaType="double" columnName="POS_NOTVL_BASE_M"/>
+    <Attribute name="contractualNpv" javaType="double" columnName="CONTRACTUAL_NPV_M"/>
+    <Attribute name="unstldRwPl" javaType="double" columnName="UNSTLD_RW_PL_M"/>
+    <Attribute name="unstldFwdPl" javaType="double" columnName="UNSTLD_FWD_PL_M"/>
+    <Attribute name="unrealFutPerGmiPl" javaType="double" columnName="UNREAL_FUT_PER_GMI_PL_M"/>
+    <Attribute name="fairValAdj" javaType="double" columnName="FAIR_VAL_ADJ_M"/>
+    <Attribute name="adjTdUnstldFutPl" javaType="double" columnName="ADJ_TD_UNSTLD_FUT_PL_M"/>
+    <Attribute name="valuationAdj" javaType="double" columnName="VALUATION_ADJ_M"/>
+    <Attribute name="accrDiv" javaType="double" columnName="ACCR_DIV_M"/>
+    <Attribute name="otherTdAdj" javaType="double" columnName="OTHER_TD_ADJ_M"/>
+    <Attribute name="fxRevalAdj" javaType="double" columnName="FX_REVAL_ADJ_M"/>
+    <Attribute name="adjSdResrvUnrealPl" javaType="double" columnName="ADJ_SD_RESRV_UNREAL_PL_M"/>
+    <Attribute name="sdFxUnrealPl" javaType="double" columnName="SD_FX_UNREAL_PL_M"/>
+    <Attribute name="totUnrealPl" javaType="double" columnName="TOT_UNREAL_PL_M"/>
+    <Attribute name="pmeTotUnrealPl" javaType="double" columnName="PME_TOT_UNREAL_PL_M"/>
+    <Attribute name="mtdIntIncm" javaType="double" columnName="MTD_INT_INCM_M"/>
+    <Attribute name="mtdIntXpns" javaType="double" columnName="MTD_INT_XPNS_M"/>
+    <Attribute name="pendingCash" javaType="double" columnName="PENDING_CASH_M"/>
+    <Attribute name="mtdRealTradingPl" javaType="double" columnName="MTD_REAL_TRADING_PL_M"/>
+    <Attribute name="otherAdjCntrlTot" javaType="double" columnName="OTHER_ADJ_CNTRL_TOT_M"/>
+    <Attribute name="settledCash" javaType="double" columnName="SETTLED_CASH_M"/>
+    <Attribute name="fxPerStockRec" javaType="double" columnName="FX_PER_STOCK_REC"/>
+    <Attribute name="mtdDivIncm" javaType="double" columnName="MTD_DIV_INCM_M"/>
+    <Attribute name="mtdTransferTax" javaType="double" columnName="MTD_TRANSFER_TAX_M"/>
+    <Attribute name="carryCharge" javaType="double" columnName="CARRY_CHARGE_M" nullable="false"/>
+    <Attribute name="carryRebate" javaType="double" columnName="CARRY_REBATE_M" nullable="false"/>
+    <Attribute name="ltdSdUnreal" javaType="double" columnName="LTD_SD_UNREAL_M" nullable="false"/>
+    <Attribute name="activeMtdRec" javaType="short" columnName="ACTIVE_MTD_REC_C" nullable="false"/>
+    <Attribute name="prodGlobalClass" javaType="long" columnName="PROD_GLOBAL_CLASS_I" nullable="false"/>
+    <Attribute name="prodScrpPlPostClass" javaType="String" maxLength="5" columnName="PROD_SCRP_PL_POST_CLASS_N" nullable="false"/>
+    <Attribute name="prodScrpBsPostClass" javaType="String" maxLength="5" columnName="PROD_SCRP_BS_POST_CLASS_N" nullable="false"/>
+    <Attribute name="tlewTrialCreate" javaType="short" columnName="TLEW_TRIAL_CREATE_C" nullable="false"/>
+    <Attribute name="tlewTrialChange" javaType="short" columnName="TLEW_TRIAL_CHANGE_C"/>
+    <Attribute name="offsetPayRecv" javaType="double" columnName="OFFSET_PAY_RECV_M"/>
+    <Attribute name="segregatedCash" javaType="double" columnName="SEGREGATED_CASH_M"/>
+    <Attribute name="busDate" javaType="Timestamp" columnName="BUS_DATE_Z"/>
+    <Attribute name="posXrate" javaType="double" columnName="POS_XRATE_M"/>
+    <Attribute name="prodType" javaType="String" maxLength="1" columnName="PROD_TYPE_C"/>
+    <Attribute name="regCostBase" javaType="double" columnName="REG_COST_BASE_M"/>
+    <Attribute name="fwdCostBase" javaType="double" columnName="FWD_COST_BASE_M"/>
+    <Attribute name="regQty" javaType="double" columnName="REG_QTY_Q"/>
+    <Attribute name="fwdQty" javaType="double" columnName="FWD_QTY_Q"/>
+    <Attribute name="gaapTdMktvlBase" javaType="double" columnName="GAAP_TD_MKTVL_BASE_M"/>
+    <Attribute name="openIntBase" javaType="double" columnName="OPEN_INT_BASE_M"/>
+    <Attribute name="localCurrTime" javaType="Timestamp" columnName="LOCAL_CURR_TIME_Z"/>
+    <Attribute name="mtdSdUnreal" javaType="double" columnName="MTD_SD_UNREAL_M"/>
+    <Attribute name="fwdQtyGt30" javaType="double" columnName="FWD_QTY_GT_30_Q"/>
+    <Attribute name="fwdCostGt30Base" javaType="double" columnName="FWD_COST_GT_30_BASE_M"/>
+    <Attribute name="prodUndrClass" javaType="int" columnName="PROD_UNDR_CLASS_I"/>
+    <Attribute name="gmiUnreal" javaType="double" columnName="GMI_UNREAL_M"/>
+    <Attribute name="mtdTdUnreal" javaType="double" columnName="MTD_TD_UNREAL_M"/>
+    <Attribute name="paraProdType" javaType="String" maxLength="9" columnName="PARA_PROD_TYPE_N"/>
+    <Attribute name="ltdLcmTdUnreal" javaType="double" columnName="LTD_LCM_TD_UNREAL_M"/>
+    <Attribute name="mtdLcmTdUnreal" javaType="double" columnName="MTD_LCM_TD_UNREAL_M"/>
+
+
+</MithraObject>

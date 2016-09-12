@@ -1,0 +1,53 @@
+/*
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+
+class com.gs.fw.common.mithra.test.domain.User
+id, userId, name,active, lastUpdate, profileId, defaultGroupId
+6,"fluery","Mark Fluery",null,"2004-05-11 00:00:00.0",1,null
+7,"venners","Bill Venners",false,"2004-05-11 00:00:00.0",1,1
+8,"schwartz","Jonathan Schwartz",true,"2004-05-11 00:00:00.0",1,1
+50,"flintw","Wilma Flintsotne",true,"2004-05-11 00:00:00.0",2,3
+
+class com.gs.fw.common.mithra.test.domain.UserGroup
+ownerId,dependentId
+1,4
+1,5
+1,6
+5,4
+4,5
+2,6
+3,6
+
+
+class com.gs.fw.common.mithra.test.domain.Group
+id,name,type,managerId,profileId
+4,"TheServerSide",6,null, 7
+5,"Artima",7,null, 1
+6,"SunJDC",5,null, 8
+
+class com.gs.fw.common.mithra.test.domain.Location
+id,groupId,geographicLocation,city,country
+1,1,"North America", "London","UK"
+2,1,"Europe","Chicago","USA"
+
+class com.gs.fw.common.mithra.test.domain.Profile
+id, type
+1, "good"
+2, "better"
+
+class com.gs.fw.common.mithra.test.domain.Employee
+id,name,phone,designation,email
+1,"John Doe", "111-111-1111", "Analyst", "john.doe@blah.com"

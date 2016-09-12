@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType= "transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>IdentityTable</ClassName>
+    <DefaultTable>IDENTITY_TABLE</DefaultTable>
+
+    <Attribute name="objectId" javaType="long" primaryKey="true" identity="true" columnName="OBJECTID" />
+    <Attribute name="month" javaType="Timestamp" primaryKey="true" columnName="MONTH" />
+    <Attribute name="orderId" javaType="int" primaryKey="true" columnName="ORDER_ID" />
+    <Attribute name="description" javaType="String" maxLength="50" columnName="DESCRIPTION"/>
+
+</MithraObject>

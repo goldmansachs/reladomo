@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject>
+    <PackageName>com.gs.fw.common.mithra.test.domain.adjustmenthistory</PackageName>
+    <ClassName>PositionAdjustmentHistory</ClassName>
+    <DefaultTable>TPOSADJHIST</DefaultTable>
+    <SourceAttribute name="acmapCode" javaType="String" />
+    <Attribute name="referenceId" javaType="long" columnName="ADJ_REF_I" primaryKey="true"/>
+    <Attribute name="accountId" javaType="String" columnName="ACCT_N" trim="true" maxLength="20"/>
+    <Attribute name="adjustmentTypeId" javaType="int" columnName="ADJ_TYPE"/>
+    <Attribute name="productId" javaType="int" columnName="PROD_I"/>
+    <Attribute name="userId" javaType="String" poolable="false" columnName="USER_I" maxLength="20"/>
+    <Attribute name="businessDate" javaType="Timestamp" columnName="BUS_DATE"/>
+    <Attribute name="entryDate" javaType="Timestamp" columnName="PROC_DATE"/>
+    <Attribute name="comment" javaType="String" columnName="MEMO" maxLength="20"/>
+<!--    <Attribute name="assetLiability" javaType="String" columnName="ASSET_LIABILITY"/>    -->
+
+    <Attribute name="originalValue" javaType="double" columnName="OLD_AMOUNT"/>
+    <Attribute name="adjustmentDelta" javaType="double" columnName="DELTA_AMOUNT"/>
+    <Relationship relatedObject="PositionQuantity" cardinality="one-to-one" name="positionQuantity" reverseRelationshipName="adjustmentHistory1800">PositionQuantity.accountId = this.accountId and PositionQuantity.productId = this.productId and PositionQuantity.positionType = 1800 and PositionQuantity.businessDate = this.businessDate</Relationship>
+    <Relationship relatedObject="PositionQuantity" cardinality="one-to-many" name="positionQuantitiesWithoutType">PositionQuantity.accountId = this.accountId and PositionQuantity.businessDate = this.businessDate</Relationship>
+    <!-- todo: gonzra: the following relationship does not produce compilable code. fix it. -->
+<!--    <Relationship relatedObject="PositionQuantity" cardinality="one-to-many" name="positionQuantitiesByDateOnly">PositionQuantity.businessDate = this.businessDate</Relationship>-->
+    <Relationship relatedObject="Account" cardinality="many-to-one" name="accountFromContract">PositionQuantity.accountId = this.accountId
+        and PositionQuantity.productId = this.productId and PositionQuantity.positionType = 1800 and PositionQuantity.businessDate = this.businessDate
+        and PositionQuantity.accountId = Account.accountNumber and PositionQuantity.acmapCode = Account.deskId</Relationship>
+    <Index name="byPos" unique="true">accountId, productId, businessDate</Index>
+</MithraObject>

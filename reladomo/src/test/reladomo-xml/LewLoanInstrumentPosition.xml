@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="../mithraobject.xsd">
+    <PackageName>com.gs.fw.common.mithra.test.glew</PackageName>
+    <ClassName>LewLoanInstrumentPosition</ClassName>
+    <DefaultTable>TLEW_LOAN_INSTRUMENT</DefaultTable>
+
+    <SourceAttribute name="region" javaType="String"/>
+
+    <AsOfAttribute name="processingDate" fromColumnName="IN_Z" toColumnName="OUT_Z" toIsInclusive="false"
+                   infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                   defaultIfNotSpecified="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                   isProcessingDate="true"
+                   timezoneConversion="convert-to-database-timezone"/>
+    <Attribute name="accountId" javaType="int" primaryKey="true" columnName="ACCT_I"/>
+    <Attribute name="instrumentId" javaType="int" primaryKey="true" columnName="INSTRUMENT_I"/>
+    <Attribute name="positionType" javaType="String" maxLength="2" primaryKey="true" columnName="POS_TYP_C"/>
+
+    <Attribute name="fundedAmount" javaType="double" columnName="FUNDED_AMT_M"/>
+    <Attribute name="unfundedAmount" javaType="double" columnName="UNFUNDED_AMT_M"/>
+    <Attribute name="commitmentFee" javaType="double" columnName="COMMIT_FEE_M"/>
+    <Attribute name="utilizationFee" javaType="double" columnName="UTILIZE_FEE_M"/>
+    <Attribute name="estimatedPrincipalAmount" javaType="double" columnName="EST_PRINC_AMOUNT"/>
+    <Attribute name="loanTraderMark" javaType="double" columnName="TRADER_MARK_M"/>
+    <Attribute name="fundedBalanceInFacility" javaType="double" columnName="FACILITY_CCY_FUNDED_AMT_M"/>
+
+    <Attribute name="loanDataType" javaType="String" columnName="LOAN_DATA_TYPE"/>
+    <Attribute name="facilityId" javaType="String" columnName="FACILITY_ID"/>
+    <Attribute name="ltdFeeAccrual" javaType="double" columnName="LTD_FEE_ACCRUAL_M" defaultIfNull="0"/>
+    <Attribute name="mtdFeeIncome" javaType="double" columnName="MTD_FEE_INCOME_M" defaultIfNull="0"/>
+    <Attribute name="mtdFeeExpense" javaType="double" columnName="MTD_FEE_EXPENSE_M" defaultIfNull="0"/>
+    <Attribute name="attributionCostOffset" javaType="double" columnName="ATTRIBUTION_COST_OFFSET_M" defaultIfNull="0"/>
+    <Attribute name="mtdOneTimeFees" javaType="double" columnName="MTD_ONE_TIME_FEES_M" defaultIfNull="0"/>
+    <Attribute name="pendingOneTimeFees" javaType="double" columnName="TD_PENDING_ONE_TIME_FEES_M" defaultIfNull="0"/>
+    <Attribute name="pmePendingOneTimeFees" javaType="double" columnName="PME_TD_PENDING_ONE_TIME_FEES_M"
+               defaultIfNull="0"/>
+    <Attribute name="pikUnrealized" javaType="double" columnName="PIK_UNREAL_M" defaultIfNull="0"/>
+    <Attribute name="createCode" javaType="short" columnName="LOAN_CREATE_C"/>
+    <Attribute name="changeCode" javaType="short" columnName="LOAN_CHANGE_C"/>
+    <Attribute name="changeName" javaType="String" maxLength="8" columnName="LOAN_CHANGE_N"/>
+
+    <Relationship name="productAsOfProcessingDate" relatedObject="PhProduct" cardinality="one-to-one"
+                  parameters="Timestamp businessDate">
+        this.facilityId = PhProductSynonym.synonymValue and
+        PhProductSynonym.synonymType = "PRM" and
+        PhProductSynonym.businessDate = {businessDate} and
+        PhProductSynonym.instrumentId = PhProduct.instrumentId
+    </Relationship>
+
+    <Relationship name="productAsOfProcessingDateWithoutBusinessDate" relatedObject="PhProductSynonym" cardinality="one-to-one">
+        this.facilityId = PhProductSynonym.synonymValue and
+        PhProductSynonym.synonymType = "PRM"
+    </Relationship>
+
+
+</MithraObject>

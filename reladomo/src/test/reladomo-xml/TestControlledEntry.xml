@@ -1,0 +1,47 @@
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+  <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+  <ClassName>TestControlledEntry</ClassName>
+  <DefaultTable>TEST_CONTROLLED_ENTRY</DefaultTable>
+  <AsOfAttribute name="processingDate" timezoneConversion="convert-to-utc" fromColumnName="IN_DT" toColumnName="OUT_DT"
+                 toIsInclusive="false"
+                 infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                 isProcessingDate="true"
+                 defaultIfNotSpecified="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]" />
+
+  <AsOfAttribute name="businessDate" timezoneConversion="convert-to-utc" fromColumnName="FROM_DT" toColumnName="THRU_DT"
+                 toIsInclusive="false" infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                 isProcessingDate="false" />
+
+ <Attribute name="controlledEntryId" javaType="long" primaryKey="true" columnName="CONTROLLED_ENTRY_ID" primaryKeyGeneratorStrategy="SimulatedSequence">
+  <SimulatedSequence sequenceName="CONTROLLED_ENTRY_SEQ" sequenceObjectFactoryName="com.gs.fw.common.mithra.test.domain.MithraTestSequenceObjectFactory"
+                     hasSourceAttribute="false" batchSize="1" initialValue="1" incrementSize="1" />
+  </Attribute>
+  <Attribute name="mnpiType" javaType="String" maxLength="10" columnName="MNPI_TYPE" />
+  <Attribute name="approveOverrideFlag" javaType="boolean" columnName="APPROVE_OVERRIDE_FLG" />
+  <Attribute name="quietPeriodLength" javaType="int" columnName="QUIET_PERIOD_LENGTH" />
+  <Attribute name="createBy" javaType="String" maxLength="30" columnName="CREATE_BY" />
+  <Attribute name="updateBy" javaType="String" maxLength="30" columnName="UPDATE_BY" />
+
+  <Relationship name="restrictedEntities" relatedObject="TestRestrictedEntity" cardinality="one-to-many"
+                relatedIsDependent="true" reverseRelationshipName="controlledEntry">
+      TestRestrictedEntity.controlledEntryId=this.controlledEntryId
+  </Relationship>
+
+</MithraObject>

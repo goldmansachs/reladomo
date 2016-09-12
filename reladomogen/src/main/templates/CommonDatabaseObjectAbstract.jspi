@@ -1,0 +1,722 @@
+<%--
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+--%>
+<%@ page import="com.gs.fw.common.mithra.generator.type.StringJavaType,
+                 com.gs.fw.common.mithra.generator.type.CharJavaType,
+                 com.gs.fw.common.mithra.generator.Attribute,
+                 com.gs.fw.common.mithra.generator.AsOfAttribute,
+                 com.gs.fw.common.mithra.generator.SourceAttribute,
+                 com.gs.fw.common.mithra.generator.util.StringUtility,
+                 java.util.Arrays"%>
+<%@ page import="com.gs.fw.common.mithra.generator.MithraObjectTypeWrapper"%>
+
+<%
+        Attribute[] primaryKeyAttributes = wrapper.getPrimaryKeyAttributes();
+        Attribute[] attributes = wrapper.getAttributesIncludingInheritedPks();
+        MithraObjectTypeWrapper[] superClasses = wrapper.getSuperClasses();
+        MithraObjectTypeWrapper[] subClasses = wrapper.getSubClasses();
+        AsOfAttribute[] asOfAttributes = wrapper.getAsOfAttributes();
+        SourceAttribute sourceAttribute = wrapper.getSourceAttribute();
+        String connectionManagerClass = StringUtility.trimPackage(wrapper.getConnectionManagerClassName());
+%>
+
+    private <%=connectionManagerClass%> connectionManager;
+<%if(wrapper.getSourceAttribute() == null){%>
+    private SchemaManager schemaManager;
+    private TablePartitionManager tablePartitionManager;
+<%}else if(wrapper.getSourceAttribute().isStringSourceAttribute()){%>
+    private ObjectSourceSchemaManager schemaManager;
+    private ObjectSourceTablePartitionManager tablePartitionManager;
+<%}else{%>
+    private IntSourceSchemaManager schemaManager;
+    private IntSourceTablePartitionManager tablePartitionManager;
+<%}%>
+
+    private static final String COL_LIST_WITHOUT_PK = "<%= wrapper.getColumnListWithoutPk() %>";
+    private static final String COL_LIST_WITHOUT_PK_WITH_ALIAS = "<%= wrapper.getColumnListWithoutPkWithAlias() %>";
+    private static final String PK_WITH_ALIAS = "<%= wrapper.getPrimaryKeyWhereSqlWithAlias()%>";
+    private static final String PK_INDEX_COLS = "<%for(int i = 0; i < primaryKeyAttributes.length; i++){%><%=primaryKeyAttributes[i].getColumnName()%><%   if(i + 1 < primaryKeyAttributes.length){%>,<%}}%>";
+
+
+    protected <%=wrapper.getClassName() + "DatabaseObjectAbstract"%>()
+    {
+        super("<%=wrapper.getClassName()%>", "<%=wrapper.getPackageName()%>.<%=wrapper.getFinderClassName()%>",
+            <%= wrapper.getTotalColumnsInResultSet() %>, <%= wrapper.getTotalColumnsInInsert() %>,
+            COL_LIST_WITHOUT_PK, COL_LIST_WITHOUT_PK_WITH_ALIAS,
+            <%=wrapper.hasOptimisticLocking()%>, <%=wrapper.hasNullablePrimaryKeys()%>, <%=wrapper.hasSourceAttribute()%>,
+            PK_WITH_ALIAS,
+            PK_INDEX_COLS);
+    }
+
+    <%@  include file="./CommonObjectFactory.jspi" %>
+    public Object getSourceAttributeValueForSelectedObjectGeneric(SqlQuery query, int queryNumber)
+    {
+        <% if (wrapper.hasSourceAttribute()) { %>
+        return query.getSourceAttributeValueForSelectedObject(queryNumber);
+        <% } else {%>
+        return null;
+        <%}%>
+    }
+
+    public Object getSourceAttributeValueFromObjectGeneric(MithraDataObject object)
+    {
+        <% if (wrapper.hasSourceAttribute()) { %>
+            <%= wrapper.getDataClassName()%> data = (<%= wrapper.getDataClassName()%>)object;
+            return <%= wrapper.boxSourceAttribute(wrapper.getSourceAttributeGetterForObject("data")+"()")%>;
+        <% } else {%>
+            return null;
+        <%}%>
+    }
+
+    public Object getSourceAttributeValueGeneric(SqlQuery query, MapperStackImpl mapperStack, int queryNumber)
+    {
+        <% if (wrapper.hasSourceAttribute()) { %>
+        return query.getSourceAttributeValue(mapperStack,queryNumber);
+        <% } else {%>
+        return null;
+        <%}%>
+    }
+
+    public String getDatabaseIdentifierGenericSource (Object source)
+    {
+        <% if (wrapper.hasSourceAttribute()) { %>
+        return connectionManager.getDatabaseIdentifier(<%= wrapper.extractSourceAttribute("(("+wrapper.getSourceAttribute().getType().getJavaTypeStringPrimary()+")source)") %>);
+        <%} else { %>
+        return connectionManager.getDatabaseIdentifier();
+        <%}%>
+    }
+
+    public DatabaseType getDatabaseTypeGenericSource(Object source)
+    {
+        <% if (wrapper.hasSourceAttribute()) { %>
+        return connectionManager.getDatabaseType(<%= wrapper.extractSourceAttribute("(("+wrapper.getSourceAttribute().getType().getJavaTypeStringPrimary()+")source)") %>);
+        <%} else { %>
+        return connectionManager.getDatabaseType();
+        <%}%>
+    }
+
+    public TimeZone getDatabaseTimeZoneGenericSource(Object source)
+    {
+        <% if (wrapper.hasSourceAttribute()) { %>
+        return getDatabaseTimeZone(<%= wrapper.extractSourceAttribute("(("+wrapper.getSourceAttribute().getType().getJavaTypeStringPrimary()+")source)") %>);
+        <%} else { %>
+        return getDatabaseTimeZone();
+        <%}%>
+    }
+
+    public Connection getConnectionGenericSource(Object source)
+    {
+        <% if (wrapper.hasSourceAttribute()) { %>
+        return connectionManagerWrapper.getConnection(<%= wrapper.extractSourceAttribute("(("+wrapper.getSourceAttribute().getType().getJavaTypeStringPrimary()+")source)") %>);
+        <%} else { %>
+        return connectionManagerWrapper.getConnection();
+        <%}%>
+    }
+
+    public BulkLoader createBulkLoaderGenericSource(Object source) throws BulkLoaderException {
+        <% if (wrapper.hasSourceAttribute()) { %>
+        return connectionManager.createBulkLoader(<%= wrapper.extractSourceAttribute("(("+wrapper.getSourceAttribute().getType().getJavaTypeStringPrimary()+")source)") %>);
+        <%} else { %>
+        return connectionManager.createBulkLoader();
+        <%}%>
+    }
+
+    public MithraDataObject inflateDataGenericSource(ResultSet rs, Object source, DatabaseType dt)
+        throws SQLException {
+        <% if (wrapper.hasSourceAttribute()) { %>
+        return inflate<%= wrapper.getClassName() %>Data(rs, dt ,<%= wrapper.extractSourceAttribute("(("+wrapper.getSourceAttribute().getType().getJavaTypeStringPrimary()+")source)") %>);
+        <%} else { %>
+        return inflate<%= wrapper.getClassName() %>Data(rs, dt);
+        <%}%>
+    }
+
+    public void inflateNonPkDataGenericSource(MithraDataObject data, ResultSet rs, Object source, DatabaseType dt)
+        throws SQLException {
+        <% if (wrapper.hasSourceAttribute()) { %>
+        inflateNonPk<%= wrapper.getClassName() %>Data(1, (<%= wrapper.getDataClassName()%>) data, rs, dt ,<%= wrapper.extractSourceAttribute("(("+wrapper.getSourceAttribute().getType().getJavaTypeStringPrimary()+")source)") %>);
+        <%} else { %>
+        inflateNonPk<%= wrapper.getClassName() %>Data(1, (<%= wrapper.getDataClassName()%>) data, rs, dt);
+        <%}%>
+    }
+
+    public MithraDataObject inflatePkDataGenericSource(ResultSet rs, Object source, DatabaseType dt)
+        throws SQLException {
+        <% if (wrapper.hasSourceAttribute()) { %>
+        return inflate<%= wrapper.getClassName() %>PkData(rs, dt, <%= wrapper.extractSourceAttribute("(("+wrapper.getSourceAttribute().getType().getJavaTypeStringPrimary()+")source)") %>);
+        <%} else { %>
+        return inflate<%= wrapper.getClassName() %>PkData(rs, dt);
+        <%}%>
+    }
+
+    public String getSchemaGenericSource(Object source)
+    {
+        if (this.schemaManager != null)
+        {
+            <% if (wrapper.hasSourceAttribute()) { %>
+            return this.schemaManager.getSchema(this.getDefaultSchema(),<%= wrapper.extractSourceAttribute("(("+wrapper.getSourceAttribute().getType().getJavaTypeStringPrimary()+")source)") %>);
+            <%} else { %>
+            return this.schemaManager.getSchema(this.getDefaultSchema());
+            <%}%>
+        }
+        return this.getDefaultSchema();
+    }
+
+    <% if (!wrapper.isTemporary()) { %>
+    public String getTableNameGenericSource(Object source) throws MithraDatabaseException
+    {
+        <% if (wrapper.hasSourceAttribute()) { %>
+        return get<%= wrapper.getClassName() %>TableName(<%= wrapper.extractSourceAttribute("(("+wrapper.getSourceAttribute().getType().getJavaTypeStringPrimary()+")source)") %>);
+        <%} else { %>
+        return get<%= wrapper.getClassName() %>TableName();
+        <%}%>
+    }
+    <%}%>
+
+    public String get<%= wrapper.getClassName() %>TableName(<%= wrapper.getSourceAttributeVariableDeclaration() %>) throws MithraDatabaseException
+    {
+        if (this.tablePartitionManager != null)
+        {
+            <% if (wrapper.hasSourceAttribute()) { %>
+            return this.tablePartitionManager.getTableName(this.getDefaultTableName(), <%= wrapper.getSourceAttributeVariable() %>);
+            <%} else { %>
+            return this.tablePartitionManager.getTableName(this.getDefaultTableName());
+            <%}%>
+        }
+
+        return this.getDefaultTableName();
+    }
+
+    public void setPrimaryKeyAttributes(PreparedStatement stm, int pos, MithraDataObject dataObj,
+            TimeZone databaseTimeZone, DatabaseType dt) throws SQLException
+     {
+<% if (wrapper.hasOptimisticLocking()) { %>
+        <%= wrapper.getDataClassName()%> data = (<%= wrapper.getDataClassName()%>)dataObj;
+        TimeZone conversionTimeZone = null;
+        pos = setPrimaryKeyAttributesWithoutOptimistic(stm,pos,dataObj,databaseTimeZone,dt);
+
+        if (<%= wrapper.getFinderClassName()%>.getMithraObjectPortal().getTxParticipationMode().isOptimisticLocking())
+        {
+            <% if (wrapper.hasOptimisticLockAttribute()) { %>
+                <%= wrapper.getOptimisticLockAttribute().getSqlSetParameters("zGetPersistedVersion()") %>
+            <% } else { %>
+            <%= wrapper.getProcessingDateAttribute().getSqlSetParameters(wrapper.getProcessingDateAttribute().getGetter()+"From()") %>
+            <% } %>
+        }
+    }
+
+    public int setPrimaryKeyAttributesWithoutOptimistic(PreparedStatement stm, int pos, MithraDataObject dataObj,
+            TimeZone databaseTimeZone, DatabaseType dt) throws SQLException
+         {
+<% } %>
+            <%= wrapper.getDataClassName()%> data = (<%= wrapper.getDataClassName()%>)dataObj;
+            TimeZone conversionTimeZone = null;
+             <% for(int i=0;i<attributes.length;i++) if (attributes[i].isPrimaryKey()) {
+                    if ( attributes[i].isNullable()) { %>
+                 if( ! data.<%=attributes[i].getNullGetterUseMutableIfApplicable()%>)
+                 {
+                    <% } %>
+                    <%= attributes[i].getSqlSetParameters(attributes[i].getGetterOrMutableGetter()+"()") %>
+                 <% if ( attributes[i].isNullable()) {%>
+                 }
+                 <% }%>
+
+             <% } %>
+             <% for(int i=0;i<asOfAttributes.length;i++) { %>
+                <%if (asOfAttributes[i].isInfinityNull()){%>
+                if (data.<%= asOfAttributes[i].getGetter()%>To() != null)
+                {
+                <%}%>
+                <%= asOfAttributes[i].getAsOfAttributeTo().getSqlSetParameters(asOfAttributes[i].getGetter()+"To()") %>
+                <%if (asOfAttributes[i].isInfinityNull()){%>
+                    }
+                <% } %>
+             <% } %>
+<% if (wrapper.hasOptimisticLocking()) { %>
+            return pos;
+<% } %>
+         }
+
+<% if (!wrapper.hasOptimisticLocking()) { %>
+    public int setPrimaryKeyAttributesWithoutOptimistic(PreparedStatement stm, int pos, MithraDataObject dataObj,
+            TimeZone databaseTimeZone, DatabaseType dt) throws SQLException
+    {
+        this.setPrimaryKeyAttributes(stm, pos, dataObj, databaseTimeZone, dt);
+        return -1;
+    }
+<% } %>
+    public String getPrimaryKeyWhereSql()
+    {
+        <% if (wrapper.hasOptimisticLocking()) { %>
+        if (<%= wrapper.getFinderClassName()%>.getMithraObjectPortal().getTxParticipationMode().isOptimisticLocking())
+        {
+            <% if (wrapper.hasOptimisticLockAttribute()) { %>
+                 return "<%= wrapper.getPrimaryKeyWithOptimisticLockWhereSql()%>";
+            <% } %>
+        }
+        <% } %>
+        return "<%= wrapper.getPrimaryKeyWhereSql()%>";
+    }
+
+    public String getPrimaryKeyWhereSqlWithNullableAttribute(MithraDataObject dataObj)
+    {
+        <% if( wrapper.hasNullablePrimaryKeys()){ %>
+         <%= wrapper.getDataClassName()%> data = (<%= wrapper.getDataClassName()%>) dataObj;
+         StringBuffer result = new StringBuffer();
+        <% for(int i=0;i<primaryKeyAttributes.length;i++)
+                if(primaryKeyAttributes[i].isNullable()){ %>
+             if( data.<%=primaryKeyAttributes[i].getNullGetterUseMutableIfApplicable()%>)
+             {
+                <%if (i > 0){%> result.append(" AND ");<%}%>
+                result.append(" <%=primaryKeyAttributes[i].getColumnName()%> IS NULL ");
+             }
+             else
+             {  <%if (i > 0){%> result.append(" AND ");<%}%>
+                result.append(" <%=primaryKeyAttributes[i].getColumnName()%> = ? ");
+             }
+             <% }else{ %>
+             <%if (i > 0){%> result.append(" AND ");<%}%>
+             result.append(" <%=primaryKeyAttributes[i].getColumnName()%> = ? ");
+             <% } %>
+         return result.toString();
+        <%} else {%>
+        return "";
+        <%}%>
+    }
+
+    public String getPrimaryKeyWhereSqlWithNullableAttributeWithDefaultAlias(MithraDataObject dataObj)
+    {
+        <% if( wrapper.hasNullablePrimaryKeys()){ %>
+         <%= wrapper.getDataClassName()%> data = (<%= wrapper.getDataClassName()%>) dataObj;
+         StringBuilder result = new StringBuilder();
+        <%
+           for(int i=0;i<primaryKeyAttributes.length;i++)
+                if(primaryKeyAttributes[i].isNullable()){ %>
+             if( data.<%=primaryKeyAttributes[i].getNullGetterUseMutableIfApplicable()%>)
+             {
+                <%if (i > 0){%> result.append(" AND");<%}%>
+                result.append(" t0.");
+                result.append("<%=primaryKeyAttributes[i].getColumnName()%> IS NULL ");
+             }
+             else
+             {  <%if (i > 0){%> result.append(" AND");<%}%>
+                result.append(" t0.");
+                result.append("<%=primaryKeyAttributes[i].getColumnName()%> = ? ");
+             }
+             <% }else{ %>
+             <%if (i > 0){%> result.append(" AND");<%}%>
+             result.append(" t0.");
+             result.append("<%=primaryKeyAttributes[i].getColumnName()%> = ? ");
+             <% } %>
+         return result.toString();
+        <%} else {%>
+        return "";
+        <%}%>
+    }
+
+    public String getColumnListWithPk(String databaseAlias)
+    {
+        if (databaseAlias.equals(SqlQuery.DEFAULT_DATABASE_ALIAS))
+        {
+            return "<%= wrapper.getColumnListWithDefaultAlias() %>";
+        }
+        StringBuffer result = new StringBuffer((databaseAlias.length()+15)*<%= attributes.length %>);
+        result.append(databaseAlias).append(".").append("<%= primaryKeyAttributes[0].getColumnName() %>");
+        <% for(int i=1;i<primaryKeyAttributes.length;i++) { %>
+        result.append(",").append(databaseAlias).append(".").append("<%= primaryKeyAttributes[i].getColumnName() %>");
+        <% } // for primary key attributes%>
+        <% for(int i=0;i<attributes.length;i++) { %>
+        <%  if (!attributes[i].isPrimaryKey()) { %>
+        result.append(",").append(databaseAlias).append(".").append("<%= attributes[i].getColumnName() %>");
+        <%  }  // if not primary key%>
+        <% } // for attributes%>
+        return result.toString();
+    }
+
+    public Object getConnectionManager()
+    {
+        return connectionManager;
+    }
+
+	public void setConnectionManager(Object connectionManager, ConnectionManagerWrapper wrapper)
+	{
+		this.connectionManager = (<%=connectionManagerClass%>)connectionManager;
+		this.connectionManagerWrapper = wrapper;
+    }
+
+    public <%= wrapper.getClassName() %>Data inflate<%= wrapper.getClassName() %>Data(ResultSet rs, DatabaseType dt<%= wrapper.getSourceAttributeVariableDeclarationWithComma() %>)
+        throws SQLException
+    {
+        <%= wrapper.getClassName() %>Data data = inflate<%= wrapper.getClassName() %>PkData(rs, dt<%= wrapper.getSourceAttributeVariableWithComma() %>);
+        inflateNonPk<%= wrapper.getClassName() %>Data(<%= wrapper.getNonPkResultSetStart()%>, data, rs, dt<%= wrapper.getSourceAttributeVariableWithComma() %>);
+        return data;
+    }
+
+    public <%= wrapper.getClassName() %>Data inflate<%= wrapper.getClassName() %>PkData(ResultSet _rs, DatabaseType _dt<%= wrapper.getSourceAttributeVariableDeclarationWithComma() %>)
+        throws SQLException
+    {
+        <% if (wrapper.requiresPkDatabaseTimezone()) { %>
+        TimeZone _databaseTimeZone = getDatabaseTimeZone(<%= wrapper.getSourceAttributeVariable() %>);
+        <% } %>
+        <% if (subClasses != null) { %>
+        int _spos = 1;
+        <%= wrapper.getClassName() %>Data _data = null;
+        <%
+            for(int i=subClasses.length - 1; i >=0; i--) {
+                Attribute currentAttribute = subClasses[i].getPrimaryKeyAttributes()[0]; %>
+        if (_data == null)
+        {
+            <% if (!currentAttribute.isPrimitive() || currentAttribute.getType() instanceof CharJavaType) { %>
+            Object o = <%=currentAttribute.getResultSetGetter("_spos")%>;
+            if (o != null)
+            {
+                _data = new <%= subClasses[i].getDataClassName()%>();
+            }
+            <% } else { %>
+            <%=currentAttribute.getResultSetGetter("_spos")%>;
+            if (!_rs.wasNull())
+            {
+                _data = new <%= subClasses[i].getDataClassName()%>();
+            }
+            <% } %>
+            _spos++;
+        }
+        <%  } %>
+        if (_data == null)
+        {
+            _data = new <%= wrapper.getOnHeapDataClassName() %>();
+        }
+        <% } else { %>
+        <%= wrapper.getClassName() %>Data _data = new <%= wrapper.getOnHeapDataClassName() %>();
+        <% } %>
+        int _pos = <%= wrapper.getResultSetStartPosition() %>;
+        <% if (wrapper.hasSourceAttribute()) { %>
+            _data.<%= sourceAttribute.getSetter() %>(<%= wrapper.getSourceAttributeVariable() %>);
+        <% } // has source attribute %>
+
+        <%
+        for(int i=0;i<primaryKeyAttributes.length;i++) {
+            Attribute currentAttribute = primaryKeyAttributes[i]; %>
+    <%@  include file="../InflateAttributes.jspi" %>
+        <%}%>
+
+        return _data;
+    }
+
+    public void inflateNonPk<%= wrapper.getClassName() %>Data(int _pos, <%= wrapper.getClassName() %>Data _datax, ResultSet _rs, DatabaseType _dt<%= wrapper.getSourceAttributeVariableDeclarationWithComma() %>)
+        throws SQLException
+    {
+
+        <% if (wrapper.requiresNonPkDatabaseTimezone()) { %>
+        TimeZone _databaseTimeZone = getDatabaseTimeZone(<%= wrapper.getSourceAttributeVariable() %>);
+        <% } %>
+        {
+            <%= wrapper.getClassName() %>Data _data = _datax;
+        <% if (superClasses != null) for(int s=0;s < superClasses.length; s++) {
+            Attribute[] superAttributes = superClasses[s].getAttributes();
+            for(int i=0;i<superAttributes.length;i++) {
+            Attribute currentAttribute = superAttributes[i];
+            if (!currentAttribute.isPrimaryKey()){%>
+    <%@  include file="../InflateAttributes.jspi" %>
+            <%} }%>
+        <% } %>
+        <%for(int i=0;i<attributes.length;i++) {
+            Attribute currentAttribute = attributes[i];
+            if (!currentAttribute.isPrimaryKey()){%>
+    <%@  include file="../InflateAttributes.jspi" %>
+            <%}%>
+        <%}%>
+        }
+        <% if (subClasses != null) for(int s=0;s < subClasses.length; s++) {
+            Attribute[] subAttributes = subClasses[s].getAttributes(); %>
+        if (_datax instanceof <%= subClasses[s].getDataClassName()%>)
+        {
+            <%= subClasses[s].getDataClassName() %> _data = (<%= subClasses[s].getDataClassName() %>) _datax;
+            <%
+            for(int i=0;i<subAttributes.length;i++) {
+            Attribute currentAttribute = subAttributes[i];
+            if (!currentAttribute.isPrimaryKey()){%>
+    <%@  include file="../InflateAttributes.jspi" %>
+            <%} }%>
+        }
+        else
+        {
+            _pos += <%= subClasses[s].getNonPkAttributeCount()%>;
+        }
+        <% } %>
+    }
+
+    public DatabaseType getDatabaseType(<%= wrapper.getSourceAttributeVariableDeclaration() %>)
+    {
+        return connectionManager.getDatabaseType(<%=(wrapper.getSourceAttribute() != null)? "sourceAttribute":""%>);
+    }
+
+    public TimeZone getDatabaseTimeZone(<%= wrapper.getSourceAttributeVariableDeclaration() %>)
+    {
+        return connectionManager.getDatabaseTimeZone(<%=(wrapper.getSourceAttribute() != null)? "sourceAttribute":""%>);
+    }
+
+    protected String getSchema(<%= wrapper.getSourceAttributeVariableDeclaration()%>)
+    {
+        return this.getSchemaGenericSource(<%= wrapper.hasSourceAttribute() ? wrapper.getSourceAttributeVariable() : "null" %>);
+    }
+
+<% if (wrapper.hasAsOfAttributes()) { %>
+    public String getFullyQualifiedTableName(<%= wrapper.getSourceAttributeVariableDeclaration() %>)
+    {
+        String schema = this.getSchemaGenericSource(<%= wrapper.hasSourceAttribute() ? wrapper.getSourceAttributeVariable() : "null" %>);
+        String tableName = get<%= wrapper.getClassName() %>TableName(<%= wrapper.getSourceAttributeVariable() %>);
+        return this.getDatabaseType(<%= wrapper.getSourceAttributeVariable() %>).getFullyQualifiedTableName(schema, tableName);
+    }
+<% } %>
+
+
+public void setSchemaManager(Object schemaManager)
+{
+<%
+  String _schemaManagerInterfaceType;
+  if(wrapper.getSourceAttribute() == null)
+    _schemaManagerInterfaceType = "SchemaManager";
+  else if(wrapper.getSourceAttribute().isStringSourceAttribute())
+    _schemaManagerInterfaceType = "ObjectSourceSchemaManager";
+  else
+    _schemaManagerInterfaceType = "IntSourceSchemaManager";
+%>
+
+     if( schemaManager instanceof <%= _schemaManagerInterfaceType %> )
+     {
+        this.schemaManager = (<%= _schemaManagerInterfaceType %>) schemaManager;
+     }
+     else
+     {
+        throw new IllegalArgumentException( "Schema manager class " + schemaManager.getClass().getName()
+                    + " does not implement <%= _schemaManagerInterfaceType %>.class" );
+     }
+ }
+
+ public void setTablePartitionManager(Object tablePartitionManager)
+ {
+ <%
+   String _tablePartitionManagerInterfaceType;
+   if(wrapper.getSourceAttribute() == null)
+     _tablePartitionManagerInterfaceType = "TablePartitionManager";
+   else if(wrapper.getSourceAttribute().isStringSourceAttribute())
+     _tablePartitionManagerInterfaceType = "ObjectSourceTablePartitionManager";
+   else
+     _tablePartitionManagerInterfaceType = "IntSourceTablePartitionManager";
+ %>
+
+      if( tablePartitionManager instanceof <%= _tablePartitionManagerInterfaceType %> )
+      {
+         this.tablePartitionManager = (<%= _tablePartitionManagerInterfaceType %>) tablePartitionManager;
+      }
+      else
+      {
+         throw new IllegalArgumentException( "Table partition manager class " + tablePartitionManager.getClass().getName()
+                     + " does not implement <%= _tablePartitionManagerInterfaceType %>.class" );
+      }
+  }
+
+ public String getTableName()
+ {
+     <%if(wrapper.hasSourceAttribute()){%>
+    throw new RuntimeException("not implemented");
+    <%}else{%>
+    return this.getDefaultTableName();
+    <%}%>
+ }
+
+  public String getDefaultTableName()
+  {
+     return "<%= wrapper.getDefaultTable() %>";
+  }
+
+<%  if (wrapper.getIdentityCount() > 0) { %>
+ public boolean hasIdentity()
+ {
+    return true;
+ }
+<% } %>
+
+ <%if(wrapper.isReplicated()){%>
+
+ public boolean isReplicated()
+ {
+    return true;
+ }
+
+ private String getFullyQualifiedChildQueueTableName(<%= wrapper.getSourceAttributeVariableDeclaration() %>)
+ {
+    <%if(wrapper.hasSourceAttribute()){%>
+    return this.getFullyQualifiedChildQueueTableNameGenericSource(<%= wrapper.getSourceAttributeVariable() %>);
+    <%}else{%>
+    return this.getFullyQualifiedChildQueueTableNameGenericSource(null);
+    <%}%>
+ }
+
+ public String getReplicationTableColumnList(String databaseAlias)
+ {
+     StringBuffer result = new StringBuffer((databaseAlias.length()+15)*<%= attributes.length %>);
+
+     <% for(int i=0;i<primaryKeyAttributes.length;i++) { %>
+     <% if (i != 0){%>result.append(",");<%}%>
+     result.append(databaseAlias);
+     result.append(".");
+     result.append("<%= primaryKeyAttributes[i].getColumnName() %>");
+     <% } // for primary key attributes%>
+     <% for(int i=0;i<asOfAttributes.length;i++) { %>
+     result.append(",");
+     result.append(databaseAlias);
+     result.append(".");
+     result.append("<%= asOfAttributes[i].getToColumnName() %>");
+     <%  } %>
+     result.append(",");
+     result.append(databaseAlias);
+     result.append(".");
+     result.append("action");
+     result.append(",");
+     result.append(databaseAlias);
+     result.append(".");
+     result.append("event_seq_no");
+     result.append(",");
+     result.append(databaseAlias);
+     result.append(".");
+     result.append("last_update_time");
+     result.append(",");
+     result.append(databaseAlias);
+     result.append(".");
+     result.append("last_update_userid");
+     return result.toString();
+ }
+
+ public void inflateReplicatedAsOfAttribute<%= wrapper.getClassName() %>Data(int _pos, <%= wrapper.getClassName() %>Data _data, ResultSet _rs, DatabaseType _dt<%= wrapper.getSourceAttributeVariableDeclarationWithComma() %>)
+        throws SQLException
+ {
+     <% if (wrapper.requiresNonPkDatabaseTimezone()) { %>
+     TimeZone _databaseTimeZone = getDatabaseTimeZone(<%= wrapper.getSourceAttributeVariable() %>);
+     <% } %>
+     <%for(int i=0;i<attributes.length;i++) {
+         Attribute currentAttribute = attributes[i];
+         if (currentAttribute.isAsOfAttributeTo()){%>
+ <%@  include file="../InflateAttributes.jspi" %>
+         <%}%>
+     <%}%>
+ }
+
+ public Map findReplicatedData(int minEventId, int maxEventId)
+ {
+      Map replicationRowsByActionMap = new HashMap(3);
+      long startTime = System.currentTimeMillis();
+
+    <% if (wrapper.hasSourceAttribute()) { %>
+    <%= wrapper.getSourceAttributeVariable() %> = <%= wrapper.extractSourceAttribute("(("+
+        wrapper.getSourceAttribute().getType().getJavaTypeStringPrimary()+") query.getSourceAttributeValueForSelectedObject(i))") %>;
+    <% } // has source attribute %>
+
+    DatabaseType dt = this.getDatabaseType(<%= wrapper.getSourceAttributeVariable() %>);
+    StringBuffer fromClause = new StringBuffer();
+    fromClause.append(this.getFullyQualifiedChildQueueTableName(<%=wrapper.getSourceAttributeVariable()%>));
+    fromClause.append(" "+SqlQuery.DEFAULT_DATABASE_ALIAS);
+    String whereClause = "event_seq_no >= ? and event_seq_no <= ?";
+    String statement = dt.getSelect(this.getReplicationTableColumnList(SqlQuery.DEFAULT_DATABASE_ALIAS), fromClause.toString(), whereClause, true);
+
+    Connection con = null;
+    ResultSet rs = null;
+    PreparedStatement stm = null;
+    long count = 0;
+    try
+    {
+        con = this.getConnectionForReadGenericSource(<%= wrapper.hasSourceAttribute() ? wrapper.getSourceAttributeVariable() : "null"%>);
+
+        if(sqlLogger.isDebugEnabled())
+        {
+            PrintablePreparedStatement pps = new PrintablePreparedStatement(statement);
+            pps.setInt(1, minEventId);
+            pps.setInt(2, maxEventId);
+            <% if (wrapper.hasSourceAttribute()) { %>
+                sqlLogger.debug("source '" + <%= wrapper.getSourceAttributeVariable() %> + "': find with: " + pps.getPrintableStatement());
+            <% } else { %>
+                sqlLogger.debug("find with: " + pps.getPrintableStatement());
+            <% } %>
+        }
+
+        stm = con.prepareStatement(statement);
+        stm.setInt(1, minEventId);
+        stm.setInt(2, maxEventId);
+        rs = stm.executeQuery();
+
+        while (rs.next())
+        {
+            <%=wrapper.getClassName()%>Data data = this.inflate<%=wrapper.getClassName()%>PkData(rs, dt);
+            inflateReplicatedAsOfAttribute<%=wrapper.getClassName()%>Data(<%=primaryKeyAttributes.length + 1%>, data, rs, dt);
+            String action = rs.getString(<%=primaryKeyAttributes.length+asOfAttributes.length + 1%>);
+            List replicationRowsByActionList = (List) replicationRowsByActionMap.get(action);
+            if(replicationRowsByActionList == null)
+            {
+               replicationRowsByActionList = new ArrayList();
+               replicationRowsByActionMap.put(action, replicationRowsByActionList);
+            }
+            replicationRowsByActionList.add(data);
+            count++;
+        }
+        rs.close();
+        rs = null;
+        stm.close();
+        stm = null;
+    }
+    catch(SQLException e)
+    {
+        analyzeAndWrapSqlException("find failed "+e.getMessage(), e, con<%= wrapper.getSourceAttributeVariableWithComma() %>);
+    }
+    finally
+    {
+        closeDatabaseObjects(con, stm, rs);
+    }
+
+    if(sqlLogger.isDebugEnabled())
+    {
+        long totalTime = System.currentTimeMillis() - startTime;
+        sqlLogger.debug("retrieved " + count+" objects, "+
+            (count > 0 ? totalTime/count +" ms per" : totalTime + " ms"));
+    }
+    return replicationRowsByActionMap;
+ }
+
+ public void createChildQueueTestTable(<%=wrapper.getSourceAttributeVariableDeclaration()%>)
+ {
+      DatabaseType dt = this.getDatabaseType(<%= wrapper.getSourceAttributeVariable() %>);
+      StringBuffer statement = new StringBuffer("create table ");
+      statement.append(this.getFullyQualifiedChildQueueTableName(<%=wrapper.getSourceAttributeVariable()%>));
+      statement.append("( event_seq_no numeric(10,0) not null, ");
+      statement.append(" last_update_time "+dt.getSqlDataTypeForTimestamp());
+      statement.append(" , ");
+      <%for(int i = 0; i < primaryKeyAttributes.length; i++){%>
+      statement.append(" <%=primaryKeyAttributes[i].getColumnName()%> <%=primaryKeyAttributes[i].getType().getSqlDataType()%> not null,");
+      <%}%>
+      <%for(int i = 0; i < asOfAttributes.length; i++){%>
+      statement.append(" <%=asOfAttributes[i].getToColumnName()%> <%=asOfAttributes[i].getType().getSqlDataType()%> not null,");
+      <%}%>
+      statement.append(" action char(1) not null, ");
+      statement.append(" last_update_userid char(30) not null )");
+
+      <%if(wrapper.hasSourceAttribute()) {%>
+      executeSqlStatementGenericSource(statement.toString(), <%= wrapper.boxSourceAttribute(wrapper.getSourceAttributeVariable()) %> );
+      <%}else{%>
+      executeSqlStatementGenericSource(statement.toString(), null );
+      <%}%>
+   }
+
+<%}%>
+
+

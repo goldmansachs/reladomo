@@ -1,0 +1,1437 @@
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<project name="mithra" default="all" xmlns:jacoco="antlib:org.jacoco.ant">
+    <property environment="env"/>
+    <property name="jdk.home" value="${env.JDK_HOME}"/>
+    <property name="root" value="${env.RELADOMO_HOME}"/>
+    <!--todo: remove-->
+    <property name="mithra.home" value="${env.RELADOMO_HOME}/Mithra"/>
+    <property name="mithra.generateGscListMethod" value="true"/>
+
+    <property name="gs-collections.version" value="5.0.0"/>
+    <property name="junit.version" value="4.11"/>
+    <property name="slf4j.version" value="1.6.4"/>
+    <property name="jtdsjbcp.version" value="1.2.0.15"/>
+    <property name="fw-psp.version" value="1.3.0"/>
+    <property name="gsintegrator-api.version" value="1.8.0"/>
+    <property name="antjar.version" value="1.7.1"/>
+    <property name="docbook-xsl.version" value="1.79.1"/>
+    <property name="jacoco.version" value="0.5.7"/>
+    <property name="gwt.version" value="2.6.1"/>
+
+    <property name="mithra.pom-template.dir" location="${mithra.home}/build/mithra/pom-templates"/>
+    <property name="mithra.jars.dir" location="${mithra.home}/build/jars/mithra"/>
+    <property name="mithra.classes.dir" location="${mithra.home}/classes"/>
+    <property name="mithra.coverage.dir" location="${mithra.home}/build/mithra/coverage"/>
+    <property name="reladomo.generateConcreteClasses" value="${env.GENERATE_MITHRA_CONCRETE_CLASSES}"/>
+    <property name="gwt.compile.output.dir" value="${root}/reladomoui/target/gwtcache"/>
+
+
+    <import file="${root}/build/reladomo-config.xml"/>
+
+    <fileset dir="${root}/lib/test" id="fileset.lib.test">
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <fileset dir="${root}/lib/compile" id="fileset.lib.compile">
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <fileset dir="${root}/lib/drivers" id="fileset.lib.drivers">
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <fileset dir="${root}/lib/gsapi" id="fileset.lib.gsapi">
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <fileset dir="${root}/lib/ui" id="fileset.lib.ui">
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <path id="reladomo.compile.classpath">
+        <fileset refid="fileset.lib.compile"/>
+        <pathelement location="${root}/reladomo/target/reladomo-asm-4.2.jar"/>
+    </path>
+
+    <path id="reladomo.test.compile.classpath">
+        <fileset refid="fileset.lib.test"/>
+        <path refid="reladomo.compile.classpath"/>
+        <pathelement location="${root}/reladomo/target/classes"/>
+    </path>
+
+    <path id="reladomo.run.test.classpath">
+        <path refid="reladomo.test.classpath"/>
+        <pathelement location="${root}/reladomo/target/classes"/>
+        <pathelement location="${root}/reladomo/target/test-util-classes"/>
+        <pathelement location="${root}/reladomo/src/test/resources"/>
+        <pathelement location="${root}/reladomogen/target/classes"/>
+        <pathelement location="${root}/reladomogenutil/target/classes"/>
+        <pathelement location="${root}/reladomogenutil/target/test-classes"/>
+    </path>
+
+    <path id="reladomo.genutil.run.classpath">
+        <path refid="reladomo.run.test.classpath"/>
+        <fileset refid="fileset.lib.drivers"/>
+    </path>
+
+    <path id="reladomogen.compile.classpath">
+        <pathelement location="${root}/lib/compile/slf4j-api-${slf4j.version}.jar"/>
+    </path>
+
+    <path id="reladomo.test.classpath">
+        <fileset refid="fileset.lib.compile"/>
+        <fileset refid="fileset.lib.test"/>
+    </path>
+
+    <path id="fop.classpath">
+        <fileset dir="${root}/build/lib/fop">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="xslt.processor.classpath">
+        <fileset dir="${root}/build/lib/xalan">
+            <include name="**/*.jar"/>
+        </fileset>
+    </path>
+
+    <path id="reladomogen.classpath">
+        <pathelement path="${root}/reladomogen/target/classes"/>
+        <pathelement location="${root}/lib/compile/slf4j-api-${slf4j.version}.jar"/>
+        <pathelement location="${root}/lib/test/slf4j-log4j12-${slf4j.version}.jar"/>
+    </path>
+
+    <path id="gwt.compile.class.path">
+        <pathelement location="${root}/reladomoui/src/main/java" />
+        <pathelement location="${root}/reladomoui/src/main/web" />
+        <fileset refid="fileset.lib.ui"/>
+    </path>
+
+    <macrodef name="libboot">
+        <attribute name="specFile" />
+        <sequential>
+            <java failonerror="true" dir="${root}" classpath="${root}/libboot/target/classes" classname="org.libboot.Libboot" fork="true">
+                <arg value="download" />
+                <arg value="@{specFile}" />
+                <arg value="build\repos.txt" />
+            </java>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="gwtcompile">
+        <attribute name="module" />
+        <attribute name="classpathref" default="gwt.compile.class.path"/>
+        <attribute name="output" />
+        <sequential>
+            <delete quiet="true" dir="@{output}"/>
+            <mkdir dir="@{output}"/>
+            <java failonerror="true" classpathref="@{classpathref}" classname="com.google.gwt.dev.Compiler" fork="true">
+                <jvmarg value="-Djava.awt.headless=true"/>
+                <arg value="-war" />
+                <arg value="@{output}" />
+                <arg value="@{module}" />
+            </java>
+        </sequential>
+    </macrodef>
+
+    <taskdef name="xsd2bean-gen" classname="com.gs.fw.common.freyaxml.generator.ant.FreyaAntTask" loaderRef="freyaXmlGenerator"/>
+
+    <target name="clean-reladomo" >
+        <delete quiet="true" dir="${root}/reladomo/target"/>
+        <delete quiet="true" dir="${root}/reladomogen/target"/>
+        <delete quiet="true" dir="${root}/reladomoui/target"/>
+        <delete quiet="true" dir="${root}/reladomogs.target"/>
+    </target>
+
+    <target name="clean" depends="clean-reladomo" description="Delete class files and other temp files"/>  <!-- standard alias -->
+
+    <target name="all" depends="compile-reladomo, compile-reladomo-genutil"/>
+
+    <target name="sanity-check-build">
+        <available property="jdk.sanity.check" classname="java.sql.Connection" ignoresystemclasses="true">
+            <classpath>
+                <pathelement location="${jdk.home}/jre/lib/rt.jar"/>
+            </classpath>
+        </available>
+        <fail message="Could not find the JDK! Check ${jdk.home}." unless="jdk.sanity.check"/>
+        <available property="reladomo.sanity.check" file="${root}/reladomo/src/main/java/com/gs/fw/common/mithra/MithraManager.java"/>
+        <fail message="Could not find mithra sources. Project root is ${root}, but there is nothing in ${root}/reladomo/src/main/java/com/gs/fw/common/mithra/MithraManager.java." unless="reladomo.sanity.check"/>
+    </target>
+
+    <target name="determine-jdk">
+        <available property="jdk14" classname="java.sql.Savepoint" ignoresystemclasses="true">
+            <classpath>
+                <pathelement location="${jdk.home}/jre/lib/rt.jar"/>
+            </classpath>
+        </available>
+    </target>
+
+    <target name="init-reladomo" depends="determine-jdk, sanity-check-build">
+        <tstamp/>
+        <mkdir dir="${root}/reladomo/target"/>
+        <mkdir dir="${root}/reladomo/target/depend"/>
+        <mkdir dir="${root}/reladomo/target/classes"/>
+        <mkdir dir="${root}/reladomo/target/test-util-classes"/>
+        <mkdir dir="${root}/reladomo/target/test-classes-offheap"/>
+        <mkdir dir="${root}/reladomo/target/test-classes-onheap"/>
+        <mkdir dir="${root}/reladomo/target/generated-src"/>
+        <mkdir dir="${root}/reladomo/target/test-generated-offheap-src"/>
+        <mkdir dir="${root}/reladomo/target/test-generated-onheap-src"/>
+        <mkdir dir="${root}/reladomo/target/dbtemp"/>
+        <mkdir dir="${root}/reladomo/target/docbook"/>
+        <mkdir dir="${root}/reladomo/target/docbook-lib"/>
+        <mkdir dir="${root}/reladomo/target/javadoc"/>
+        <mkdir dir="${root}/reladomo/target/xsddoc"/>
+        <mkdir dir="${root}/reladomogen/target"/>
+        <mkdir dir="${root}/reladomogen/target/classes"/>
+        <mkdir dir="${root}/reladomogen/target/depend"/>
+        <mkdir dir="${root}/reladomogenutil/target"/>
+        <mkdir dir="${root}/reladomogenutil/target/classes"/>
+        <mkdir dir="${root}/reladomogenutil/target/test-classes"/>
+        <mkdir dir="${root}/reladomogenutil/target/depend"/>
+        <mkdir dir="${root}/reladomogenutil/target/db/mssql"/>
+        <mkdir dir="${root}/reladomogenutil/target/db/sybase"/>
+        <mkdir dir="${root}/reladomogenutil/target/db/db2"/>
+        <mkdir dir="${root}/reladomogenutil/target/db/postgres"/>
+        <mkdir dir="${root}/reladomogenutil/target/db/oracle"/>
+        <mkdir dir="${root}/reladomogsi/target"/>
+        <mkdir dir="${root}/reladomogsi/target/generated-src"/>
+        <mkdir dir="${root}/reladomogsi/target/classes"/>
+        <mkdir dir="${root}/reladomogsi/target/depend"/>
+        <mkdir dir="${root}/reladomoui/target"/>
+        <mkdir dir="${root}/reladomogs/target"/>
+        <mkdir dir="${root}/reladomogs/target/classes"/>
+        <mkdir dir="${root}/reladomogs/target/depend"/>
+        <mkdir dir="${root}/reladomoui/target"/>
+        <mkdir dir="${gwt.compile.output.dir}"/>
+        <mkdir dir="${root}/reladomoui/target/classes"/>
+        <mkdir dir="${root}/reladomoui/target/depend"/>
+    </target>
+
+    <target name="generate-mithra-query-parser" depends="init-reladomo">
+        <mkdir dir="${root}/reladomo/target/grammar/com/gs/fw/common/mithra/generator/queryparser"/>
+        <property name="mithra.queryparser.dir" location="${root}/reladomo/target/grammar/com/gs/fw/common/mithra/generator/queryparser"/>
+        <jjtree
+            target="${root}/reladomo/src/main/grammar/mithra.jjt"
+            outputdirectory="${mithra.queryparser.dir}"
+            javacchome="${mithra.home}/build/javacc-3.2"
+            static="false"
+            visitor="true"
+            multi="true"
+            />
+        <javacc
+            target="${mithra.queryparser.dir}/mithra.jj"
+            outputdirectory="${mithra.queryparser.dir}"
+            javacchome="${mithra.home}/build/javacc-3.2"
+            static="false"
+            />
+        <delete quiet="true">
+            <fileset dir="${mithra.queryparser.dir}" includes="*.jj"/>
+        </delete>
+    </target>
+
+    <target name="mithra-vendor-test-suite" depends="reladomo-vendor-junitreport, generate-reladomo-xml-test" description="Run JUnit Vendor test cases">
+        <fail if="failed.mithra.unit.tests" message="Mithra unit tests failed"/>
+    </target>
+
+
+    <macrodef name="exec-test-suite">
+        <attribute name="mithraxmlconfig" description="mithra.xml.config"/>
+        <attribute name="testclass" description="test class"/>
+        <attribute name="qualifier" description="added to the end of the test name" default=""/>
+        <attribute name="heap" description="either 'onheap' or 'offheap"/>
+        <sequential>
+            <delete dir="${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
+            <mkdir dir="${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
+            <mkdir dir="${root}/reladomo/target/testresult"/>
+            <junit printsummary="off" dir="${root}" timeout="3600000" fork="yes" failureproperty="failed.mithra.unit.tests"
+                   includeantruntime="true" showoutput="false">
+                <formatter type="xml" extension="@{mithraxmlconfig}"/>
+                <!--<formatter type="plain" usefile="false"/>-->
+                <formatter classname="com.gs.fw.common.mithra.test.JunitFormatter" extension="@{mithraxmlconfig}.txt"/>
+                <classpath>
+                    <path refid="reladomo.run.test.classpath"/>
+                    <pathelement location="${root}/reladomo/target/test-classes-@{heap}"/>
+                </classpath>
+                <jvmarg value="-server"/>
+                <jvmarg value="${jacocovmarg}${mithra.coverage.dir}/jacoco/@{mithraxmlconfig}@{testclass}@{heap}.exec"/>
+                <jvmarg value="-XX:MaxPermSize=320m"/>
+                <jvmarg value="-Xmx3048m"/>
+                <jvmarg value="-ea"/>
+                <jvmarg value="-Dlog4j.configuration=file:${root}/reladomo/src/test/resources/log4jWarn.config"/>
+                <jvmarg value="-Dmithra.xml.root=${root}/reladomo/src/test/resources/"/>
+                <jvmarg value="-Dmithra.xml.config=@{mithraxmlconfig}"/>
+                <jvmarg value="-Djacoco.args=${jacocovmarg}${mithra.coverage.dir}/jacoco/@{mithraxmlconfig}@{testclass}@{heap}.exec"/>
+                <jvmarg value="-Dderby.storage.tempDirectory=${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
+                <jvmarg value="-Dderby.system.home=${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
+                <jvmarg value="-Dderby.system.durability=test"/>
+                <test name="@{testclass}" todir="${root}/reladomo/target/testresult"/>
+            </junit>
+            <replace casesensitive="true" dir="${root}/reladomo/target/testresult" includes="TEST-@{testclass}@{mithraxmlconfig}">
+                <replacefilter token="&quot; tests=" value="@{qualifier}&quot; tests="/>
+            </replace>
+            <replaceregexp file="${root}/reladomo/target/testresult/TEST-@{testclass}@{mithraxmlconfig}"
+                           match="classname=&quot;(.*)\.([abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$1234567890]*)&quot; name=&quot;(.*)&quot; time"
+                           replace="classname=&quot;\1.\2&quot; name=&quot;\2.\3@{qualifier}&quot; time"
+                           byline="true"/>
+        </sequential>
+    </macrodef>
+    <fileset dir="${root}/reladomo/src/main/java" id="coverage-src">
+        <exclude name="**/xmlbinding/**/*.java"/>
+        <exclude name="**/notification/RunsMasterQueue*.java"/>
+        <include name="**/*.java"/>
+    </fileset>
+
+    <fileset dir="${mithra.classes.dir}" id="class">
+        <exclude name="**/test/**/*.class"/>
+        <exclude name="**/generator/**/*.class"/>
+        <exclude name="**/ui/**/*.class"/>
+        <exclude name="**/templates/**/*.class"/>
+        <exclude name="**/xmlbinding/**/*.class"/>
+        <exclude name="**/notification/RunsMasterQueue*.class"/>
+        <exclude name="**/gsintegrator/IntegratorDataSequence*.class"/>
+    </fileset>
+
+    <target name="-jacoco-init">
+        <property name="jacocovmarg" value="-javaagent:${mithra.home}/jacoco/jacocoagent-${jacoco.version}.jar=excludes=com.gs.fw.common.mithra.generator.*:
+                                  com.gs.fw.common.mithra.test.*:
+                                  com.gs.mithra.asm.*:
+                                  com.gs.fw.common.mithra.ui.*:
+                                  com.gs.fw.common.mithra.templates.*:
+                                  com.gs.fw.common.mithra.cacheloader.xmlbinding.*:
+                                  com.gs.fw.common.mithra.notification.RunsMasterQueue*:
+                                  com.gs.fw.common.mithra.gsintegrator.IntegratorDataSequence*:
+                                  com.gs.fw.common.mithra.xmlbinding.*,destfile="/>
+        <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+            <classpath path="${mithra.home}/jacoco/jacocoant.jar"/>
+        </taskdef>
+    </target>
+
+    <target name="mithra-test-coverage" depends="-jacoco-init,compile-reladomo, reladomo-test-suite, mithra-vendor-test-suite">  <!-- -->
+        <mkdir dir="${mithra.coverage.dir}/report"/>
+        <jacoco:merge destfile="${mithra.coverage.dir}/jacoco/mergedData.exec">
+            <fileset dir="${mithra.coverage.dir}/jacoco" includes="*.exec, *.execslave"/>
+        </jacoco:merge>
+        <jacoco:report>
+            <!-- This task needs the collected execution data  -->
+            <executiondata>
+                <file file="${mithra.coverage.dir}/jacoco/mergedData.exec"/>
+            </executiondata>
+
+            <!-- the class files and optional source files  -->
+            <structure name="Mithra">
+                <classfiles>
+                    <fileset refid="class"/>
+                </classfiles>
+                <sourcefiles encoding="UTF-8">
+                    <fileset refid="coverage-src"/>
+                </sourcefiles>
+            </structure>
+
+            <!-- to produce reports in html format -->
+            <html destdir="${mithra.coverage.dir}/jacoco/report"/>
+        </jacoco:report>
+    </target>
+
+
+
+
+    <!-- ************************** reladomogen **********************************-->
+    <target name="xsd2bean-reladomo-generator">
+        <xsd2bean-gen parserName="MithraGenerator"
+            destinationPackage="com.gs.fw.common.mithra.generator.metamodel"
+            xsd="${root}/reladomogen/src/main/xsd/mithraobject.xsd"
+            generatedDir="${root}/reladomogen/target/generated-src"
+            nonGeneratedDir="${root}/reladomogen/src/main/java"
+            >
+        </xsd2bean-gen>
+    </target>
+    <target name="gen-reladomogen-version-class" depends="init-reladomo">
+
+        <dependset>
+            <srcfileset
+                dir="${root}/build"
+                includes="mithra-config.xml"/>
+            <targetfileset
+                dir="${root}/reladomogen/target/generated-src/com/gs/fw/common/mithra/generator"
+                includes="MithraVersion.java"/>
+        </dependset>
+
+        <copy file="${root}/reladomogen/src/main/templates/MithraVersion.tmpl"
+              toFile="${root}/reladomogen/target/generated-src/com/gs/fw/common/mithra/generator/MithraVersion.java">
+        </copy>
+        <replace casesensitive="true" dir="${root}/reladomogen/target/generated-src/com/gs/fw/common/mithra/generator" includes="MithraVersion.java">
+            <replacefilter token="%PACKAGE_NAME%" value="com.gs.fw.common.mithra.generator"/>
+        </replace>
+        <replace casesensitive="true" dir="${root}/reladomogen/target/generated-src/com/gs/fw/common/mithra/generator" includes="MithraVersion.java">
+            <replacefilter token="%MITHRA_VERSION_STRING%" value="${reladomo.version}"/>
+        </replace>
+        <replace casesensitive="true" dir="${root}/reladomogen/target/generated-src/com/gs/fw/common/mithra/generator" includes="MithraVersion.java">
+            <replacefilter token="%MITHRA_VERSION%" value="${reladomo.version}"/>
+        </replace>
+        <replaceregexp file="${root}/reladomogen/target/generated-src/com/gs/fw/common/mithra/generator/MithraVersion.java"
+                         match="=[ ]*([0-9]+).([0-9]+).([0-9]+)"  replace="= \1 &lt;&lt; 16 | \2 &lt;&lt; 8 | \3"/>
+
+        <dependset>
+            <srcfileset
+                dir="${root}/build"
+                includes="mithra-config.xml"/>
+            <targetfileset
+                dir="${root}/reladomo/target/generated-src/com/gs/fw/common/mithra/util"
+                includes="MithraVersion.java"/>
+        </dependset>
+
+        <copy file="${root}/reladomogen/src/main/templates/MithraVersion.tmpl"
+              toFile="${root}/reladomo/target/generated-src/com/gs/fw/common/mithra/util/MithraVersion.java">
+        </copy>
+        <replace casesensitive="true" dir="${root}/reladomo/target/generated-src/com/gs/fw/common/mithra/util" includes="MithraVersion.java">
+            <replacefilter token="%PACKAGE_NAME%" value="com.gs.fw.common.mithra.util"/>
+        </replace>
+        <replace casesensitive="true" dir="${root}/reladomo/target/generated-src/com/gs/fw/common/mithra/util" includes="MithraVersion.java">
+            <replacefilter token="%MITHRA_VERSION%" value="${reladomo.version}"/>
+        </replace>
+        <replace casesensitive="true" dir="${root}/reladomo/target/generated-src/com/gs/fw/common/mithra/util" includes="MithraVersion.java">
+            <replacefilter token="%MITHRA_VERSION_STRING%" value="${reladomo.version}"/>
+        </replace>
+        <replaceregexp file="${root}/reladomo/target/generated-src/com/gs/fw/common/mithra/util/MithraVersion.java"
+                       match="=[ ]*([0-9]+).([0-9]+).([0-9]+)"  replace="= \1 &lt;&lt; 16 | \2 &lt;&lt; 8 | \3"/>
+    </target>
+
+    <target name="check-template-generation" depends="init-reladomo">
+        <uptodate property="template-generation.notRequired" targetfile="${root}/reladomogen/target/generated-src/com/gs/fw/common/mithra/templates/readonly/Abstract_jsp.java" >
+          <srcfiles dir= "${root}/reladomogen/src/main/templates" includes="**/*"/>
+        </uptodate>
+    </target>
+
+    <target name="generate-templates" depends="check-template-generation" unless="template-generation.notRequired">
+        <taskdef name="jasper2" classname="org.apache.jasper.JspC" loaderRef="jasper"/>
+        <mkdir dir="${root}/reladomogen/target/generated-src/com/gs/fw/common/mithra/templates"/>
+        <delete quiet="true">
+            <fileset dir="${root}/reladomogen/target/generated-src/com/gs/fw/common/mithra/templates" includes="**/*.java" />
+        </delete>
+        <jasper2 outputDir="${root}/reladomogen/target/generated-src"
+            uriRoot="${root}/reladomogen/src/main/templates"
+            package="com.gs.fw.common.mithra.templates"
+            listErrors="true"
+            verbose="0"
+            compile="false">
+        </jasper2>
+        <javac destdir="${root}/reladomogen/target/classes"
+            debug="true"
+            source="1.5"
+            target="1.5"
+            includeAntRuntime="true">
+            <src path="${root}/reladomogen/src/main/java"/>
+            <include name="com/gs/fw/common/mithra/generator/TemplateMinifier.java"/>
+            <include name="com/gs/fw/common/mithra/generator/SourceFormatter.java"/>
+        </javac>
+        <java
+                classname="com.gs.fw.common.mithra.generator.TemplateMinifier"
+                fork="true"
+                failonerror="true"
+                maxmemory="128m"
+                >
+            <arg value="${root}/reladomogen/target/generated-src/com/gs/fw/common/mithra/templates"/>
+            <classpath>
+                <pathelement path="${root}/reladomogen/target/classes"/>
+            </classpath>
+        </java>
+    </target>
+
+    <target name="compile-reladomo-generator" depends="init-reladomo, gen-reladomogen-version-class, xsd2bean-reladomo-generator, generate-templates">
+        <dependset>
+            <srcfileset dir="${root}/reladomogen/src/main/java"/>
+            <srcfileset dir="${root}/reladomogen/target/generated-src"/>
+            <targetfileset dir="${root}/reladomogen/target/classes"/>
+        </dependset>
+        <javac destdir="${root}/reladomogen/target/classes"
+            debug="true"
+            source="1.5"
+            target="1.5"
+            includeAntRuntime="true">
+            <src path="${root}/reladomogen/target/generated-src/com/gs/fw/common/mithra/generator"/>
+            <include name="MithraVersion.java"/>
+        </javac>
+        <javac destdir="${root}/reladomogen/target/classes"
+            debug="true"
+            source="1.5"
+            target="1.5"
+            nowarn="true"
+            includeAntRuntime="true">
+            <src path="${root}/reladomogen/src/main/java"/>
+            <src path="${root}/reladomogen/target/generated-src"/>
+            <classpath>
+                <path refid="reladomogen.compile.classpath"/>
+            </classpath>
+        </javac>
+        <taskdef name="templateFromJava" classname="com.gs.fw.common.mithra.generator.TemplateFromJavaTask" loaderRef="mithraGenerator">
+            <classpath refid="reladomogen.classpath"/>
+        </taskdef>
+        <templateFromJava input="${root}/reladomo/src/main/java/com/gs/fw/common/mithra/superclassimpl/MithraTransactionalObjectImpl.java"
+            output="${root}/reladomogen/target/classes/com/gs/fw/common/mithra/generator/Transactional.tmpl"/>
+        <templateFromJava input="${root}/reladomo/src/main/java/com/gs/fw/common/mithra/superclassimpl/MithraDatedTransactionalObjectImpl.java"
+            output="${root}/reladomogen/target/classes/com/gs/fw/common/mithra/generator/DatedTransactional.tmpl"/>
+        <delete quiet="true" file="${root}/reladomogen/target/classes/com/gs/fw/common/mithra/generator/mithragen.md5"/>
+        <concat binary="true" destfile="${root}/reladomogen/target/mithragentemp.concat">
+            <fileset dir="${root}/reladomogen/target/classes">
+                <include name="com/gs/fw/common/mithra/generator/**/*.class"/>
+                <include name="com/gs/fw/common/mithra/generator/**/*.tmpl*"/>
+                <include name="com/gs/fw/common/mithra/templates/**/*.class"/>
+            </fileset>
+        </concat>
+        <checksum file="${root}/reladomogen/target/mithragentemp.concat" property="mithragen.md5.property"/>
+        <delete quiet="true" file="${root}/reladomogen/target/mithragentemp.concat"/>
+        <echo message="${mithragen.md5.property}" file="${root}/reladomogen/target/classes/com/gs/fw/common/mithra/generator/mithragen.md5"/>
+    </target>
+
+    <target name="generate-reladomo-test-graph" depends="compile-reladomo-generator">
+        <taskdef name="reladomo-graphgen" classname="com.gs.fw.common.mithra.generator.MithraGraphGenerator" loaderRef="mithraGenerator">
+                <classpath refid="reladomogen.classpath"/>
+        </taskdef>
+
+        <reladomo-graphgen xml="${root}/reladomo/src/test/reladomo-xml/MithraClassList.xml"
+                         outputFile="${root}/reladomo/target/reladomotest.graphml"
+                         collapseRelationships="false"
+                         showAttributes="primaryKey">
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/" fileName="MithraClassListToImport.xml"/>
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/testmithraimport" fileName="MithraTestImportClassList.xml"/>
+        </reladomo-graphgen>
+    </target>
+
+    <!-- ************************** /reladomogen **********************************-->
+    <!-- ************************** reladomo **********************************-->
+
+    <target name="libboot-reladomo">
+        <libboot specFile="build/reladomolib.spec"/>
+    </target>
+
+    <target name="xsd2bean-reladomo-runtime">
+        <xsd2bean-gen parserName="MithraRuntime"
+            destinationPackage="com.gs.fw.common.mithra.mithraruntime"
+            xsd="${root}/reladomo/src/main/xsd/mithraruntime.xsd"
+            generatedDir="${root}/reladomo/target/generated-src"
+            nonGeneratedDir="${root}/reladomo/src/main/java"
+            >
+        </xsd2bean-gen>
+    </target>
+
+    <target name="xsd2bean-reladomo-cacheloader">
+        <xsd2bean-gen parserName="MithraCacheLoader"
+            destinationPackage="com.gs.fw.common.mithra.cacheloader.xmlbinding"
+            xsd="${root}/reladomo/src/main/xsd/mithracacheloader.xsd"
+            generatedDir="${root}/reladomo/target/generated-src"
+            nonGeneratedDir="${root}/reladomo/src/main/java"
+            >
+        </xsd2bean-gen>
+    </target>
+
+    <target name="jarjar-asm">
+        <libboot specFile="build/asmlib.spec"/>
+        <path id="jarjar.classpath">
+            <pathelement location="${root}/build/lib/jarjar-1.3.jar"/>
+        </path>
+
+        <taskdef name="jarjar" classname="com.tonicsystems.jarjar.JarJarTask" loaderRef="jarjar">
+            <classpath refid="jarjar.classpath"/>
+        </taskdef>
+        <mkdir dir="${root}/reladomo/target/tmp/asm"/>
+        <jarjar jarfile="${root}/reladomo/target/reladomo-asm-4.2.jar">
+            <fileset dir="${root}/reladomo/target/tmp/asm"/>
+            <zipfileset src="${root}/build/asmlib/asm-4.2.jar"/>
+            <rule pattern="org.objectweb.asm.**" result="com.gs.mithra.asm.@1"/>
+        </jarjar>
+        <delete quiet="true" dir="${root}/reladomo/target/tmp/asm"/>
+    </target>
+
+    <target name="generate-reladomo-replication-classes" depends="compile-reladomo-generator">
+        <taskdef name="reladomo-gen" classname="com.gs.fw.common.mithra.generator.MithraGenerator" loaderRef="mithraGenerator">
+            <classpath refid="reladomogen.classpath"/>
+        </taskdef>
+        <reladomo-gen xml="${root}/reladomo/src/main/reladomo-xml/replication/MithraReplicationNotificationClassList.xml"
+            generatedDir="${root}/reladomo/target/generated-src"
+            nonGeneratedDir="${root}/reladomo/src/main/java"
+            generateConcreteClasses="${reladomo.generateConcreteClasses}"/>
+    </target>
+
+    <target name="compile-reladomo" depends="init-reladomo, jarjar-asm, libboot-reladomo, xsd2bean-reladomo-runtime, xsd2bean-reladomo-cacheloader, generate-reladomo-replication-classes">
+        <dependset>
+            <srcfileset dir="${root}/reladomo/src/main/java"/>
+            <srcfileset dir="${root}/reladomo/target/generated-src"/>
+            <targetfileset dir="${root}/reladomo/target/classes" excludes="com/gs/mithra/**/*"/>
+        </dependset>
+        <unzip src="${root}/reladomo/target/reladomo-asm-4.2.jar" dest="${root}/reladomo/target/classes"/>
+        <delete dir="${root}/reladomo/target/classes/META-INF" quiet="true"/>
+        <delete dir="${root}/reladomo/target/classes/org" quiet="true"/>
+        <javac destdir="${root}/reladomo/target/classes"
+            debug="true"
+            source="1.5"
+            target="1.5"
+            nowarn="true"
+            includeAntRuntime="false">
+            <src path="${root}/reladomo/src/main/java"/>
+            <src path="${root}/reladomo/target/generated-src"/>
+            <exclude name="com/gs/fw/Jar*.java"/>
+            <compilerarg line="-Xlint:-unchecked -Xlint:-deprecation -XDignore.symbol.file"/>
+            <classpath>
+                <path refid="reladomo.compile.classpath"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="compile-reladomo-test-util" depends="compile-reladomo">
+        <dependset>
+            <srcfileset dir="${root}/reladomo/src/test-util/java"/>
+            <srcfileset dir="${root}/reladomo/target/classes"/>
+            <targetfileset dir="${root}/reladomo/target/test-util-classes"/>
+        </dependset>
+        <javac destdir="${root}/reladomo/target/test-util-classes"
+            debug="true"
+            source="1.5"
+            target="1.5"
+            nowarn="true"
+            includeAntRuntime="false">
+            <src path="${root}/reladomo/src/test-util/java"/>
+            <compilerarg line="-Xlint:-unchecked -Xlint:-deprecation -XDignore.symbol.file"/>
+            <classpath>
+                <path refid="reladomo.test.compile.classpath"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <!-- ************************** /reladomo **********************************-->
+    <!-- ************************** reladomo test **********************************-->
+    <target name="generate-reladomo-test-classes" depends="compile-reladomo-generator">
+        <taskdef name="reladomo-gen" classname="com.gs.fw.common.mithra.generator.MithraGenerator" loaderRef="mithraGenerator">
+            <classpath refid="reladomogen.classpath"/>
+        </taskdef>
+        <reladomo-gen xml="${root}/reladomo/src/test/reladomo-xml/MithraClassListToImport.xml"
+            generatedDir="${root}/reladomo/target/test-generated-onheap-src"
+            nonGeneratedDir="${root}/reladomo/src/test/java"
+            generateGscListMethod="${mithra.generateGscListMethod}"
+            generateConcreteClasses="${reladomo.generateConcreteClasses}">
+        </reladomo-gen>
+        <reladomo-gen xml="${root}/reladomo/src/test/reladomo-xml/MithraClassList.xml"
+            generatedDir="${root}/reladomo/target/test-generated-onheap-src"
+            nonGeneratedDir="${root}/reladomo/src/test/java"
+            generateGscListMethod="${mithra.generateGscListMethod}"
+            generateConcreteClasses="${reladomo.generateConcreteClasses}">
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/" fileName="MithraClassListToImport.xml"/>
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/testmithraimport" fileName="MithraTestImportClassList.xml"/>
+        </reladomo-gen>
+        <reladomo-gen xml="${root}/reladomo/src/test/reladomo-xml/testmithraimport/MithraTestImportClassList.xml"
+            generatedDir="${root}/reladomo/target/test-generated-onheap-src"
+            nonGeneratedDir="${root}/reladomo/src/test/java">
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/" fileName="MithraClassList.xml"/>
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/" fileName="MithraClassListToImport.xml"/>
+        </reladomo-gen>
+
+        <reladomo-gen xml="${root}/reladomo/src/test/reladomo-xml/MithraClassListToImport.xml"
+            forceOffHeap="true"
+            generatedDir="${root}/reladomo/target/test-generated-offheap-src"
+            nonGeneratedDir="${root}/reladomo/src/test/java"
+            generateGscListMethod="${mithra.generateGscListMethod}"
+            generateConcreteClasses="${reladomo.generateConcreteClasses}">
+        </reladomo-gen>
+        <reladomo-gen xml="${root}/reladomo/src/test/reladomo-xml/MithraClassList.xml"
+            forceOffHeap="true"
+            generatedDir="${root}/reladomo/target/test-generated-offheap-src"
+            nonGeneratedDir="${root}/reladomo/src/test/java"
+            generateGscListMethod="${mithra.generateGscListMethod}"
+            generateConcreteClasses="${reladomo.generateConcreteClasses}">
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/" fileName="MithraClassListToImport.xml"/>
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/testmithraimport" fileName="MithraTestImportClassList.xml"/>
+        </reladomo-gen>
+        <reladomo-gen xml="${root}/reladomo/src/test/reladomo-xml/testmithraimport/MithraTestImportClassList.xml"
+            forceOffHeap="true"
+            generatedDir="${root}/reladomo/target/test-generated-offheap-src"
+            nonGeneratedDir="${root}/reladomo/src/test/java">
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/" fileName="MithraClassList.xml"/>
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/" fileName="MithraClassListToImport.xml"/>
+        </reladomo-gen>
+
+    </target>
+
+    <target name="generate-reladomo-test-classes-no-concrete" depends="compile-reladomo-generator">
+        <taskdef name="reladomo-gen" classname="com.gs.fw.common.mithra.generator.MithraGenerator" loaderRef="mithraGenerator">
+            <classpath refid="reladomogen.classpath"/>
+        </taskdef>
+        <reladomo-gen xml="${root}/reladomo/src/test/reladomo-xml/MithraClassList.xml"
+            generatedDir="${mithra.home}/tmp/noconcrete"
+            nonGeneratedDir="${mithra.home}/tmp/noconcrete" generateConcreteClasses="true"
+            ignoreNonGeneratedAbstractClasses="true" ignoreTransactionalMethods="true">
+        </reladomo-gen>
+
+    </target>
+
+    <target name="generate-reladomo-final-test-classes" depends="compile-reladomo-generator">
+        <taskdef name="reladomo-gen" classname="com.gs.fw.common.mithra.generator.MithraGenerator" loaderRef="mithraGenerator">
+            <classpath refid="reladomogen.classpath"/>
+        </taskdef>
+        <reladomo-gen xml="${root}/reladomo/src/test/reladomo-xml/finalgetter/MithraFinalGetterClassList.xml"
+            generatedDir="${root}/reladomo/target/test-generated-onheap-src"
+            nonGeneratedDir="${root}/reladomo/src/test/java"
+            generateGscListMethod="${mithra.generateGscListMethod}"
+            generateConcreteClasses="${reladomo.generateConcreteClasses}"
+                      defaultFinalGetters="true">
+        </reladomo-gen>
+        <reladomo-gen xml="${root}/reladomo/src/test/reladomo-xml/finalgetter/MithraFinalGetterClassList.xml"
+            forceOffHeap="true"
+            generatedDir="${root}/reladomo/target/test-generated-offheap-src"
+            nonGeneratedDir="${root}/reladomo/src/test/java"
+            generateGscListMethod="${mithra.generateGscListMethod}"
+            generateConcreteClasses="${reladomo.generateConcreteClasses}"
+                      defaultFinalGetters="true">
+        </reladomo-gen>
+    </target>
+
+    <target name="compile-reladomo-test" depends="compile-reladomo-test-util, compile-reladomo-genutil, generate-reladomo-test-classes, generate-reladomo-final-test-classes">
+        <dependset>
+            <srcfileset dir="${root}/reladomo/src/test/java"/>
+            <srcfileset dir="${root}/reladomo/target/test-generated-onheap-src"/>
+            <srcfileset dir="${root}/reladomo/target/test-generated-offheap-src"/>
+            <srcfileset dir="${root}/reladomo/target/classes"/>
+            <srcfileset dir="${root}/reladomo/target/test-util-classes"/>
+            <targetfileset dir="${root}/reladomo/target/test-classes-onheap"/>
+            <targetfileset dir="${root}/reladomo/target/test-classes-offheap"/>
+        </dependset>
+        <javac destdir="${root}/reladomo/target/test-classes-onheap"
+            debug="true"
+            source="1.5"
+            target="1.5"
+            nowarn="true"
+            includeAntRuntime="true">
+            <src path="${root}/reladomo/src/test/java"/>
+            <src path="${root}/reladomo/target/test-generated-onheap-src"/>
+            <exclude name="com/gs/fw/common/mithra/test/offheap/**/*.java"/>
+            <classpath>
+                <path refid="reladomo.test.classpath"/>
+                <pathelement location="${root}/reladomo/target/classes"/>
+                <pathelement location="${root}/reladomo/target/test-util-classes"/>
+            </classpath>
+        </javac>
+        <javac destdir="${root}/reladomo/target/test-classes-offheap"
+            debug="true"
+            source="1.5"
+            target="1.5"
+            nowarn="true"
+            includeAntRuntime="true">
+            <src path="${root}/reladomo/src/test/java"/>
+            <src path="${root}/reladomo/target/test-generated-offheap-src"/>
+            <classpath>
+                <path refid="reladomo.test.classpath"/>
+                <pathelement location="${root}/reladomo/target/classes"/>
+                <pathelement location="${root}/reladomo/target/test-util-classes"/>
+            </classpath>
+        </javac>
+    </target>
+    <target name="run-reladomo-test-suite" depends="compile-reladomo-test, compile-reladomo-genutil-test" description="Run JUnit test cases for Mithra code">
+        <property name="jacocovmarg" value="-Dcoverage=none"/>
+        <delete quiet="true" dir="${root}/reladomo/target/testresult"/>
+        <mkdir dir="${root}/reladomo/target/testresult"/>
+        <tstamp>
+            <format property="TIME_NOW" pattern="hh:mm:ss a z"/>
+        </tstamp>
+        <echo message="JUnit master suite for Reladomo starting at ${TIME_NOW} on ${TODAY} "/>
+        <echo message="Log4j file: ${root}/reladomo/src/test/resources/log4jWarn.config"/>
+        <parallel threadsPerProcessor ="1" >
+            <exec-test-suite mithraxmlconfig="MithraConfigFullCache.xml" qualifier="/full" testclass="com.gs.fw.common.mithra.test.MithraTestSuite" heap="onheap"/>
+            <exec-test-suite mithraxmlconfig="MithraConfigFullCache.xml" qualifier="/full" testclass="com.gs.fw.common.mithra.test.MithraMultiVmTestSuite" heap="onheap"/>
+            <exec-test-suite mithraxmlconfig="MithraConfigPartialCache.xml" qualifier="/partial" testclass="com.gs.fw.common.mithra.test.MithraMultiVmTestSuite" heap="onheap"/>
+            <exec-test-suite mithraxmlconfig="MithraConfigPartialCache.xml" qualifier="/partial" testclass="com.gs.fw.common.mithra.test.MithraTestSuite" heap="onheap"/>
+
+            <exec-test-suite mithraxmlconfig="MithraConfigOffHeapFullCache.xml" qualifier="/fulloffheap" testclass="com.gs.fw.common.mithra.test.offheap.MithraOffHeapTestSuite" heap="offheap"/>
+            <exec-test-suite mithraxmlconfig="MithraConfigOffHeapFullCache.xml" qualifier="/fulloffheap" testclass="com.gs.fw.common.mithra.test.MithraTestSuite" heap="offheap"/>
+            <exec-test-suite mithraxmlconfig="MithraConfigOffHeapFullCache.xml" qualifier="/fulloffheap" testclass="com.gs.fw.common.mithra.test.MithraMultiVmTestSuite" heap="offheap"/>
+            <exec-test-suite mithraxmlconfig="MithraConfigMasterCache.xml" qualifier="/fulloffheap" testclass="com.gs.fw.common.mithra.test.MithraMultiVmOffHeapTestSuite" heap="offheap"/>
+            <exec-test-suite mithraxmlconfig="Util.xml" testclass="com.gs.fw.common.mithra.test.MithraUtilTestSuite" heap="onheap"/>
+
+            <exec-test-suite mithraxmlconfig="MithraCacheTestConfig.xml" qualifier="/full" testclass="com.gs.fw.common.mithra.test.cacheloader.CacheLoaderSuite" heap="onheap"/>
+            <exec-test-suite mithraxmlconfig="MithraConfigPartialCache.xml" qualifier="/partial" testclass="com.gs.fw.common.mithra.test.MithraToStringTestSuite" heap="onheap"/>
+            <exec-test-suite mithraxmlconfig="MithraConfigPartialCache.xml" testclass="com.gs.fw.common.mithra.test.generator.GeneratorTestSuite" heap="onheap"/>
+            <exec-test-suite mithraxmlconfig="MithraTestTableManagerConfig.xml" testclass="com.gs.fw.common.mithra.test.TestTablePartitionManager" heap="onheap"/>
+        </parallel>
+    </target>
+
+    <target name="reladomo-junitreport" if="junitHtmlReport" depends="run-reladomo-test-suite">
+        <mkdir dir="${root}/reladomo/target/junit-report"/>
+        <junitreport>
+            <fileset dir="${root}/reladomo/target/testresult">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="noframes" todir="${root}/reladomo/target/junit-report"/>
+        </junitreport>
+    </target>
+
+    <target name="reladomo-test-suite" depends="generate-reladomo-test-graph, reladomo-junitreport" description="Run JUnit test cases for Mithra code">
+        <condition property="unitTestFailedAndIsNotSonar">
+            <and>
+                <isset property="failed.mithra.unit.tests"/>
+                <not>
+                    <isset property="isSonar"/>
+                </not>
+            </and>
+        </condition>
+        <fail if="unitTestFailedAndIsNotSonar" message="Mithra unit tests failed"/>
+    </target>
+
+    <!-- ************************** /reladomo test **********************************-->
+    <!-- ************************** reladomo docs **************************** -->
+    <target name="reladomo-xsddoc" depends="init-reladomo">
+        <java classname="org.apache.xalan.xslt.Process" >
+            <classpath refid="xslt.processor.classpath"/>
+            <arg line="-IN ${root}/reladomogen/src/main/xsd/mithraobject.xsd"/>
+            <arg line="-XSL ${root}/build/xs3p-1.1.5.xsl"/>
+            <arg line="-OUT ${root}/reladomo/target/xsddoc/index.html"/>
+        </java>
+    </target>
+
+    <target name="reladomo-javadoc">
+       <javadoc packagenames="com.gs.fw.common.mithra,com.gs.fw.common.mithra.connectionmanager.*, com.gs.fw.common.mithra.databasetype.*,com.gs.fw.finder.*"
+           sourcepath="${root}/reladomo/src/main/java;${root}/reladomo/target/generatedsrc"
+           defaultexcludes="yes"
+           access="public"
+           destdir="${root}/reladomo/target/javvadoc"
+           use="true"
+           windowtitle="Reladomo User API"
+           version="yes"
+           Verbose="true">
+           <classpath>
+                 <path refid="reladomogen.classpath"/>
+                 <path refid="reladomo.compile.classpath"/>
+                 <pathelement location="${root}/reladomo/target/classes"/>
+           </classpath>
+      </javadoc>
+    </target>
+
+    <!-- DocBook file generation for Reladomo docs -->
+    <property name="docbook.customization.dir" value="${root}/reladomo/src/doc/docbook/customization"/>
+    <property name="docbook.html.stylesheet" value="${docbook.customization.dir}/html.xsl"/>
+    <property name="docbook.fo.stylesheet" value="${docbook.customization.dir}/fo.xsl"/>
+
+    <property name="docbook.xslt.highlightsheet" value="${root}/reladomo/target/docbook-lib/docbook/highlighting/xslthl-config.xml"/>
+
+    <property name="reladomo.doc.docbook.dir" value="${root}/reladomo/src/doc/docbook"/>
+    <property name="reladomo.doc.docbook.out.dir" value="${root}/reladomo/target/docbook"/>
+    <property name="xslt.processor.class" value="org.apache.xalan.xslt.Process" />
+
+    <property name="fop.dir" value="${mithra.home}/build/lib/fop"/>
+
+    <target name="reladomo-unzip-docbook" depends="init-reladomo">
+        <unzip src="${root}/build/lib/docbook-xsl-${docbook-xsl.version}-ns-resources.zip" dest="${root}/reladomo/target/docbook-lib"/>
+    </target>
+
+    <macrodef name="docbook-to-html">
+        <attribute name="docbook-dir" default=""/>
+        <attribute name="source" default=""/>
+        <attribute name="output-dir" default=""/>
+        <sequential>
+            <mkdir dir="@{output-dir}"/>
+            <java classname="${xslt.processor.class}"
+                  fork="yes"
+                  dir="@{docbook-dir}"
+                  failonerror="true">
+                <classpath refid="xslt.processor.classpath" />
+                <jvmarg value="-Djava.awt.headless=true"/>
+                <jvmarg value="-Dxslthl.config=&quot;file:///${docbook.xslt.highlightsheet}&quot;"/>
+                <arg line="-out @{output-dir}/@{source}.html"/>
+                <arg line="-l"/>
+                <arg line="-in @{docbook-dir}/@{source}.xml -xsl ${docbook.html.stylesheet} -param use.extensions 1" />
+            </java>
+            <copy todir="@{output-dir}">
+                <fileset dir="${docbook.customization.dir}">
+                    <include name="*.js"/>
+                    <include name="*.css"/>
+                </fileset>
+                <fileset dir="@{docbook-dir}">
+                    <include name="*.gif"/>
+                    <include name="*.png"/>
+                    <include name="*.svg"/>
+                    <include name="*.eps"/>
+                </fileset>
+            </copy>
+        </sequential>
+    </macrodef>
+
+    <taskdef name="fop" classname="org.apache.fop.tools.anttasks.Fop">
+        <classpath refid="fop.classpath"/>
+    </taskdef>
+
+    <macrodef name="docbook-to-pdf">
+        <attribute name="docbook-dir" default=""/>
+        <attribute name="source" default=""/>
+        <attribute name="output-dir" default=""/>
+        <sequential>
+            <mkdir dir="@{output-dir}"/>
+            <delete quiet="true" file="@{output-dir}/temp.fo"/>
+            <java classname="${xslt.processor.class}"
+                  fork="yes"
+                  dir="@{docbook-dir}"
+                  failonerror="true">
+                <classpath refid="xslt.processor.classpath" />
+                <jvmarg value="-Djava.awt.headless=true"/>
+                <jvmarg value="-Dxslthl.config=&quot;file:///${docbook.xslt.highlightsheet}&quot;"/>
+                <arg line="-out @{output-dir}/temp.fo"/>
+                <arg line="-l"/>
+                <arg line="-in @{docbook-dir}/@{source}.xml -xsl ${docbook.fo.stylesheet} -param use.extensions 1"/>
+            </java>
+
+            <fop format="application/pdf"
+                 fofile="@{output-dir}/temp.fo"
+                 outfile="@{output-dir}/@{source}.pdf"
+                 basedir="@{docbook-dir}"
+                 messagelevel="error"/>
+
+            <delete file="@{output-dir}/temp.fo"/>
+        </sequential>
+    </macrodef>
+
+    <target name="reladomo-doc-generate-html" depends="reladomo-unzip-docbook">
+        <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/mithraddl"           output-dir="${reladomo.doc.docbook.out.dir}/mithraddl"           source="ReladomoDdlGenerator"/>
+        <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/architecture"        output-dir="${reladomo.doc.docbook.out.dir}/architecture"        source="ReladomoInternalArchitecture"/>
+        <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/objectxmlgenerator"  output-dir="${reladomo.doc.docbook.out.dir}/objectxmlgenerator"  source="Generator"/>
+        <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/userguide"           output-dir="${reladomo.doc.docbook.out.dir}/userguide"           source="ReladomoTutorial"/>
+        <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/mithraTestResource"  output-dir="${reladomo.doc.docbook.out.dir}/mithraTestResource"  source="ReladomoTestResource"/>
+        <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/visualization"       output-dir="${reladomo.doc.docbook.out.dir}/visualization"       source="ReladomoVisualization"/>
+        <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/testing"             output-dir="${reladomo.doc.docbook.out.dir}/testing"             source="TestingPhilosophy"/>
+        <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/mithrafaq"           output-dir="${reladomo.doc.docbook.out.dir}/mithrafaq"           source="ReladomoFaq"/>
+        <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/primaryKeyGenerator" output-dir="${reladomo.doc.docbook.out.dir}/primaryKeyGenerator" source="PrimaryKeyGenerator"/>
+        <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/middletier"          output-dir="${reladomo.doc.docbook.out.dir}/middleTier"          source="ReladomoMiddleTier"/>
+        <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/notification"        output-dir="${reladomo.doc.docbook.out.dir}/notification"        source="Notification"/>
+    </target>
+
+    <target name="reladomo-doc-generate-pdf" depends="reladomo-unzip-docbook">
+        <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/mithraddl"            output-dir="${reladomo.doc.docbook.out.dir}/mithraddl"           source="ReladomoDdlGenerator"/>
+        <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/architecture"         output-dir="${reladomo.doc.docbook.out.dir}/architecture"        source="ReladomoInternalArchitecture"/>
+        <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/objectxmlgenerator"   output-dir="${reladomo.doc.docbook.out.dir}/objectxmlgenerator"  source="Generator"/>
+        <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/userguide"            output-dir="${reladomo.doc.docbook.out.dir}/userguide"           source="ReladomoTutorial"/>
+        <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/mithraTestResource"   output-dir="${reladomo.doc.docbook.out.dir}/mithraTestResource"  source="ReladomoTestResource"/>
+        <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/visualization"        output-dir="${reladomo.doc.docbook.out.dir}/visualization"       source="ReladomoVisualization"/>
+        <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/testing"              output-dir="${reladomo.doc.docbook.out.dir}/testing"             source="TestingPhilosophy"/>
+        <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/mithrafaq"            output-dir="${reladomo.doc.docbook.out.dir}/mithrafaq"           source="ReladomoFaq"/>
+        <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/primaryKeyGenerator"  output-dir="${reladomo.doc.docbook.out.dir}/primaryKeyGenerator" source="PrimaryKeyGenerator"/>
+        <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/middletier"           output-dir="${reladomo.doc.docbook.out.dir}/middleTier"          source="ReladomoMiddleTier"/>
+        <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/notification"         output-dir="${reladomo.doc.docbook.out.dir}/notification"        source="Notification"/>
+    </target>
+
+    <target name="reladomo-docbook" depends="reladomo-doc-generate-html, reladomo-doc-generate-pdf"/>
+
+    <target name="generate-reladomo-docs" depends="reladomo-xsddoc, reladomo-javadoc, reladomo-docbook"/>
+
+    <property name="docbook.slides.customization.dir" value="${root}/reladomo/src/doc/docbook/presentations/customization"/>
+    <property name="docbook.slides.stylesheet" value="${docbook.slides.customization.dir}/html.xsl"/>
+    <property name="docbook.slides.fo.stylesheet" value="${docbook.slides.customization.dir}/fo.xsl"/>
+
+    <target name="reladomo-slide-generate-html" depends="reladomo-unzip-docbook">
+        <slides-to-html docbook-dir="${reladomo.doc.docbook.dir}/presentations/mithraAdvancedUseCases" output-dir="${reladomo.doc.docbook.out.dir}/presentations/mithraAdvancedUseCases" source="ReladomoAdvancedUseCases" presentation-title="Mithra Advanced Use Cases"/>
+        <slides-to-html docbook-dir="${reladomo.doc.docbook.dir}/presentations/mithraFeatures" output-dir="${reladomo.doc.docbook.out.dir}/presentations/mithraFeatures" source="ReladomoFeatures" presentation-title="Mithra Features"/>
+        <slides-to-html docbook-dir="${reladomo.doc.docbook.dir}/presentations/javaBigMemory" output-dir="${reladomo.doc.docbook.out.dir}/presentations/javaBigMemory" source="JavaBigMemory" presentation-title="Java Big Memory"/>
+        <slides-to-html docbook-dir="${reladomo.doc.docbook.dir}/presentations/mithraKata" output-dir="${reladomo.doc.docbook.out.dir}/presentations/mithraKata" source="ReladomoKata" presentation-title="Mithra Kata"/>
+        <slides-to-html docbook-dir="${reladomo.doc.docbook.dir}/presentations/reladomoInternalCacheStructure" output-dir="${reladomo.doc.docbook.out.dir}/presentations/reladomoInternalCacheStructure" source="ReladomoInternalCacheStructure" presentation-title="Reladomo InternalCache Structure"/>
+    </target>
+
+    <target name="reladomo-slide-generate-pdf" depends="reladomo-unzip-docbook">
+        <slides-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/presentations/mithraAdvancedUseCases" output-dir="${reladomo.doc.docbook.out.dir}/presentations/mithraAdvancedUseCases" source="ReladomoAdvancedUseCases" />
+        <slides-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/presentations/mithraFeatures" output-dir="${reladomo.doc.docbook.out.dir}/presentations/mithraFeatures" source="ReladomoFeatures" />
+        <slides-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/presentations/javaBigMemory" output-dir="${reladomo.doc.docbook.out.dir}/presentations/javaBigMemory" source="JavaBigMemory" />
+        <slides-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/presentations/mithraKata" output-dir="${reladomo.doc.docbook.out.dir}/presentations/mithraKata" source="ReladomoKata" />
+        <slides-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/presentations/reladomoInternalCacheStructure" output-dir="${reladomo.doc.docbook.out.dir}/presentations/reladomoInternalCacheStructure" source="ReladomoInternalCacheStructure" />
+    </target>
+
+    <macrodef name="slides-to-html">
+        <attribute name="docbook-dir" default=""/>
+        <attribute name="source" default=""/>
+        <attribute name="output-dir" default=""/>
+        <attribute name="presentation-title" default=""/>
+        <sequential>
+            <mkdir dir="@{output-dir}"/>
+            <delete dir="@{output-dir}/files"/>
+            <copy todir="@{output-dir}/files/slidy">
+                <fileset dir="${root}/reladomo/target/docbook-lib/docbook/slides/slidy"/>
+            </copy>
+            <replace dir="${root}/reladomo/target/docbook-lib/docbook/slides/xhtml" value="">
+                <include name="plain-titlepage.xsl"/>
+                <replacetoken> xsl:use-attribute-sets=&quot;slides.titlepage.recto.style&quot;</replacetoken>
+            </replace>
+
+            <java classname="${xslt.processor.class}"
+                fork="yes"
+                dir="@{docbook-dir}"
+                failonerror="true">
+                <classpath refid="xslt.processor.classpath" />
+                <jvmarg value="-Djava.awt.headless=true"/>
+                <jvmarg value="-Dxslthl.config=&quot;file:///${docbook.xslt.highlightsheet}&quot;"/>
+                <arg line="-out @{output-dir}/@{source}.xhtml"/>
+                <arg line="-l"/>
+                <arg line="-in @{docbook-dir}/@{source}.xml -xsl ${docbook.slides.stylesheet} -param use.extensions 1" />
+            </java>
+            <copy todir="@{output-dir}">
+                <fileset dir="@{docbook-dir}">
+                    <include name="*.gif"/>
+                    <include name="*.png"/>
+                    <include name="*.svg"/>
+                    <include name="*.eps"/>
+                    <include name="*.html"/>
+                </fileset>
+            </copy>
+            <copy todir="@{output-dir}">
+                <fileset dir="${docbook.slides.customization.dir}">
+                    <include name="*.css"/>
+                </fileset>
+            </copy>
+            <replace dir="@{output-dir}" value="">
+                <include name="@{source}.xhtml"/>
+                <replacetoken>&lt;link type=&quot;text/css&quot; href=&quot;files/slidy/styles/slidy.css&quot; rel=&quot;stylesheet&quot;/&gt;</replacetoken>
+            </replace>
+            <replace dir="@{output-dir}" value="">
+                <include name="@{source}.xhtml"/>
+                <replacetoken>&lt;link type=&quot;text/css&quot; href=&quot;files/slidy/styles/w3c-blue.css&quot; rel=&quot;stylesheet&quot;/&gt;</replacetoken>
+            </replace>
+            <replace dir="@{output-dir}" value="&lt;div class=&quot;slide cover title&quot;&gt;&lt;h1 class=&quot;title&quot;&gt;@{presentation-title}&lt;/h1&gt;&lt;/div&gt;">
+                <include name="@{source}.xhtml"/>
+                <replacetoken>&lt;div xmlns:dbs=&quot;http://docbook.org/ns/docbook-slides&quot; class=&quot;slide cover title&quot;/&gt;</replacetoken>
+            </replace>
+            <replace dir="@{output-dir}" value="">
+                <include name="@{source}.xhtml"/>
+                <replacetoken>xmlns=&quot;&quot;</replacetoken>
+            </replace>
+
+            <delete>
+                <fileset dir="@{docbook-dir}">
+                    <include name="*.html"/>
+                </fileset>
+            </delete>
+        </sequential>
+    </macrodef>
+
+    <macrodef name="slides-to-pdf">
+        <attribute name="docbook-dir" default=""/>
+        <attribute name="source" default=""/>
+        <attribute name="output-dir" default=""/>
+        <sequential>
+            <mkdir dir="@{output-dir}"/>
+            <delete quiet="true" file="@{output-dir}/temp.fo"/>
+            <java classname="${xslt.processor.class}"
+                fork="yes"
+                dir="@{docbook-dir}"
+                failonerror="true">
+                <classpath refid="xslt.processor.classpath" />
+                <jvmarg value="-Djava.awt.headless=true"/>
+                <jvmarg value="-Dxslthl.config=&quot;file:///${docbook.xslt.highlightsheet}&quot;"/>
+                <arg line="-out @{output-dir}/temp.fo"/>
+                <arg line="-l"/>
+                <arg line="-in @{docbook-dir}/@{source}.xml -xsl ${docbook.slides.fo.stylesheet} -param use.extensions 1"/>
+            </java>
+
+            <replace dir="@{output-dir}" value="&lt;fo:table-cell text-align=&quot;center&quot;&gt;
+                &lt;fo:block/&gt;
+                &lt;/fo:table-cell&gt;">
+                <include name="*.fo"/>
+                <replacetoken>&lt;fo:table-cell text-align=&quot;center&quot;/&gt;</replacetoken>
+            </replace>
+
+            <fop format="application/pdf"
+                fofile="@{output-dir}/temp.fo"
+                outfile="@{output-dir}/@{source}.pdf"
+                basedir="@{docbook-dir}"
+                messagelevel="error"/>
+
+            <delete file="@{output-dir}/temp.fo"/>
+        </sequential>
+    </macrodef>
+
+    <target name="reladomo-slides" depends="reladomo-slide-generate-html, reladomo-slide-generate-pdf"/>
+
+    <!-- ************************** /reladomo docs **************************** -->
+
+    <!-- ************************** reladomogenutil **********************************-->
+
+    <target name="compile-reladomo-genutil" depends="compile-reladomo">
+        <dependset>
+            <srcfileset dir="${root}/reladomogenutil/src/main/java"/>
+            <srcfileset dir="${root}/reladomogen/target/classes"/>
+            <srcfileset dir="${root}/reladomo/target/classes"/>
+            <targetfileset dir="${root}/reladomogenutil/target/classes"/>
+        </dependset>
+        <javac destdir="${root}/reladomogenutil/target/classes"
+            debug="true"
+            source="1.5"
+            target="1.5"
+            includeAntRuntime="true">
+            <src path="${root}/reladomogenutil/src/main/java"/>
+            <classpath>
+                <path refid="reladomo.compile.classpath"/>
+                <pathelement location="${root}/reladomo/target/classes"/>
+                <pathelement location="${root}/reladomogen/target/classes"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="compile-reladomo-genutil-test" depends="compile-reladomo-test">
+        <dependset>
+            <srcfileset dir="${root}/reladomogenutil/src/test/java"/>
+            <srcfileset dir="${root}/reladomo/target/classes"/>
+            <srcfileset dir="${root}/reladomo/target/test-classes-onheap"/>
+            <srcfileset dir="${root}/reladomo/target/test-util-classes"/>
+            <srcfileset dir="${root}/reladomogen/target/classes"/>
+            <srcfileset dir="${root}/reladomogenutil/target/classes"/>
+            <targetfileset dir="${root}/reladomogenutil/target/test-classes"/>
+        </dependset>
+        <javac destdir="${root}/reladomogenutil/target/test-classes"
+            debug="true"
+            source="1.5"
+            target="1.5"
+            includeAntRuntime="true">
+            <src path="${root}/reladomogenutil/src/test/java"/>
+            <classpath>
+                <path refid="reladomo.compile.classpath"/>
+                <pathelement location="${root}/reladomo/target/classes"/>
+                <pathelement location="${root}/reladomo/target/test-classes-onheap"/>
+                <pathelement location="${root}/reladomo/target/test-util-classes"/>
+                <pathelement location="${root}/reladomogen/target/classes"/>
+                <pathelement location="${root}/reladomogenutil/target/classes"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="generate-reladomo-db" depends="compile-reladomo-genutil">
+        <taskdef name="reladomo-gen-db" classname="com.gs.fw.common.mithra.generator.dbgenerator.MithraDbDefinitionGenerator" loaderRef="mithraGeneratorDb">
+           <classpath refid="reladomo.run.test.classpath"/>
+        </taskdef>
+        <reladomo-gen-db xml="${root}/reladomo/src/test/reladomo-xml/MithraClassList.xml" generatedDir="${root}/reladomogenutil/target/db/mssql" databaseType="mssql">
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml" fileName="MithraClassListToImport.xml"/>
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/testmithraimport" fileName="MithraTestImportClassList.xml"/>
+        </reladomo-gen-db>
+        <reladomo-gen-db xml="${root}/reladomo/src/test/reladomo-xml/MithraClassList.xml" generatedDir="${root}/reladomogenutil/target/db/sybase" databaseType="sybase">
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml" fileName="MithraClassListToImport.xml"/>
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/testmithraimport" fileName="MithraTestImportClassList.xml"/>
+        </reladomo-gen-db>
+        <reladomo-gen-db xml="${root}/reladomo/src/test/reladomo-xml/MithraClassList.xml" generatedDir="${root}/reladomogenutil/target/db/db2" databaseType="udb82">
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml" fileName="MithraClassListToImport.xml"/>
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/testmithraimport" fileName="MithraTestImportClassList.xml"/>
+        </reladomo-gen-db>
+        <reladomo-gen-db xml="${root}/reladomo/src/test/reladomo-xml/MithraClassList.xml" generatedDir="${root}/reladomogenutil/target/db/postgres" databaseType="postgres">
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml" fileName="MithraClassListToImport.xml"/>
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/testmithraimport" fileName="MithraTestImportClassList.xml"/>
+        </reladomo-gen-db>
+        <reladomo-gen-db xml="${root}/reladomo/src/test/reladomo-xml/MithraClassList.xml" generatedDir="${root}/reladomogenutil/target/db/oracle" databaseType="oracle">
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml" fileName="MithraClassListToImport.xml"/>
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/testmithraimport" fileName="MithraTestImportClassList.xml"/>
+        </reladomo-gen-db>
+    </target>
+
+    <target name="generate-reladomo-xml-test" depends="compile-reladomo-genutil">
+        <property file="${root}/reladomo/src/test/resources/credentials.properties"/>
+        <taskdef name="reladomo-gen-xml" classname="com.gs.fw.common.mithra.generator.objectxmlgenerator.MithraObjectXmlGenerator" loaderRef="mithraXmlGenerator">
+            <classpath refid="reladomo.genutil.run.classpath"/>
+        </taskdef>
+        <mkdir dir ="${mithra.home}/build/mithra/tmp/generated"/>
+        <reladomo-gen-xml userName="${sybase_username}" password="${sybase_password}" databaseType="sybase" outputDir="${root}/reladomogenutil/target/db/sybase"
+                    driver="com.sybase.jdbc4.jdbc.SybDriver"
+                    url="${sybase_url}" schema="${sybase_schema}" includeTables="ALL_TYPES, IDENTITY_TABLE, PRODUCT, TEST_BALANCE_NO_ACMAP, ORDERS, ORDER_ITEM"/>
+    </target>
+
+    <!-- ************************** /reladomogenutil **********************************-->
+
+    <!-- ************************** release opensource ***********************************-->
+    <target name="jar-mithragen" depends="compile-reladomo-generator">
+        <jar jarfile="${mithra.jars.dir}/mithragen-${reladomo.version}.jar" index="true">
+            <fileset dir="${mithra.home}/xml/mithra">
+                <include name="mithraobject.xsd"/>
+            </fileset>
+            <fileset dir="${mithra.classes.dir}">
+                <include name="com/gs/fw/common/mithra/generator/**/*.class"/>
+                <include name="com/gs/fw/common/mithra/templates/**/*.class"/>
+            </fileset>
+            <fileset dir="${mithra.classes.dir}">
+                <include name="com/gs/fw/common/mithra/generator/**/*.properties"/>
+            </fileset>
+            <fileset dir="${mithra.classes.dir}">
+                <include name="com/gs/fw/common/mithra/generator/**/*.tmpl.*"/>
+            </fileset>
+            <fileset dir="${mithra.classes.dir}">
+                <include name="com/gs/fw/common/mithra/generator/*.md5"/>
+            </fileset>
+            <fileset dir="${mithra.classes.dir}">
+                <include name="com/gs/fw/common/mithra/generator/**/*.ser"/>
+            </fileset>
+        </jar>
+    </target>
+
+    <target name="jar-reladomo" depends="compile-reladomo">
+        <taskdef name="jar-with-version" classname="com.gs.fw.JarVersionCreator" loaderRef="jarVersionChecker">
+            <classpath>
+                <pathelement location="${root}/reladomo/target/classes"/>
+            </classpath>
+
+        </taskdef>
+
+        <jar-with-version jarfile="${root}/target/reladomo-${reladomo.version}.jar" index="true" applicationName="reladomo" version="${reladomo.version}">
+            <manifest>
+                <attribute name="Reladomo-Version" value="${reladomo.version}"/>
+            </manifest>
+            <fileset dir="${root}/reladomo/target/classes">
+                <include name="**/*"/>
+            </fileset>
+        </jar-with-version>
+    </target>
+
+    <target name="jar-reladomo-src" depends="init-reladomo, compile-reladomo">
+        <jar jarfile="${root}/target/reladomo-${reladomo.version}-sources.jar" index="true">
+            <fileset dir="${root}/reladomo/src/main/java">
+                <include name="**/*.java"/>
+            </fileset>
+            <fileset dir="${root}/reladomo/target/generated-src">
+                <include name="**/*.java"/>
+            </fileset>
+        </jar>
+    </target>
+
+
+    <target name="jar-reladomo-test-util" depends="compile-reladomo-test">
+        <jar jarfile="${root}/target/reladomo-test-util-${reladomo.version}.jar" index="true">
+            <fileset dir="${root}/reladomo/target/test-util-classes">
+                <include name="**/*"/>
+            </fileset>
+        </jar>
+    </target>
+
+
+
+    <target name="jar-all-mithra" depends="jar-reladomo, jar-mithraui, jar-mithragendb,jar-mithragenxml, jar-mithragen, jar-reladomo-test-util"/>
+    <target name="jar-all" depends="jar-all-mithra"/> <!-- alias for master build -->
+    <target name="war-all-mithra"/>
+    <target name="pom-all" depends="init-reladomo">
+        <generate-pom module="mithra"/>
+        <generate-pom module="mithragen"/>
+        <generate-pom module="mithragendb"/>
+        <generate-pom module="mithragenxml"/>
+        <generate-pom module="mithratestresource"/>
+        <generate-pom module="mithragsi"/>
+        <generate-pom module="mithraui"/>
+        <generate-pom module="mithramiddletier"/>
+    </target>
+
+    <macrodef name="generate-pom">
+        <attribute name="module" description="The name of module"/>
+        <sequential>
+            <copy file="${mithra.pom-template.dir}/pom-@{module}.xml"
+                  tofile="${mithra.jars.dir}/pom-@{module}-${reladomo.version}${snapshot}.xml"
+                  overwrite="true"/>
+            <replace file="${mithra.jars.dir}/pom-@{module}-${reladomo.version}${snapshot}.xml">
+                <replacefilter token="@reladomo.version@"       value="${reladomo.version}${snapshot}"/>
+
+                <replacefilter token="@antjar.version@"           value="${antjar.version}"/>
+                <replacefilter token="@gs-collections.version@"   value="${gs-collections.version}"/>
+                <replacefilter token="@derby.version@"            value="${derby.version}"/>
+                <replacefilter token="@gsintegrator-api.version@" value="${gsintegrator-api.version}"/>
+                <replacefilter token="@gwt.version@"              value="${gwt.version}"/>
+                <replacefilter token="@h2.version@"               value="${h2.version}"/>
+                <replacefilter token="@log4j.version@"            value="${log4j.version}"/>
+                <replacefilter token="@jndijdbc.version@"         value="${jndijdbc.version}"/>
+                <replacefilter token="@slf4j.version@"            value="${slf4j.version}"/>
+            </replace>
+        </sequential>
+    </macrodef>
+
+    <target name="zip-reladomodoc" depends="reladomo-unzip-docbook, reladomo-docbook">
+
+        <delete file="${root}/target/reladomo-docs-${reladomo.version}.zip" failonerror="false"/>
+
+        <!-- Copy documentation -->
+        <mkdir dir="${mithra.jars.dir}/mithradoc"/>
+
+        <copy todir="${mithra.jars.dir}/mithradoc">
+            <fileset dir="${mithra.home}/build/mithra/doc" includes="**/*"/>
+        </copy>
+
+        <zip destfile="${root}/target/reladomo-docs-${reladomo.version}.zip">
+            <zipfileset dir="${root}/reladomo/target/docbook" includes="**/*"/>
+            <zipfileset dir="${root}/reladomo/target/javadoc" includes="**/*"/>
+            <zipfileset dir="${root}/reladomo/target/xsddoc" includes="**/*"/>
+        </zip>
+
+    </target>
+
+    <target name="jar-mithragendb" depends="compile-reladomo-genutil">
+        <jar jarfile="${mithra.jars.dir}/mithragendb-${reladomo.version}.jar" index="true">
+            <fileset dir="${mithra.classes.dir}">
+                <include name="com/gs/fw/common/mithra/generator/dbgenerator/*.class"/>
+            </fileset>
+        </jar>
+    </target>
+
+    <target name="jar-mithragenxml" depends="compile-reladomo-genutil">
+        <jar jarfile="${mithra.jars.dir}/genmithraxml-${reladomo.version}.jar" index="true">
+            <fileset dir="${mithra.classes.dir}">
+                <include name="com/gs/fw/common/mithra/generator/objectxmlgenerator/*.class"/>
+            </fileset>
+        </jar>
+    </target>
+
+    <!-- ************************** /release opensource ***********************************-->
+
+    <!-- ************************** reladomo gs ******************************* -->
+    <target name="libboot-reladomogs">
+        <libboot specFile="build/reladomogs.spec"/>
+    </target>
+
+    <target name="generate-reladomo-gsintegrator-classes" depends="compile-reladomo-generator, libboot-reladomogs">
+        <taskdef name="reladomo-gen" classname="com.gs.fw.common.mithra.generator.MithraGenerator" loaderRef="mithraGenerator">
+            <classpath refid="reladomogen.classpath"/>
+        </taskdef>
+        <reladomo-gen xml="${root}/reladomogsi/src/main/reladomo-xml/GsIntegratorClassList.xml"
+            generatedDir="${root}/reladomogsi/target/generated-src"
+            nonGeneratedDir="${root}/reladomogsi/src/main/java"
+            generateConcreteClasses="${reladomo.generateConcreteClasses}"/>
+    </target>
+
+    <target name="check-compile-ui" depends="init-reladomo, libboot-reladomogs">
+        <uptodate property="compile-ui.notRequired" targetfile="${gwt.compile.output.dir}/com.gs.fw.common.mithra.ui.gwt.MithraCacheUi/com.gs.fw.common.mithra.ui.gwt.MithraCacheUi.nocache.js" >
+          <srcfiles dir= "${root}/reladomoui/src/main/java" includes="com/gs/fw/common/mithra/ui/**/*"/>
+        </uptodate>
+    </target>
+
+    <target name="compile-reladomo-ui" depends="compile-reladomo, check-compile-ui" unless="compile-ui.notRequired">
+        <dependset>
+            <srcfileset dir="${root}/reladomoui/src/main/java"/>
+            <srcfileset dir="${root}/reladomo/target/classes"/>
+            <targetfileset dir="${root}/reladomoui/target/classes"/>
+        </dependset>
+        <javac destdir="${root}/reladomoui/target/classes"
+            debug="true"
+            source="1.5"
+            target="1.5"
+            includeAntRuntime="false">
+            <src path="${root}/reladomoui/src/main/java"/>
+            <classpath>
+                <fileset refid="fileset.lib.ui"/>
+                <fileset refid="fileset.lib.compile"/>
+                <pathelement location="${root}/reladomo/target/classes"/>
+            </classpath>
+        </javac>
+        <gwtcompile output="${gwt.compile.output.dir}" module="com.gs.fw.common.mithra.ui.gwt.MithraCacheUi"/>
+    </target>
+
+    <target name="jar-mithraui" depends="compile-reladomo-ui">
+        <jar jarfile="${mithra.jars.dir}/mithraui-${reladomo.version}.jar" index="true">
+            <fileset dir="${mithra.classes.dir}">
+                <include name="com/gs/fw/common/mithra/ui/**/*.class"/>
+            </fileset>
+        </jar>
+    </target>
+
+    <target name="war-reladomo-ui" depends="compile-reladomo-ui">
+        <war warfile="${root}/reladomoui/target/mithramiddletier.war" webxml="${root}/reladomoui/src/main/web/web.xml">
+            <fileset dir="${root}/reladomoui/target/classes">
+                <include name="**/*"/>
+            </fileset>
+            <fileset dir="${root}/reladomoui/src/main/web">
+                <include name="image/**"/>
+                <include name="MithraCache.html"/>
+            </fileset>
+        </war>
+    </target>
+
+    <target name="run-reladomo-gs-test-suite" depends="compile-reladomo-test" description="Run JUnit test cases for Mithra code">
+        <property name="jacocovmarg" value="-Dcoverage=none"/>
+        <delete quiet="true" dir="${root}/reladomo/target/testresult"/>
+        <mkdir dir="${root}/reladomo/target/testresult"/>
+        <tstamp>
+            <format property="TIME_NOW" pattern="hh:mm:ss a z"/>
+        </tstamp>
+        <echo message="JUnit master suite for Reladomo starting at ${TIME_NOW} on ${TODAY} "/>
+        <echo message="Log4j file: ${root}/reladomo/src/test/resources/log4jWarn.config"/>
+        <parallel threadsPerProcessor ="1" >
+            <exec-test-suite mithraxmlconfig="MithraConfigGsIntegrator.xml" testclass="com.gs.fw.common.mithra.test.gsintegrator.TestGsIntegratorTransport" heap="onheap"/>
+        </parallel>
+    </target>
+
+    <target name="run-reladomo-vendor-test-suite" depends="compile-reladomo-test" description="Run JUnit test cases for Mithra code">
+        <property name="jacocovmarg" value="-Dcoverage=none"/>
+        <tstamp>
+            <format property="TIME_NOW" pattern="hh:mm:ss a z"/>
+        </tstamp>
+        <echo message="JUnit master suite for Mithra starting at ${TIME_NOW} on ${TODAY} "/>
+        <echo message="Log4j config: ${root}/reladomo/src/test/resources/log4jWarn.config"/>
+        <parallel threadsPerProcessor ="1" >
+            <exec-test-suite mithraxmlconfig="MithraDb2TestConfig.xml" testclass="com.gs.fw.common.mithra.test.MithraDb2TestSuite" heap="onheap"/>
+            <exec-test-suite mithraxmlconfig="MithraSybaseIqTestConfig.xml" testclass="com.gs.fw.common.mithra.test.MithraSybaseIqTestSuite" heap="onheap"/>
+            <exec-test-suite mithraxmlconfig="MithraOracleTestConfig.xml" testclass="com.gs.fw.common.mithra.test.MithraOracleTestSuite" heap="onheap"/>
+            <exec-test-suite mithraxmlconfig="MithraPostgresTestConfig.xml" testclass="com.gs.fw.common.mithra.test.MithraPostgresTestSuite" heap="onheap"/>
+            <exec-test-suite mithraxmlconfig="MithraMsSqlTestConfig.xml" testclass="com.gs.fw.common.mithra.test.MithraMsSqlTestSuite" heap="onheap"/>
+            <exec-test-suite mithraxmlconfig="MithraSybaseTestConfig.xml" testclass="com.gs.fw.common.mithra.test.MithraSybaseTestSuite" heap="onheap"/>
+            <exec-test-suite mithraxmlconfig="MithraMariaTestConfig.xml" testclass="com.gs.fw.common.mithra.test.MithraMariaTestSuite" heap="onheap"/>
+        </parallel>
+    </target>
+
+    <target name="reladomo-vendor-junitreport" if="junitHtmlReport" depends="run-reladomo-vendor-test-suite">
+        <mkdir dir="${root}/reladomo/target/junit-report-vendor-test"/>
+        <junitreport>
+            <fileset dir="${root}/reladomo/target/testresult">
+                <include name="TEST-*MithraDb2TestConfig.xml"/>
+                <include name="TEST-*MithraMsSqlTestConfig.xml"/>
+                <include name="TEST-*MithraSybaseTestConfig.xml"/>
+                <include name="TEST-*MithraSybaseIqTestConfig.xml"/>
+                <include name="TEST-*MithraPostgresTestConfig.xml"/>
+                <include name="TEST-*MithraOracleTestConfig.xml"/>
+                <include name="TEST-*MithraMariaTestConfig.xml"/>
+            </fileset>
+            <report format="frames" todir="${root}/reladomo/target/junit-report-vendor-test"/>
+        </junitreport>
+    </target>
+
+    <target name="compile-reladomo-gs" depends="compile-reladomo, libboot-reladomogs">
+        <dependset>
+            <srcfileset dir="${root}/reladomogs/src/main/java"/>
+            <srcfileset dir="${root}/reladomo/target/classes"/>
+            <targetfileset dir="${root}/reladomogs/target/classes"/>
+        </dependset>
+        <javac destdir="${root}/reladomogs/target/classes"
+            debug="true"
+            source="1.5"
+            target="1.5"
+            nowarn="true"
+            includeAntRuntime="false">
+            <src path="${root}/reladomogs/src/main/java"/>
+            <compilerarg line="-Xlint:-unchecked -Xlint:-deprecation -XDignore.symbol.file"/>
+            <classpath>
+                <fileset refid="fileset.lib.gsapi"/>
+                <path refid="reladomo.compile.classpath"/>
+                <pathelement location="${root}/reladomo/target/classes"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="jar-reladomo-gs" depends="compile-reladomo">
+        <jar jarfile="${mithra.jars.dir}/mithragsi-${reladomo.version}.jar" index="true">
+            <fileset dir="${mithra.classes.dir}">
+                <include name="com/gs/fw/common/mithra/gsintegrator/**/*.class"/>
+            </fileset>
+        </jar>
+    </target>
+
+    <target name="jar-mithragsi" depends="compile-reladomo">
+        <jar jarfile="${mithra.jars.dir}/mithragsi-${reladomo.version}.jar" index="true">
+            <fileset dir="${mithra.classes.dir}">
+                <include name="com/gs/fw/common/mithra/gsintegrator/**/*.class"/>
+            </fileset>
+        </jar>
+    </target>
+    <!-- ************************** /reladomo gs ******************************* -->
+
+</project>

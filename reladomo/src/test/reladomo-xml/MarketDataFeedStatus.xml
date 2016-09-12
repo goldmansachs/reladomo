@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>MarketDataFeedStatus</ClassName>
+    <DefaultTable>C_MARKET_DATA_FEED_STATUS_TB</DefaultTable>
+    
+    <Attribute name="dataSourceId" javaType="int" columnName="DATA_SOURCE_ID_I" primaryKey="true"/>
+    <Attribute name="physicalPartitionId" javaType="int" columnName="PHYSICAL_PARTITION_ID_I" primaryKey="true"/>
+    <Attribute name="lastProcessTime" javaType="Timestamp" columnName="LAST_PROCESS_TS"/>
+    <Attribute name="priority" javaType="int" columnName="PRIORITY_I"/>
+    <Attribute name="processName" javaType="String" columnName="PROCESS_NAME_C" maxLength="15"/>
+
+    <Relationship name="choiceMarketDataFeedNotificationMoreRecentThan" relatedObject="ChoiceFeedNotification" cardinality="one-to-many" parameters="Timestamp lastProcessTime">
+    	this.physicalPartitionId = ChoiceFeedNotification.physicalPartitionId
+    	and ChoiceFeedNotification.sourceUpdateDate &gt; {lastProcessTime}
+    	and ChoiceFeedNotification.feedModeCodeId in (0,2)
+    </Relationship>
+
+</MithraObject>

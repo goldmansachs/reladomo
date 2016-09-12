@@ -1,0 +1,24 @@
+/*
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+
+class com.gs.fw.common.mithra.test.domain.LewAccount
+accountId,accountNumber,accountSubNumber,legalEntity,procCompanyId,trialCode,accountType,acctMnem,acctExtLookup,acctDesc,createCode,changeCode,changeNumber,acctMstrSrc,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+1003,"76095663","01",2000000000,0,"","CUS",".",".             G","IL    19970827S199808262.0",103,null,"EMUpdate",2,"2010-01-01 23:59:00.000","2079-06-06 00:00:00.000","2000-01-01 00:00:00.000","2020-01-01 00:00:00.000"
+
+class com.gs.fw.common.mithra.test.domain.ParaPosition
+productIdentifier,accountNumber,accountSubtype,businessDate,qtdOpenCost,ytdOpenCost,qtdUnrealized,ytdUnrealized,qtdRealized,ytdRealized,qtdTrading,ytdTrading,fasbObservable,updated,processingDateFrom,processingDateTo
+"EXTCT:2000000001","76095663","01","2010-01-01 23:59:00.000",30,10,10,10,10,10,10,10,3,"2011-12-06 14:00:00.000","2000-01-01 00:00:00.000","2020-01-01 00:00:00.000"
+

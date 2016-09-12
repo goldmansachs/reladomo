@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<!--
+*
+*
+*
+*
+-->
+<MithraRuntime xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../mithraruntime.xsd">
+    <ConnectionManager className="com.gs.fw.common.mithra.test.ConnectionManagerForTests">
+        <Property name="testProperty" value="7"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AccountTransactionException" cacheType="partial" useMultiUpdate="false"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.SpecialAccountTransactionException" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AccountTransaction" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AccountTransactionMax" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Trade" cacheType="full" />
+        <!--<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Allocation" cacheType="full" />-->
+        <!--<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Execution" cacheType="full" />-->
+        <!--<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ParentOrder" cacheType="full" />-->
+    </ConnectionManager>
+    <ConnectionManager className="com.gs.fw.common.mithra.test.ConnectionManagerForTests" replicationPollingInterval="10000">
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DatedAllTypes" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DatedAllTypesNull" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestBinaryArray" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Division" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Team" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Player" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DbsTestEntity" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestPositionPrice" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestPositionIncomeExpense" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestPositionIncomeExpenseNull" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DatedWithSequence" cacheType="partial" />
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DatedWithDescendingSequence" cacheType="partial" />
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DatedWithMax" cacheType="partial" />
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestAgeBalanceSheetRunRate" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestAgeBalanceSheetRunRateNull" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AccountTransactionNoSrcAttr" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AccountTransactionIntSrcAttr" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.SpecialAccountTransaction" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.SpecialAccount" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.SpecialAccountMax" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AccountDescendingKey" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.MithraTestSequence" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.RiskValueTestAccount" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.RiskDateTestAccount" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Trial" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ParaDesk" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AuditedTree" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.User" cacheType="full"
+                loadOperationProvider="com.gs.fw.common.mithra.test.IntSourceFullCacheLoader"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.UserGroup" cacheType="full"
+                loadOperationProvider="com.gs.fw.common.mithra.test.IntSourceFullCacheLoader"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Group" cacheType="full"
+                loadOperationProvider="com.gs.fw.common.mithra.test.IntSourceFullCacheLoader"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AuditedUser" cacheType="full"
+                loadOperationProvider="com.gs.fw.common.mithra.test.IntSourceFullCacheLoader"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AuditedUserGroup" cacheType="full"
+                loadOperationProvider="com.gs.fw.common.mithra.test.IntSourceFullCacheLoader"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AuditedGroup" cacheType="full"
+                loadOperationProvider="com.gs.fw.common.mithra.test.IntSourceFullCacheLoader"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Profile" cacheType="full"
+                loadOperationProvider="com.gs.fw.common.mithra.test.IntSourceFullCacheLoader"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Account" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TamsAccount" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BusinessUnitGroup" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Contract" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Underlier" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.NullTest" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Location" cacheType="partial"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Adjustment" cacheType="partial"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DatedAccount" cacheType="partial"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DatedPnlGroup" cacheType="partial"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DatedTrial" cacheType="partial"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Employee" cacheType="partial"/>
+
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Book" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Phone" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Supplier" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.SupplierInventoryItem" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Manufacturer" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ExchangeRate" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ExchangeRateChild" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.FileDirectory" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Stock" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.StockPrice" cacheType="full"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.adjustmenthistory.PositionAdjustmentHistory" cacheType="full"
+                                   loadOperationProvider="com.gs.fw.common.mithra.test.StringSourceFullCacheLoader"/>
+		<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.desk.balance.position.PositionQuantity" cacheType="full"
+                                   loadOperationProvider="com.gs.fw.common.mithra.test.StringSourceFullCacheLoader"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestBalance" cacheType="partial"/>
+        <!-- TinyBalance is always partially cached on the client side, regardless of the cache type here on the server side -->
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TinyBalance" cacheType="full"
+                loadOperationProvider="com.gs.fw.common.mithra.test.AcmapLoadOperationProvider"/>
+        <!-- FullyCachedTinyBalance is always fully cached on the client side, regardless of the cache type here on the server side -->
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.FullyCachedTinyBalance" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.FundingBalance" cacheType="full"
+                loadOperationProvider="com.gs.fw.common.mithra.test.AcmapLoadOperationProvider"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TinyBalanceNull" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.IdentityTable" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TinyBalanceWithSmallDate" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TinyBalanceWithSmallDateNull" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TinyBalanceUtc" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AuditOnlyBalance" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.NonAuditedBalance" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.NonAuditedBalanceNull" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ParaBalance" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.SelfJoinConstant" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Synonym" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DifferentDataTypes" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.MappedDifferentDataTypes" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.VariousTypes" cacheType="full"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.dated.NotDatedTable" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.dated.NotDatedWithTimestampTable" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.dated.NotDatedWithBusinessDate" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.dated.DatedTable" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestReplicatedObject" replicated="true" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.parent.ParentType" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.child.ChildType" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.child.LifeStatus" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.criters.PetType" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TamsMithraAccount" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TamsMithraAccountArbsClassification" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TamsMithraArbsClassification" cacheType="full"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.tax.Form" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.tax.FormAddress" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.tax.Address" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.tax.FormRole" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.tax.Jurisdiction" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.tax.Filing" cacheType="full"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DatedEntity" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DatedEntityDesc" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DatedEntityDescType" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestEodAcctIfPnl" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestBalanceNoAcmap" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.NotDatedWithNullablePK" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DatedWithNullablePK" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.TestAcctEntitySegment" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OptimisticOrder" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OptimisticOrderWithTimestamp" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AuditedOrderAsTxReadOnly" cacheType="full" txParticipation="readOnly"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AuditedOrder" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AuditedOrderStatus" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.dated.AuditedOrderStatusTwo" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AuditedOrderItem" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AuditedOrderItemStatus" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AuditedManufacturer" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.NoExportTestObject" cacheType="full" threeTierExport="false"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrder" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderItem" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderItemStatus" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderStatus" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderNull" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderItemNull" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderStatusNull" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderToOrderStatus" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderStatusFilter" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.Alarm" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.Cellphone" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.Cellphone2" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.Alarm2" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.AlarmCategory" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.AlarmPrimaryKey" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.AlarmNonTransactional" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.AlarmDatedTransactional" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.AlarmDatedNonTransactional" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.AlarmBitemporalTransactional" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.AlarmTenMillis" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.alarm.AlarmSybase" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AllJavaTypesInPk" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.glew.BitemporalProductSynonym" cacheType="full"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.NontemporalWithDateJoin" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalWithDateJoin" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ProcessingTemporalWithDateJoin" cacheType="full"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.testmithraimport.ReadOnlyOrder" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.testmithraimport.DatedReadOnlyOrder" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.testmithraimport.TransactionalOrder" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.testmithraimport.DatedTransactionalOrder" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.testmithraimport.TransactionalWithSuperOrder" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.testmithraimport.DatedTransactionalWithSuperOrder" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.testmithraimport.RelatedOrder" cacheType="full"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.inherited.ReadOnlyAnimal" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.inherited.ReadOnlyMammal" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.inherited.ReadOnlyCow" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.inherited.ReadOnlyMonkey" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.inherited.TxAnimal" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.inherited.TxMammal" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.inherited.TxCow" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.inherited.TxMonkey" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.WallCrossImpl" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ListEntryContactsImpl" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.EntityRestrictedItem" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.RestrictedEntity" cacheType="full"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestControlledEntry" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestRestrictedEntity" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestRestrictedItem" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestRestrictedItemComment" cacheType="full"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DisplayText" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ControlDefinition" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ControlListDefinitionMapping" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ListDefinition" cacheType="partial"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType1ReadOnlyTypes" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType1TxnTypes" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType1DatedReadOnlyTypes" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType1DatedTxnTypes" cacheType="full"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType2ReadOnlyTypesA" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType2ReadOnlyTypesB" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType2TxnTypesA" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType2TxnTypesB" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType2DatedReadOnlyTypesA" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType2DatedReadOnlyTypesB" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType2DatedTxnTypesA" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType2DatedTxnTypesB" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType1TimeTypes" cacheType="full"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType3ReadOnlyTypes" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType3ReadOnlyTypesA" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType3ReadOnlyTypesB" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType3TxnTypes" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType3TxnTypesA" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType3TxnTypesB" cacheType="full"/>
+        <!--
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType3DatedReadOnlyTypes" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType3DatedReadOnlyTypesA" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType3DatedReadOnlyTypesB" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType3DatedTxnTypes" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType3DatedTxnTypesA" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.evo.EvoType3DatedTxnTypesB" cacheType="full"/>
+        -->
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderWithAuditedStatus" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AuditedOrderStatusWithNonDatedOrder" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderWi" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderClassificationWi" cacheType="partial" relationshipCacheTimeToLive="1000" cacheTimeToLive="1000"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderItemWi" cacheType="partial" relationshipCacheTimeToLive="1000" cacheTimeToLive="1000"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderStatusWi" cacheType="partial" relationshipCacheTimeToLive="1000" cacheTimeToLive="1000"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ReadOnlyOrderWi" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ReadOnlyOrderItemWi" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ReadOnlyOrderStatusWi" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderWi" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderClassificationWi" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderItemWi" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderStatusWi" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ReadOnlyBitemporalOrderWi" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ReadOnlyBitemporalOrderItemWi" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ReadOnlyBitemporalOrderStatusWi" cacheType="partial"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestConflictCheckImpl" cacheType="none"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestBankingDealDetailImpl" cacheType="none"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestSecuritiesDealDetailImpl" cacheType="none"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestNonAcquisitionDealDetail" cacheType="none"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestSellSideDealDetail" cacheType="none"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestInvestmentFinancingDealDetail" cacheType="none"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.GsDesk" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestCheckGsDesk" cacheType="none"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.StringDatedOrder" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ParaProduct" cacheType="full"
+                                   loadOperationProvider="com.gs.fw.common.mithra.test.StringSourceFullCacheLoader"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AltProduct" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AltSynonym" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AltSynonymType" cacheType="full"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.glew.LewContract" cacheType="full"
+                                   loadOperationProvider="com.gs.fw.common.mithra.test.StringSourceFullCacheLoader"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.glew.LewTransaction" cacheType="full"
+                                   loadOperationProvider="com.gs.fw.common.mithra.test.StringSourceFullCacheLoader"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestAsOfToTimestampJoinObjectA" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TestAsOfToTimestampJoinObjectB" cacheType="full"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Firm" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Person" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.PersonAddress" cacheType="full"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.FirmRO" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.PersonRO" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.PersonAddressRO" cacheType="full"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.mag.MagEvent" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.mag.MagTransaction" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.mag.MagTrade" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.mag.MagTransactionPosting" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.mag.MagReportingAttributes" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.mag.MagProductId" cacheType="partial"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ProductWithSourceAttribute" cacheType="full"
+                                   loadOperationProvider="com.gs.fw.common.mithra.test.StringSourceFullCacheLoader"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ProductCategory" cacheType="full"
+                                   loadOperationProvider="com.gs.fw.common.mithra.test.StringSourceFullCacheLoader"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ProductProfileType" cacheType="full"
+                                   loadOperationProvider="com.gs.fw.common.mithra.test.StringSourceFullCacheLoader"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ProductCategoryMap" cacheType="full"
+                                   loadOperationProvider="com.gs.fw.common.mithra.test.StringSourceFullCacheLoader"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ProductRelation" cacheType="full"
+                                   loadOperationProvider="com.gs.fw.common.mithra.test.StringSourceFullCacheLoader"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Projito" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ProjitoVersion" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ProjitoMembership" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ProjitoMeasureOfSuccess" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ProjitoEmployee" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ProjitoAddress" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ProjitoSimulatedSequence" cacheType="full"/>
+
+        <MithraTemporaryObjectConfiguration className="com.gs.fw.common.mithra.test.domain.PositionDriver"/>
+        <MithraTemporaryObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderDriver"/>
+        <MithraTemporaryObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ParaProductDriver"/>
+
+        <Schema name="APP">
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TimezoneTest" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.PkTimezoneTest" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TimezoneTestWithSource" cacheType="partial"/>
+        </Schema>
+        <Schema name="APP" getFromConnectionManager="true">
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DirectRefOrder" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DirectRefOrderStatus" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.DirectRefOrderItem" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderAsTxReadOnly" cacheType="full" txParticipation="readOnly"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderStatusAsTxReadOnly" cacheType="full" txParticipation="readOnly"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Order" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderParentToChildren" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderStatus" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderItem" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderItemStatus" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderWithMissingColumn" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderWithExtraColumn" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderDenormalized" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Product" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ProductSynonym" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Seller" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Sale" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ParentNumericAttribute" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ChildNumericAttribute" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.SalesLineItem" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.SaleAggregateData" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.WishListItem" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ProductSpecification" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BigOrder" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalBigOrder" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BigOrderItem" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalBigOrderItem" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.MultiPkBigDecimal" cacheType="full"/>
+
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.nvmdev.NvmDevNetworkDevice" cacheType="full"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.nvmdev.NvmDevVirtualLan" cacheType="full"/>
+        </Schema>
+        <Schema name="APP" getFromConnectionManager="true" replicationPollingInterval="10000">
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.dated.TestTamsMithraTrial" replicated="true" cacheType="partial"/>
+            <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.dated.TestTamsAccountIncomeFunction" replicated="true" cacheType="partial"/>
+        </Schema>
+    </ConnectionManager>
+
+    <ConnectionManager className="com.gs.fw.common.mithra.test.ConnectionManagerForTests">
+        <Property name="resourceName" value="lew"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.LewAccount" cacheType="full"/>
+    </ConnectionManager>
+
+    <ConnectionManager className="com.gs.fw.common.mithra.test.ConnectionManagerForTests">
+        <Property name="resourceName" value="para"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ParaPosition" cacheType="full"/>
+    </ConnectionManager>
+
+    <PureObjects notificationIdentifier="fullCacheTest">
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.PureOrder" factoryParameter="testParameter"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.PureOrderItem"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.PureBitemporalOrder"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.PureBitemporalOrderItem"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.pure.PureType2ReadOnlyTypesA"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.pure.PureType2ReadOnlyTypesB"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.pure.PureType2TxnTypesA"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.pure.PureType2TxnTypesB"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.pure.PureType2DatedReadOnlyTypesA"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.pure.PureType2DatedReadOnlyTypesB"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.pure.PureType2DatedTxnTypesA"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.pure.PureType2DatedTxnTypesB"/>
+    </PureObjects>
+</MithraRuntime>

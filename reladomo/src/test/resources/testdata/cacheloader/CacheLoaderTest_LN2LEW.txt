@@ -1,0 +1,31 @@
+/*
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+class com.gs.fw.common.mithra.test.glew.LewContract
+instrumentId, acctId, productSynonym, productSynonymType, debtClass, businessDateFrom,  businessDateTo, processingDateFrom, processingDateTo
+1, 100001, "IBM", "GSN", "aaa", "2013-03-29 23:59:00.0", "2013-04-02 23:59:00.0", "2013-03-29 23:44:21.0", "9999-12-01 23:59:00.0"
+2, 100002, "IBM", "GSN", "bbb", "2009-01-01 23:59:00.0", "2009-01-05 23:59:00.0", "2009-01-01 23:59:00.0", "9999-12-01 23:59:00.0"
+3, 100003, "IBM", "GSN", "ccc", "2009-01-03 23:59:00.0", "2009-01-05 23:59:00.0", "2009-01-01 23:59:00.0", "9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.glew.LewTransaction
+instrumentId, acctId, tranId, tradeQty, businessDateFrom,  businessDateTo, processingDateFrom, processingDateTo
+1, 100001, 1111, 10.0, "2005-01-01 23:59:00.0", "2012-11-16 23:59:00.0", "2012-11-17 03:51:52.0", "9999-12-01 23:59:00.0"
+1, 100001, 1111, 20.0, "2005-01-01 23:59:00.0", "2012-11-17 23:59:00.0", "2005-11-17 23:59:00.0", "2012-11-17 03:51:52.0"
+1, 100001, 1111, 30.0, "2012-11-16 23:59:00.0", "2014-11-16 23:59:00.0", "2012-11-17 03:51:52.0", "9999-12-01 23:59:00.0"
+1, 100001, 1111, 40.0, "2014-11-16 23:59:00.0", "2079-06-06 23:59:00.0", "2014-11-17 03:51:52.0", "9999-12-01 23:59:00.0"
+2, 100002, 2222, 50.0, "2009-01-01 23:59:00.0", "2009-01-05 23:59:00.0", "2009-01-01 23:59:00.0", "9999-12-01 23:59:00.0"
+2, 100002, 2222, 51.0, "2008-01-01 23:59:00.0", "2009-01-01 23:59:00.0", "2008-01-01 23:59:00.0", "9999-12-01 23:59:00.0"
+3, 100003, 3333, 60.0, "2009-01-03 23:59:00.0", "2009-01-05 23:59:00.0", "2009-01-01 23:59:00.0", "9999-12-01 23:59:00.0"
+3, 100003, 3333, 61.0, "2009-01-06 23:59:00.0", "2009-01-07 23:59:00.0", "2009-01-01 23:59:00.0", "9999-12-01 23:59:00.0"

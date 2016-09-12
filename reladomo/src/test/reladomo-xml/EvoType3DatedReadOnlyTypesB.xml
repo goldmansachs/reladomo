@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="read-only">
+    <PackageName>com.gs.fw.common.mithra.test.domain.evo</PackageName>
+    <ClassName>EvoType3DatedReadOnlyTypesB</ClassName>
+    <SuperClass name="EvoType3DatedReadOnlyTypes" generated="true"/>
+    <DefaultTable>EVO_TYPE3_DATED_READ_ONLY_TYPES_B</DefaultTable>
+    <Attribute name="booleanAttribute" javaType="boolean" columnName="BOOLEAN_0"/>
+    <Attribute name="byteAttribute" javaType="byte" columnName="BYTE_0"/>
+    <Attribute name="charAttribute" javaType="char" columnName="CHAR_0"/>
+    <Attribute name="dateAttribute" javaType="Date" columnName="DATE_0"/>
+    <Attribute name="doubleAttribute" javaType="double" columnName="DOUBLE_0"/>
+    <Attribute name="floatAttribute" javaType="float" columnName="FLOAT_0"/>
+    <Attribute name="intAttribute" javaType="int" columnName="INT_0"/>
+    <Attribute name="longAttribute" javaType="long" columnName="LONG_0"/>
+    <Attribute name="shortAttribute" javaType="short" columnName="SHORT_0"/>
+    <Attribute name="stringAttribute" javaType="String" columnName="STRING_0" maxLength="10"/>
+    <Attribute name="timestampAttribute" javaType="Timestamp" columnName="TIMESTAMP_0"/>
+    <EmbeddedValue name="rootEvo" type="EvoTypesRoot">
+        <Mapping attribute="booleanAttribute" columnName="BOOLEAN_1"/>
+        <Mapping attribute="byteAttribute" columnName="BYTE_1"/>
+        <Mapping attribute="charAttribute" columnName="CHAR_1"/>
+        <Mapping attribute="dateAttribute" columnName="DATE_1"/>
+        <Mapping attribute="doubleAttribute" columnName="DOUBLE_1"/>
+        <Mapping attribute="floatAttribute" columnName="FLOAT_1"/>
+        <Mapping attribute="intAttribute" columnName="INT_1"/>
+        <Mapping attribute="longAttribute" columnName="LONG_1"/>
+        <Mapping attribute="shortAttribute" columnName="SHORT_1"/>
+        <Mapping attribute="stringAttribute" columnName="STRING_1" maxLength="10"/>
+        <Mapping attribute="timestampAttribute" columnName="TIMESTAMP_1"/>
+        <Mapping attribute="bigDecimalAttribute" columnName="BIGDECIMAL_1" precision="18" scale="3"/>
+        <EmbeddedValue name="nestedEvo">
+            <Mapping attribute="booleanAttribute" columnName="BOOLEAN_2"/>
+            <Mapping attribute="byteAttribute" columnName="BYTE_2"/>
+            <Mapping attribute="charAttribute" columnName="CHAR_2"/>
+            <Mapping attribute="dateAttribute" columnName="DATE_2"/>
+            <Mapping attribute="doubleAttribute" columnName="DOUBLE_2"/>
+            <Mapping attribute="floatAttribute" columnName="FLOAT_2"/>
+            <Mapping attribute="intAttribute" columnName="INT_2"/>
+            <Mapping attribute="longAttribute" columnName="LONG_2"/>
+            <Mapping attribute="shortAttribute" columnName="SHORT_2"/>
+            <Mapping attribute="stringAttribute" columnName="STRING_2" maxLength="10"/>
+            <Mapping attribute="timestampAttribute" columnName="TIMESTAMP_2"/>
+            <Mapping attribute="bigDecimalAttribute" columnName="BIGDECIMAL_2" precision="18" scale="3"/>
+            <EmbeddedValue name="leafEvo">
+                <Mapping attribute="booleanAttribute" columnName="BOOLEAN_3"/>
+                <Mapping attribute="byteAttribute" columnName="BYTE_3"/>
+                <Mapping attribute="charAttribute" columnName="CHAR_3"/>
+                <Mapping attribute="dateAttribute" columnName="DATE_3"/>
+                <Mapping attribute="doubleAttribute" columnName="DOUBLE_3"/>
+                <Mapping attribute="floatAttribute" columnName="FLOAT_3"/>
+                <Mapping attribute="intAttribute" columnName="INT_3"/>
+                <Mapping attribute="longAttribute" columnName="LONG_3"/>
+                <Mapping attribute="shortAttribute" columnName="SHORT_3"/>
+                <Mapping attribute="stringAttribute" columnName="STRING_3" maxLength="10"/>
+                <Mapping attribute="timestampAttribute" columnName="TIMESTAMP_3"/>
+                <Mapping attribute="bigDecimalAttribute" columnName="BIGDECIMAL_3" precision="10" scale="2"/>
+            </EmbeddedValue>
+        </EmbeddedValue>
+    </EmbeddedValue>
+</MithraObject>

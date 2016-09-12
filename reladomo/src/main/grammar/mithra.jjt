@@ -1,0 +1,285 @@
+/**
+ * This grammer files is used to generate the parser for Mithra relationship queries. The code generated is checked into
+ * cvs in package com.gs.fw.common.mithra.generator.queryparser. Care should be taken when regenerating code because we have
+ * custom code in SimpleNode, ASTLiteral, and ASTAttributeName
+ *    
+ */
+options {
+  MULTI=true;
+  VISITOR=true;
+  STATIC=false;
+}
+
+PARSER_BEGIN(MithraQL)
+
+package com.gs.fw.common.mithra.generator.queryparser;
+import java.io.FileInputStream;
+public class MithraQL {
+
+  public static void main(String args[]) throws ParseException, java.io.FileNotFoundException {
+    FileInputStream fis = new FileInputStream(args[0]);
+    MithraQL parser = new MithraQL(fis);
+    try {
+      ASTCompilationUnit compilationUnit = parser.CompilationUnit();
+      compilationUnit.dump("");
+      System.out.println("Thank you.");
+    } catch (Exception e) {
+      System.out.println("Oops.");
+      System.out.println(e.getMessage());
+      e.printStackTrace();
+    }
+
+  }
+
+}
+
+PARSER_END(MithraQL)
+
+SKIP: /** Allow spaces and tabs between lines **/
+{
+    " "
+  | "\n"
+  | "\r"
+  | "\t"
+}
+
+SKIP:
+{
+  <COMMENT_LINE: "--" (~["\n","\r"])* ("\n"|"\r"|"\r\n") >
+}
+
+TOKEN:  /* Keywords */
+{
+    < AND: "and" >
+  | < OR: "or" >
+  | < NOT: "not" >
+  | < NULL: "null" >
+  | < IS: "is" >
+  | < EQUALSEDGEPOINT: "equalsEdgePoint" >
+  | < ORDER: "order " >
+  | < BY: "by" >
+  | < ASC: "asc" >
+  | < DESC: "desc" >
+
+}
+
+TOKEN:  /* Separators and operators */
+{
+  < DOT: "." >
+  | < EQUAL: "=" >
+  | < NOTEQUAL: "!=" >
+  | < GREATER_THAN: ">" >
+  | < LESSER_THAN: "<" >
+  | < GREATER_THAN_EQUAL: ">=" >
+  | < LESSER_THAN_EQUAL: "<=" >
+  | < OPEN_PAREN: "(" >
+  | < CLOSE_PAREN: ")" >
+  | < COMMA: "," >
+  | < IN: "in" >
+}
+
+TOKEN:  /* Literals */
+{
+    < INTEGER_LITERAL: (["0"-"9"])+ >
+  | < FLOATING_POINT_LITERAL:
+          (["0"-"9"])+ "." (["0"-"9"])+ (<EXPONENT>)?
+        | "." (["0"-"9"])+ (<EXPONENT>)?
+        | (["0"-"9"])+ <EXPONENT>
+        | (["0"-"9"])+ (<EXPONENT>)?
+    >
+  | < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
+  | < STRING_LITERAL:
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "\""
+    >
+   | < CHARACTER_LITERAL:
+      "'"
+      (   (~["'","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )
+      "'"
+     >
+   | < BOOLEAN_LITERAL: "true" | "false" >
+   | < JAVA_LITERAL:
+      "{"
+      (   (~["\"","\\","\n","\r","}"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "}"
+     >
+}
+
+TOKEN:  /* Identifiers */
+{
+    < IDENTIFIER: ( <LETTER> )+ ( "_" | "$" | <DIGIT> | <LETTER> )* >
+  | < #LETTER: ["A"-"Z", "a"-"z"] >
+  | < #DIGIT: ["0"-"9"] >
+}
+
+ASTCompilationUnit CompilationUnit() :
+{}
+{
+	OrExpression()
+	<EOF>
+    { return jjtThis; }
+}
+
+void AttributeName() :
+{
+	Token t;
+	String name;
+}
+{
+	t = <IDENTIFIER> {name = t.image;} ( t = <DOT> {name += t;} t = <IDENTIFIER> {name +=t;})*
+	{
+		jjtThis.setName(name);
+	}
+}
+
+void RelationalOperator() :
+{}
+{
+	<EQUAL> {jjtThis.setEqual(true); jjtThis.setString("=");}
+	|
+	<NOTEQUAL> {jjtThis.setNotEqual(true); jjtThis.setString("!=");}
+	|
+	<GREATER_THAN> {jjtThis.setGreaterThan(true); jjtThis.setString(">");}
+	|
+	<LESSER_THAN> {jjtThis.setLesserThan(true); jjtThis.setString("<");}
+	|
+	<GREATER_THAN_EQUAL> {jjtThis.setGreaterThanOrEqualTo(true); jjtThis.setString(">=");}
+	|
+	<LESSER_THAN_EQUAL> {jjtThis.setLesserThanOrEqualTo(true); jjtThis.setString("<=");}
+}
+
+void InOperator() :
+{}
+{
+	<IN>
+}
+
+void OrExpression() #void:
+{}
+{
+	(
+	AndExpression() (<OR> AndExpression())*
+	)
+	 #OrExpression(>1)
+}
+
+void AndExpression() #void :
+{}
+{
+    (
+    (RelationalExpression() | "(" OrExpression() ")") ( <AND> (RelationalExpression() | "(" OrExpression() ")"))*
+    )
+    #AndExpression(>1)
+}
+
+void RelationalExpression() :
+{}
+{
+	(SimpleExpression() (RelationalOperatorExpression() | IsNullClause() | InExpression() | equalsEdgePointClause()))
+}
+
+void RelationalOperatorExpression() #void:
+{}
+{
+	(RelationalOperator() SimpleExpression())
+}
+
+void SimpleExpression() #void:
+{}
+{
+	AttributeName()
+	| Literal()
+}
+
+void InExpression() #void:
+{}
+{
+	InOperator() InLiteral()
+}
+
+void IsNullClause():
+{}
+{
+    <IS> [{jjtThis.setNot(true);} <NOT>] <NULL>
+}
+
+void equalsEdgePointClause():
+{}
+{
+    <EQUALSEDGEPOINT>
+}
+
+void Literal() :
+{ Token t;}
+{
+	t = <INTEGER_LITERAL> {
+    	    jjtThis.setInteger(true);
+	        jjtThis.setValue(t.image);
+	    }
+	| t = <FLOATING_POINT_LITERAL> {
+	        jjtThis.setFloatingPoint(true);
+	        jjtThis.setValue(t.image);
+	    }
+	| t = <STRING_LITERAL> {
+	        jjtThis.setString(true);
+	        jjtThis.setValue(t.image);
+	    }
+	| t = <CHARACTER_LITERAL> {
+	        jjtThis.setCharacter(true);
+	        jjtThis.setValue(t.image);
+	    }
+	| t = <BOOLEAN_LITERAL> {
+	        jjtThis.setBoolean(true);
+	        jjtThis.setValue(t.image);
+	    }
+	| t = <JAVA_LITERAL> {
+	        jjtThis.setJavaLiteral(true);
+	        jjtThis.setValue(t.image);
+	    }
+}
+void InLiteral() :
+{
+  Token t;
+  String value;
+}
+{
+	("(" (
+	t = <STRING_LITERAL> {value = t.image;} (t = <COMMA> {value += t.image;} t = <STRING_LITERAL> {value += t.image;})*  {
+			jjtThis.setValue(value);
+			}
+	|
+	t = <INTEGER_LITERAL> {value = t.image;} (t = <COMMA> {value += t.image;} t = <INTEGER_LITERAL> {value += t.image;})*  {
+			jjtThis.setValue(value);
+			}
+	|
+	t = <CHARACTER_LITERAL> {value = t.image;} (t = <COMMA> {value += t.image;} t = <CHARACTER_LITERAL> {value += t.image;})*  {
+			jjtThis.setValue(value);
+			}
+	) ")")
+	| t = <JAVA_LITERAL> {
+	    jjtThis.setValue(t.image);
+	    jjtThis.setIsJavaLiteral(true);
+	}
+}

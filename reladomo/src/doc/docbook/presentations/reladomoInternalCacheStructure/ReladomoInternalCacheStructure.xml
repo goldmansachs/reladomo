@@ -1,0 +1,705 @@
+<?xml version='1.0'?>
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreeyee[ to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<dbs:slides xmlns="http://docbook.org/ns/docbook"
+            xmlns:dbs="http://docbook.org/ns/docbook-slides">
+    <slidesinfo>
+        <title>Reladomo: Internal Cache Structure</title>
+        <copyright>
+            <year>2010</year>
+            <holder>Goldman Sachs &amp; Co.</holder>
+        </copyright>
+    </slidesinfo>
+
+    <dbs:foil dbs:incremental="0">
+        <title>
+            Reladomo: Internal Cache Structure
+        </title>
+        <para>March 2010</para>
+    </dbs:foil>
+
+    <dbs:foil>
+        <title>
+            Agenda
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>Cache structure</para>
+            </listitem>
+            <listitem>
+                <para>Cache configuration and general behavior</para>
+            </listitem>
+            <listitem>
+                <para>Cache invalidation mechanisms</para>
+            </listitem>
+            <listitem>
+                <para>Transactional behavior</para>
+            </listitem>
+            <listitem>
+                <para>3-tier caches</para>
+            </listitem>
+            <listitem>
+                <para>Operation resolution</para>
+            </listitem>
+            <listitem>
+                <para>Relationship resolution</para>
+            </listitem>
+            <listitem>
+                <para>Object cache structure</para>
+            </listitem>
+        </itemizedlist>
+
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Cache Structure
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>Each class is assigned a query cache and an object cache</para>
+            </listitem>
+            <listitem>
+                <para>
+                    Object cache always guarantees uniqueness based on primary key: the same PK is guaranteed to be the
+                    same piece of memory
+                </para>
+            </listitem>
+            <listitem>
+                <para>Object cache is a collection of indices</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Protected by a high performance multi-reader single writer lock</para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>Query cache remembers the results of queries that the application has run</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>It's a map of Operation -&gt; CachedQuery</para>
+                </listitem>
+                <listitem>
+                    <para>Uses soft references</para>
+                </listitem>
+                <listitem>
+                    <para>It also stores results of deep fetches: it's therefore not a good idea to clear the cache
+                        randomly
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Cache Configuration and General Behavior
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>Partial cache</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Empty at start time</para>
+                </listitem>
+                <listitem>
+                    <para>Populated with whatever queries/objects the application performs</para>
+                </listitem>
+                <listitem>
+                    <para>Can only answer queries that hit the query cache or the object cache exactly</para>
+                </listitem>
+                <listitem>
+                    <para>Ignores non-unique indices</para>
+                </listitem>
+                <listitem>
+                    <para>Uses soft and weak references</para>
+                </listitem>
+                <itemizedlist>
+                    <listitem>
+                        <para>Weak references are used with forEachWithCursor and newly inserted objects</para>
+                    </listitem>
+                </itemizedlist>
+            </itemizedlist>
+            <listitem>
+                <para>Full cache</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Loads everything at the start, unless a "loadOperationProvider" is supplied</para>
+                </listitem>
+                <listitem>
+                    <para>Can answer all queries from the cache (unless in a transaction)</para>
+                </listitem>
+                <listitem>
+                    <para>With a loadOperationProvider, it can be in a fake-full-cache mode.</para>
+                </listitem>
+                <listitem>
+                    <para>Pretends the cache has everything in it.</para>
+                </listitem>
+                <listitem>
+                    <para>Can use both unique and non-unique indices</para>
+                </listitem>
+                <listitem>
+                    <para>Uses regular (hard) references: nothing will be GC'ed</para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>None cache</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>It's just a partial cache that does not answer any user queries of any kind.</para>
+                </listitem>
+                <listitem>
+                    <para>Used entirely for uniqueing and relationship lookup</para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Cache Invalidation Mechanisms
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>Common invalidations mechanisms:</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Programmatically initiated: Finder.clearQueryCache()</para>
+                </listitem>
+                <itemizedlist>
+                    <listitem>
+                        <para>Clears the query cache</para>
+                    </listitem>
+                    <listitem>
+                        <para>Marks all the partial cache entries as "dirty". Dirty entries cannot be used to answer a
+                            query.
+                        </para>
+                    </listitem>
+                </itemizedlist>
+                <listitem>
+                    <para>Notification</para>
+                </listitem>
+                <itemizedlist>
+                    <listitem>
+                        <para>Fairly granular: Insert/update/delete events are broadcast for any interested listeners.
+                        </para>
+                    </listitem>
+                </itemizedlist>
+                <listitem>
+                    <para>Time based expiration: if a query or object has been in the cache longer than the expiration
+                        time, it's not trusted
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>On a per query level, the cache can be bypassed via findOneBypassCache or setting bypassCache
+                        on the list object
+                    </para>
+                </listitem>
+            </itemizedlist>
+
+            <listitem>
+                <para>Query cache update counters</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Each CachedQuery object keep a list of per-class and per-attribute update counter at the time
+                        the
+                        query ran
+                    </para>
+                </listitem>
+                <itemizedlist>
+                    <listitem>
+                        <para>E.g. ProductFinder.description().startsWith("s") =&gt; CachedQuery remembers Product class
+                            counter
+                            and
+                            Product.description attribute update counter
+                        </para>
+                    </listitem>
+                </itemizedlist>
+                <listitem>
+                    <para>When inserts/deletes happen, the class update counter is incremented</para>
+                </listitem>
+                <listitem>
+                    <para>Updates to particular attributes update the attribute update counter</para>
+                </listitem>
+                <listitem>
+                    <para>Cached query is only considered valid if its update counters are current.</para>
+                </listitem>
+            </itemizedlist>
+
+            <listitem>
+                <para>Object cache</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Objects collected via the GC (partial/none cache) : can only happen if no other references
+                        exist
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Transactional Behavior
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>The transaction has a query cache for all classes</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>The query cache is empty when the transaction starts</para>
+                </listitem>
+                <listitem>
+                    <para>This query cache is not shared with non-transactional queries or other transactions</para>
+                </listitem>
+                <listitem>
+                    <para>Result: queries prior to the transaction are not trusted. Queries within the transaction are
+                        trusted
+                        within the limits of update counter expiration
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>Each object knows if it's participating in a transaction (shared or exclusive)</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>The database has to know that the object is in a transaction to provide correct ACID behavior
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>No object is returned from the object cache without a read from the database</para>
+                </listitem>
+                <listitem>
+                    <para>It's best to do the reading inside the transaction, otherwise the object is refreshed upon
+                        access
+                    </para>
+                </listitem>
+                <itemizedlist>
+                    <listitem>
+                        <para>Unless optimistic locking has been requested for an object. In that case, the cache is
+                            trusted, but update/delete statements have extra clauses to ensure the state hasn't changed
+                            since the application retrieved the object originally
+                        </para>
+                    </listitem>
+                </itemizedlist>
+                <listitem>
+                    <para>When a transaction updates an object, the committed version is kept separate</para>
+                </listitem>
+                <listitem>
+                    <para>Non-transactional threads don't see the transactional (changed) state</para>
+                </listitem>
+                <listitem>
+                    <para>Two transactions can't write to the same object simultaneously</para>
+                </listitem>
+            </itemizedlist>
+
+            <listitem>
+                <para>Object cache keeps delta insert/delete indices</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>When an object is inserted in a transaction, it's not added to the main cache for the class
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Instead, it's added to a per-transaction delta cache. Ditto for delete</para>
+                </listitem>
+                <listitem>
+                    <para>The delta cache takes precedence over the main cache for that transaction</para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            3-tier caches
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>The client has it's own local cache</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>By default it's a partial cache and no configuration is required</para>
+                </listitem>
+                <listitem>
+                    <para>The default can be overriden in the runtime configuration</para>
+                </listitem>
+                <listitem>
+                    <para>The client tries to answer queries from its cache first before hitting the middle tier</para>
+                </listitem>
+            </itemizedlist>
+
+            <listitem>
+                <para>The server also has a cache</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>The server cache has to be configured</para>
+                </listitem>
+                <listitem>
+                    <para>The server can chose to answer the client's queries from its cache when appropriate</para>
+                </listitem>
+            </itemizedlist>
+
+            <listitem>
+                <para>3-tier transactional behavior</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>The client starts the transaction and creates a proxy transaction on the server side</para>
+                </listitem>
+                <listitem>
+                    <para>The server is holding onto the actual transactional database connection</para>
+                </listitem>
+                <listitem>
+                    <para>The cache behaves as if the client was directly connected to the database</para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Operation Resolution
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>General flow: hit the query cache, then the object cache, then the server</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Query cache only looks for exact matches. It will not returned expired CachedQueries</para>
+                </listitem>
+                <listitem>
+                    <para>A partial cache can only answer queries that map onto its unique indices and have a complete
+                        hit.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>A full cache will answer all queries, so long as no transaction is underway</para>
+                </listitem>
+            </itemizedlist>
+
+            <listitem>
+                <para>Object cache query resolution</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Operation has 3 methods: applyOperationToFullCache(), applyOperationToPartialCache(),</para>
+                </listitem>
+                applyOperation(List)
+                <listitem>
+                    <para>One of the first two methods is called by the portal</para>
+                </listitem>
+                <listitem>
+                    <para>Operation then finds the most selective index to start with and does an index lookup.</para>
+                </listitem>
+                <itemizedlist>
+                    <listitem>
+                        <para>If no index is found, we give up in a partial cache scenario, or we get the entire
+                            contents of the
+                            cache in a full cache setup
+                        </para>
+                    </listitem>
+                </itemizedlist>
+            </itemizedlist>
+
+            <listitem>
+                <para>It then filters the results based on the rest of the operation using applyOperation(List)</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Example: Cache has 3 indices:</para>
+                </listitem>
+                <listitem>
+                    <para>Index 1 attributes: a</para>
+                </listitem>
+                <listitem>
+                    <para>Index 2 attributes: a,b</para>
+                </listitem>
+                <listitem>
+                    <para>Index 3 attributes: c</para>
+                </listitem>
+                <listitem>
+                    <para>Query is a = 1 &amp; b = 2 &amp; c = 3.</para>
+                </listitem>
+                <listitem>
+                    <para>If Index 2 is more selective than Index 3, we do index lookup for (a = 1, b = 2), then filter
+                        the
+                        results for c = 3
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>Relationships used in operations are typically resolved through auto-generated indices</para>
+            </listitem>
+            <listitem>
+                <para>All current index implementations are hash based: can only resolve "=" and "in"</para>
+            </listitem>
+        </itemizedlist>
+
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Relationship Resolution
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>A one-to-one or many-to-one relationships uses a fast path lookup on the cache directly</para>
+            </listitem>
+            <programlisting language="java"><![CDATA[private static final Extractor[] fororder = new Extractor[]
+{
+    OrderItemFinder.orderId()};
+
+    …
+
+    _portal = OrderFinder.getMithraObjectPortal();
+
+    _result = (Order) _portal.getAsOneFromCache(_data, fororder );
+]]></programlisting>
+            <listitem>
+                <para>A fast path lookup creates no garbage</para>
+            </listitem>
+            <listitem>
+                <para>The code is essentially doing an index lookup</para>
+            </listitem>
+            <listitem>
+                <para>If the fast path fails to produce a result, we then create an operation and do a normal loopkup
+                </para>
+            </listitem>
+            <listitem>
+                <para>A one-to-many or many-to-many relationship creates a list and operation and resolves it normally
+                </para>
+            </listitem>
+            <listitem>
+                <para>During a deep fetch, the query cache is pre-populated with the operations and results that map the
+                    objects in the list to their related objects
+                </para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>For queries that map to unique indices, the query cache is only used for negative
+                        (non-existent)
+                        hits
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>Therefore, a x-to-many relationship usually just hits the query cache</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Object Cache Structure
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>Core concepts:</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Hashing Strategy</para>
+                </listitem>
+                <listitem>
+                    <para>An index is a searchable set (not a map!!!)</para>
+                </listitem>
+                <listitem>
+                    <para>A cache is not a map. It's a collection of indices</para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>Non-Dated indices:</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>FullUniqueIndex: similar to a Trove THashSet, but is searchable</para>
+                </listitem>
+                <listitem>
+                    <para>PartialPrimaryKeyIndex: similar in structure to a HashMap (entry objects)</para>
+                </listitem>
+                <itemizedlist>
+                    <listitem>
+                        <para>Entry objects are Weak or Soft referenced. An entry can also be marked as dirty</para>
+                    </listitem>
+                    <listitem>
+                        <para>Weak references are used with forEachWithCursor and new inserts</para>
+                    </listitem>
+                </itemizedlist>
+                <listitem>
+                    <para>PartialWeakUniqueIndex: used for partial cache indices other than the primary key</para>
+                </listitem>
+                <listitem>
+                    <para>NonUniqueIdentityIndex: only used with full caches. It's a compact searchable set that returns
+                        a list
+                    </para>
+                </listitem>
+            </itemizedlist>
+
+            <listitem>
+                <para>Dated indices:</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>FullSemiUniqueDatedIndex: holds onto the data objects, not the (wrapper) business objects
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>PartialSemiUniqueDatedIndex: holds weak references to the data objects</para>
+                </listitem>
+                <listitem>
+                    <para>NonUniqueIndex: full cache only. Holds onto the data objects and returns a list</para>
+                </listitem>
+                <listitem>
+                    <para>DatedObjectIndex: holds onto the business objects using soft or weak references</para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            FullUniqueIndex
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>Generally the only class from the Reladomo cache package that's useful outside</para>
+            </listitem>
+            <listitem>
+                <para>Used in multi-threaded loader for matching</para>
+            </listitem>
+            <listitem>
+                <para>Can be used in application code for matching as well</para>
+            </listitem>
+            <listitem>
+                <para>Structurally very similar to a Trove THashSet</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Hashing Strategy: usually created from a list of Reladomo attributes
+                        (ExtractorBasedHashingStrategy)
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Collision resolution is simpler than trove (quadratic probing)</para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>However, it's searchable</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Unlike a JDK set (which has no get method)</para>
+                </listitem>
+                <listitem>
+                    <para>Search method by the same object class: getFromData</para>
+                </listitem>
+                <listitem>
+                    <para>Don't use the get() methods, as they are specialized for single attribute searches</para>
+                </listitem>
+                <listitem>
+                    <para>remove and contains work as you would expect</para>
+                </listitem>
+                <listitem>
+                    <para>Special feature: can search by a different class using the get(object, Extractor[]) method
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            SemiUniqueDatedIndex
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>It's an unusual index for the dated data</para>
+            </listitem>
+            <listitem>
+                <para>It simultaneously holds two hash structures (one fully dated and unique, the other not</para>
+            </listitem>
+            dated)
+            <listitem>
+                <para>An earlier implementation was using composition of two sets and it wasn't working well</para>
+            </listitem>
+            <listitem>
+                <para>A dated cache first finds the data and then the business objects for that data</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>The business object is potentially instantiated if it didn't exist before</para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>The business object has the uniqueness guarantee, not the data object</para>
+            </listitem>
+        </itemizedlist>
+
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            SemiUniqueDatedIndex Code
+        </title>
+        <programlisting language="java"><![CDATA[public class PartialSemiUniqueDatedIndex implements SemiUniqueDatedIndex
+{
+    private ExtractorBasedHashStrategy hashStrategy;
+    private ExtractorBasedHashStrategy semiUniqueHashStrategy;
+    private SemiUniqueEntry[] nonDatedTable;
+    private SingleEntry[] table;
+}
+
+private static class SingleEntry extends WeakReference
+    implements SemiUniqueEntry
+{
+    private int pkHash;
+    private SingleEntry pkNext;
+    private int semiUniqueHash;
+    private SemiUniqueEntry semiUniqueNext;
+}
+
+private interface SemiUniqueEntry extends SemiUniqueObject
+{
+    ...
+}
+
+private static class MultiEntry implements SemiUniqueEntry
+{
+    private int semiUniqueHash;
+    private SingleEntry[] list;
+    private int size;
+    private SemiUniqueEntry semiUniqueNext;
+}
+]]></programlisting>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            SemiUniqueDatedIndex Instance Diagram
+        </title>
+        <mediaobject>
+        <imageobject>
+            <imagedata fileref="ReladomoInternalCacheStructure_14_1.png" align="center" valign="middle" format="png"
+                       scalefit="1"/>
+        </imageobject>
+    </mediaobject>
+    </dbs:foil>
+</dbs:slides>

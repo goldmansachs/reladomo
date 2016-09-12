@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<MithraObject #if(${OBJECT_TYPE} == "transactional")objectType="${OBJECT_TYPE}"#end xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="mithraobject.xsd">
+
+    <PackageName>${PACKAGE}</PackageName>
+    <ClassName>${NAME}</ClassName>
+    <DefaultTable>${TABLE_NAME}</DefaultTable>
+
+    <Attribute name="" javaType="" columnName="" primaryKey="true"/>
+    <Attribute name="" javaType="" columnName=""/>
+    
+    <Relationship name="" relatedObject="" relatedIsDependent="" cardinality="" >
+    
+    </Relationship>
+    
+</MithraObject>

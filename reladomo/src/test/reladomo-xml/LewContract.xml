@@ -1,0 +1,89 @@
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject>
+
+    <PackageName>com.gs.fw.common.mithra.test.glew</PackageName>
+    <ClassName>LewContract</ClassName>
+    <SuperClass name="LewObject" generated="true"/>
+    <Import>com.gs.fw.common.mithra.test.glew.LewObject</Import>
+    <DefaultTable>LEW_CONTRACT</DefaultTable>
+
+    <Attribute name="instrumentId" javaType="int" columnName="INSTRUMENT_I" primaryKey="true"/>
+    <Attribute name="acctId" javaType="int" columnName="ACCT_I"/>
+    <Attribute name="crossAcctId" javaType="int" columnName="CROSS_ACCT_I" defaultIfNull="0"/>
+
+    <Attribute name="productSynonym" javaType="String" maxLength="32" columnName="PROD_SYN_N"/>
+    <Attribute name="productSynonymType" javaType="String" maxLength="15" columnName="PROD_SYN_TYP_C"/>
+    <Attribute name="instrumentType" javaType="String" maxLength="30" columnName="INSTR_TYPE_C"/>
+    <Attribute name="instrumentSubtype" javaType="String" maxLength="10" columnName="INSTR_SUBTYPE_C"/>
+    <Attribute name="scrpClassId" javaType="int" columnName="CLASS_I"/>
+    <Attribute name="debtClass" javaType="String" maxLength="9" columnName="DEBT_CLASS_N"/>
+
+    <!-- Transaction Relationships -->
+    <Relationship name="lewTransaction" relatedObject="LewTransaction" cardinality="one-to-one">
+        LewTransaction.acctId = this.acctId and
+        LewTransaction.instrumentId = this.instrumentId
+    </Relationship>
+
+    <Relationship name="scrp" relatedObject="GlewScrp" cardinality="one-to-one">
+        GlewScrp.name = this.debtClass
+        and GlewScrp.viewId = 1005
+    </Relationship>
+
+    <Relationship name="product" relatedObject="LewProduct" cardinality="one-to-one">
+        LewProduct.instrumentId = this.instrumentId
+    </Relationship>
+
+    <Relationship name="productWithLeftRegion" relatedObject="LewProduct" cardinality="one-to-one">
+        LewProduct.instrumentId = this.instrumentId and
+        this.region = "NYK"
+    </Relationship>
+
+    <Relationship name="productWithLeftAsOfAttribute" relatedObject="LewProduct" cardinality="one-to-one">
+        LewProduct.instrumentId = this.instrumentId and
+        this.processingDate = {com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()}
+    </Relationship>
+
+    <Relationship name="productWithRightRegion" relatedObject="LewProduct" cardinality="one-to-one">
+        LewProduct.instrumentId = this.instrumentId and
+        LewProduct.region = "NYK"
+    </Relationship>
+
+    <Relationship name="productWithRightAsOfAttribute" relatedObject="LewProduct" cardinality="one-to-one">
+        LewProduct.instrumentId = this.instrumentId and
+        LewProduct.processingDate = {com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()}
+    </Relationship>
+
+    <Relationship name="scrpSynonymA" relatedObject="GlewScrp" cardinality="one-to-one">
+        GlewScrp.name = this.debtClass
+        and GlewScrp.viewId = 1005
+        and this.productSynonym = "A"
+    </Relationship>
+
+    <Relationship name="scrpSynonymB" relatedObject="GlewScrp" cardinality="one-to-one">
+        GlewScrp.name = this.debtClass
+        and GlewScrp.viewId = 1005
+        and this.productSynonym = "B"
+    </Relationship>
+
+    <Relationship name="scrpTypeEZ" relatedObject="GlewScrp" cardinality="one-to-one">
+        GlewScrp.name = this.debtClass
+        and GlewScrp.typeId in (1, 2)
+        and this.productSynonym = "B"
+    </Relationship>
+
+</MithraObject>

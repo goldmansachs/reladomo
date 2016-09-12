@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>ProductWithSourceAttribute</ClassName>
+    <DefaultTable>PRODUCT_WITH_SOURCE_ATTR</DefaultTable>
+
+    <SourceAttribute name="acmapCode"   javaType="String"/>
+
+    <Attribute name="productId" javaType="int" columnName="PROD_ID" primaryKey="true"/>
+    <Attribute name="profileTypeId" javaType="int" columnName="PROD_PROF_TYPE_ID_I" nullable="true"/>
+
+
+    <Relationship name="profileType" relatedObject="ProductProfileType" cardinality="many-to-one"
+                  reverseRelationshipName="products">
+        ProductProfileType.profileTypeId = this.profileTypeId
+    </Relationship>
+
+    <Relationship name="parentProduct" relatedObject="ProductWithSourceAttribute" cardinality="many-to-one">
+        ProductRelation.productChildId = this.productId
+        and ProductWithSourceAttribute.productId = ProductRelation.productParentId
+    </Relationship>
+
+</MithraObject>

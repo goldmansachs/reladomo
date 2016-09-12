@@ -1,0 +1,56 @@
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>ParaPosition</ClassName>
+
+    <DefaultTable>PARA_POSITION</DefaultTable>
+    
+    <AsOfAttribute name="processingDate" fromColumnName="IN_Z" toColumnName="OUT_Z" 
+                   infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]" 
+                   defaultIfNotSpecified="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]" 
+                   isProcessingDate="true"/>
+
+    <Attribute name="productIdentifier" javaType="String" columnName="PRODUCT_IDENT_C" primaryKey="true" maxLength="40"/>
+    <Attribute name="accountNumber" javaType="String" columnName="ACCT_NBR_8DIGIT_C" primaryKey="true" maxLength="8"/>
+    <Attribute name="accountSubtype" javaType="String" columnName="ACCT_SUBTYPE_C" primaryKey="true" maxLength="2" nullable="true"/>
+    <Attribute name="businessDate" javaType="Timestamp" columnName="BUS_DATE_Z" primaryKey="true"/>
+    <Attribute name="qtdOpenCost" javaType="double" columnName="QTD_OPEN_COST_F"/>
+    <Attribute name="ytdOpenCost" javaType="double" columnName="YTD_OPEN_COST_F"/>
+    <Attribute name="qtdUnrealized" javaType="double" columnName="QTD_UNREALIZED_F"/>
+    <Attribute name="ytdUnrealized" javaType="double" columnName="YTD_UNREALIZED_F"/>
+    <Attribute name="qtdRealized" javaType="double" columnName="QTD_REALIZED_F"/>
+    <Attribute name="ytdRealized" javaType="double" columnName="YTD_REALIZED_F"/>
+    <Attribute name="qtdTrading" javaType="double" columnName="QTD_TRADING_F"/>
+    <Attribute name="ytdTrading" javaType="double" columnName="YTD_TRADING_F"/>
+    <Attribute name="fasbObservable" javaType="int" columnName="OBSERVABLE_LEVEL_I"/>
+    <Attribute name="updated" javaType="Timestamp" columnName="OBS_LVL_UPDATED_Z"/>
+
+    <Relationship name="product" relatedObject="ParaProduct" cardinality="many-to-one" directReference="true">
+        ParaProduct.gsn = this.productIdentifier
+    </Relationship>
+
+    <Relationship name="account" relatedObject="LewAccount" cardinality="many-to-one" directReference="true" finalGetter="true" reverseRelationshipName="paraPosition">
+        LewAccount.accountNumber = this.accountNumber and
+        LewAccount.accountSubNumber = this.accountSubtype and
+        LewAccount.businessDate = this.businessDate
+    </Relationship>
+
+</MithraObject>

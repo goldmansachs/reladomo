@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="false" context="xml_new" deleted="false" description="MithraRuntime XML" enabled="true" name="MithraRuntime XML">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&#13;
+&#13;
+&lt;MithraRuntime xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="mithraruntime.xsd"&gt;&#13;
+    &lt;ConnectionManager className=""&gt;&#13;
+        &lt;MithraObjectConfiguration className="" cacheType=""/&gt;&#13;
+        &lt;MithraObjectConfiguration className="" cacheType=""/&gt;&#13;
+    &lt;/ConnectionManager&gt; &#13;
+&lt;/MithraRuntime&gt;</template></templates>

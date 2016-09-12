@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="../mithraobject.xsd" objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>Order</ClassName>
+    <Import>com.gs.collections.api.set.primitive.IntSet</Import>
+    <DefaultTable>ORDERS</DefaultTable>
+
+    <MithraInterface>Orderable</MithraInterface>
+
+    <Attribute name="orderId" javaType="int" columnName="ORDER_ID" primaryKey="true"/>
+    <Attribute name="orderDate" javaType="Timestamp" columnName="ORDER_DATE"/>
+    <Attribute name="userId" javaType="int" columnName="USER_ID"/>
+    <Attribute name="description" javaType="String" columnName="DESCRIPTION" maxLength="50" truncate="true"/>
+    <Attribute name="state" javaType="String" columnName="STATE" maxLength="20"/>
+    <Attribute name="trackingId" javaType="String" columnName="TRACKING_ID" maxLength="15"/>
+    <!--todo: computed attribute-->
+    <!--<ComputedAttribute javaType="String" name="shortDescription">description.substring(1,4)</ComputedAttribute>-->
+    <!--<ComputedAttribute javaType="String" name="oneCharDescription">description.substring(1,4).substring(0,1)</ComputedAttribute>-->
+
+    <TransactionalMethodSignature>public void setUserIdAndDescription(int userId, String description) throws IllegalArgumentException</TransactionalMethodSignature>
+    <TransactionalMethodSignature>public void cancel() throws IllegalArgumentException</TransactionalMethodSignature>
+    <TransactionalMethodSignature>public void cancelAndFail() throws IllegalArgumentException</TransactionalMethodSignature>
+    <TransactionalMethodSignature>public void setStateAndDescription(String state, String description)</TransactionalMethodSignature>
+    <TransactionalMethodSignature>public void setUserIdCancelAndFail(int userId) throws IllegalArgumentException</TransactionalMethodSignature>
+    <TransactionalMethodSignature>public void cancelOrderAndOrderItems() throws IllegalArgumentException</TransactionalMethodSignature>
+    <TransactionalMethodSignature>public void cancelOrderItems()</TransactionalMethodSignature>
+    <Relationship name="items" relatedObject="OrderItem" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-many" >OrderItem.orderId = this.orderId</Relationship>
+    <Relationship name="orderStatus" relatedObject="OrderStatus" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-one" >OrderStatus.orderId = this.orderId</Relationship>
+    <Relationship name="itemForProduct" relatedObject="OrderItem" cardinality="one-to-one" parameters="int productId">OrderItem.orderId = this.orderId and OrderItem.productId = {productId}</Relationship>
+    <Relationship name="itemForProductSet" relatedObject="OrderItem" cardinality="one-to-one" parameters="IntSet productIds">OrderItem.orderId = this.orderId and OrderItem.productId in {productIds}</Relationship>
+    <Relationship name="expensiveItems" relatedObject="OrderItem" cardinality="one-to-many" parameters="double price">
+        <![CDATA[
+        OrderItem.orderId = this.orderId and OrderItem.originalPrice >= {price}
+        ]]>
+    </Relationship>
+    <Relationship name="cheapItems" relatedObject="OrderItem" cardinality="one-to-many" parameters="double price" returnType="List">
+        <![CDATA[
+        OrderItem.orderId = this.orderId and OrderItem.originalPrice < {price}
+        ]]>
+    </Relationship>
+    <Relationship name="cheapItemsWithCheck" relatedObject="OrderItem" cardinality="one-to-many" parameters="double price" returnType="List">
+        <![CDATA[
+        OrderItem.orderId = this.orderId and OrderItem.originalPrice < {price} and this.userId = 1
+        ]]>
+    </Relationship>
+    <Relationship name="itemsForUserFive" relatedObject="OrderItem" cardinality="one-to-many" returnType="List">
+        OrderItem.orderId = this.orderId and this.userId = 5
+    </Relationship>
+    <Relationship name="productsWithoutInProgress" relatedObject="Product" cardinality="one-to-many">
+        this.orderId = OrderItem.orderId and
+        10.5 = OrderItem.quantity and
+        OrderItem.state != "In-Progress" and
+        OrderItem.productId = Product.productId
+    </Relationship>
+    <Relationship name="itemsWithInterfaces" relatedObject="OrderItemWi" relatedIsDependent="true" reverseRelationshipName="orderWithoutInterface" cardinality="one-to-many" >OrderItemWi.orderId = this.orderId</Relationship>
+    <Relationship name="itemsFilterByDate" relatedObject="OrderItem" cardinality="one-to-many">this.orderDate = {com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()}
+        and this.orderId = OrderItem.orderId</Relationship>
+    <Relationship name="orderStatusWithInterfaces" relatedObject="OrderStatusWi" relatedIsDependent="true" reverseRelationshipName="orderWithoutInterface" cardinality="one-to-one" >OrderStatusWi.orderId = this.orderId</Relationship>
+
+    <Relationship name="parentToChildAsParent" relatedObject="OrderParentToChildren" relatedIsDependent="true" reverseRelationshipName="parentOrder"
+                  cardinality="one-to-many" >OrderParentToChildren.parentOrderId = this.orderId</Relationship>
+
+    <Relationship name="parentToChildAsChild" relatedObject="OrderParentToChildren" relatedIsDependent="true" reverseRelationshipName="childOrder"
+                  cardinality="one-to-one" >OrderParentToChildren.childOrderId = this.orderId</Relationship>
+
+    <Relationship name="children" relatedObject="Order" reverseRelationshipName="parent"
+                  cardinality="one-to-many" >OrderParentToChildren.parentOrderId = this.orderId and OrderParentToChildren.childOrderId = Order.orderId</Relationship>
+
+    <Relationship name="itemsforExistingStatus" relatedObject="OrderItem" cardinality="one-to-many" >
+        OrderItem.orderId = this.orderId and this.orderId = OrderStatus.orderId</Relationship>
+    <Relationship name="itemsOrTest" relatedObject="OrderItem" cardinality="one-to-many" >
+        OrderItem.orderId = this.orderId and (this.userId = 1 or this.state = "Gummed up")</Relationship>
+    <Relationship name="itemsInTest" relatedObject="OrderItem" cardinality="one-to-many" >
+        OrderItem.orderId = this.orderId and (this.userId in (1,2) or this.state in ("In-Progress"))</Relationship>
+    <Index name="byUserId">userId</Index>
+    <Index name="byState">state</Index>
+    <Index name="byStateWithBadSpacing">   state</Index>
+    <Index name="byStateWithBadSpacing2">state    </Index>
+    <Index name="byTrackingId" unique="true">trackingId</Index>
+</MithraObject>

@@ -1,0 +1,6 @@
+<MithraRuntime xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="mithraruntime.xsd">
+    <ConnectionManager className="">
+        <MithraObjectConfiguration className="" cacheType=""/>
+        <MithraObjectConfiguration className="" cacheType=""/>        
+    </ConnectionManager>
+</MithraRuntime>

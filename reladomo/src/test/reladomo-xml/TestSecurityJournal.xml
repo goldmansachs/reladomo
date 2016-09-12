@@ -1,0 +1,27 @@
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+  <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+  <ClassName>TestSecurityJournal</ClassName>
+  <SuperClass name="TestAbstractTransaction" generated="true" /> 
+  <DefaultTable>SECURITY_JOURNAL_TB</DefaultTable>
+  <Attribute name="clearingAgentReferenceId" javaType="String" columnName="ca_ref_id_c" maxLength="25" nullable="true" truncate="true" />
+  <Attribute name="clearingAgent" javaType="String" columnName="clear_agnt_c" maxLength="4" nullable="true" truncate="true" />
+  <Attribute name="clearanceBrokerBank" javaType="String" columnName="clr_bnk_brk_c" maxLength="20" nullable="true" truncate="true" />
+  <Attribute name="subMessageType" javaType="String" columnName="sub_message_type_c" maxLength="4" nullable="true" truncate="true" />
+</MithraObject>

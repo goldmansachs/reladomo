@@ -1,0 +1,88 @@
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject superClassType="table-per-subclass">
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>AbstractGhostMessageTransaction</ClassName>
+    <SuperClass name = "com.gs.fw.common.mithra.test.domain.GhostMessageSuperClass" generated="false"/>
+    <SourceAttribute name="acmapCode" javaType="String" />
+
+    <Attribute name="transactionId"               javaType="int"	    columnName="TRAN_ID"                primaryKey="true"/>
+    <Attribute name="transactionType"             javaType="String"     columnName="TRAN_TYPE"/>
+    <Attribute name="accountId"                   javaType="String"     columnName="ACCT_NBR_C"/>
+    <Attribute name="profitCenter"                javaType="String"     columnName="PROFIT_CENTRE"/>
+    <Attribute name="prodId"                      javaType="int"    	columnName="PROD_SEC_ID_I"/>
+    <Attribute name="gsn"                         javaType="String"	    columnName="PROD_SEC_NBR_C"/>
+    <Attribute name="cusip"                       javaType="String"     columnName="PROD_SEC_CUSIP_C"/>
+    <Attribute name="productIsinNumber"           javaType="String"    	columnName="PROD_ISIN_NBR_C"/>
+    <Attribute name="productHubReference"         javaType="int"        columnName="PROD_HUB_REF_I"/>
+    <Attribute name="productCedelNumber"          javaType="String"    	columnName="PROD_CEDEL_NBR_C"/>
+    <Attribute name="transactionBuySell"          javaType="String"    	columnName="TRANS_BUY_SELL_C"/>
+    <Attribute name="tradeDate"                   javaType="String"    	columnName="TRADE_DATE"/>
+    <Attribute name="settleDate"                  javaType="String"    	columnName="SETTLE_DATE"/>
+    <Attribute name="transactionCurrency"         javaType="String"    	columnName="TRANS_CCY_C"/>
+    <Attribute name="transactionQuantity"         javaType="double"     columnName="TRANS_QUANTITY_M"/>
+    <Attribute name="transactionStatus"           javaType="String"    	columnName="TRANS_STATUS_C"/>
+    <Attribute name="transactionActionCode"       javaType="String"    	columnName="TRANS_ACTION_CODE_C"/>
+    <Attribute name="transactionRefNumber"        javaType="String"    	columnName="TRAN_REF_NBR"/>
+    <Attribute name="matchTransactionRefNumber"   javaType="String"    	columnName="MATCH_TRAN_REF_NBR"/>
+    <Attribute name="transactionPrice"            javaType="double"     columnName="TRANS_PRICE_M"/>
+    <Attribute name="transactionCostCurrency"     javaType="String"    	columnName="TRANS_COST_CCY_C"/>
+    <Attribute name="transactionCost"             javaType="double" 	columnName="TRANS_COST_M"/>
+    <Attribute name="transactionCostBase"         javaType="double" 	columnName="TRANS_COST_BASE_M"/>
+    <Attribute name="transactionPurInt"           javaType="double" 	columnName="TRANS_PUR_INT_M"/>
+    <Attribute name="transactionPurIntBase"       javaType="double" 	columnName="TRANS_PUR_INT_BASE_M"/>
+    <Attribute name="transactionSettleCurrency"   javaType="String"    	columnName="TRANS_SETTLE_CCY_C"/>
+    <Attribute name="transactionSettleAmount"     javaType="double" 	columnName="TRANS_SETTLE_AMT_M"/>
+    <Attribute name="transactionSettleBaseAmount" javaType="double" 	columnName="TRANS_SETTLE_BASE_M"/>
+    <Attribute name="transactionDeductAmount"     javaType="double" 	columnName="TRANS_DEDUCT_AMT_M"/>
+    <Attribute name="transactionDeductBaseAmount" javaType="double" 	columnName="TRANS_DEDUCT_BASE_M"/>
+    <Attribute name="transactionOrigFaceValue"    javaType="double" 	columnName="TRANS_ORG_FACE_VAL_M"/>
+    <Attribute name="transactionFactor"           javaType="String"    	columnName="TRANS_FACTOR_C"/>
+    <Attribute name="transactionXferTaxA"         javaType="double" 	columnName="TRANS_XFER_TAX_A_M"/>
+    <Attribute name="transactionXferTaxB"         javaType="double" 	columnName="TRANS_XFER_TAX_B_M"/>
+    <Attribute name="fxRate"                      javaType="double" 	columnName="FX_RATE_M"/>
+    <Attribute name="transactionCode"             javaType="String"    	columnName="TRANS_CODE_C"/>
+    <Attribute name="marketCode"                  javaType="String"    	columnName="MARKET_CODE_C"/>
+    <Attribute name="exdivStatus"                 javaType="String"    	columnName="EXDIV_STATUS"/>
+    <Attribute name="transactionCustomer"         javaType="String"    	columnName="TRANS_CUST_C"/>
+    <Attribute name="crossAccountId"              javaType="String"    	columnName="CROSS_ACCT_NBR_C"/>
+    <Attribute name="counterPartyType"            javaType="String"    	columnName="COUNTER_PTY_TYPE_C"/>
+    <Attribute name="brokerAccountNumber"         javaType="String" 	columnName="BROKER_ACCT_NBR_C"/>
+    <Attribute name="brokerName"                  javaType="String"    	columnName="BROKER_NAME_C"/>
+    <Attribute name="transactionOffice"           javaType="String"     columnName="TRANS_OFFICE_C"/>
+    <Attribute name="clearingAgent"               javaType="String"    	columnName="CLEARING_AGENT_C"/>
+    <Attribute name="trader"                      javaType="String"    	columnName="TRADER_C"/>
+    <Attribute name="transactionExtPrice"         javaType="double" 	columnName="TRANS_EXT_PRICE_M"/>
+    <Attribute name="transactionExecTime"         javaType="String"    	columnName="TRANS_EXEC_TIME_C"/>
+    <Attribute name="transactionMemo"             javaType="String"    	columnName="TRANS_MEMO_C"/>
+    <Attribute name="transactionSource"           javaType="String"    	columnName="TRANS_SOURCE_C"/>
+    <Attribute name="transactionClose"            javaType="String"    	columnName="TRANS_CLOSE_F"/>
+    <Attribute name="transactionVersion"          javaType="int"     	columnName="TRANS_VERSION_I"/>
+    <Attribute name="transactionFactory"          javaType="String"    	columnName="TRANS_FACTORY"/>
+    <Attribute name="transactionIgnore"           javaType="String"    	columnName="TRANS_IGNORE"/>
+    <Attribute name="trail1"                      javaType="String"    	columnName="TRAIL_1"/>
+    <Attribute name="trail2"                      javaType="String"    	columnName="TRAIL_2"/>
+    <Attribute name="trail3"                      javaType="String"    	columnName="TRAIL_3"/>
+    <Attribute name="trail4"                      javaType="String"    	columnName="TRAIL_4"/>
+    <Attribute name="trail5"                      javaType="String"    	columnName="TRAIL_5"/>
+    <Attribute name="trail6"                      javaType="String"    	columnName="TRAIL_6"/>
+    <Attribute name="trail7"                      javaType="String"    	columnName="TRAIL_7"/>
+    <Attribute name="trail8"                      javaType="String"    	columnName="TRAIL_8"/>
+    <Attribute name="processedDate"               javaType="Timestamp"	columnName="IN_Z"/>
+
+
+</MithraObject>

@@ -1,0 +1,407 @@
+<?xml version="1.0"?>
+
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<article>
+    <articleinfo>
+        <title>Reladomo Primary Key Generator</title>
+        <pubdate>July 22, 2007</pubdate>
+        <author>Rafael Gonzalez</author>
+    </articleinfo>
+
+    <section>
+        <title>Reladomo PrimaryKey Generator</title>
+        <para>Primary key generator is an optional feature in Reladomo that allows Reladomo objects to declare how the
+            primary key is going to be generated.</para>
+        <para>
+            Two strategies can be used when declaring a primary key generator:
+            <emphasis role="bold">Max or SimulatedSequence</emphasis>.
+        </para>
+        <section>
+            <title>Max</title>
+            <para>When using Max strategy, the primary key generator will get the maximum value for the primary key
+                column in the database and it will increment it to generate the next primary key value.</para>
+        </section>
+        <section>
+            <title>SimulatedSequence</title>
+            <para>A sequence is a database object from which multiple users may generate integers across the system.
+                Sequences can be used to automatically generate primary key values.
+                A user can create different sequences to generate primary keys for different tables,
+                or can even share the same sequence across many tables.
+            </para>
+            <para>The SimulatedSequence strategy uses a database table to keep the sequence name and the next value of
+                the sequence. In this table, each row represents a different sequence. The user will need to supply a
+                MithraSequence object that is used to access the sequence values from the database and a
+                MithraSequenceObjectFactory object that will return the corresponding MithraSequence object.
+                MithraSequence and MithraSequenceObjectFactory will be explained in the next sections.
+            </para>
+
+            <section>
+                <title>com.gs.fw.common.mithra.MithraSequence</title>
+                <para>For simulated sequence strategy, Reladomo users need to provide a MithraObject that will map to the
+                    sequence table in the database. This Reladomo object must implement the MithraSequence interface:
+                </para>
+                <programlisting language="java"><![CDATA[
+public interface MithraSequence
+{
+    public void setSequenceName(String sequenceName);
+
+    public long getNextId();
+
+    public void setNextId(long nextValue);
+}
+]]></programlisting>
+                <para>The MithraSequence implementation will act as an adapter in the case that attributes in the
+                    user-provided MithraSequence object do not match the ones that the primary key generator uses.
+                    This gives the user a way to convert the application programming interface of the user-provided
+                    MithraSequence object to the interface that the primary key generator expects:
+                </para>
+                <programlisting language="xml"><![CDATA[
+<MithraObject objectType="transactional">
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>MithraTestSequence</ClassName>
+    <DefaultTable>MITHRA_TEST_SEQUENCE</DefaultTable>
+
+    <Attribute name="simulatedSequenceName" javaType="String" columnName="SEQUENCE_NAME" maxLength="50" primaryKey="true"/>
+    <Attribute name="nextValue" javaType="long" columnName="NEXT_VALUE"/>
+</MithraObject>
+]]></programlisting>
+
+                <programlisting language="java"><![CDATA[
+public class MithraTestSequence extends MithraTestSequenceAbstract implements MithraSequence
+{
+    public long getNextId()
+    {
+        return this.getNextValue();
+    }
+
+    public void setNextId(long nextValue)
+    {
+        this.setNextValue(nextValue);
+    }
+}
+]]></programlisting>
+            </section>
+            <section>
+                <title>com.gs.fw.common.mithra.MithraSequenceObjectFactory</title>
+                <para>In addition, Reladomo users need to provide a sequence object factory class.
+                    This class must implement the MithraSequenceObjectFactory interface:
+                </para>
+                <programlisting language="java"><![CDATA[
+public interface MithraSequenceObjectFactory
+{
+     public MithraSequence getMithraSequenceObject(String sequenceName, Object sourceAttribute, int initialValue);
+}
+]]></programlisting>
+                <para>
+                    This factory will provide the primary key generator with a common way to access the user provided
+                    MithraSequence.
+                    The getMithraSequenceObject() method must return the simulated sequence object,
+                    and should create and insert it in the database if it does not already exist.
+                </para>
+                <programlisting language="java"><![CDATA[
+public class MithraTestSequenceObjectFactory implements MithraSequenceObjectFactory
+{
+    public MithraSequence getMithraSequenceObject(String sequenceName, Object sourceAttribute, int initialValue)
+    {
+        Operation op = MithraTestSequenceFinder.simulatedSequenceName().eq(sequenceName);
+        MithraTestSequence mithraTestSequence = MithraTestSequenceFinder.findOne(op);
+        if (mithraTestSequence == null)
+        {
+            mithraTestSequence = new MithraTestSequence()
+            mithraTestSequence.setSequenceName(sequenceName);
+            mithraTestSequence.setNextId(initialValue);
+            mithraTestSequence.insert();
+        }
+        return mithraTestSequence;
+    }
+}
+]]></programlisting>
+            </section>
+        </section>
+    </section>
+    <section>
+        <title>Primary Key Generator XML syntax</title>
+        <para>
+            In order to make use of this feature, some modifications to the primary key attribute tags in the
+            MithraObject XML will be needed.
+        </para>
+        <para>For Max strategy:</para>
+        <programlisting language="xml"><![CDATA[
+<Attribute name="attributeName"
+           javaType="int or long"
+           columnName="dbColumn name"
+           primaryKey="true"
+           primaryKeyGeneratorStrategy="Max" />
+]]></programlisting>
+
+        <para>Max strategy example:</para>
+        <programlisting language="xml"><![CDATA[
+<MithraObject objectType="transactional">
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>AccountTransactionMax</ClassName>
+    <DefaultTable>ACCOUNT_TRANSACTION_MAX</DefaultTable>
+    <SourceAttribute name="deskId" javaType="String"/>
+    <Attribute name="transactionId"
+               javaType="long"
+               columnName="TRANSACTION_ID"
+               primaryKey="true"
+               primaryKeyGeneratorStrategy="Max"/>
+                    ...
+</MithraObject>
+]]></programlisting>
+
+        <para>For SimulatedSequence strategy:</para>
+        <programlisting language="xml"><![CDATA[
+<Attribute name="attributeName"
+           javaType="int or long"
+           columnName="dbColumn name"
+           primaryKey="true"
+           primaryKeyGeneratorStrategy="SimulatedSequence">
+        <SimulatedSequence sequenceName="sequenceName"
+                           sequenceObjectFactoryName="sequenceObjectFactory"
+                           hasSourceAttribute="false"
+                           batchSize="10"
+                           initialValue="1"
+                           incrementSize="1"/>
+</Attribute>
+]]></programlisting>
+        <itemizedlist>
+            <listitem>
+                <para><emphasis role="bold">sequenceName</emphasis> - name of the sequence to be created.</para>
+            </listitem>
+            <listitem>
+                <para>
+                    <emphasis role="bold">sequenceObjectFactoryName</emphasis> - fully qualified classname for the
+                    sequence object factory. This is a user provided class that follows a factory method pattern for
+                    MithraSequence objects.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    <emphasis role="bold">hasSourceAttribute</emphasis> - this attribute accepts the values "true" or
+                    "false". If "true" a sequence table is created in every database, otherwise the sequence table is
+                    created in the default database.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    <emphasis role="bold">batchSize</emphasis> - An optional value representing the size of a batch of
+                    primary key values. This primary key values batch will improve performance since it will allow the
+                    primary key generator to get the next value from the local batch instead of going to the database
+                    every time a new value is requested. This feature is very useful specially when inserting MithraList
+                    objects. This value must be a positive number. <emphasis role="bold">Default is 10</emphasis>.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    <emphasis role="bold">initialValue</emphasis> - specifies the initial value for the sequence.
+                    <emphasis role="bold">Default is 1</emphasis>.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    <emphasis role="bold">incrementSize</emphasis> - specifies the interval between sequence numbers.
+                    This value can be any positive or negative integer, but it cannot be 0. If this value is negative,
+                    then the sequence descends. If the increment is positive, then the sequence ascends.
+                    <emphasis role="bold">Default is 1</emphasis>.
+                </para>
+            </listitem>
+        </itemizedlist>
+        <para>Simulated sequence strategy example:</para>
+        <programlisting language="xml"><![CDATA[
+<MithraObject objectType="transactional">
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>AccountTransaction</ClassName>
+    <DefaultTable>ACCOUNT_TRANSACTION</DefaultTable>
+    <SourceAttribute name="deskId" javaType="String"/>
+    <Attribute name="transactionId"
+               javaType="int"
+               columnName="TRANSACTION_ID"
+               primaryKey="true"
+               primaryKeyGeneratorStrategy="SimulatedSequence">
+         <SimulatedSequence sequenceName="AccountTransactionSequence"
+                            sequenceObjectFactoryName="com.gs.fw.common.mithra.test.domain.MithraTestSequenceObjectFactory"
+                            hasSourceAttribute="false"/>
+    </Attribute>
+    ...
+</MithraObject>
+]]></programlisting>
+        <para>
+            Notice, since the values for batchSize, initialValue, and incrementSize where not declared, the sequence
+            will be initialized using the default values mentioned above for those attributes.
+        </para>
+        <para>
+            There are some restrictions when using simulated sequences, for example, simulated sequences can be shared
+            among Reladomo objects. Two or more Reladomo objects can use the same simulated sequence as long as the Reladomo
+            objects have the same source attribute type, and that the values for batchSize, initialValue, and
+            incrementalValue are the same in each Reladomo object definition.
+        </para>
+        <para>
+            In addition, Reladomo objects that have compound primary keys can use primary key generators for more than
+            one of the primary key attributes. If so, the primary key generators can use the same strategy:
+        </para>
+        <programlisting language="xml"><![CDATA[
+<MithraObject objectType="transactional">
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>SpecialAccountMax</ClassName>
+    <DefaultTable>SPECIAL_ACCOUNT_MAX</DefaultTable>
+    <SourceAttribute name="deskId" javaType="String"/>
+    <Attribute name="specialAccountId"
+               javaType="long"
+               columnName="SPECIAL_ACCOUNT_ID"
+               primaryKey="true"
+               primaryKeyGeneratorStrategy="Max"/>
+    <Attribute name="accountSpecialCode"
+               javaType="long"
+               columnName="ACCOUNT_SPECIAL_CODE"
+               primaryKey="true"
+               primaryKeyGeneratorStrategy="Max"/>
+     ...
+</MithraObject>
+]]></programlisting>
+
+        <para>Or different strategies:</para>
+        <programlisting language="xml"><![CDATA[
+<MithraObject objectType="transactional">
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>SpecialAccount</ClassName>
+    <DefaultTable>SPECIAL_ACCOUNT</DefaultTable>
+
+    <SourceAttribute name="deskId" javaType="String"/>
+    <Attribute name="specialAccountId"
+               javaType="long"
+               columnName="SPECIAL_ACCOUNT_ID"
+               primaryKey="true"
+               primaryKeyGeneratorStrategy="SimulatedSequence">
+        <SimulatedSequence sequenceName="AccountSequence"
+                           sequenceObjectFactoryName="com.gs.fw.common.mithra.test.domain.MithraTestSequenceObjectFactory"
+                           hasSourceAttribute="false"
+                           batchSize="2"
+                           initialValue="100000000"
+                           incrementSize="1"/>
+    </Attribute>
+    <Attribute name="accountSpecialCode"
+               javaType="long"
+               columnName="ACCOUNT_SPECIAL_CODE"
+               primaryKey="true"
+               primaryKeyGeneratorStrategy="Max"/>
+    ...
+</MithraObject>
+]]></programlisting>
+    </section>
+    <section>
+        <title>Primary Key Generator Programming Model</title>
+        <para>Every transactional Reladomo object will provide a convenience method to generate and set the primary key
+            value. In addition, this method will return the generated primary key value. The use of this method is
+            optional since the Reladomo object will check the primary key values (for the primary keys that are using
+            primary key generators) and generate the values if they have not been set when insert() is called on the
+            MithraObject. The method will be of the form:
+        </para>
+        <programlisting language="java"><![CDATA[
+public <primaryKey attribute type> generateAndSet<primaryKey attribute name>();
+]]></programlisting>
+        <para>The MithraList object does not provide any convenience method(s) to work with primary key generators.
+            In the case of the SimulatedSequence strategy, the MithraList object will ensure that the batch has enough
+            capacity for the list.
+        </para>
+        <para>Here is an example of how to insert a MithraObject that uses a SimulatedSequence. In this case
+            transactionId is the primary key for the AccountTransaction object:
+        </para>
+        <programlisting language="java"><![CDATA[
+...
+AccountTransaction accountTransaction0 = new AccountTransaction();
+accountTransaction0.setDeskId("A");
+accountTransaction0.setTransactionDescription("Account Transaction 0");
+accountTransaction0.setTransactionDate(new Timestamp(System.currentTimeMillis()));
+long transactionId0 = accountTransaction0.generateAndSetTransactionId();
+accountTransaction0.insert();
+...
+]]></programlisting>
+        <para>Inserting a MithraList using a simulated sequence:</para>
+        <programlisting language="java"><![CDATA[
+...
+AccountTransactionList list1 = new AccountTransactionList();
+AccountTransaction accountTransaction1 = null;
+for (int i = 0; i < 25; i++)
+{
+    accountTransaction1 = new AccountTransaction();
+    accountTransaction1.setTransactionDate(new Timestamp(System.currentTimeMillis()));
+    accountTransaction1.setTransactionDescription("Transaction failure: "+i);
+    accountTransaction1.setDeskId("A");
+    list1.add(accountTransaction1);
+}
+list1.insertAll();
+...
+]]></programlisting>
+        <para>
+            In this case the convenience method to generate and set the primary key is not being called.
+            When the insertAll() is called on the MithraList, the list ensures that the primary key generator has a
+            batch with enough capacity for the list. In addition, the MithraList will call insert on each MithraObject
+            in the list and, as we mentioned before, the MithraObject will check, generate, and set the primary key
+            values if necessary.
+        </para>
+        <para>
+           When Max strategy is used in a single-column or compound primary key, the MithraObject must be called within
+           the context of a transaction, for example:
+        </para>
+        <programlisting language="java"><![CDATA[
+...
+ MithraManagerProvider.getMithraManager().executeTransactionalCommand(
+            new TransactionalCommand()
+            {
+                public Object executeTransaction(MithraTransaction tx) throws Throwable
+                {
+                    AccountTransactionMax transaction0 = new AccountTransactionMax();
+                    transaction0.setTransactionDescription("New Account");
+                    transaction0.setTransactionDate(new Timestamp(System.currentTimeMillis()));
+                    transaction0.setDeskId("A");
+                    transaction0.generateAndSetTransactionId();
+                    transaction0.insert();
+                    return null;
+                }
+            });
+...
+]]></programlisting>
+        <para>The same applies for a MithraList which MithraObject is using the Max strategy:</para>
+        <programlisting language="java"><![CDATA[
+...
+MithraManagerProvider.getMithraManager().executeTransactionalCommand(
+    new TransactionalCommand()
+    {
+        public Object executeTransaction(MithraTransaction tx) throws Throwable
+        {
+            AccountTransactionMaxList list0 = new AccountTransactionMaxList();
+            AccountTransactionMax transaction0 = null;
+
+            for (int i = 0; i < 20; i++)
+            {
+                transaction0 = new AccountTransactionMax();
+                transaction0.setTransactionDescription("New Account");
+                transaction0.setTransactionDate(new Timestamp(System.currentTimeMillis()));
+                transaction0.setDeskId("A");
+            }
+            list.insertAll();
+            return null;
+        }
+    });
+...
+]]></programlisting>
+    </section>
+</article>

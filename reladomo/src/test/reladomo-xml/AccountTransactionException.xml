@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>AccountTransactionException</ClassName>
+    <DefaultTable>ACCOUNT_TRANSACTION_EXCEPTION</DefaultTable>
+
+    <SourceAttribute name="deskId" javaType="String"/>
+    <Attribute name="exceptionId" javaType="long" columnName="EXCEPTION_ID" primaryKey="true" primaryKeyGeneratorStrategy="SimulatedSequence">
+        <SimulatedSequence sequenceName="AccountTransactionExceptionSequence" sequenceObjectFactoryName="com.gs.fw.common.mithra.test.domain.MithraTestSequenceObjectFactory" hasSourceAttribute="true" batchSize="3" initialValue="0" incrementSize="3"/>
+    </Attribute>
+    <Attribute name="exceptionDescription" javaType="String" columnName="EXCEPTION_DESCRIPTION" maxLength="256"/>
+    <Attribute name="exceptionDate" javaType="Timestamp" columnName="EXCEPTION_DATE"/>
+
+</MithraObject>

@@ -1,0 +1,70 @@
+<!DOCTYPE web-app PUBLIC
+         "-//Sun Microsystems, Inc.//DTD Web Application 2.2//EN"
+         "http://java.sun.com/j2ee/dtds/web-app_2_2.dtd">
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<web-app>
+
+    <!-- GENERAL PROPERTIES -->
+    <display-name>MithraMiddleTierPspService</display-name>
+
+    <description>
+        @author:    Mohammad Rezaei
+        @company:   Goldman, Sachs
+    </description>
+
+    <!-- CONTEXT PARAMETERS -->
+
+
+    <!-- SERVLETS -->
+
+    <!-- Mithra middle tier PSP service -->
+    <!--<servlet>-->
+        <!--<servlet-name>PspServlet</servlet-name>-->
+        <!--<servlet-class>com.gs.fw.common.base.psp.server.PspServlet</servlet-class>-->
+        <!--<init-param>-->
+            <!--<param-name>serviceInterface.ParaRemoteMithraService</param-name>-->
+            <!--<param-value>com.gs.fw.common.mithra.remote.RemoteMithraService</param-value>-->
+        <!--</init-param>-->
+        <!--<init-param>-->
+            <!--<param-name>serviceClass.ParaRemoteMithraService</param-name>-->
+            <!--<param-value>com.gs.fw.para.common.ParaRemoteMithraService</param-value>-->
+        <!--</init-param>-->
+        <!--<load-on-startup>10</load-on-startup>-->
+    <!--</servlet>-->
+
+    <!-- Mithra middle tier cache control panel -->
+    <servlet>
+        <servlet-name>MithraCacheUiServlet</servlet-name>
+        <servlet-class>com.gs.fw.common.mithra.ui.gwt.server.MithraCacheUiRemoteServiceImpl</servlet-class>
+        <load-on-startup>20</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>MithraCacheUiServlet</servlet-name>
+        <url-pattern>/com.gs.fw.common.mithra.ui.gwt.MithraCacheUi/MithraCacheUiRemoteService</url-pattern>
+    </servlet-mapping>
+
+
+
+    <!-- SESSION CONFIG -->
+    <session-config>
+      <session-timeout>60</session-timeout>
+    </session-config>
+
+</web-app>

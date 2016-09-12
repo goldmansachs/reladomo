@@ -1,0 +1,83 @@
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="mithraobject.xsd">
+
+    <PackageName>com.gs.fw.common.mithra.test.mag</PackageName>
+    <ClassName>MagTransaction</ClassName>
+    <DefaultTable>MagTransact</DefaultTable>
+
+    <SourceAttribute name="magellanSourceInstanceId" javaType="int"/>
+    <AsOfAttribute name="businessDate" fromColumnName="BusiFrom" toColumnName="BusiThru"
+                   toIsInclusive="false"
+                   isProcessingDate="false"
+                   futureExpiringRowsExist="true"
+                   infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"/>
+
+    <AsOfAttribute name="processingDate" fromColumnName="ProcIn" toColumnName="ProcOut"
+                   toIsInclusive="false"
+                   isProcessingDate="true"
+                   timezoneConversion="convert-to-utc"
+                   infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"
+                   defaultIfNotSpecified="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"/>
+
+    <Attribute name="transactionId" javaType="long" columnName="TransactionId" primaryKey="true"/>
+    <Attribute name="transactionType" javaType="int" columnName="TransactionType" nullable="false"/>
+    <Attribute name="sourceReferenceId" javaType="String" columnName="SourceReferenceId" nullable="false"
+               maxLength="32"/>
+    <Attribute name="sourceSystem" javaType="String" columnName="SourceSystem" nullable="false" maxLength="10"/>
+    <Attribute name="sourceVersion" javaType="int" columnName="SourceVersion" nullable="false" maxLength="18"/>
+    <Attribute name="accountId" javaType="int" columnName="AccountId" nullable="false"/>
+    <Attribute name="subAccount" javaType="String" columnName="SubAccount" maxLength="2"/>
+    <Attribute name="magellanInstanceId" javaType="int" columnName="MagellanInstanceId"/>
+
+    <!-- Non-dependent relationship as don't want events to be deleted when transaction are terminated -->
+    <!-- No reverse relationship specified as this is done on the Event object - keys are different as Event is not bi-temporally milestoned -->
+    <Relationship name="events"
+                  relatedObject="MagEvent"
+                  relatedIsDependent="false"
+                  cardinality="one-to-many">
+        this.transactionId = MagEvent.transactionId
+    </Relationship>
+
+    <!-- STAR SCHEMA -->
+    <Relationship name="trade"
+                  relatedObject="MagTrade"
+                  relatedIsDependent="true"
+                  cardinality="one-to-one"
+                  reverseRelationshipName="transaction">
+        this.transactionId = MagTrade.transactionId
+    </Relationship>
+
+    <Relationship name="reportingAttributes"
+                  relatedObject="MagReportingAttributes"
+                  relatedIsDependent="true"
+                  cardinality="one-to-one"
+                  reverseRelationshipName="transaction">
+        this.transactionId = MagReportingAttributes.transactionId
+    </Relationship>
+
+    <Relationship name="postings"
+                  relatedObject="MagTransactionPosting"
+                  relatedIsDependent="true"
+                  cardinality="one-to-many"
+                  reverseRelationshipName="transaction">
+        this.transactionId = MagTransactionPosting.transactionId
+    </Relationship>
+
+</MithraObject>

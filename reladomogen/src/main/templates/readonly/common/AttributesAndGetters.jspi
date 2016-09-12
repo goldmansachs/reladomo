@@ -1,0 +1,108 @@
+<%--
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+--%>
+<%@ page import="java.util.Arrays" %>
+<%@ page import="com.gs.fw.common.mithra.generator.Attribute" %>
+<%@ page import="com.gs.fw.common.mithra.generator.MithraObjectTypeWrapper" %>
+<%
+    MithraBaseObjectTypeWrapper.NullBitsHolder[] nullBitsHolders = wrapper.getNullBitsHolders();
+    Attribute[] nullablePrimitiveAttributes = wrapper.getNullablePrimitiveAttributes();
+    Attribute[] nullableMultablePrimitivePkAttributes = wrapper.getNullableMutablePkAttributes();
+%>
+<% if (nullBitsHolders != null) { %>
+    <% for (int i = 0; i < nullBitsHolders.length; i++) { %>
+        private <%= nullBitsHolders[i].getType() %> <%= nullBitsHolders[i].getName() %> = <%= nullBitsHolders[i].getInitialValue()%>;
+    <% } %>
+<% } %>
+
+<% for (AbstractAttribute attribute : attributes) { %>
+    private <%= attribute.getStorageType() %> <%= attribute.getName() %>;
+<% } %>
+
+<% for (EmbeddedValue evo : embeddedValueObjects) { %>
+    private <%= evo.getType() %> <%= evo.getNestedName() %>;
+<% } %>
+
+<% for (AbstractAttribute attribute : attributes) { %>
+    <% if (!attribute.isNullablePrimitive()) { %>
+        <%= attribute.getVisibility() %> <%=attribute.isFinalGetter() ? "final " : ""%> boolean <%= attribute.getNullGetter() %>
+        {
+            <% if (attribute.isPrimitive()) { %>
+                return false;
+            <% } else { %>
+                return this.<%= attribute.getGetter() %>() == null;
+            <% } %>
+        }
+    <% } %>
+<% } %>
+
+<% for (int i = 0; i < nullablePrimitiveAttributes.length; i ++) { %>
+    <%= nullablePrimitiveAttributes[i].getVisibility() %> <%=nullablePrimitiveAttributes[i].isFinalGetter() ? "final " : ""%> boolean <%= nullablePrimitiveAttributes[i].getNullGetter() %>
+    {
+        return <%=nullablePrimitiveAttributes[i].getNullGetterExpression()%>;
+    }
+<% } %>
+
+    public void zSerializeFullData(ObjectOutput out) throws IOException
+    {
+        <% if (wrapper.isTablePerClassSubClass()) { %>
+            super.zSerializeFullData(out);
+        <% } %>
+        zWriteNullBits(out);
+        <% for (int i = 0; i < attributes.length; i++) { %>
+            <%= attributes[i].getSerializationStatement() %>;
+            <% if (attributes[i].isSetPrimaryKeyGeneratorStrategy()) { %>
+                out.writeBoolean(_is<%= StringUtility.firstLetterToUpper(attributes[i].getName()) %>Set);
+            <% } %>
+        <% } %>
+        <% for (int i = 0; i < shadowAttributes.length; i++) { %>
+            <%= shadowAttributes[i].getSerializationStatementForName("_old"+shadowAttributes[i].getName()) %>;
+        <% } %>
+    }
+
+    private void zWriteNullBits(ObjectOutput out) throws IOException
+    {
+        <% if (nullBitsHolders != null) { %>
+            <% for (int i = 0; i < nullBitsHolders.length; i++) { %>
+                out.write<%= nullBitsHolders[i].getIoType() %>(this.<%= nullBitsHolders[i].getName() %>);
+            <% } %>
+        <% } %>
+    }
+
+    <%-- mutable pk attributes --%>
+    <% for (int i = 0; i < shadowAttributes.length; i++) { %>
+	private <%= shadowAttributes[ i ].getTypeAsString() %> _old<%= shadowAttributes[ i ].getName() %>;
+    <%}%>
+
+    <% for (int i = 0; i < shadowAttributes.length; i ++) {//getters for attributes start%>
+        <% if (!shadowAttributes[i].isNullablePrimitive()) { //deal with null primitives separately%>
+    public boolean _old<%=shadowAttributes[i].getNullGetter()%>
+    {
+            <% if (shadowAttributes[i].isPrimitive()) { // if needs boolean for null %>
+        return false;
+            <% } else { %>
+        return this._old<%= shadowAttributes[i].getGetter() %>() == null;
+            <% } %>
+    }   <% } %>
+
+    <%}%>
+
+    <% for (int i = 0; i < nullableMultablePrimitivePkAttributes.length; i ++) {//getters for attributes start%>
+    public boolean _old<%=shadowAttributes[i].getNullGetter()%>
+    {
+        return <%=nullableMultablePrimitivePkAttributes[i].getNullGetterExpressionForMutable()%>;
+    }
+    <%}%>
+

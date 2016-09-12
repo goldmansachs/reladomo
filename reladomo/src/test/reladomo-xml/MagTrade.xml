@@ -1,0 +1,55 @@
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="mithraobject.xsd">
+
+    <PackageName>com.gs.fw.common.mithra.test.mag</PackageName>
+    <ClassName>MagTrade</ClassName>
+    <DefaultTable>MagTrade</DefaultTable>
+
+    <SourceAttribute name="magellanSourceInstanceId" javaType="int"/>
+    <AsOfAttribute name="businessDate" fromColumnName="BusiFrom" toColumnName="BusiThru"
+                   toIsInclusive="false"
+                   isProcessingDate="false"
+                   futureExpiringRowsExist="true"
+                   infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"/>
+
+    <AsOfAttribute name="processingDate" fromColumnName="ProcIn" toColumnName="ProcOut"
+                   toIsInclusive="false"
+                   isProcessingDate="true"
+                   timezoneConversion="convert-to-utc"
+                   infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"
+                   defaultIfNotSpecified="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"/>
+
+    <Attribute name="transactionId" javaType="long" columnName="TransactionId" primaryKey="true"/>
+    <Attribute name="buySell" javaType="String" columnName="BuySell" maxLength="4"/>
+    <Attribute name="tradeDate" javaType="Date" columnName="TradeDate"/>
+    <Attribute name="currency" javaType="String" columnName="Currency" maxLength="3"/>
+    <Attribute name="currencyAmount" javaType="double" columnName="Amount"/>
+    <Attribute name="cashSettlementDate" javaType="Date" columnName="CashSettlementDate"/>
+    <Attribute name="magellanProductId" javaType="int" columnName="MagellanProductId"/>
+    <Attribute name="productQuantity" javaType="double" columnName="Quantity"/>
+    <Attribute name="productSettlementDate" javaType="Date" columnName="SecuritySettlementDate"/>
+    <Attribute name="productDebitCredit" javaType="String" columnName="SecurityDebitCredit" maxLength="1"/>
+    <Attribute name="magellanInstanceId" javaType="int" columnName="MagellanInstanceId"/>
+
+    <Relationship name="productId" relatedObject="MagProductId" cardinality="many-to-one">
+        this.magellanProductId = MagProductId.magellanProductId
+    </Relationship>
+
+</MithraObject>

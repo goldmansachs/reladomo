@@ -1,0 +1,466 @@
+<?xml version="1.0"?>
+
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<article>
+
+    <articleinfo>
+        <title>Reladomo's Internal Architecture</title>
+        <pubdate>July 1st 2006</pubdate>
+        <author>Mohammad Rezaei</author>
+    </articleinfo>
+
+    <sect1>
+        <title>Overview</title>
+        <itemizedlist>
+            <listitem>
+               <para>Provide meta-data driven object-relational (OR) mapping</para>
+            </listitem>
+            <listitem>
+               <para>Handle objects of the same type residing in multiple databases</para>
+            </listitem>
+            <listitem>
+               <para>Support 2-tier and 3-tier modes of operation</para>
+            </listitem>
+            <listitem>
+               <para>Optimize caching behavior using different caching strategies: full cache, soft cache, and query cache</para>
+            </listitem>
+            <listitem>
+               <para>Object oriented query  mechanism</para>
+            </listitem>
+            <listitem>
+               <para>Use flexible relationships: object queries to define object relationships</para>
+            </listitem>
+            <listitem>
+               <para>Manage transactions</para>
+            </listitem>
+            <listitem>
+               <para>Support chaining of objects: bitemporal, business only, audit only</para>
+            </listitem>
+        </itemizedlist>
+    </sect1>
+
+    <sect1>
+
+        <title>Object-Relational Mapping</title>
+        <sect2>
+            <title>Object Lifecycle Management</title>
+            <para>
+                Reladomo will map database tables to Java objects using XML based meta-data.
+                It will manage full object lifecycle including object creation, modification,
+                and deletion as shown in <xref linkend="objectlifecycle.fig" />.
+            </para>
+            <figure id="objectlifecycle.fig">
+                <title>Object Life Cycle</title>
+                <mediaobject>
+                    <imageobject>
+                        <imagedata fileref="ObjectLifeCycle.gif" format="gif" width="100%" scalefit="1"/>
+                    </imageobject>
+
+                    <textobject>
+                        <phrase>Object Life Cycle</phrase>
+                    </textobject>
+                </mediaobject>
+            </figure>
+        </sect2>
+        <sect2>
+            <title>Code Generation</title>
+            <para>
+                Users will be required to create one XML file for every Reladomo object.
+                The file will have the meta-data for the object. The meta-data file will include the following:
+            </para>
+            <itemizedlist>
+                <listitem>
+                    <para>List of object attributes. For each attribute the meta-data will define:</para>
+                    <itemizedlist>
+                        <listitem>
+                           <para>Its type</para>
+                        </listitem>
+                        <listitem>
+                           <para>Mapping to the database column (if any)</para>
+                        </listitem>
+                        <listitem>
+                           <para>Relationship to another class (if any)</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+                <listitem>
+                   <para>List of transactional methods</para>
+                </listitem>
+            </itemizedlist>
+            <para>
+                A template driven code generator will generate all the necessary classes for
+                Reladomo's use and generate empty classes that will be modified by users to
+                implement business logic. The initially generated empty classes will subclass
+                Reladomo specific classes. This approach helps users add their own logic to
+                automatically generated classes without worrying about losing their changes
+                when they run the code generator again. Reladomo will gain from the pre-generated
+                classes by not incurring the cost of java introspection. The code generation
+                will be available as an Ant task for convenient integration with our
+                build process. The generated classes are shown in <xref linkend="appendix"/> .
+            </para>
+
+    </sect2>
+    <sect2>
+        <title>Objects in Multiple Databases or Desks</title>
+        <para>
+            PARA system works on accounts residing on multiple desks. This means Reladomo should
+            be able to handle objects of the same type stored in tables residing in different databases
+        </para>
+        <para>
+            Objects that may reside in different locations have a concept of a &quot;source key.&quot; A source
+            key is an object attribute that does not correspond to a column in a table, but rather
+            codifies where the object came from. The source key becomes part of the object's
+            identity. In effect, the object's primary key is composed of the primary key
+            mapped to the database columns and the source key. The source key will be used
+            in 3 places:
+        </para>
+        <itemizedlist>
+            <listitem>
+               <para>Obtaining a connection.</para>
+            </listitem>
+            <listitem>
+               <para>Finding objects: clearly, to find anything a source has to be specified
+                   because typically querying all sources is way too expensive.
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                   Getting the table name: this allows qualifying the table name which enables
+                   1.5 phase commit when two databases reside on the same server (in which case,
+                   the connection will be the same, but the table name takes the form of
+                   <database>database name.owner.table name</database>, e.g.
+                   <database>pnl_psprod.dbo.FROZEN_POSITION</database>).
+                   Total number of physical connections to the database server can also be
+                   minimized by using this facility.
+               </para>
+            </listitem>
+        </itemizedlist>
+    </sect2>
+        <sect2>
+            <title>Tier independence</title>
+            <para>
+                All features of Reladomo will be available for both 2-tier and 3-tier clients.
+                Reladomo will have custom serialization for 3-tier clients. In both 2-tier and 3-tier
+                mode, queries can supply custom hints for deep fetching of related objects.
+            </para>
+        </sect2>
+        <sect2>
+            <title>Caching</title>
+            <para>
+                Reladomo's goal is to let the business requirements drive the tradeoff between memory
+                and speed based on the objects' usage. To do this Reladomo supports three different
+                caching strategies: full cache, soft cache, and retrieval unit based cache.
+            </para>
+            <sect3>
+                <title>Full Cache</title>
+                <para>
+                    Full cache is similar to Object Manager's static cache. This caching mode makes
+                    Reladomo load all the objects from database and keep them permanently in cache.
+                    All queries for these objects are returned from cache and all updates are write-through.
+                </para>
+            </sect3>
+            <sect3>
+                <title>Soft Cache</title>
+                <para>
+                    Soft caching is implemented using Java soft references. Soft references are garbage
+                    collected by Java virtual machine if there is a memory crunch. This caching strategy
+                    therefore may result in objects expiring in cache at times. Queries that can be
+                    resolved by the cache (e.g. queries that pertain to unique indices) go to the
+                    cache first and then to the database if required objects are missing from cache.
+                </para>
+                <para>
+                    A soft caching strategy can be further enhanced via a query caching mechanism.
+                    By keeping a list of recent queries, it will be possible to avoid hitting the
+                    database. This idea can be further enhanced by searching the query cache for
+                    supersets of the current query. For example, if the query cache contains the
+                    result for &quot;all accounts in trial 123&quot;, then resolving a new query &quot;all account
+                    in trial 123 that are clearance accounts&quot; could be done by an in memory
+                    filter of the existing results. Determining query subset relationship is not
+                    always trivial, but in many cases quite possible. Query containment has not been
+                    implemented yet.
+                </para>
+            </sect3>
+        </sect2>
+        <sect2>
+            <title>Transaction Management</title>
+            <para>
+                Reladomo will classify all objects into either read-only or read-write. Read-only
+                objects will help Reladomo do useful memory optimizations. Transactions apply only
+                to read-write objects. The Java Transaction API (JTA) binds each transaction to
+                a single thread. Reladomo objects implement a simplified form of Multi-Version
+                Concurrency Control (MVCC) : an object participating in a transaction keeps two
+                sets of data, one is the last committed dataset and the other is the transactional
+                dataset. An object can therefore only participate in a single transaction at any one
+                time. However, the same object may be accessed by any number of non-transactional
+                threads for read operations. Upon commit, the transactional dataset is promoted to
+                committed. The transactional dataset is only visible within the context of the transactional
+                thread. Objects automatically enroll in a transaction when they are accessed by a
+                transactional thread. To ensure transactional safety at the database level, when an object
+                enrolls in a transaction, a database lock is acquired (select with holdlock).
+            </para>
+            <para>
+                When a running thread accesses an object, Reladomo looks at the thread to find its
+                transaction context, and looks at the object's transaction state and continues processing
+                as illustrated in <xref linkend="transaction.tbl"/> :
+            </para>
+            <table frame="all" border="none" id="transaction.tbl">
+                <title>Transactional Participation</title>
+                <tgroup cols="4">
+                    <colspec colnum="1" colname="col1" colwidth="1*"/>
+                    <colspec colnum="2" colname="col2" colwidth="1*"/>
+                    <colspec colnum="3" colname="col3" colwidth="2*"/>
+                    <colspec colnum="4" colname="col4" colwidth="2*"/>
+                    <thead>
+                        <row>
+                            <entry>Thread Transaction State</entry>
+                            <entry>Object Transaction State</entry>
+                            <entry>Read Operation</entry>
+                            <entry>Write Operation</entry>
+                        </row>
+                    </thead>
+                    <tbody>
+                        <row>
+                            <entry>N</entry>
+                            <entry>N</entry>
+                            <entry>Last committed state returned</entry>
+                            <entry>Transparently creates a transaction and writes the change to the database</entry>
+                        </row>
+                        <row>
+                            <entry>Y</entry>
+                            <entry>N</entry>
+                            <entry>Enroll the object in transaction Perform the requested operation</entry>
+                            <entry>Same as Read</entry>
+                        </row>
+                        <row>
+                            <entry>Y</entry>
+                            <entry>Y (different than thread)</entry>
+                            <entry>Waits until the object transaction is complete, then same as above</entry>
+                            <entry>Same as Read</entry>
+                        </row>
+                        <row>
+                            <entry>Y</entry>
+                            <entry>Y (same as thread)</entry>
+                            <entry>Return last value set in the transaction's context</entry>
+                            <entry>Set the value on the transactional dataset</entry>
+                        </row>
+                        <row>
+                            <entry>N</entry>
+                            <entry>Y</entry>
+                            <entry>Last committed state returned</entry>
+                            <entry>
+                                Waits until the object transaction is complete. Transparently creates a transaction
+                                and writes the change to the database (same as the N/N case)
+                            </entry>
+                        </row>
+                    </tbody>
+                </tgroup>
+            </table>
+            <para>
+                Reladomo discourages the users from creating their own transaction demarcation and instead
+                encourages using methods in the persistent object for the demarcation. The Reladomo xml
+                schema provides <code>transactionalMethodSignature</code> element to create transactional methods.
+                This approach help in better object orientation because the same object is now responsible
+                for managing the data and its behavior. Today our persistent objects simply hold data and
+                the business logic tends to be buried in UI code and other places. For each transaction
+                method listed in the meta-data, users must create an implementation method in their
+                persistent classes. For example, if there is a transaction method named <methodname>adjust</methodname>
+                in the meta-data for Position then Position.java must have a method named <methodname>adjustImpl</methodname>.
+                This method should only have the business logic for adjustment and shouldn't open or
+                commit transaction; transaction will be controlled from the generated Reladomo super-class.
+            </para>
+            <para>
+                Method level transaction demarcation also allows for intelligent and automatic transaction
+                retries. A database will typically issue a special error code when a deadlock causes a
+                transaction to be rolled back. Reladomo will detect this special
+                error code and retry the transaction by rerunning the
+                entire business logic encapsulated within that transaction. Additionally, retries
+                can be performed when Reladomo detects a deadlock directly.
+            </para>
+            <para>
+                For transactions that cannot be easily described as method calls for a business object,
+                a command pattern may be used to encapsulate the transaction.
+            </para>
+        </sect2>
+        <sect2>
+            <title>Object Chaining</title>
+            <para>
+                Reladomo will support chaining requirements as defined by PARA and TAMS applications today. The chaining
+                requirements include bitemporal chaining, business only chaining and audit only chaining.
+            </para>
+        </sect2>
+        <sect2>
+            <title>Flexible Relationships</title>
+            <para>
+                Reladomo's relationships are defined as a set of rules one object needs to satisfy to
+                become related to another. With this approach, common relationships like one-to-many,
+                many-to-many, etc. become special cases. For example:
+            </para>
+            <programlisting language="xml"><![CDATA[<Relationship name="orderItems" relatedObject="OrderItem" cardinality="one-to-many">
+    OrderItem.orderId = this.orderId
+</Relationship>]]></programlisting>
+            <para>
+                defines a one-to-many relationship from Order to OrderItem. We can define yet
+                another one-to-many relationship with some more qualifiers:
+            </para>
+            <programlisting language="xml"><![CDATA[<Relationship name="unshippedOrderItems" relatedObject="OrderItem"
+    cardinality="one-to-many">
+    OrderItem.orderId = this.orderId and
+        OrderItem.shipped = false
+</Relationship>]]></programlisting>
+        </sect2>
+    </sect1>
+
+    <sect1>
+        <title>Object Query</title>
+        <para>
+            Reladomo query syntax follows an object oriented paradigm that is more intuitive than SQL
+            like queries. Here is an example of a Reladomo query
+        </para>
+        <programlisting language="java"><![CDATA[OrderList result = new OrderList(
+    OrderFinder.customerName().eq("Fred").and(
+    OrderFinder.items().shipped().eq(false)));
+]]></programlisting>
+        <para>
+            This query finds all Orders that have a customer named Fred and have one or more unshipped
+            items. For every Reladomo object there will be a generated Finder class that exposes
+            the object's attribute on which we can invoke operations such as<methodname>eq</methodname>,
+            <methodname>isNull</methodname>,<methodname>like</methodname>,<methodname>in</methodname>, etc.
+            Operations can be joined together using the &quot;and&quot; boolean operation.
+        </para>
+    </sect1>
+    <sect1>
+        <title>The List Object</title>
+        <para>
+            For every Reladomo class, a list collection is also generated. The list is defined
+            by a query (as shown above). Operations pertaining to a collection of
+            objects (e.g. total market value calculation) can be implemented on the list
+            object. The list object allows for several abstractions that are typically difficult
+            when databases are mapped to objects:
+        </para>
+        <itemizedlist>
+            <listitem>
+               <para>
+                   Mass delete: the list object will have a <methodname>delete()</methodname>
+                   method that deletes all
+                   the elements with a single database call. This is much more efficient
+                   compared to looping through the elements of the list and calling the
+                   database for each delete.
+               </para>
+            </listitem>
+            <listitem>
+               <para>
+                   Mass update: the list object will also have set methods for object attributes
+                   that will result in fewer database calls.
+               </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Group functions: certain operations such as <methodname>count</methodname>,
+                    <methodname>sum</methodname> etc. could potentially
+                    be performed without having to resolve any objects at all.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Union/intersect: lists may be unioned or intersected. This will result in
+                    a transparent union/intersection of the defining queries.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Group relationship traversal: if we have a list of objects (e.g. a list of trials),
+                    and we need the related list of objects (e.g. all account belonging to those
+                    trials), the <methodname>get[related objects]()</methodname> method (e.g.
+                    <methodname>getAccounts()</methodname>) will return the correct list without
+                    having to loop through the trials. Again, the related list is constructed by
+                    manipulating the underlying query.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </sect1>
+    <sect1>
+        <title>Nullable Attributes</title>
+        <para>
+            Since all data in a database may be NULL (except for primary keys), Java primitive
+            fields (int, float, etc) need special handling as they can't be null.
+            In addition to the <methodname>get[attribute]</methodname> and <methodname>set[attribute]</methodname>
+            methods, two other methods are provided:
+            <methodname>is[attribute>Null]</methodname> and <methodname>set[attribute]Null</methodname>.
+            For convenience, a default value can be supplied when an attribute is null.
+        </para>
+        <table frame="all" border="none">
+            <tgroup cols="3" >
+            <colspec colnum="1" colname="col1" colwidth="1*"/>
+            <colspec colnum="2" colname="col2" colwidth="1.5*"/>
+            <colspec colnum="3" colname="col3" colwidth="1.5*"/>
+            <thead>
+                <row>
+                    <entry>Nullable</entry>
+                    <entry>Default Value</entry>
+                    <entry>Behavior</entry>
+                </row>
+            </thead>
+            <tbody>
+                <row>
+                    <entry>False</entry>
+                    <entry>Must not be specified</entry>
+                    <entry>
+                        <itemizedlist>
+                            <listitem><para>If the database does have a null value, throw an MithraDatabaseException</para></listitem>
+                        </itemizedlist>
+                        <itemizedlist>
+                            <listitem><para>Attribute cannot be set to Null</para></listitem>
+                        </itemizedlist>
+                    </entry>
+                </row>
+                <row>
+                    <entry>True</entry>
+                    <entry>Not specified</entry>
+                    <entry>Throw MithraBusinessException if the <methodname>get[attritubte]</methodname>
+                        method is called and the attribute is primitive and it's null.</entry>
+                </row>
+                <row>
+                    <entry>True</entry>
+                    <entry>Specified</entry>
+                    <entry>Return the specified default value when <methodname>get[attribute]</methodname> method is called and the attribute is null.</entry>
+                </row>
+            </tbody>
+            </tgroup>
+        </table>
+    </sect1>
+    <sect1 id="appendix">
+        <title>Appendix: Class Diagram</title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="Architecture.gif" format="gif" width="100%" scalefit="1"/>
+            </imageobject>
+
+            <textobject>
+                <phrase>Sample class diagram.</phrase>
+            </textobject>
+
+            <caption>
+                <para>
+                    Sample class diagram. Classes in light blue are generated.
+                </para>
+            </caption>
+        </mediaobject>
+    </sect1>
+</article>

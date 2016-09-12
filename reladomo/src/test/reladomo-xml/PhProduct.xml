@@ -1,0 +1,45 @@
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject>
+
+    <PackageName>com.gs.fw.common.mithra.test.glew</PackageName>
+    <ClassName>PhProduct</ClassName>
+
+    <DefaultTable>product</DefaultTable>
+
+    <SourceAttribute name="region" javaType="String"/>
+    <AsOfAttribute name="businessDate" fromColumnName="from_z" toColumnName="thru_z" toIsInclusive="false"
+                   infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultSmalldateInfinity()]"
+                   setAsString="true">
+    </AsOfAttribute>
+    <AsOfAttribute name="processingDate" fromColumnName="in_z" toColumnName="out_z" toIsInclusive="false"
+                   infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                   defaultIfNotSpecified="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                   isProcessingDate="true"
+                   timezoneConversion="convert-to-database-timezone"/>
+
+    <Attribute name="instrumentId" javaType="int" columnName="prod_hub_ref_i" primaryKey="true"/>
+    <Attribute name="description" javaType="String" columnName="prod_desc_t"/>
+    <Attribute name="primaryMarket" javaType="String" columnName="sec_prm_mkt_c"/>
+    <Attribute name="issuerCountry" javaType="String" columnName="prod_issr_ctry_c"/>
+    <Attribute name="issueCountry" javaType="String" columnName="prod_iss_ctry_c"/>
+    <Attribute name="issueCurrencyCode" javaType="String" columnName="prod_iss_ccy_c"/>
+    <Attribute name="tradeMultiplierFactor" javaType="double" columnName="trad_fctr_mult_p"/>
+    <Attribute name="issueDate" javaType="Timestamp" columnName="prod_iss_d"/>
+
+
+</MithraObject>

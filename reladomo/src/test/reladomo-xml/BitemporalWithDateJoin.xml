@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<!--
+*
+*
+*
+*
+-->
+
+<MithraObject objectType= "transactional"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="../mithraobject.xsd">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>BitemporalWithDateJoin</ClassName>
+    <DefaultTable>BITEMPORAL_WITH_DATE_JOIN</DefaultTable>
+
+    <AsOfAttribute name="businessDate" fromColumnName="FROM_Z" toColumnName="THRU_Z" toIsInclusive="false" isProcessingDate="false"
+                   infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]" />
+
+    <AsOfAttribute name="processingDate" fromColumnName="IN_UTC" toColumnName="OUT_UTC"
+                   toIsInclusive="false"
+                   isProcessingDate="true"
+                   infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"
+                   defaultIfNotSpecified="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"
+                   timezoneConversion="convert-to-utc"/>
+
+    <Attribute name="investmentId" javaType="int" columnName="INVESTMENT_ID" nullable="false" primaryKey="true" />
+    <Attribute name="gsEntity" javaType="String" maxLength="5" columnName="GS_ENTITY" nullable="false" primaryKey="true" />
+
+    <Relationship name="nontemporalWithDateJoin" relatedObject="NontemporalWithDateJoin"
+                  reverseRelationshipName="bitemporalWithDateJoin" cardinality="many-to-one" >
+        NontemporalWithDateJoin.entity = this.gsEntity
+        and NontemporalWithDateJoin.businessDate = this.businessDate
+    </Relationship>
+
+    <Relationship name="abcdBitemporalWithDateJoin" relatedObject="BitemporalWithDateJoin" cardinality="many-to-one">
+        BitemporalWithDateJoin.investmentId = this.investmentId and
+        BitemporalWithDateJoin.gsEntity = "ABCD"
+    </Relationship>
+
+</MithraObject>

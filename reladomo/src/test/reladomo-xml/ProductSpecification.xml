@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>ProductSpecification</ClassName>
+    <DefaultTable>PRODUCT_SPECIFICATION</DefaultTable>
+
+    <Attribute name="productId" javaType="int" columnName="PROD_ID" primaryKey="true"/>
+    <Attribute name="productCode" javaType="String" columnName="CODE"/>
+    <Attribute name="productName" javaType="String" columnName="PROD_DESC"/>
+    <Attribute name="manufacturerId" javaType="int" columnName="MANUFACTURER_ID"/>
+    <Attribute name="manufacturerName" javaType="String" columnName="MANUFACTURER_NAME"/>
+    <Attribute name="originalPrice" javaType="double" columnName="ORIGINAL_PRICE"/>
+    <Attribute name="discountPrice" javaType="double" columnName="DISCOUNT_PRICE"/>
+    <Attribute name="otherPrice" javaType="int" columnName="OTHER_PRICE" />
+    <Attribute name="minQuantity" javaType="int" columnName="MIN_QTY"/>
+    <Attribute name="deltaPrice" javaType="double" columnName="DELTA_PRICE"/>
+</MithraObject>

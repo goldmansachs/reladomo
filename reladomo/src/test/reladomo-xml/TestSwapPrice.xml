@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>TestSwapPrice</ClassName>
+    <DefaultTable>SWAP_PRICES</DefaultTable>
+    <Attribute name="sourceId" javaType="long" columnName="SOURCE_I" primaryKey="true"/>
+    <Attribute name="acmapCode" javaType="String" columnName="ACMAP_C" maxLength="5" trim="true"/>
+    <Attribute name="accountId" javaType="String" columnName="ACCT_NBR_C" maxLength="10" primaryKey="true" trim="true"/>
+    <Attribute name="productGsNumber" javaType="String" columnName="PRODUCT_GSN_C" maxLength="20" primaryKey="true" trim="true"/>
+    <Attribute name="dealId" javaType="String" columnName="DEAL_ID_C" maxLength="35" trim="true"/>
+    <Attribute name="referenceNumber" javaType="String" columnName="SWAP_REF_NBR_C" maxLength="35" primaryKey="true" trim="true"/>
+    <Attribute name="legId" javaType="String" columnName="LEG_ID_C" primaryKey="true" maxLength="35" trim="true"/>
+    <Attribute name="businessDate" javaType="Timestamp" columnName="THRU_Z" primaryKey="true"/>
+    <Attribute name="detailNumber" javaType="int" columnName="DETAIL_NBR_I" primaryKey="true"/>
+    <Attribute name="currency" javaType="String" columnName="CURRENCY_C" maxLength="3" trim="true"/>
+    <Attribute name="securityType" javaType="String" columnName="SECURITY_TYPE_C" trim="true"/>
+    <Attribute name="npvModelName" javaType="String" columnName="NPV_MODEL_NAME_C" trim="false"/>
+    <Attribute name="gridModelName" javaType="String" columnName="GRID_MODEL_NAME_C" trim="true"/>
+    <Attribute name="npvValue" javaType="double" columnName="NPV_PRICE_F"/>
+    <Attribute name="gridValue" javaType="double" columnName="GRID_PRICE_F"/>
+    <Attribute name="feedNumber" javaType="int" columnName="FEED_NUMBER"/>
+</MithraObject>

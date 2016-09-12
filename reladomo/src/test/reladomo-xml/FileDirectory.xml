@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>FileDirectory</ClassName>
+
+	<DefaultTable>FILE_DIRECTORY</DefaultTable>
+    <Attribute name="fileDirectoryId" javaType="int" columnName="FILE_DIRECTORY_ID" primaryKey = "true"/>
+    <Attribute name="creationDate" javaType="Timestamp" columnName="CREATION_DATE"/>
+    <Attribute name="name" javaType="String" columnName="NAME" maxLength="256"/>
+    <Attribute name="drive" javaType="String" columnName="DRIVE" primaryKey = "true" maxLength="10"/>
+    <Attribute name="modificationDate" javaType="Date" columnName="MODIFICATION_DATE"/>
+    <Attribute name="parentDirectoryId" javaType="int" columnName="PARENT_DIRECTORY_ID" />
+    <Attribute name="note" javaType="String" columnName="NOTE" maxLength="20"/>
+    <Attribute name="someOtherTimestamp" javaType="Timestamp" columnName = "SOME_OTHER_TIMESTAMP"/>
+    <Attribute name="isDirectory" javaType="int" columnName = "IS_DIR"/>
+    <Attribute name="someOtherDate" javaType="Date" columnName = "SOME_OTHER_DATE"/>
+    <Relationship name="childDirectories" relatedObject="FileDirectory" cardinality="one-to-many" relatedIsDependent="true" reverseRelationshipName="parentDirectory">this.drive = FileDirectory.drive and this.fileDirectoryId = FileDirectory.parentDirectoryId</Relationship>
+    <Relationship name="parentDirectoryWithSameNote" relatedObject="FileDirectory" cardinality="many-to-one">this.drive = FileDirectory.drive and this.parentDirectoryId = FileDirectory.fileDirectoryId and this.note = FileDirectory.note</Relationship>
+    <Relationship name="parentDirectoryWithSameOtherTimestamp" relatedObject="FileDirectory" cardinality="many-to-one">this.drive = FileDirectory.drive and this.parentDirectoryId = FileDirectory.fileDirectoryId and this.someOtherTimestamp = FileDirectory.someOtherTimestamp</Relationship>
+    <Relationship name="parentDirectoryWithSameOtherDate" relatedObject="FileDirectory" cardinality="one-to-one">this.drive = FileDirectory.drive and this.parentDirectoryId = FileDirectory.fileDirectoryId and this.someOtherDate = FileDirectory.someOtherDate</Relationship>
+
+    <Relationship name="justChildDirectories" relatedObject="FileDirectory" cardinality="one-to-many">
+        this.drive = FileDirectory.drive and this.fileDirectoryId = FileDirectory.parentDirectoryId and this.isDirectory = 1
+        and FileDirectory.isDirectory = 1
+    </Relationship>
+</MithraObject>

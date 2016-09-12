@@ -1,0 +1,559 @@
+<%--
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+--%>
+<%@ page import="java.util.Arrays" %>
+<%@ page import="com.gs.fw.common.mithra.generator.Attribute" %>
+<%@ page import="com.gs.fw.common.mithra.generator.MithraObjectTypeWrapper" %>
+    private static OffHeapDataStorage _storage;
+
+    public OffHeapDataStorage zGetStorage() { return _storage; }
+    public static void zSetStorage(OffHeapDataStorage storage)
+    {
+        if (_storage != null) _storage.destroy();
+        _storage = storage;
+    }
+
+    public <%= offHeapClassName %>()
+    {
+        super();
+        Timestamp value = null;
+    <% for (AbstractAttribute attribute : attributes) { %>
+        <% if (attribute.isTimestampAttribute() || attribute.isDateAttribute()) { %>
+            this.<%= attribute.getOffHeapSetterExpression() %>;
+        <% } %>
+    <% } %>
+
+    }
+
+    public <%= offHeapClassName %>(MutableInteger offset)
+    {
+        super(offset.intValue());
+    }
+
+
+<% for (AbstractAttribute attribute : attributes) { %>
+    <%= attribute.getVisibility() %> <%=attribute.isFinalGetter() ? "final " : ""%> boolean <%= attribute.getNullGetter() %>
+    {
+        <% if (attribute.hasOffHeapNullBitsOffset()) { %>
+            return zIsNull(_storage, <%= attribute.getOffHeapNullBitsOffset() %>, <%= attribute.getOffHeapNullBitsPosition() %>);
+        <% } else if (attribute.isStringAttribute()) { %>
+            return zIsStringNull(_storage, <%= attribute.getOffHeapFieldOffset() %>);
+        <% } else if (attribute.isTimestampAttribute()) { %>
+            return zIsTimestampNull(_storage, <%= attribute.getOffHeapFieldOffset() %>);
+        <% } else if (attribute.isTimeAttribute()) { %>
+            return zIsTimeNull(_storage, <%= attribute.getOffHeapFieldOffset() %>);
+        <% } else if (attribute.isDateAttribute()) { %>
+            return zIsDateNull(_storage, <%= attribute.getOffHeapFieldOffset() %>);
+        <% } else if (attribute.isBooleanAttribute()) { %>
+            return zIsBooleanNull(_storage, <%= attribute.getOffHeapFieldOffset() %>);
+        <% } else { %>
+            return false;
+        <% } %>
+    }
+<% } %>
+
+    public void zSerializeFullData(ObjectOutput out) throws IOException
+    {
+        <% if (wrapper.isTablePerClassSubClass()) { %>
+            super.zSerializeFullData(out);
+        <% } %>
+        zWriteNullBits(out);
+        <% for (int i = 0; i < attributes.length; i++) { %>
+            <%= attributes[i].getOffHeapSerializationStatement() %>;
+            <% if (attributes[i].isSetPrimaryKeyGeneratorStrategy()) { %>
+                out.writeBoolean(true); <%-- off heap data is always persisted, so the pk is set --%>
+            <% } %>
+        <% } %>
+        <% for (int i = 0; i < shadowAttributes.length; i++) { %>
+            <%= shadowAttributes[i].getSerializationStatementForName("_old"+shadowAttributes[i].getName()) %>;
+        <% } %>
+    }
+
+    private void zWriteNullBits(ObjectOutput out) throws IOException
+    {
+        <% if (nullBitsHolders != null) { %>
+            <% for (int i = 0; i < nullBitsHolders.length; i++) { %>
+                <%= nullBitsHolders[i].getType() %> <%= nullBitsHolders[i].getName() %> = 0;
+            <% } %>
+            <% for (int i = 0; i < nullablePrimitiveAttributes.length; i ++) { %>
+                if (<%= nullablePrimitiveAttributes[i].getNullGetter() %>)
+                {
+                    <%= nullablePrimitiveAttributes[i].getNullSetterExpression() %>;
+                }
+            <% } %>
+            <% for (int i = 0; i < nullBitsHolders.length; i++) { %>
+                out.write<%= nullBitsHolders[i].getIoType() %>(<%= nullBitsHolders[i].getName() %>);
+            <% } %>
+        <% } %>
+    }
+
+<% if (shadowAttributes.length > 0) throw new RuntimeException("not implemented"); %>
+<%-- mutable pk attributes
+    <% for (int i = 0; i < shadowAttributes.length; i++) { %>
+	private <%= shadowAttributes[ i ].getTypeAsString() %> _old<%= shadowAttributes[ i ].getName() %>;
+    <%}%>
+
+    <% for (int i = 0; i < shadowAttributes.length; i ++) {//getters for attributes start%>
+        <% if (!shadowAttributes[i].isNullablePrimitive()) { //deal with null primitives separately%>
+    public boolean _old<%=shadowAttributes[i].getNullGetter()%>
+    {
+            <% if (shadowAttributes[i].isPrimitive()) { // if needs boolean for null %>
+        return false;
+            <% } else { %>
+        return this._old<%= shadowAttributes[i].getGetter() %>() == null;
+            <% } %>
+    }   <% } %>
+
+    <%}%>
+
+    <% for (int i = 0; i < nullableMultablePrimitivePkAttributes.length; i ++) {//getters for attributes start%>
+    public boolean _old<%=shadowAttributes[i].getNullGetter()%>
+    {
+        return <%=nullableMultablePrimitivePkAttributes[i].getNullGetterExpressionForMutable()%>;
+    }
+    <%}%>
+--%>
+
+    <% for (AbstractAttribute attribute : attributes) { %>
+        <%= attribute.getVisibility() %> <%= attribute.getTypeAsString() %> <%= attribute.getGetter() %>()
+        {
+            return <%= attribute.getOffHeapGetterExpression() %>;
+        }
+
+        <% if (attribute.isTimestampAttribute()) { %>
+        public long <%= attribute.getTimestampLongGetter() %>
+        {
+            return zGetLong(_storage, <%= attribute.getOffHeapFieldOffset() %>);
+        }
+        <% } %>
+
+        <% if (attribute.isTimeAttribute()) { %>
+        public long <%= attribute.getOffHeapTimeLongGetter() %>
+        {
+            return zGetLong(_storage, <%= attribute.getOffHeapFieldOffset() %>);
+        }
+        <% } %>
+
+        <% if (attribute.isStringAttribute()) { %>
+        public int <%= attribute.getStringOffHeapIntGetter() %>
+        {
+            return zGetInteger(_storage, <%= attribute.getOffHeapFieldOffset() %>);
+        }
+        <% } %>
+
+        <%= attribute.getVisibility() %> void <%= attribute.getSetter() %>(<%= attribute.getSetterTypeAsString() %> value)
+        {
+            <% if (attribute.isAsOfAttributeTo()) { %>
+                <% if (attribute.isAsOfAttributeInfinityNull()){%>
+                       if ((value == null?NullDataTimestamp.getInstance().getTime():value.getTime()) != (this.<%= attribute.getNullGetter() %>?NullDataTimestamp.getInstance().getTime():this.<%= attribute.getTimestampLongGetter() %>))
+                <%} else {%>
+                       if (value.getTime() != this.<%= attribute.getTimestampLongGetter() %>)
+                <% } %>
+                    {
+                        zIncrementDataVersion();
+                    }
+            <% } %>
+            <%= attribute.getOffHeapSetterExpression() %>;
+        }
+
+        <% if (!attribute.isNullablePrimitive()) { %>
+            <%= attribute.getVisibility() %> void <%= attribute.getSetter() %>Null()
+            {
+                <% if (attribute.isPrimitive() || (attribute.isAsOfAttributeTo() && !attribute.isAsOfAttributeInfinityNull()) ) { %>
+                    throw new RuntimeException("should never be called");
+                <% } else { %>
+                    this.<%= attribute.getSetter() %>(null);
+                <% } %>
+            }
+        <% } %>
+    <% } %>
+
+    <% for (EmbeddedValue evo : embeddedValueObjects) { %>
+        public <%= evo.getType() %> <%= evo.getNestedGetter() %>()
+        {
+            return this.<%= evo.getNestedName() %>;
+        }
+
+        public void <%= evo.getNestedSetter() %>(<%= evo.getType() %> <%= evo.getName() %>)
+        {
+            this.<%= evo.getNestedName() %> = <%= evo.getName() %>;
+        }
+    <% } %>
+
+    <% for (int i = 0; i < shadowAttributes.length; i++) { %>
+        public <%= shadowAttributes[i].getTypeAsString() %> _old<%=shadowAttributes[ i ].getGetter()%>()
+        {
+            return _old<%=shadowAttributes[i].getName()%>;
+        }
+
+        <% if (!(shadowAttributes[i].getType() instanceof DateJavaType)) { %>
+            public void _old<%= shadowAttributes[i].getSetter() %>(<%= shadowAttributes[i].getTypeAsString() %> value)
+            {
+                this._old<%= shadowAttributes[i].getName() %> = value;
+                <% if (shadowAttributes[i].isNullablePrimitive()) { %>
+                    <%= shadowAttributes[i].getNotNullSetterExpressionForMutablePk() %>;
+                <% } %>
+            }
+        <% } else { %>
+            public void _old<%= shadowAttributes[i].getSetter() %>(java.util.Date value)
+            {
+                if( value == null || value instanceof java.sql.Date)
+                {
+                    this._old<%= shadowAttributes[i].getName() %> = (java.sql.Date) value;
+                }
+                else
+                {
+                    this._old<%= shadowAttributes[i].getName() %> = new java.sql.Date(value.getTime());
+                }
+            }
+        <% } %>
+
+        <% if (!shadowAttributes[i].isNullablePrimitive()) { //deal with nullable primitives separately%>
+            public void _old<%= shadowAttributes[i].getSetter() %>Null()
+            {
+                <% if (shadowAttributes[i].isPrimitive()) { // if needs boolean for null %>
+                    throw new RuntimeException("should never be called");
+                <% } else { %>
+                    this._old<%= shadowAttributes[i].getSetter() %>(null);
+                <% } %>
+            }
+        <% } %>
+    <% } %>
+
+    <% for (int i = 0; i < nullablePrimitiveAttributes.length; i ++) { %>
+        <%= nullablePrimitiveAttributes[i].getVisibility() %> void <%= nullablePrimitiveAttributes[i].getSetter() %>Null()
+        {
+            <% if (nullablePrimitiveAttributes[i].getDefaultIfNull() != null){ %>
+                <%= nullablePrimitiveAttributes[i].getSetter() %>((<%= nullablePrimitiveAttributes[i].getTypeAsString() %>)<%= nullablePrimitiveAttributes[i].getDefaultIfNull() %>);
+            <% } %>
+            <% if (nullablePrimitiveAttributes[i].isBooleanAttribute()) { %>
+                zSetBooleanNull(_storage, <%= nullablePrimitiveAttributes[i].getOffHeapFieldOffset() %>);
+            <% } else { %>
+                zSetNull(_storage, <%= nullablePrimitiveAttributes[i].getOffHeapNullBitsOffset() %>, <%= nullablePrimitiveAttributes[i].getOffHeapNullBitsPosition() %>);
+            <% } %>
+        }
+    <% } %>
+
+    <% for (int i = 0; i < nullableMultablePrimitivePkAttributes.length; i ++) { %>
+        public void _old<%= nullableMultablePrimitivePkAttributes[i].getSetter() %>Null()
+        {
+            <%= nullableMultablePrimitivePkAttributes[i].getNullSetterExpressionForMutable() %>;
+        }
+    <% } %>
+
+    <% for(int i= 0; i < pkAttributes.length; i++) { %>
+         <% if(pkAttributes[i].isSetPrimaryKeyGeneratorStrategy()) { %>
+            public boolean zGetIs<%= StringUtility.firstLetterToUpper(pkAttributes[i].getName()) %>Set()
+            {
+                return true;
+            }
+        <% } %>
+    <% } %>
+
+    <% if (wrapper.hasAsOfAttributes()) { %>
+        public byte zGetDataVersion() { return zGetByte(_storage, 0); }
+        public void zSetDataVersion(byte version) { zSetByte(_storage, version, 0, -1 , -1); }
+        public void zIncrementDataVersion()
+        {
+            byte _dataVersion = (byte) (zGetDataVersion() + 1);
+            if (_dataVersion > 120) _dataVersion = (byte) 0;
+            zSetDataVersion(_dataVersion);
+        }
+    <% } %>
+
+    protected void copyInto(<%= onHeapClassName%> copy, boolean withRelationships)
+    {
+    <% if (wrapper.isTablePerClassSubClass()) { %>
+        super.copyInto(copy, withRelationships);
+    <% } %>
+        <% for (AbstractAttribute attribute : attributes) { %>
+            copy.<%= attribute.getName() %> = this.<%= attribute.getGetter() %>();
+        <% } %>
+        <% for (int i = 0; i < nullablePrimitiveAttributes.length; i ++) { %>
+            if (<%= nullablePrimitiveAttributes[i].getNullGetter() %>)
+            {
+                copy.<%= nullablePrimitiveAttributes[i].getNullSetter() %>;
+            }
+        <% } %>
+        <%for (int i = 0; i < pkAttributes.length; i++){
+            if(pkAttributes[i].isSetPrimaryKeyGeneratorStrategy()){%>
+        copy._is<%=StringUtility.firstLetterToUpper(pkAttributes[i].getName())%>Set = true;
+          <%}
+        }%>
+        <% for (int i = 0; i < shadowAttributes.length; i ++) {%>
+        copy._old<%=shadowAttributes[i].getName() %>  = this._old<%=shadowAttributes[i].getName()%>;
+        <% } %>
+    }
+
+    public void zDeserializeFullData(ObjectInput in) throws IOException, ClassNotFoundException
+    {
+        <% if (wrapper.isTablePerClassSubClass()) { %>
+            super.zDeserializeFullData(in);
+        <% } %>
+        <% if(nullBitsHolders != null) { %>
+            <% for (int i = 0; i < nullBitsHolders.length; i++) { %>
+                <%= nullBitsHolders[i].getType() %> <%= nullBitsHolders[i].getName() %> = in.read<%= nullBitsHolders[i].getIoType() %>();
+            <% } %>
+        <% } %>
+        <% for (int i = 0; i < attributes.length; i++) { %>
+            <%= attributes[i].getOffHeapDeserializationStatement() %>;
+            <% if (attributes[i].isSetPrimaryKeyGeneratorStrategy()) { %>
+                in.readBoolean();
+            <% } %>
+        <% } %>
+        <% for (int i = 0; i < shadowAttributes.length; i++) { %>
+            <%= shadowAttributes[i].getDeserializationStatementForName("_old"+shadowAttributes[i].getName()) %>;
+        <% } %>
+    }
+
+<% if (!wrapper.isTablePerClassSubClass()) { %>
+    public boolean hasSamePrimaryKeyIgnoringAsOfAttributes(MithraDataObject other)
+    {
+        if (this == other) return true;
+        if (other instanceof <%= offHeapClassName %>)
+        {
+            final <%=offHeapClassName%> otherData = (<%=offHeapClassName%>) other;
+            <% for (int i = 0; i < attributes.length; i ++) {%>
+                <% if (attributes[i].isPrimaryKey() || attributes[i].isSourceAttribute()) {  %>
+                    <% if (attributes[i].isComparableUsingOffHeapBytes()) {  %>
+            if (this.<%=attributes[i].getOffHeapComparisonMethod()%>(_storage, <%=attributes[i].getOffHeapFieldOffset()%>) !=  otherData.<%=attributes[i].getOffHeapComparisonMethod()%>(_storage, <%=attributes[i].getOffHeapFieldOffset()%>))
+                {return false;}
+                    <% } else if (attributes[i].isNullablePrimitive()) {  %>
+            if (!<%=attributes[i].getNullGetter()%> ? <%=attributes[i].getGetter()%>() != otherData.<%=attributes[i].getGetter()%>() : !otherData.<%=attributes[i].getNullGetter()%>)
+                {return false;}
+                    <% } else if (attributes[i].isArray()){ %>
+
+            if (!<%=attributes[i].getNullGetter()%> ? !Arrays.equals(<%=attributes[i].getGetter()%>(), otherData.<%=attributes[i].getGetter()%>()) : !otherData.<%=attributes[i].getNullGetter()%>)
+                {return false;}
+                    <% } else { %>
+
+            if (!<%=attributes[i].getNullGetter()%> ? !<%=attributes[i].getGetter()%>().equals(otherData.<%=attributes[i].getGetter()%>()) : !otherData.<%=attributes[i].getNullGetter()%>)
+                {return false;}
+                    <% } %>
+                <% } %>
+            <% } %>
+
+            return true;
+        }
+        else
+        {
+            return slowHasSamePrimaryKeyIgnoringAsOfAttributes(other);
+        }
+    }
+
+    private boolean slowHasSamePrimaryKeyIgnoringAsOfAttributes(MithraDataObject other)
+    {
+        final <%=className%> otherData = (<%=className%>) other;
+
+        <% for (int i = 0; i < attributes.length; i ++) {%>
+            <% if (attributes[i].isPrimaryKey() || attributes[i].isSourceAttribute()) {  %>
+                <% if (attributes[i].isNullablePrimitive()) {  %>
+        if (!<%=attributes[i].getNullGetter()%> ? <%=attributes[i].getGetter()%>() != otherData.<%=attributes[i].getGetter()%>() : !otherData.<%=attributes[i].getNullGetter()%>)
+            {return false;}
+                <% } else if (attributes[i].isPrimitive()) {  %>
+        if (<%=attributes[i].getGetter()%>() != otherData.<%=attributes[i].getGetter()%>())
+            {return false;}
+                <% } else if (attributes[i].isArray()){ %>
+
+        if (!<%=attributes[i].getNullGetter()%> ? !Arrays.equals(<%=attributes[i].getGetter()%>(), otherData.<%=attributes[i].getGetter()%>()) : !otherData.<%=attributes[i].getNullGetter()%>)
+            {return false;}
+                <% } else { %>
+
+        if (!<%=attributes[i].getNullGetter()%> ? !<%=attributes[i].getGetter()%>().equals(otherData.<%=attributes[i].getGetter()%>()) : !otherData.<%=attributes[i].getNullGetter()%>)
+            {return false;}
+                <% } %>
+            <% } %>
+        <% } %>
+
+        return true;
+    }
+
+    public void zSerializePrimaryKey(ObjectOutput out) throws IOException
+    {
+    <% if (nullBitsHolders != null && wrapper.hasNullablePrimaryKeys()) { %>
+        zWriteNullBits(out);
+    <% } %>
+    <% for (int i = 0; i < attributes.length; i++) {
+        if (attributes[i].isPrimaryKey() || attributes[i].isSourceAttribute() || attributes[i].isAsOfAttributeFrom() || attributes[i].isAsOfAttributeTo()) {
+    %>
+            <%= attributes[i].getOffHeapSerializationStatement()%>;
+        <%}%>
+    <%}%>
+    <% for (int i = 0; i < shadowAttributes.length; i++) { %>
+            <%= shadowAttributes[i].getSerializationStatementForName("_old"+ shadowAttributes[i].getName())%>;
+    <%}%>
+    <% if (wrapper.hasOptimisticLockAttribute()) { %>
+        out.writeBoolean(_versionIncremented);
+        <% if (wrapper.getOptimisticLockAttribute().isPrimitive() && !wrapper.getOptimisticLockAttribute().isPrimaryKey()) { %>
+        <%= wrapper.getOptimisticLockAttribute().getSerializationStatement()%>;
+        <% } %>
+    <% } %>
+    }
+
+    public void zDeserializePrimaryKey(ObjectInput in) throws IOException, ClassNotFoundException
+    {
+    <% if(nullBitsHolders != null && wrapper.hasNullablePrimaryKeys()) { %>
+            <% for (int i = 0; i < nullBitsHolders.length; i++) { %>
+                <%= nullBitsHolders[i].getType() %> <%= nullBitsHolders[i].getName() %> = in.read<%= nullBitsHolders[i].getIoType() %>();
+            <% } %>
+    <% } %>
+    <% for (int i = 0; i < attributes.length; i++) {
+        if (attributes[i].isPrimaryKey() || attributes[i].isSourceAttribute() || attributes[i].isAsOfAttributeFrom() || attributes[i].isAsOfAttributeTo()) {
+    %>
+            <%= attributes[i].getOffHeapDeserializationStatement()%>;
+        <%}%>
+    <%}%>
+    <% for (int i = 0; i < shadowAttributes.length; i++) {%>
+        <%= shadowAttributes[i].getDeserializationStatementForName("_old"+ shadowAttributes[i].getName())%>;
+            <% if(shadowAttributes[i].isPoolable()) { %>
+                this._old<%= shadowAttributes[ i ].getName() %> = <%= shadowAttributes[i].getType().getJavaTypeString() %>Pool.getInstance().getOrAddToCache(this._old<%= shadowAttributes[ i ].getName() %>, <%= wrapper.getFinderClassName()%>.isFullCache());
+            <%}%>
+    <%}%>
+    <% if (wrapper.hasOptimisticLockAttribute()) { %>
+        _versionIncremented = in.readBoolean();
+        <% if (wrapper.getOptimisticLockAttribute().isPrimitive() && !wrapper.getOptimisticLockAttribute().isPrimaryKey()) { %>
+        <%= wrapper.getOptimisticLockAttribute().getDeserializationStatement()%>;
+        <% } %>
+    <% } %>
+    }
+
+<% } %>
+
+    public void clearRelationships()
+    {
+    }
+
+    public void clearAllDirectRefs()
+    {
+    }
+
+    <% if (wrapper.hasOptimisticLockAttribute()) { %>
+    public boolean mustIncrementVersion()
+    {
+        if (!_versionIncremented)
+        {
+            _versionIncremented = true;
+            return true;
+        }
+        return false;
+    }
+
+    public <%= wrapper.getOptimisticLockAttribute().getTypeAsString()%> zGetPersistedVersion()
+    {
+        <% if (wrapper.hasTimestampOptimisticLockAttribute()) { %>
+            return _old<%= wrapper.getOptimisticLockAttribute().getName()%>;
+        <% } else { %>
+        if (_versionIncremented)
+        {
+            return <%= wrapper.getOptimisticLockAttribute().getName()%> - 1;
+        }
+        return <%= wrapper.getOptimisticLockAttribute().getName()%>;
+        <% } %>
+    }
+
+    public void zMarkDirty()
+    {
+        <%= wrapper.getOptimisticLockAttribute().getName()%> = _DIRTY_VERSION;
+    }
+
+    public boolean zIsDirty()
+    {
+        return <%= wrapper.getOptimisticLockAttribute().getName()%> == _DIRTY_VERSION;
+    }
+    <% if (!wrapper.hasTimestampOptimisticLockAttribute()) { %>
+    public <%= wrapper.getOptimisticLockAttribute().getTypeAsString()%> _old<%= wrapper.getOptimisticLockAttribute().getGetter()%>()
+    {
+        if (_versionIncremented)
+        {
+            return <%= wrapper.getOptimisticLockAttribute().getName()%> - 1;
+        }
+        return <%= wrapper.getOptimisticLockAttribute().getName()%>;
+    }
+
+    public boolean _old<%= wrapper.getOptimisticLockAttribute().getNullGetter()%>
+    {
+        return false;
+    }
+    <% } // timestamp optimistic%>
+
+    <% } // optimistic attribute %>
+
+    <% for (int i = 0; i < relationshipAttributes.length; i ++)
+    if (relationshipAttributes[i].hasSetter())
+    {//accessors for relationship start %>
+	public Object <%= relationshipAttributes[ i ].getGetter()%>()
+    {
+        return null;
+    }
+
+    public void <%= relationshipAttributes[i].getSetter()%>(Object related)
+    {
+    }
+    <% } %>
+
+    <% if (wrapper.hasShadowAttributes() || wrapper.hasOptimisticLockAttribute()) { %>
+    public void zSetUpdated()
+    {
+        <% if (wrapper.hasOptimisticLockAttribute()) { %>
+            _versionIncremented = false;
+        <% } %>
+        <% if (wrapper.hasShadowAttributes()) { %>
+            <% for (int i = 0; i < shadowAttributes.length; i ++) {%>
+                this._old<%= shadowAttributes[i].getName() %> = this.<%= shadowAttributes[i].getName() %>;
+                <% if (shadowAttributes[i].isPrimitive() && shadowAttributes[i].isNullable()) { %>
+                if (this.<%= shadowAttributes[i].getNullGetter() %>) <%=wrapper.getNullSetterExpressionForMutableForIndex(i)%>;
+                else <%= shadowAttributes[i].getNotNullSetterExpressionForMutablePk()%>;
+                <% } %>
+            <% } %>
+        <% } %>
+    }
+    <% } %>
+
+    public void zSerializeRelationships(ObjectOutputStream out) throws IOException
+    {
+        <% if (wrapper.hasArraySettableRelationships()) { %>
+            out.writeInt(0);
+        <% } %>
+    }
+
+    public void zDeserializeRelationships(ObjectInputStream in) throws IOException, ClassNotFoundException
+    {
+        <% if (wrapper.hasArraySettableRelationships()) { %>
+        in.readInt();
+        <% } %>
+    }
+
+    public MithraOffHeapDataObject zCopyOffHeap()
+    {
+        return this;
+    }
+
+    public void copyNonPkAttributes(MithraDataObject newData)
+    {
+        <% if (wrapper.isTablePerClassSubClass()) { %>
+            super.copyNonPkAttributes(newData);
+        <% } %>
+        final <%=className%> <%=classNameAsVariable%> = (<%=className%>) newData;
+        <% for (AbstractAttribute attribute : attributes) { %>
+            <% if (!attribute.isPrimaryKey()) { %>
+                this.<%= attribute.getSetter() %>(<%= classNameAsVariable%>.<%=attribute.getGetter() %>());
+                <% if (attribute.isPrimitive() && attribute.isNullable()) { %>
+                if (<%= classNameAsVariable%>.<%= attribute.getNullGetter() %>) this.<%= attribute.getNullSetter() %>;
+                <% } %>
+            <% } %>
+        <% } %>
+        this._storage.markDataDirty(zGetOffset());
+    }
+    <%@ include file="./DataCommon.jspi" %>

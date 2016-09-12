@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject>
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>TlewTransaction</ClassName>
+    <DefaultTable>TLEW_TRAN</DefaultTable>
+
+    <AsOfAttribute name="processingDate" fromColumnName="IN_Z" toColumnName="OUT_Z" toIsInclusive="false"
+                   infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                   defaultIfNotSpecified="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                   isProcessingDate="true">
+    </AsOfAttribute>
+    <Attribute name="createCode" javaType="int" columnName="CREATE_C"/>
+    <Attribute name="changeCode" javaType="short" columnName="CHANGE_C">
+    </Attribute>
+
+    <Attribute name="tranId" javaType="int" columnName="TRAN_I" primaryKey="true"/>
+    <Attribute name="businessDate" javaType="Timestamp" columnName="BUS_DATE_Z"/>
+    <Attribute name="tradeType" javaType="String" maxLength="6" columnName="TRAN_TYP_C"/>
+    <Attribute name="tradeSubType" javaType="String" maxLength="6" columnName="TRAN_SUB_TYP_C"/>
+
+    <Attribute name="tranRef" javaType="String" maxLength="35" columnName="TRAN_REF_N"/>
+    <Attribute name="acctId" javaType="int" columnName="FIRM_ACCT_I"/>
+    <Attribute name="crossAcctId" javaType="int" columnName="CP_ACCT_I"/>
+    <Attribute name="instrumentId" javaType="int" columnName="INSTRUMENT_I"/>
+    <Attribute name="productGlobalClass" javaType="long" columnName="PROD_GLOBAL_CLASS_I"/>
+    <Attribute name="tradeDate" javaType="Timestamp" columnName="TRADE_DATE_Z"/>
+    <Attribute name="settleDate" javaType="Timestamp" columnName="SETTLE_DATE_Z"/>
+    <Attribute name="settlementType" javaType="int" columnName="STD_SETTLE_TYP_C"/>
+    <Attribute name="interCompanyType" javaType="int" columnName="INTER_COMPANY_C"/>
+    <Attribute name="nativeCurrencyCode" javaType="String" maxLength="3" columnName="NATIVE_CCY_C"/>
+    <Attribute name="buySellCode" javaType="String" maxLength="2" columnName="BUY_SELL_C"/>
+    <Attribute name="usdXRate" javaType="double" columnName="USD_XRATE_M"/>
+    <Attribute name="baseXRate" javaType="double" columnName="BASE_XRATE_M"/>
+    <Attribute name="tradeQty" javaType="double" columnName="TRAN_QTY_Q"/>
+    <Attribute name="receiveCurrencyCode" javaType="String" maxLength="3" columnName="RECEIVE_CCY_C"/>
+    <Attribute name="payCurrencyCode" javaType="String" maxLength="3" columnName="PAY_CCY_C"/>
+    <Attribute name="nativeCost" javaType="double" columnName="NET_COST_NATIVE_M"/>
+    <Attribute name="replacementCost" javaType="double" columnName="FAIR_VALUE_NATIVE_M"/>
+    <Attribute name="notionalValue" javaType="double" columnName="NOTIONAL_NATIVE_M"/>
+    <Attribute name="nativeMarketValue" javaType="double" columnName="MKTVL_NATIVE_M"/>
+    <Attribute name="externalTradeId" javaType="String" maxLength="30" columnName="EXTERNAL_TRAN_I"/>
+    <Attribute name="cashSettleCode" javaType="String" maxLength="2" columnName="CASH_SETTLE_C"/>
+    <Attribute name="calculatorName" javaType="String" maxLength="32" columnName="CALCULATOR_N"/>
+    <Attribute name="initialNotional" javaType="double" columnName="INITIAL_NOTIONAL_M"/>
+    <Attribute name="firmRiskAcctName" javaType="String" maxLength="15" columnName="FIRM_RISK_ACCT_N"/>
+    <Attribute name="intercompanyRecFlag" javaType="String" maxLength="32" columnName="INTERCO_N"/>
+    <Attribute name="factorFeeAdjustment" javaType="double" columnName="FACTOR_FEE_ADJ_M"/>
+    <Attribute name="taxWithholdingAdjustment" javaType="double" columnName="TAX_WITHHOLD_ADJ_M"/>
+    <Attribute name="valuationAdjustment" javaType="double" columnName="VALUATION_ADJ_M"/>
+    <Attribute name="currentNotionalValue" javaType="double" columnName="CURRENT_NOTIONAL_M"/>
+    <Attribute name="debtClass" javaType="String" maxLength="9" columnName="DEBT_CLASS_N"/>
+</MithraObject>

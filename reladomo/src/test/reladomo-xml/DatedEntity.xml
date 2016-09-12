@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject>
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>DatedEntity</ClassName>
+    <DefaultTable>DATED_ENTITY</DefaultTable>
+
+    <AsOfAttribute name="processingDate" fromColumnName="in_z" toColumnName="out_z"
+        infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"
+        defaultIfNotSpecified="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]" isProcessingDate="true"/>
+
+    <Attribute name="fromZ" javaType="Timestamp" columnName="from_z" primaryKey="true"/>
+    <Attribute name="thruZ" javaType="Timestamp" columnName="thru_z"/>
+
+    <Attribute name="id" javaType="int" columnName="id" primaryKey="true"/>
+    <Attribute name="rate" javaType="double" columnName="rate"/>
+
+    <Relationship name="expensiveEntities" relatedObject="DatedEntity" cardinality="one-to-many" parameters="double rate">
+        <![CDATA[
+        DatedEntity.id = this.id and this.rate >= {rate}
+        ]]>
+    </Relationship>
+
+
+    <Relationship   name="datedEntityDesc"
+                    relatedObject="DatedEntityDesc"
+                    cardinality="one-to-one"> this.id = DatedEntityDesc.id and this.fromZ = DatedEntityDesc.businessDate
+    </Relationship>
+
+</MithraObject>
+

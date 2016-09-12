@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="../mithraobject.xsd"
+              objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>BitemporalOrderNull</ClassName>
+    <Import>com.gs.collections.impl.set.mutable.primitive.IntHashSet</Import>
+    <Import>com.gs.fw.common.mithra.test.domain.InfinityTimestamp</Import>
+    <DefaultTable>BITEMPORAL_ORDER_NULL</DefaultTable>
+
+    <AsOfAttribute name="businessDate" fromColumnName="FROM_Z" toColumnName="THRU_Z" toIsInclusive="false"
+        infinityDate="[InfinityTimestamp.getParaInfinity()]" isProcessingDate="false"
+        infinityIsNull="true"/>
+
+    <AsOfAttribute name="processingDate" fromColumnName="IN_Z" toColumnName="OUT_Z" toIsInclusive="false"
+        infinityDate="[InfinityTimestamp.getParaInfinity()]" isProcessingDate="true"
+        defaultIfNotSpecified="[InfinityTimestamp.getParaInfinity()]"
+        infinityIsNull="true"/>
+
+    <Attribute name="orderId" javaType="int" columnName="ORDER_ID" primaryKey="true"/>
+    <Attribute name="orderDate" javaType="Timestamp" columnName="ORDER_DATE"/>
+    <Attribute name="userId" javaType="int" columnName="USER_ID"/>
+    <Attribute name="description" javaType="String" columnName="DESCRIPTION" maxLength="50" truncate="true" inPlaceUpdate="true"/>
+    <Attribute name="state" javaType="String" columnName="STATE" maxLength="20"/>
+    <Attribute name="trackingId" javaType="String" columnName="TRACKING_ID" maxLength="15"/>
+
+    <Relationship name="items" relatedObject="BitemporalOrderItemNull" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-many" >BitemporalOrderItemNull.orderId = this.orderId</Relationship>
+    <Relationship name="orderStatus" relatedObject="BitemporalOrderStatusNull" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-one" >BitemporalOrderStatusNull.orderId = this.orderId</Relationship>
+    <Relationship name="itemForProduct" relatedObject="BitemporalOrderItemNull" cardinality="one-to-one" parameters="int productId">BitemporalOrderItemNull.orderId = this.orderId and AuditedOrderItem.productId = {productId}</Relationship>
+    <Relationship name="itemForProductSet" relatedObject="BitemporalOrderItemNull" cardinality="one-to-one" parameters="IntHashSet productIds">BitemporalOrderItemNull.orderId = this.orderId and AuditedOrderItem.productId in {productIds}</Relationship>
+    <Relationship name="expensiveItems" relatedObject="BitemporalOrderItemNull" cardinality="one-to-many" parameters="double price">
+        <![CDATA[
+        BitemporalOrderItemNull.orderId = this.orderId and BitemporalOrderItemNull.originalPrice >= {price}
+        ]]>
+    </Relationship>
+    <Relationship name="cheapItems" relatedObject="BitemporalOrderItemNull" cardinality="one-to-many" parameters="double price" returnType="List">
+        <![CDATA[
+        BitemporalOrderItemNull.orderId = this.orderId and BitemporalOrderItemNull.originalPrice < {price}
+        ]]>
+    </Relationship>
+    <Index name="byUserId">userId</Index>
+    <Index name="byState">state</Index>
+    <Index name="byTrackingId" unique="true">trackingId</Index>
+</MithraObject>

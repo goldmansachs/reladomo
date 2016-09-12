@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject>
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>AuditedUserGroup</ClassName>
+    <DefaultTable>AUDITED_USER_GROUP</DefaultTable>
+    <SourceAttribute name="sourceId" javaType="int" />
+    <AsOfAttribute name="processingDate" fromColumnName="IN_Z" toColumnName="OUT_Z" toIsInclusive="false"
+        infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]" isProcessingDate="true"
+        defaultIfNotSpecified="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"/>
+    <Attribute name="ownerId" javaType="int" columnName="USER_OID" primaryKey="true"/>
+    <Attribute name="dependentId" javaType="int" columnName="GROUP_OID" primaryKey="true"/>
+    <Relationship name="group" relatedObject="AuditedGroup" cardinality="many-to-one">AuditedGroup.id = this.dependentId</Relationship>
+</MithraObject>
+

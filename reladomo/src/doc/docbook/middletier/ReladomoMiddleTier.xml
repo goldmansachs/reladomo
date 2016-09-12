@@ -1,0 +1,236 @@
+<?xml version="1.0"?>
+
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<article xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="../xsd/docbook.xsd">
+
+    <articleinfo>
+        <title>Reladomo Middle Tier</title>
+    </articleinfo>
+
+
+    <section>
+        <title>Reladomo Middle Tier</title>
+
+        <section>
+            <title>Why?</title>
+            <para>
+                <itemizedlist>
+                    <listitem>
+                        <para>Security (fat client applications):</para>
+                        <itemizedlist>
+                            <listitem><para>User ID must not be able to access database directly (especially write)</para></listitem>
+                            <listitem><para>Batch/App ID must not be used from unauthorized IP’s</para></listitem>
+                            <listitem><para>For a large, semi-mobile user community, maintaining IP lists is undesirable and allows random sql client connections</para></listitem>
+                        </itemizedlist>
+                    </listitem>
+                    <listitem>
+                        <para>Connection sharing: database connections can be expensive. Many users can share same connection.</para>
+                    </listitem>
+                </itemizedlist>
+            </para>
+        </section>
+
+        <section>
+            <title>How?</title>
+            <para>
+                <itemizedlist>
+                    <listitem><para>Third tier acts like a relational source. Supports relational-like operations: find, insert, update, delete.</para></listitem>
+                    <listitem><para>No object graphs. Not a complex object source. Serializaton based on metadata. Wire format looks like a result set.</para></listitem>
+                    <listitem><para>Lightweight: can be configured as pass-through with no caching.</para></listitem>
+                    <listitem><para>Remoting API must be implemented by application.</para></listitem>
+                </itemizedlist>
+            </para>
+        </section>
+    </section>
+
+    <section>
+        <title>Setup</title>
+
+        <para>
+            You'll need to setup a server that loads a normal Reladomo configuration.
+            Additionally, the server has to expose a remote interface for its clients to talk to.
+            There is a PSP implementation for that remote service.
+            It's often convenient to use the PSP servlet's load initialization to initialize
+            the underlying Reladomo implementation.
+        </para>
+
+        <section>
+            <title>Servlet</title>
+
+            <para>
+                This is an example setup where we have a war file that has web.xml containing the following snippet:
+            </para>
+            <example>
+                <title>web.xml fragment</title>
+                <programlisting language="xml"><![CDATA[
+<servlet>
+    <servlet-name>PspServlet</servlet-name>
+    <servlet-class>com.gs.fw.common.base.psp.server.PspServlet</servlet-class>
+    <init-param>
+        <param-name>serviceInterface.MyappRemoteMithraService</param-name>
+        <param-value>com.gs.fw.common.mithra.remote.RemoteMithraService</param-value>
+    </init-param>
+    <init-param>
+        <param-name>serviceClass.MyAppRemoteMithraService</param-name>
+        <param-value>com.gs.fw.para.common.MyAppRemoteMithraService</param-value>
+    </init-param>
+    <load-on-startup>10</load-on-startup>
+</servlet>
+]]>             </programlisting>
+            </example>
+        </section>
+
+        <section>
+            <title>Remote Service</title>
+
+            <para>
+                The constructor of MyAppRemoteMithraService is essentially used to initialize Reladomo.
+            </para>
+
+            <example>
+                <title>Sample implementation of a RemoteMithraService</title>
+                <programlisting language="java"><![CDATA[
+public class MyAppRemoteMithraService extends RemoteMithraServiceImpl
+{
+    private static final Logger logger = LoggerFactory.createLogger(MyAppRemoteMithraService.class);
+
+    public MyAppRemoteMithraService()
+    {
+        String remoteMithraApplicationName = System.getProperty("mithra.middle.tier.loader");
+        if (remoteMithraApplicationName == null)
+        {
+            remoteMithraApplicationName = "MyAppMithraMiddleTierLoader";
+        }
+        try
+        {
+            ApplicationRunner.instance().runApplication(remoteMithraApplicationName);
+            logger.info("Successfully loaded Reladomo middle tier.");
+        }
+        catch (Exception e)
+        {
+            logger.error("Could not load Reladomo middle tier", e);
+            throw new MithraBusinessException("could not load Reladomo middle tier", e);
+        }
+    }
+}
+]]>             </programlisting>
+            </example>
+
+            <para>
+                The actual remote implementation comes from RemoteMithraServiceImpl.
+                The Reladomo runtime configuration for the server will have a real connection manger.
+            </para>
+        </section>
+
+        <section>
+            <title>Client-Side Runtime Configuration</title>
+
+            <para>
+                On the client side, you'll have to change your runtime config to point to the middle tier:
+            </para>
+            <example>
+                <title>Sample client runtime configuration fragment</title>
+                <programlisting language="xml"><![CDATA[
+<MithraRuntime>
+    <RemoteServer className="com.gs.fw.common.mithra.remote.PspBasedMithraRemoteServerFactory" initialLoaderThreads="3">
+        <Property name="url" value="http://localhost:7399/mithramiddletier/PspServlet"/>
+
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AccountTransactionException" cacheType="none"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.SpecialAccount" cacheType="full"/>
+    </RemoteServer>
+</MithraRuntime>
+]]>             </programlisting>
+            </example>
+
+            <para>
+                In a client runtime configuration, you can think that RemoteServer replaces ConnectionManager.
+                The MithraObjectConfigurations here are completely optional, and simply overrides the values that come from the server.
+                The client will setup a partialCache for the classes that the server is serving but not listed.
+            </para>
+        </section>
+
+        <section>
+            <title>PspBasedMithraRemoteServerFactory</title>
+
+            <para>
+                Here is an example, which receives the properties configured in the client runtime config XML,
+                and returns configured instances:
+            </para>
+            <example>
+                <title>PspBasedMithraRemoteServerFactory</title>
+                <programlisting language="java"><![CDATA[
+public class PspBasedMithraRemoteServerFactory
+{
+    public static RemoteMithraService getInstance(Properties properties)
+    {
+        String url = properties.getProperty("url");
+        if (url == null)
+        {
+            throw new MithraException("you must specify a url property for this factory");
+        }
+        return createFactory(properties, url);
+    }
+
+    protected static RemoteMithraService createFactory(Properties properties, String url)
+    {
+        FastServletProxyFactory factory;
+        String user = properties.getProperty("user");
+        if (user != null)
+        {
+            String password = properties.getProperty("password");
+            if (password == null)
+            {
+                throw new MithraException("if you specify the 'user' property, you must also specify a password!");
+            }
+
+            factory = new FastServletProxyFactory(user, password);
+        }
+        else
+        {
+            factory = new FastServletProxyFactory();
+        }
+
+        try
+        {
+            return factory.create(RemoteMithraService.class, url);
+        }
+        catch (MalformedURLException e)
+        {
+            throw new MithraException("malformed url: "+url, e);
+        }
+    }
+}
+]]>             </programlisting>
+            </example>
+            <para>
+                The <code>RemoteMithraService</code> returned by the <code>createFactory()</code> method
+                will manage the transfer of requests and results between the client and the middle tier.
+            </para>
+            <important>
+                <title>Note:</title>
+                <para>
+                    <code>PspBasedMithraRemoteServerFactory</code> is available from Reladomo for your use.
+                </para>
+            </important>
+        </section>
+    </section>
+
+</article>

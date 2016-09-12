@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject>
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>ProductProfileType</ClassName>
+    <DefaultTable>PRODUCT_PROFILE_TYPE</DefaultTable>
+    <SourceAttribute name="acmapCode"   javaType="String"/>
+
+    <Attribute name="profileTypeId"		javaType="int"     		columnName="PROD_PROF_TYPE_ID_I" primaryKey="true"/>
+    <Attribute name="type"    			javaType="String"      	columnName="PROD_TYPE_C" maxLength="15"/>
+    <Attribute name="profile"		    javaType="String"      	columnName="PROD_PROFILE_C" maxLength="60"/>
+
+
+    <Relationship name="productCategories"	relatedObject="ProductCategory" cardinality="many-to-many">
+            ProductCategoryMap.profileTypeId = this.profileTypeId
+        and ProductCategoryMap.categoryId = ProductCategory.categoryId
+    </Relationship>
+
+    <Index name="byTypeAndProfile" unique="true">type,profile</Index>
+
+</MithraObject>

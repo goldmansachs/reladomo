@@ -1,0 +1,35 @@
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType= "transactional">
+
+<PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+<ClassName>RestrictedItemComment</ClassName>
+<DefaultTable>RESTRICTED_ITEM_COMMENT</DefaultTable>
+
+<Attribute name="itemCommentId" javaType="long" primaryKey="true" columnName="ITEM_COMMENT_ID" primaryKeyGeneratorStrategy="SimulatedSequence">
+	<SimulatedSequence sequenceName="RestrictedItemComment_Sequence" sequenceObjectFactoryName="com.gs.fw.common.mithra.test.domain.MithraTestSequenceObjectFactory" hasSourceAttribute="false" batchSize="1" initialValue="1" incrementSize="1"/>
+</Attribute>
+<Attribute name="restrictedItemId" javaType="long" columnName="RESTRICTED_ITEM_ID"/>
+<Attribute name="comment" javaType="String" maxLength="4000" columnName="COMMENT"/>
+<Attribute name="fromDt" javaType="Timestamp" columnName="FROM_DT"/>
+<Attribute name="thruDt" javaType="Timestamp" columnName="THRU_DT"/>
+<Attribute name="updateBy" javaType="String" maxLength="30" columnName="UPDATE_BY"/>
+
+
+</MithraObject>

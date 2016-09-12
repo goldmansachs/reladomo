@@ -1,0 +1,49 @@
+/*
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+class com.gs.fw.common.mithra.test.domain.Projito
+id, name,    bvp,     dueDate,                 status,     processingDateFrom,      processingDateTo
+1, "name 1", "bvp 1", "2015-01-01 00:00:00.0", "Doodling", "2000-01-01 00:00:00.0", "9999-12-01 00:00:00.0"
+2, "name 2", "bvp 2", "2015-02-01 00:00:00.0", "Doodling", "2000-02-01 00:00:00.0", "9999-12-01 00:00:00.0"
+3, "name 3", "bvp 3", "2015-03-01 00:00:00.0", "Doodling", "2000-03-01 00:00:00.0", "9999-12-01 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.ProjitoVersion
+id, versionedRootId, number, processingDateFrom,      processingDateTo
+1,  1,               1,      "2000-01-01 00:00:00.0", "9999-12-01 00:00:00.0"
+2,  2,               1,      "2000-02-01 00:00:00.0", "2000-03-01 00:00:00.0"
+2,  2,               2,      "2000-03-01 00:00:00.0", "9999-12-01 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.ProjitoMembership
+id, projitoId, kerberos,  processingDateFrom,      processingDateTo
+1,  1,         "tester1", "2000-01-01 00:00:00.0", "9999-12-01 00:00:00.0"
+2,  2,         "tester2", "2000-02-01 00:00:00.0", "9999-12-01 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.ProjitoMeasureOfSuccess
+id, projitoId, name,    description,                         accountableKerberos, processingDateFrom,      processingDateTo
+1,  2,         "MoS 1", "Measure of success description 1",  "tester1",           "2000-02-01 00:00:00.0", "9999-12-01 00:00:00.0"
+2,  2,         "MoS 2", "Measure of success description 2",  "tester2",           "2000-02-01 00:00:00.0", "2000-03-01 00:00:00.0"
+2,  2,         "MoS 2", "Measure of success description 2a", "tester2",           "2000-03-01 00:00:00.0", "9999-12-01 00:00:00.0"
+3,  3,         "MoS 3", "Measure of success description 3",  "tester2",           "2000-03-01 00:00:00.0", "9999-12-01 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.ProjitoEmployee
+kerberos,  name,  processingDateFrom,      processingDateTo
+"tester1", "Bob", "2000-01-01 00:00:00.0", "9999-12-01 00:00:00.0"
+"tester2", "Ali", "2000-01-01 00:00:00.0", "9999-12-01 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.ProjitoAddress
+id, kerberos, street,            state, city,        zipCode, processingDateFrom,      processingDateTo
+1, "tester1", "1 Infinite Loop", "CA", "Cupertino",  "95014", "2000-01-01 00:00:00.0", "9999-12-01 00:00:00.0"
+2, "tester2", "1 Infinite Loop", "CA", "Cupertino",  "95014", "2000-01-01 00:00:00.0", "9999-12-01 00:00:00.0"
+3, "tester2", "1 Hacker Way",    "CA", "Menlo Park", "94025", "2000-01-01 00:00:00.0", "9999-12-01 00:00:00.0"

@@ -1,0 +1,92 @@
+<%--
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+--%>
+<%@ page import="com.gs.fw.common.mithra.generator.type.StringJavaType,
+                 com.gs.fw.common.mithra.generator.type.CharJavaType,
+                 com.gs.fw.common.mithra.generator.Attribute,
+                 com.gs.fw.common.mithra.generator.AsOfAttribute,
+                 com.gs.fw.common.mithra.generator.SourceAttribute,
+                 com.gs.fw.common.mithra.generator.util.StringUtility,
+                 java.util.Arrays"%>
+<%@ page import="com.gs.fw.common.mithra.generator.MithraObjectTypeWrapper"%>
+
+    public MithraObject createObject(MithraDataObject newData)
+    {
+    <% if (wrapper.isTableForAllSubclasses() || wrapper.isTablePerClassSuperClass()) { %>
+        <%= wrapper.getImplClassName() %> newObject = construct<%= wrapper.getClassName() %>(newData);
+        <%  MithraObjectTypeWrapper[] xsubClasses = wrapper.getSubClasses();
+            if (xsubClasses != null) for(int i=xsubClasses.length -1; i >=0 ; i--)
+            {
+        %>
+        if (newData instanceof <%= xsubClasses[i].getDataClassName()%>)
+        {
+            ((<%= xsubClasses[i].getClassName() %>)newObject).zSetFrom<%= xsubClasses[i].getClassName() %>Data((<%= xsubClasses[i].getClassName() %>Data) newData);
+        }
+        else
+        <% } %>
+    <% } else { %>
+        <%= wrapper.getImplClassName() %> newObject = new <%= wrapper.getImplClassName() %>();
+    <% } %>
+        newObject.zSetFrom<%= wrapper.getClassName() %>Data((<%= wrapper.getClassName() %>Data) newData);
+        return newObject;
+    }
+
+    <% if (wrapper.isTableForAllSubclasses()) { %>
+    protected abstract <%=wrapper.getImplClassName()%> construct<%= wrapper.getClassName() %>(MithraDataObject data);
+    <% } else if (wrapper.isTablePerClassSuperClass()) { %>
+    protected <%=wrapper.getImplClassName()%> construct<%= wrapper.getClassName() %>(MithraDataObject data)
+    {
+        <%  MithraObjectTypeWrapper[] xsubClasses = wrapper.getSubClasses();
+            if (xsubClasses != null) for(int i=xsubClasses.length -1; i >=0 ; i--)
+            {
+        %>
+        if (data instanceof <%= xsubClasses[i].getDataClassName()%>) return new <%= xsubClasses[i].getClassName()%>();
+        <% } %>
+        return new <%= wrapper.getImplClassName() %>();
+    }
+    <% } %>
+
+    <% if (wrapper.getIdentityCount() > 0) { %>
+    public void setIdentity(Connection conn, Object source, MithraDataObject mithraDataObject) throws SQLException
+    {
+        DatabaseType dt = this.getDatabaseTypeGenericSource(source);
+        String sql = dt.getLastIdentitySql(this.getFullyQualifiedTableNameGenericSource(source));
+        if (this.getSqlLogger().isDebugEnabled())
+        {
+            this.getSqlLogger().debug("getting identity with: "+sql);
+        }
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        try
+        {
+            stm = conn.prepareStatement(sql);
+            rs = stm.executeQuery();
+            if (!rs.next())
+            {
+                throw new SQLException("Error retrieving identity value");
+            }
+            ((<%= wrapper.getClassName() %>Data) mithraDataObject).<%= wrapper.getIdentityAttribute().getSetter()%>(rs.get<%= StringUtility.firstLetterToUpper(wrapper.getIdentityAttribute().getTypeAsString())%>(1));
+            rs.close();
+            rs = null;
+            stm.close();
+            stm = null;
+        }
+        finally
+        {
+            closeDatabaseObjects(null, stm, rs); // connection is close outside
+        }
+    }
+    <% } %>
+    

@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<Mithra xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../mithraobject.xsd"
+        enableOffHeap="false">
+    <!--<MithraObjectResource name="CalcDate"/>-->
+    <MithraObjectResource name="subdirtest/FundingBalance"/>
+    <MithraObjectResource name="TlewTransaction"/>
+    <MithraObjectResource name="TestAgeBalanceSheetRunRate"/>
+    <MithraObjectResource name="TestAgeBalanceSheetRunRateNull"/>
+    <MithraObjectResource name="DbsTestEntity"/>
+    <MithraObjectResource name="MithraTestSequence"/>
+    <MithraObjectResource name="MithraTestSequenceForIntSource"/>
+    <MithraObjectResource name="MithraTestSequenceForDefaultSource"/>
+    <MithraObjectResource name="AccountTransaction"/>
+    <MithraObjectResource name="AccountTransactionMax"/>
+    <MithraObjectResource name="AccountTransactionNoSrcAttr"/>
+    <MithraObjectResource name="AccountTransactionIntSrcAttr"/>
+    <MithraObjectResource name="AccountTransactionException"/>
+    <MithraObjectResource name="SpecialAccountTransactionException"/>
+    <MithraObjectResource name="SpecialAccountTransaction"/>
+    <MithraObjectResource name="SpecialAccount"/>
+    <MithraObjectResource name="SpecialAccountMax"/>
+    <MithraObjectResource name="AccountDescendingKey"/>
+    <MithraObjectResource name="RiskValueTestAccount"/>
+    <MithraObjectResource name="RiskDateTestAccount"/>
+    <MithraObjectResource name="AbstractGhostMessageTransaction" />
+    <MithraObjectResource name="GhostMessagePendingTransaction" />
+    <MithraObjectResource name="User"/>
+	<MithraObjectResource name="Group"/>
+	<MithraObjectResource name="Location"/>
+	<MithraObjectResource name="UserGroup"/>
+    <MithraObjectResource name="AuditedTree"/>
+    <MithraObjectResource name="AuditedUser"/>
+	<MithraObjectResource name="AuditedGroup"/>
+	<MithraObjectResource name="AuditedUserGroup"/>
+	<MithraObjectResource name="Profile"/>
+    <MithraObjectResource name="ParaDesk"/>
+    <MithraObjectResource name="Trial"/>
+    <MithraObjectResource name="BusinessUnitGroup"/>
+    <MithraObjectResource name="Account"/>
+    <MithraObjectResource name="TamsAccount"/>
+    <MithraObjectResource name="Contract"/>
+    <MithraObjectResource name="Underlier"/>
+    <MithraObjectResource name="NullTest"/>
+    <MithraObjectResource name="OptimisticOrder"/>
+    <MithraObjectResource name="OptimisticOrderWithTimestamp"/>
+    <MithraObjectResource name="DirectRefOrder"/>
+    <MithraObjectResource name="DirectRefOrderItem"/>
+    <MithraObjectResource name="DirectRefOrderStatus"/>
+    <MithraObjectResource name="OrderWithAuditedStatus"/>
+    <MithraObjectResource name="AuditedOrderStatusWithNonDatedOrder"/>
+    <MithraObjectResource name="OrderAsTxReadOnly"/>
+    <MithraObjectResource name="OrderStatusAsTxReadOnly"/>
+    <MithraObjectResource name="Order"/>
+    <MithraObjectResource name="OrderItem"/>
+    <MithraObjectResource name="OrderStatus"/>
+    <MithraObjectResource name="OrderParentToChildren"/>
+    <MithraObjectResource name="OrderWithExtraColumn"/>
+    <MithraObjectResource name="OrderWithMissingColumn"/>
+    <MithraObjectResource name="OrderDenormalized"/>
+    <MithraObjectResource name="Product" />
+    <MithraObjectResource name="ProductSynonym" />
+    <MithraObjectResource name="Adjustment"/>
+    <MithraObjectResource name="DatedAccount"/>
+    <MithraObjectResource name="DatedTrial"/>
+    <MithraObjectResource name="DatedPnlGroup"/>
+    <MithraObjectResource name="Employee"/>
+    <MithraObjectResource name="InventoryItem"/>
+    <MithraObjectResource name="Book"/>
+    <MithraObjectResource name="Phone"/>
+    <MithraObjectResource name="Supplier"/>
+    <MithraObjectResource name="Manufacturer"/>
+    <MithraObjectResource name="SupplierInventoryItem"/>
+    <MithraObjectResource name="ExchangeRate"/>
+    <MithraObjectResource name="ExchangeRateChild"/>
+    <MithraObjectResource name="PositionAdjustmentHistory"/>
+    <MithraObjectResource name="PositionQuantity"/>
+    <MithraObjectResource name="Stock"/>
+    <MithraObjectResource name="StockPrice"/>
+    <MithraObjectResource name="Parent"/>
+    <MithraObjectResource name="Child"/>
+    <MithraObjectResource name="FileDirectory"/>
+    <MithraObjectResource name="TestBalance"/>
+    <MithraObjectResource name="TestBalanceNoAcmap"/>
+    <MithraObjectResource name="DatedTable"/>
+    <MithraObjectResource name="TestTamsMithraTrial" replicated="true"/>
+    <MithraObjectResource name="TestTamsAccountIncomeFunction" replicated="true"/>
+    <MithraObjectResource name="TestReplicatedObject" replicated="true"/>
+    <MithraObjectResource name="NotDatedTable"/>
+    <MithraObjectResource name="NotDatedWithTimestampTable"/>
+    <MithraObjectResource name="NotDatedWithBusinessDate"/>
+    <MithraObjectResource name="ParentType"/>
+    <MithraObjectResource name="ChildType"/>
+    <MithraObjectResource name="LifeStatus" />
+    <MithraObjectResource name="PetType" />
+    <MithraObjectResource name="TinyBalance" />
+    <MithraObjectResource name="FullyCachedTinyBalance" />
+    <MithraObjectResource name="TinyBalanceNull" />
+    <MithraObjectResource name="TinyBalanceUtc" />
+    <MithraObjectResource name="TinyBalanceWithSmallDate" />
+    <MithraObjectResource name="TinyBalanceWithSmallDateNull" />
+    <MithraObjectResource name="AuditOnlyBalance" />
+    <MithraObjectResource name="NonAuditedBalance" />
+    <MithraObjectResource name="NonAuditedBalanceNull" />
+    <MithraObjectResource name="ParaBalance" />
+    <MithraObjectResource name="SelfJoinConstant" />
+    <MithraObjectResource name="Synonym" />
+    <MithraObjectResource name="DatedEntity" />
+    <MithraObjectResource name="DatedEntityDesc" />
+    <MithraObjectResource name="DatedEntityDescType" />
+    <MithraObjectResource name="TestAcctEntitySegment" />
+    <MithraObjectResource name="TestEodAcctIfPnl" />
+    <MithraObjectResource name="TimezoneTestWithSource" />
+    <MithraObjectResource name="TimezoneTest" />
+    <MithraObjectResource name="PkTimezoneTest" />
+    <MithraObjectResource name="DatedWithSequence" />
+    <MithraObjectResource name="DatedWithDescendingSequence" />
+    <MithraObjectResource name="DatedWithMax"/>
+    <MithraObjectResource name="TestPositionPrice"/>
+    <MithraObjectResource name="TestPositionIncomeExpense"/>
+    <MithraObjectResource name="TestPositionIncomeExpenseNull"/>
+    <MithraObjectResource name="Team"/>
+    <MithraObjectResource name="Player"/>
+    <MithraObjectResource name="Division"/>
+    <MithraObjectResource name="TestBinaryArray"/>
+    <MithraObjectResource name="DifferentDataTypes"/>
+    <MithraObjectResource name="OldDifferentDataTypes"/>
+    <MithraObjectResource name="MappedDifferentDataTypes"/>
+    <MithraObjectResource name="VariousTypes"/>
+    <MithraObjectResource name="TestSecurityJournal"/>
+    <MithraObjectResource name="TestSubClass"/>
+    <MithraObjectResource name="TestSecurityTransaction"/>
+    <MithraObjectResource name="TestAbstractTransaction"/>
+    <MithraObjectResource name="TestAbstractMessage"/>
+    <MithraObjectResource name="TestAbstractNoPk"/>
+    <MithraObjectResource name="TestSwapPrice"/>
+    <MithraObjectResource name="AuditedOrderAsTxReadOnly"/>
+    <MithraObjectResource name="AuditedOrder"/>
+    <MithraObjectResource name="AuditedOrderItem"/>
+    <MithraObjectResource name="AuditedOrderStatus"/>
+    <MithraObjectResource name="AuditedOrderStatusTwo"/>
+    <MithraObjectResource name="NotDatedWithNullablePK"/>
+    <MithraObjectResource name="DatedWithNullablePK"/>
+    <MithraObjectResource name="AllJavaTypesInPk"/>
+    <MithraObjectResource name="BitemporalOrder"/>
+    <MithraObjectResource name="BitemporalOrderItem"/>
+    <MithraObjectResource name="BitemporalOrderItemStatus"/>
+    <MithraObjectResource name="BitemporalOrderStatus"/>
+    <MithraObjectResource name="BitemporalOrderNull"/>
+    <MithraObjectResource name="BitemporalOrderItemNull"/>
+    <MithraObjectResource name="BitemporalOrderStatusNull"/>
+    <MithraObjectResource name="BitemporalOrderToOrderStatus"/>
+    <MithraObjectResource name="BitemporalOrderStatusFilter"/>
+    <MithraObjectResource name="UnconfiguredBitemporalOrderStatus"/>
+    <MithraObjectResource name="UnconfiguredBitemporalOrderToOrderStatus"/>
+    <MithraObjectResource name="UnconfiguredBitemporalOrderStatusFilter"/>
+    <MithraObjectResource name="ReadOnlyAnimal"/>
+    <MithraObjectResource name="ReadOnlyMammal"/>
+    <MithraObjectResource name="ReadOnlyMonkey"/>
+    <MithraObjectResource name="ReadOnlyCow"/>
+    <MithraObjectResource name="AnimalGroup"/>
+    <MithraObjectResource name="TxAnimal"/>
+    <MithraObjectResource name="TxMammal"/>
+    <MithraObjectResource name="TxMonkey"/>
+    <MithraObjectResource name="TxCow"/>
+    <MithraObjectResource name="Sale"/>
+    <MithraObjectResource name="SaleAggregateData"/>
+    <MithraObjectResource name="SalesLineItem"/>
+    <MithraObjectResource name="WishListItem"/>
+    <MithraObjectResource name="ProductSpecification"/>
+    <MithraObjectResource name="Seller"/>
+    <MithraObjectResource name="ParentNumericAttribute"/>
+    <MithraObjectResource name="ChildNumericAttribute"/>
+    <MithraObjectResource name="NoExportTestObject"/>
+    <MithraObjectResource name="AllTypes"/>
+    <MithraObjectResource name="TimestampConversion"/>
+    <MithraObjectResource name="AllTypesIq"/>
+    <MithraObjectResource name="BooleansOnNumericColumnsIq"/>
+    <MithraObjectResource name="DatedAllTypes"/>
+    <MithraObjectResource name="DatedAllTypesNull"/>
+    <MithraObjectResource name="WallCrossImpl"/>
+    <MithraObjectResource name="ListEntryContactsImpl"/>
+    <MithraObjectResource name="ControlDefinition"/>
+    <MithraObjectResource name="ListDefinition"/>
+    <MithraObjectResource name="ControlListDefinitionMapping"/>
+    <MithraObjectResource name="IdentityTable"/>
+    <MithraObjectResource name="BitemporalProductSynonym"/>
+
+    <MithraObjectResource name="NontemporalWithDateJoin"/>
+    <MithraObjectResource name="ProcessingTemporalWithDateJoin"/>
+    <MithraObjectResource name="BitemporalWithDateJoin"/>
+    <MithraObjectResource name="Alarm"/>
+    <MithraObjectResource name="Cellphone"/>
+    <MithraObjectResource name="Cellphone2"/>
+    <MithraObjectResource name="Alarm2"/>
+    <MithraObjectResource name="AlarmCategory"/>
+    <MithraObjectResource name="AlarmPrimaryKey"/>
+    <MithraObjectResource name="AlarmNonTransactional"/>
+    <MithraObjectResource name="AlarmDatedTransactional"/>
+    <MithraObjectResource name="AlarmDatedTransactionalIq"/>
+    <MithraObjectResource name="AlarmDatedNonTransactional"/>
+    <MithraObjectResource name="AlarmBitemporalTransactional"/>
+    <MithraObjectResource name="AlarmBitemporalTransactionalIq"/>
+    <MithraObjectResource name="AlarmTenMillis"/>
+    <MithraObjectResource name="AlarmSybase"/>
+    <!-- BCP Tests - start -->
+    <MithraObjectResource name="BcpAllTypes"/>
+    <MithraObjectResource name="BcpDefaultColumn"/>
+    <MithraObjectResource name="BcpEndBits"/>
+    <MithraObjectResource name="BcpEndNullable"/>
+    <MithraObjectResource name="BcpNullableTimestamp"/>
+    <MithraObjectResource name="BcpRepoTrade"/>
+    <MithraObjectResource name="BcpSimple"/>
+    <MithraObjectResource name="BcpSimpleWithIdentity"/>
+    <MithraObjectResource name="TlewTrial"/>
+    <MithraObjectResource name="TrailingSpaces"/>
+    <!-- BCP Tests - end -->
+    <MithraObjectResource name="EntityRestrictedItem"/>
+    <MithraObjectResource name="RestrictedEntity"/>
+    <MithraObjectResource name="RestrictedItemComment"/>
+    <MithraObjectResource name="DisplayText"/>
+    <MithraObjectResource name="OrderItemStatus"/>
+    <MithraObjectResource name="AuditedOrderItemStatus"/>
+    <MithraObjectResource name="AuditedManufacturer"/>
+    <MithraObjectResource name="TestControlledEntry"/>
+    <MithraObjectResource name="TestRestrictedEntity"/>
+    <MithraObjectResource name="TestRestrictedItem"/>
+    <MithraObjectResource name="TestRestrictedItemComment"/>
+    <MithraObjectResource name="TestOverlapFullyMilestoned"/>
+    <MithraObjectResource name="TestOverlapBusinessDateMilestoned"/>
+    <MithraObjectResource name="TestOverlapProcessingDateMilestoned"/>
+
+    <MithraObjectResource name="Trade"/>
+    <MithraObjectResource name="ComplexMutablePk"/>
+    <MithraObjectResource name="AggregateTrialCurrencyExposure"/>
+    <MithraObjectResource name="TestObj32Nullables"/>
+    <MithraObjectResource name="TestObj8Nullables"/>
+    <MithraObjectResource name="TestObj16Nullables"/>
+
+    <MithraObjectResource name="TestConflictCheckImpl"/>
+    <MithraObjectResource name="TestBankingDealDetailImpl"/>
+    <MithraObjectResource name="TestSecuritiesDealDetailImpl"/>
+    <MithraObjectResource name="TestNonAcquisitionDealDetail"/>
+    <MithraObjectResource name="TestSellSideDealDetail"/>
+    <MithraObjectResource name="TestInvestmentFinancingDealDetail"/>
+    <MithraObjectResource name="GsDesk"/>
+    <MithraObjectResource name="TestCheckGsDesk"/>
+
+    <MithraObjectResource name="TestNonDatedTablePerClassSuperClassWithInterface" generateInterfaces="true"/>
+    <MithraObjectResource name="TestNonDatedTableForAllSubclassesWithGenerateInterface" generateInterfaces="true"/>
+    <MithraObjectResource name="TestDatedTableForAllSubclassesWithGenerateInterface" generateInterfaces="true"/>
+
+    <MithraObjectResource name="EvoType1ReadOnlyTypes"/>
+    <MithraObjectResource name="EvoType1TxnTypes"/>
+    <MithraObjectResource name="EvoType1DatedReadOnlyTypes"/>
+    <MithraObjectResource name="EvoType1DatedTxnTypes"/>
+    <MithraObjectResource name="EvoType2ReadOnlyTypes"/>
+    <MithraObjectResource name="EvoType2ReadOnlyTypesA"/>
+    <MithraObjectResource name="EvoType2ReadOnlyTypesB"/>
+    <MithraObjectResource name="EvoType2TxnTypes"/>
+    <MithraObjectResource name="EvoType2TxnTypesA"/>
+    <MithraObjectResource name="EvoType2TxnTypesB"/>
+    <MithraObjectResource name="EvoType2DatedReadOnlyTypes"/>
+    <MithraObjectResource name="EvoType2DatedReadOnlyTypesA"/>
+    <MithraObjectResource name="EvoType2DatedReadOnlyTypesB"/>
+    <MithraObjectResource name="EvoType2DatedTxnTypes"/>
+    <MithraObjectResource name="EvoType2DatedTxnTypesA"/>
+    <MithraObjectResource name="EvoType2DatedTxnTypesB"/>
+    <MithraObjectResource name="EvoType3ReadOnlyTypes"/>
+    <MithraObjectResource name="EvoType3ReadOnlyTypesA"/>
+    <MithraObjectResource name="EvoType3ReadOnlyTypesB"/>
+    <MithraObjectResource name="EvoType3TxnTypes"/>
+    <MithraObjectResource name="EvoType3TxnTypesA"/>
+    <MithraObjectResource name="EvoType3TxnTypesB"/>
+    <MithraObjectResource name="EvoTypeTime"/>
+    <MithraObjectResource name="EvoType1TimeTypes"/>
+
+    <MithraObjectResource name="AltProduct"/>
+    <MithraObjectResource name="AltSynonym"/>
+    <MithraObjectResource name="AltSynonymType"/>
+
+    <MithraObjectResource name="NvmDevNetworkDevice"/>
+    <MithraObjectResource name="NvmDevVirtualLan"/>
+
+    <!-- Interfaces -->
+
+    <MithraObjectResource name="OrderWi" generateInterfaces="true"/>
+    <MithraObjectResource name="OrderClassificationWi" generateInterfaces="true"/>
+    <MithraObjectResource name="OrderItemWi" generateInterfaces="true"/>
+    <MithraObjectResource name="OrderStatusWi" generateInterfaces="true"/>
+    <MithraObjectResource name="ReadOnlyOrderWi" generateInterfaces="true"/>
+    <MithraObjectResource name="ReadOnlyOrderItemWi" generateInterfaces="true"/>
+    <MithraObjectResource name="ReadOnlyOrderStatusWi" generateInterfaces="true"/>
+    <MithraObjectResource name="BitemporalOrderWi" generateInterfaces="true"/>
+    <MithraObjectResource name="BitemporalOrderClassificationWi" generateInterfaces="true"/>
+    <MithraObjectResource name="BitemporalOrderItemWi" generateInterfaces="true"/>
+    <MithraObjectResource name="BitemporalOrderStatusWi" generateInterfaces="true"/>
+    <MithraObjectResource name="ReadOnlyBitemporalOrderWi" generateInterfaces="true"/>
+    <MithraObjectResource name="ReadOnlyBitemporalOrderItemWi" generateInterfaces="true"/>
+    <MithraObjectResource name="ReadOnlyBitemporalOrderStatusWi" generateInterfaces="true"/>
+    <MithraObjectResource name="ComplexKeyWi" generateInterfaces="true"/>
+    <MithraObjectResource name="ObjectWithSequenceWi" generateInterfaces="true"/>
+    <MithraObjectResource name="ParentWi" generateInterfaces="true"/>
+    <MithraObjectResource name="ChildWi" generateInterfaces="true"/>
+    <MithraObjectResource name="ObjectWiRo" generateInterfaces="true" readOnlyInterfaces="true"/>
+    <MithraObjectResource name="ReadOnlyObjectWiRo" generateInterfaces="true" readOnlyInterfaces="true"/>
+    <MithraObjectResource name="TamsMithraAccount"/>
+    <MithraObjectResource name="TamsMithraAccountArbsClassification"/>
+    <MithraObjectResource name="TamsMithraArbsClassification"/>
+
+    <MithraObjectResource name="Placeholder" generateInterfaces="true"/>
+    <MithraObjectResource name="SimplePlaceholder" generateInterfaces="true"/>
+    <MithraObjectResource name="Restriction"/>
+    <MithraObjectResource name="PlaceholderAssociatedCheck"/>
+    <MithraObjectResource name="BankingDealDetailImpl"/>
+    <MithraObjectResource name="CheckPrincipalArea"/>
+    <MithraObjectResource name="StringDatedOrder"/>
+    <MithraObjectResource name="ParaProduct"/>
+
+    <MithraObjectResource name="BigOrder"/>
+    <MithraObjectResource name="BigOrderItem"/>
+    <MithraObjectResource name="BitemporalBigOrder"/>
+    <MithraObjectResource name="BitemporalBigOrderItem"/>
+    <MithraObjectResource name="MultiPkBigDecimal"/>
+
+    <MithraObjectResource name="LewObject"/>
+    <MithraObjectResource name="LewContract"/>
+    <MithraObjectResource name="BaseTransaction"/>
+    <MithraObjectResource name="LewProduct"/>
+    <MithraObjectResource name="LewRelationship"/>
+    <MithraObjectResource name="LewTransaction"/>
+    <MithraObjectResource name="GlewScrp"/>
+    <MithraObjectResource name="LewLoanInstrumentPosition"/>
+
+    <MithraObjectResource name="Filing"/>
+    <MithraObjectResource name="Form"/>
+    <MithraObjectResource name="FormAddress"/>
+    <MithraObjectResource name="Address"/>
+    <MithraObjectResource name="FormRole"/>
+    <MithraObjectResource name="Jurisdiction"/>
+    <MithraObjectResource name="MarketDataFeedStatus"/>
+
+    <MithraObjectResource name="ParaPosition"/>
+    <MithraObjectResource name="LewAccount"/>
+
+    <MithraObjectResource name="MagEvent"/>
+    <MithraObjectResource name="MagTransaction"/>
+    <MithraObjectResource name="MagTrade"/>
+    <MithraObjectResource name="MagReportingAttributes"/>
+    <MithraObjectResource name="MagTransactionPosting"/>
+    <MithraObjectResource name="MagProductId"/>
+
+    <MithraObjectResource name="ProductWithSourceAttribute"/>
+    <MithraObjectResource name="ProductProfileType"/>
+    <MithraObjectResource name="ProductCategory"/>
+    <MithraObjectResource name="ProductCategoryMap"/>
+    <MithraObjectResource name="ProductRelation"/>
+
+    <!--
+    <MithraObjectResource name="EvoType3DatedReadOnlyTypes"/>
+    <MithraObjectResource name="EvoType3DatedReadOnlyTypesA"/>
+    <MithraObjectResource name="EvoType3DatedReadOnlyTypesB"/>
+    <MithraObjectResource name="EvoType3DatedTxnTypes"/>
+    <MithraObjectResource name="EvoType3DatedTxnTypesA"/>
+    <MithraObjectResource name="EvoType3DatedTxnTypesB"/>
+    -->
+
+    <MithraObjectResource name="TestAsOfToTimestampJoinObjectA"/>
+    <MithraObjectResource name="TestAsOfToTimestampJoinObjectB"/>
+
+    <MithraObjectResource name="Firm"/>
+    <MithraObjectResource name="Person"/>
+    <MithraObjectResource name="PersonAddress"/>
+
+    <MithraObjectResource name="FirmRO"/>
+    <MithraObjectResource name="PersonRO"/>
+    <MithraObjectResource name="PersonAddressRO"/>
+
+    <MithraObjectResource name="Projito"/>
+    <MithraObjectResource name="ProjitoVersion"/>
+    <MithraObjectResource name="ProjitoMembership"/>
+    <MithraObjectResource name="ProjitoMeasureOfSuccess"/>
+    <MithraObjectResource name="ProjitoEmployee"/>
+    <MithraObjectResource name="ProjitoAddress"/>
+    <MithraObjectResource name="ProjitoSimulatedSequence"/>
+
+    <!-- pure types -->
+    <MithraPureObjectResource name="PureOrder"/>
+    <MithraPureObjectResource name="PureOrderItem"/>
+    <MithraPureObjectResource name="PureBitemporalOrder"/>
+    <MithraPureObjectResource name="PureBitemporalOrderItem"/>
+
+    <MithraPureObjectResource name="PureType2ReadOnlyTypes"/>
+    <MithraPureObjectResource name="PureType2ReadOnlyTypesA"/>
+    <MithraPureObjectResource name="PureType2ReadOnlyTypesB"/>
+    <MithraPureObjectResource name="PureType2TxnTypes"/>
+    <MithraPureObjectResource name="PureType2TxnTypesA"/>
+    <MithraPureObjectResource name="PureType2TxnTypesB"/>
+
+    <MithraPureObjectResource name="PureType2DatedReadOnlyTypes"/>
+    <MithraPureObjectResource name="PureType2DatedReadOnlyTypesA"/>
+    <MithraPureObjectResource name="PureType2DatedReadOnlyTypesB"/>
+    <MithraPureObjectResource name="PureType2DatedTxnTypes"/>
+    <MithraPureObjectResource name="PureType2DatedTxnTypesA"/>
+    <MithraPureObjectResource name="PureType2DatedTxnTypesB"/>
+
+
+    <MithraTempObjectResource name="PositionDriver"/>
+    <MithraTempObjectResource name="OrderDriver"/>
+    <MithraTempObjectResource name="ParaProductDriver"/>
+
+    <!-- Mithra Interface -->
+    <MithraInterfaceResource name="Orderable"/>
+    <MithraInterfaceResource name="OrderableReadOnly" readOnlyInterfaces="true"/>
+    <MithraInterfaceResource name="SimpleOrderInterface"/>
+    <MithraInterfaceResource name="OrderItemInterface"/>
+    <MithraInterfaceResource name="DatedOrderItemRelationInterface"/>
+    <MithraInterfaceResource name="OrderItemRelationInterface"/>
+    <MithraInterfaceResource name="AuditedOrderableByUserId"/>
+    <MithraInterfaceResource name="AuditedOrderableByTrackingId"/>
+    <MithraInterfaceResource name="AuditedOrderable"/>
+    <MithraInterfaceResource name="DatedOrderable"/>
+    <MithraInterfaceResource name="DatedOrderableReadOnly" readOnlyInterfaces="true"/>
+    <MithraInterfaceResource name="OrderStatusInterface"/>
+    <MithraInterfaceResource name="AccountInterface"/>
+    <MithraInterfaceResource name="AccountInterfaceReadOnly" readOnlyInterfaces="true"/>
+    <MithraInterfaceResource name="TxMammalInterface"/>
+    <MithraInterfaceResource name="TailedAnimal"/>
+
+    <!-- Embedded Value Objects -->
+    <MithraEmbeddedValueObjectResource name="EvoTypesRoot"/>
+    <MithraEmbeddedValueObjectResource name="EvoTypesRootWithTime"/>
+    <MithraEmbeddedValueObjectResource name="EvoTypesNested"/>
+    <MithraEmbeddedValueObjectResource name="EvoTypesLeaf"/>
+    <MithraEmbeddedValueObjectResource name="EvoTypesLeaf2"/>
+    <MithraEmbeddedValueObjectResource name="EvoTypesTime"/>
+</Mithra>

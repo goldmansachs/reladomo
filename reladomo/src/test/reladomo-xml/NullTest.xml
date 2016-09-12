@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>NullTest</ClassName>
+    <DefaultTable>NULL_TEST</DefaultTable>
+
+    <Attribute name="notNullString" nullable="false" javaType="String" columnName="NOT_NULL_STRING" primaryKey="true" maxLength="30"/>
+    <Attribute name="notNullBoolean" nullable="false" javaType="boolean" columnName="NOT_NULL_BOOLEAN" />
+    <Attribute name="notNullDouble" nullable="false" javaType="double" columnName="NOT_NULL_DOUBLE" />
+    <Attribute name="notNullLong" nullable="false" javaType="long" columnName="NOT_NULL_LONG" />
+    <Attribute name="notNullInt" nullable="false" javaType="int" columnName="NOT_NULL_INT" />
+    <Attribute name="notNullChar" nullable="false" javaType="char" columnName="NOT_NULL_CHAR" />
+    <Attribute name="notNullTimestamp" nullable="false" javaType="Timestamp" columnName="NOT_NULL_TIMESTAMP" />
+    <Attribute name="notNullByte" nullable="false" javaType="byte" columnName="NOT_NULL_BYTE" />
+    <Attribute name="notNullDate" nullable="false" javaType="Date" columnName="NOT_NULL_DATE" />
+    <Attribute name="notNullFloat" nullable="false" javaType="float" columnName="NOT_NULL_FLOAT" />
+    <Attribute name="notNullShort" nullable="false" javaType="short" columnName="NOT_NULL_SHORT" />
+
+    <Attribute name="noDefaultNullString" javaType="String" columnName="NO_DEFAULT_STRING" maxLength="10"/>
+    <Attribute name="noDefaultNullBoolean" javaType="boolean" columnName="NO_DEFAULT_BOOLEAN"/>
+    <Attribute name="noDefaultNullDouble" javaType="double" columnName="NO_DEFAULT_DOUBLE"/>
+    <Attribute name="noDefaultNullLong" javaType="long" columnName="NO_DEFAULT_LONG"/>
+    <Attribute name="noDefaultNullInt" javaType="int" columnName="NO_DEFAULT_INT"/>
+    <Attribute name="noDefaultNullChar" javaType="char" columnName="NO_DEFAULT_CHAR"/>
+    <Attribute name="noDefaultNullTimestamp" javaType="Timestamp" columnName="NO_DEFAULT_TIMESTAMP"/>
+    <Attribute name="noDefaultNullByte" javaType="byte" columnName="NO_DEFAULT_BYTE"/>
+    <Attribute name="noDefaultNullDate" javaType="Date" columnName="NO_DEFAULT_DATE"/>
+    <Attribute name="noDefaultNullFloat" javaType="float" columnName="NO_DEFAULT_FLOAT"/>
+    <Attribute name="noDefaultNullShort" javaType="short" columnName="NO_DEFAULT_SHORT"/>
+
+    <Attribute name="nullableString" javaType="String" columnName="NULLABLE_STRING" maxLength="10"/>
+    <Attribute name="nullableBoolean" javaType="boolean" columnName="NULLABLE_BOOLEAN" defaultIfNull="false"/>
+    <Attribute name="nullableDouble" javaType="double" columnName="NULLABLE_DOUBLE" defaultIfNull="12.0"/>
+    <Attribute name="nullableLong" javaType="long" columnName="NULLABLE_LONG" defaultIfNull="12"/>
+    <Attribute name="nullableInt" javaType="int" columnName="NULLABLE_INT" defaultIfNull="12"/>
+    <Attribute name="nullableChar" javaType="char" columnName="NULLABLE_CHAR" defaultIfNull="' '"/>
+    <Attribute name="nullableTimestamp" javaType="Timestamp" columnName="NULLABLE_TIMESTAMP" />
+    <Attribute name="nullableByte" javaType="byte" columnName="NULLABLE_BYTE" defaultIfNull="12"/>
+    <Attribute name="nullableDate" javaType="Date" columnName="NULLABLE_DATE" />
+    <Attribute name="nullableFloat" javaType="float" columnName="NULLABLE_FLOAT" defaultIfNull="12.0"/>
+    <Attribute name="nullableShort" javaType="short" columnName="NULLABLE_SHORT" defaultIfNull="12"/>
+
+
+</MithraObject>
+

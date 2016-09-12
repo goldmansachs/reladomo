@@ -1,0 +1,86 @@
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject>
+
+    <PackageName>com.gs.fw.common.mithra.test.glew</PackageName>
+    <ClassName>LewTransaction</ClassName>
+    <SuperClass name="BaseTransaction" generated="true"/>
+    <Import>com.gs.fw.common.mithra.test.glew.LewObject</Import>
+    <DefaultTable>LEW_TRAN</DefaultTable>
+    <Attribute name="acctId" javaType="int" columnName="ACCT_I"/>
+    <Attribute name="crossAcctId" javaType="int" columnName="CROSS_ACCT_I"/>
+    <Attribute name="instrumentId" javaType="int" columnName="INSTRUMENT_I"/>
+    <Attribute name="tranRef" javaType="String" maxLength="35" columnName="TRAN_REF_N"/>
+    <Attribute name="buySellCode" javaType="String" maxLength="2" columnName="BUY_SELL_C"/>
+    <Attribute name="tradeQty" javaType="double" columnName="TRADE_QTY_Q"/>
+    <Attribute name="tradeDate" javaType="Timestamp" columnName="TRADE_DATE_Z"/>
+    <Attribute name="settleDate" javaType="Timestamp" columnName="SETTLE_DATE_Z"/>
+    <Attribute name="sourceSystem" javaType="String" maxLength="6" columnName="SOURCE_SYSTEM_C"/>
+    <Attribute name="tradeType" javaType="String" maxLength="6" columnName="TRADE_TYPE_C"/>
+
+    <!--<Relationship name="excludeBefore" relatedObject="LewTransactionExclude" cardinality="many-to-one">-->
+        <!--LewTransactionExclude.sourceSystem = this.sourceSystem and-->
+        <!--LewTransactionExclude.createCode = this.createCode-->
+    <!--</Relationship>-->
+
+    <!--&lt;!&ndash; Transaction Relationships &ndash;&gt;-->
+    <!--<Relationship name="derivativeTransaction" relatedObject="DerivativeTransaction" cardinality="one-to-one">-->
+        <!--DerivativeTransaction.tranId = this.tranId-->
+    <!--</Relationship>-->
+    <!--<Relationship name="swapTransaction" relatedObject="SwapTransaction" cardinality="one-to-one">-->
+        <!--SwapTransaction.tranId = this.tranId-->
+    <!--</Relationship>-->
+    <!--<Relationship name="cfdTransaction" relatedObject="CfdTransaction" cardinality="one-to-one">-->
+        <!--CfdTransaction.tranId= this.tranId-->
+    <!--</Relationship>-->
+    <!--<Relationship name="nspGenTransaction" relatedObject="NspGenTransaction" cardinality="one-to-one">-->
+        <!--NspGenTransaction.tranId= this.tranId-->
+    <!--</Relationship>-->
+    <!--<Relationship name="optionTransaction" relatedObject="OptionTransaction" cardinality="one-to-one">-->
+        <!--OptionTransaction.tranId= this.tranId-->
+    <!--</Relationship>-->
+
+    <!--&lt;!&ndash; Balance Relationships &ndash;&gt;-->
+    <!--<Relationship name="notional" relatedObject="Notional" relatedIsDependent="true"-->
+                  <!--reverseRelationshipName="transaction" cardinality="one-to-one">-->
+        <!--Notional.tranId = this.tranId and-->
+        <!--Notional.acctId = this.acctId and-->
+        <!--Notional.instrumentId = this.instrumentId-->
+    <!--</Relationship>-->
+
+    <!--&lt;!&ndash; Other Relationships &ndash;&gt;-->
+    <!--<Relationship name="lewAgreement" relatedObject="LewAgreement" cardinality="one-to-one">-->
+        <!--LewAgreement.tranId = this.tranId and-->
+        <!--LewAgreement.createCode = this.createCode-->
+    <!--</Relationship>-->
+    <!--<Relationship name="underliers" relatedObject="Underlier" cardinality="one-to-many">-->
+        <!--Underlier.tranId = this.tranId-->
+    <!--</Relationship>-->
+    <!--<Relationship name="tradeComponents" relatedObject="TradeComponent" cardinality="one-to-many">-->
+        <!--TradeComponent.tradeId = this.tranId-->
+    <!--</Relationship>-->
+    <!--<Relationship name="riskDurationDateObject" relatedObject="RiskDurationDate" cardinality="one-to-one">-->
+        <!--RiskDurationDate.tranId = this.tranId-->
+    <!--</Relationship>-->
+    <!--&lt;!&ndash; TODO:kernjo: This relationship is not correct and requires follow up! &ndash;&gt;-->
+    <!--<Relationship name="transactionSpecificRiskDetails" relatedObject="TransactionSpecificRiskDetail" cardinality="one-to-many">-->
+        <!--TransactionSpecificRiskDetail.factoryId = this.tranRef-->
+    <!--</Relationship>-->
+
+
+    <Index name="contract" unique="true">acctId,instrumentId</Index>
+</MithraObject>

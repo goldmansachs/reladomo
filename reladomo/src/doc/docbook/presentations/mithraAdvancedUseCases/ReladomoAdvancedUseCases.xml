@@ -1,0 +1,675 @@
+<?xml version='1.0'?>
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<dbs:slides xmlns="http://docbook.org/ns/docbook"
+    xmlns:dbs="http://docbook.org/ns/docbook-slides">
+
+    <slidesinfo>
+        <title>Reladomo Advanced Use Cases</title>
+        <copyright>
+            <year>2016</year>
+            <holder>Goldman Sachs &amp; Co.</holder>
+        </copyright>
+    </slidesinfo>
+
+    <dbs:foil dbs:incremental="0">
+        <title>Reladomo Advanced Use Cases</title>
+        <itemizedlist>
+            <listitem>
+                <para>Small Features</para>
+            </listitem>
+            <listitem>
+                <para>Dated Object Features</para>
+            </listitem>
+            <listitem>
+                <para>forEachWithCursor</para>
+            </listitem>
+            <listitem>
+                <para>Modifiable (Mutable) Primary Keys</para>
+            </listitem>
+            <listitem>
+                <para>Detached Objects</para>
+            </listitem>
+            <listitem>
+                <para>Aggregation</para>
+            </listitem>
+            <listitem>
+                <para>Temp Object</para>
+            </listitem>
+            <listitem>
+                <para>Tuples</para>
+            </listitem>
+            <listitem>
+                <para>Setting up a Notification Server</para>
+            </listitem>
+            <listitem>
+                <para>Update Listener</para>
+            </listitem>
+            <listitem>
+                <para>Multi-Threaded Matcher Loader</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>Small Features</title>
+        <itemizedlist>
+            <listitem>
+                <para>attribute.in(list, attr)</para>
+                <programlisting language="java"><![CDATA[ProductFinder.findMany(
+    ProductFinder.productId()
+        .in(paraTranList, ParaTransactionFinder.productId())
+]]></programlisting>
+            </listitem>
+            <listitem>
+                <para>attribute.filterEq</para>
+                <programlisting language="java"><![CDATA[PositionCarryFinder.income().filterEq(
+    PositionCarryFinder.expense());
+]]></programlisting>
+SQL:
+<programlisting language="sql"><![CDATA[SELECT *
+FROM TPOSFUNDING_CRY t0
+WHERE t0.INCOME = t0.EXPENSE
+]]></programlisting>
+            </listitem>
+            <listitem>
+                <para>deleteInBatches</para>
+                <programlisting language="java"><![CDATA[FooList list = FooFinder.findMany(op);
+list.deleteAllInBatches(10000);
+can also handle arbitrary list of objects:
+list = new FooList();
+list.add(...);
+list.deleteAllInBatches(50000);
+]]></programlisting>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+
+        <dbs:foil>
+            <title>Advanced Dated Object Features</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Use these only for archival or special needs: In-place update, purge, insertForRecovery</para>
+                </listitem>
+                <listitem>
+                    <para>Must not be used in normal course of work</para>
+                </listitem>
+                <listitem>
+                    <para>In-place update for dated objects</para>
+                    <para>Must mark the attribute in the xml:</para>
+                    <programlisting language="xml"><![CDATA[<Attribute name="description" javaType="String"
+    columnName="DESCRIPTION" maxLength="50"
+    truncate="true" inPlaceUpdate="true">
+]]></programlisting>
+                </listitem>
+                <listitem>
+                    <para>Must call the setInPlace method:</para>
+                    <programlisting language="java"><![CDATA[public void setDescriptionUsingInPlaceUpdate(String newValue)
+]]></programlisting>
+                </listitem>
+                <listitem>
+                    <para>Purge</para>
+                    <itemizedlist>
+                    <listitem><para>Can be used to physically delete a dated object</para></listitem>
+                    <listitem><para>Normally, deletes the entire history (past and future)</para></listitem>
+                    <listitem><para>When coupled with equalsEdgePoint, can delete specific range of history, or just one row.</para> </listitem>
+                    </itemizedlist>
+                    <programlisting language="java"><![CDATA[object.purge(); // deletes all of the object’s history
+list.purgeAll(); // deletes everything specified by the list’s operation
+]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+
+        <dbs:foil>
+            <title>Advanced Dated Object Features</title>
+            <itemizedlist>
+                <listitem>
+                    <para>insertForRecovery</para>
+                    <para>can be used to insert an object with arbitrary in/out</para>
+                    <programlisting language="java"><![CDATA[PositionQuantity pos = new PositionQuantity(infinity);
+pos.setProcessingDateFrom(...);
+pos.setProcessingDateTo(...);
+pos.set...
+
+pos.insertForRecovery();
+]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+
+        <dbs:foil>
+            <title>forEachWithCursor</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Normally:</para>
+                    <programlisting language="java"><![CDATA[ProductList list = ProductFinder.findMany(op);
+for(int i = 0; i < list.size(); i++)
+{
+    Product prod = list.get(i);
+    ...
+}
+]]></programlisting>
+                </listitem>
+                <listitem>
+                    <para>Instead:</para>
+                    <programlisting language="java"><![CDATA[list.forEachWithCursor(new TObjectProcedure()
+{
+    public boolean execute(Object o)
+    {
+        Product prod = (Product) o;
+        // do something with prod,
+        // but don't call any relationship methods on it
+        return true; // return false would end the loop.
+    }
+});
+]]></programlisting>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+
+        <dbs:foil>
+            <title>forEachWithCursor</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Normally, we read all products for that list into memory on the first call to size() (or any other methods, like get());</para>
+                </listitem>
+                <listitem>
+                    <para>forEachWithCursor allows looping through the results one at a time before all the results are loaded</para>
+                </listitem>
+                <listitem>
+                    <para>Advantages:</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>Can process data before query is finished: potentially faster processing</para>
+                        </listitem>
+                        <listitem>
+                            <para>Less memory requirement: Reladomo won't hold onto the object, so very large result sets can be processed</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+                <listitem>
+                    <para>Disadvantages:</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>Does not support deep fetch</para>
+                        </listitem>
+                        <listitem>
+                            <para>Does not cache the results, which can be bad if the query is repeated</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+        </dbs:foil>
+
+        <dbs:foil>
+            <title>Detached Objects</title>
+            <itemizedlist>
+                <listitem>
+                    <para>Detached Objects</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>Delayed edit functionality; useful for GUI, where the user is modifying objects but can choose to Save or Cancel</para>
+                        </listitem>
+                        <listitem>
+                            <para>Don't use this for a transactional scenario, where object is read and modified in the transaction and there is no "cancel"</para>
+                        </listitem>
+                        <listitem>
+                            <para>Cannot modify the primary key of a detached object</para>
+                        </listitem>
+                    </itemizedlist>
+                </listitem>
+            </itemizedlist>
+            <programlisting language="java"><![CDATA[Product prod = ProductFinder.findOne(
+    ProductFinder.productId().eq(12));
+Product detachedProd = prod.getDetachedCopy();
+// while the user is editing:
+detachedProd.setDescription("something new");
+// does not write to the database
+detachedProd.set...
+
+// after the user presses the save button
+detachedProd.copyDetachedValuesToOriginalOrInsertIfNew();
+]]></programlisting>
+        </dbs:foil>
+
+    <dbs:foil>
+        <title>Detached Objects</title>
+        <itemizedlist>
+            <listitem>
+                <para>Can handle full object graph of dependent objects:</para>
+                <itemizedlist>
+                    <listitem>
+                        <para>Must mark relationship in object as "relatedIsDependent="true""</para>
+                    </listitem>
+                </itemizedlist>
+                <para>TraderPack.xml:</para>
+                <programlisting language="xml"><![CDATA[<Relationship relatedObject="Section"
+    relatedIsDependent="true"
+    cardinality="one-to-many"
+    name="sections">
+    this.traderPackId = Section.traderPackId
+</Relationship>
+]]></programlisting>
+            </listitem>
+            <listitem>
+                <para>Code:</para>
+                <programlisting language="java"><![CDATA[TraderPack detachedPack = pack.getDetachedCopy();
+SectionList sections = detachedPack.getSections();
+// returns a detached list of sections
+sections.get(0).setSectionName("new name");
+// does not write to the database
+sections.remove(2);
+// remove the 3rd element of the list
+Section newSection = new Section();
+newSection.set...
+sections.add(newSection);
+
+// user presses the save button:
+detachedPack.copyDetachedValuesToOriginalOrInsertIfNew();
+// saves the pack and its sections.
+// removed sections are deleted. New sections are inserted
+]]></programlisting>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+
+    <dbs:foil>
+        <title>Detached Objects</title>
+        <para>Useful methods:</para>
+        <itemizedlist>
+            <listitem>
+                <para>Compare all non-primary key values</para>
+            </listitem>
+            <programlisting language="java"><![CDATA[isModifiedSinceDetachment();]]></programlisting>
+            <listitem>
+                <para>Returns true if dependent relationship is modified</para>
+                <para> </para>
+            </listitem>
+            <programlisting language="java"><![CDATA[isModifiedSinceDetachmentByDependentRelationships();]]></programlisting>
+            <listitem>
+                <para> </para>
+                <programlisting language="java"><![CDATA[isModifiedSinceDetachment(Extractor extractor);]]></programlisting>
+            </listitem>
+            <listitem>
+                <para> </para>
+                <programlisting language="java"><![CDATA[detachedProduct.isModifiedSinceDetachment(
+    ProductFinder.description());
+]]></programlisting>
+            </listitem>
+            <listitem>
+                <para>Same as above, but for relationship</para>
+                <programlisting language="java"><![CDATA[isModifiedSinceDetachment(
+    RelatedFinder relationshipFinder);
+]]></programlisting>
+            </listitem>
+            <listitem>
+                <para>Resets the detached object to the original values</para>
+                <programlisting language="java"><![CDATA[resetFromOriginalPersistentObject();]]></programlisting>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+
+    <dbs:foil>
+        <title>Aggregation</title>
+        <itemizedlist>
+            <listitem><para>Equivalent to SQL group by</para></listitem>
+            <listitem><para>Allows aggregate functions: sum, avg, min, max, count</para></listitem>
+            <listitem><para>Example:</para>
+                <programlisting language="java"><![CDATA[AggregateList aggList = new AggregateList(op);
+//the op determines the where clause
+aggList.addGroupBy(
+    "acct", PositionCarryFinder.accountId());
+// can call addGroupBy multiple times
+aggList.addAggregateAttribute(
+    "lastProcTime",
+    PositionCarryFinder.processingDateFrom().max());
+aggList.addAggregateAttribute(
+    "count",
+    PositionCarryFinder.accountId().count());
+aggList.addAggregateAttribute(
+    "income",
+    PositionCarryFinder.income().sum());
+for(AggregateData data: aggList)
+{
+    String accountId = data.getAttributeAsString("acct");
+    int count = data.getAttributeAsInt("count");
+    double income = data.getAttributeAsDouble("income");
+}
+]]></programlisting>
+            </listitem>
+            <listitem><para>Can do a bit of math (plus, minus, times, divide):</para>
+                <programlisting language="java"><![CDATA[aggList.addAggregateAttribute(
+    "incExp",
+    PositionCarryFinder.expense()
+        .plus(PositionCarryFinder.income()).sum());
+]]></programlisting>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+
+    <dbs:foil>
+        <title>Temp Objects</title>
+        <itemizedlist>
+            <listitem><para>Usually used for driver of some kind</para></listitem>
+            <listitem><para>Must pre-define xml:</para>
+                <programlisting language="xml"><![CDATA[<MithraTempObject>
+    <PackageName>com.gs.fw.para.domain.desk.transaction
+    </PackageName>
+    <ClassName>DividendPositionDriver</ClassName>
+
+    <SourceAttribute name="acmapCode" javaType="String"/>
+    <Attribute name="accountId" javaType="String"
+        primaryKey="true" maxLength="20"/>
+    <Attribute name="productId" javaType="int"
+        primaryKey="true"/>
+</MithraTempObject>
+]]></programlisting>
+            </listitem>
+            <listitem><para>Add xml to the class list at the end:</para>
+                <programlisting language="xml"><![CDATA[<MithraTempObjectResource name = "DividendPositionDriver"
+/>
+]]></programlisting>
+            </listitem>
+        <listitem><para>Add the temp object to the runtime configuration</para></listitem>
+        </itemizedlist>
+    </dbs:foil>
+
+    <dbs:foil>
+        <title>Temp Objects</title>
+        <para>In code, create a temporary context, insert some values, then join to the destination table</para>
+        <programlisting language="java"><![CDATA[TemporaryContext positionDriverContext =
+    DividendPositionDriverFinder.]]><emphasis role="strong"><emphasis>createTemporaryContext</emphasis></emphasis><![CDATA[(getDeskAcmapCode());
+try
+{
+    DividendPositionDriverList tempList =
+        new DividendPositionDriverList();
+    tempList.add(...);
+    tempList.insertAll();
+    Operation op = ParaTransactionFinder.acmap().eq("VOL");
+    op = op.and(
+        ParaTransactionFinder.type().beginsWith("SWP"));
+    op = op.and(
+        DividendPositionDriverFinder.]]><emphasis role="strong"><emphasis>existsWithJoin</emphasis></emphasis><![CDATA[(
+            PTF.acmap(), PTF.accountId(), PTF.productId());
+    // PTF == ParaTransactionFinder
+    ParaTransactionList tranList =
+        ParaTransactionFinder.findMany(op);
+    // use the list
+}
+finally
+{
+    positionDriverContext.]]><emphasis role="strong"><emphasis>destroy</emphasis></emphasis><![CDATA[();
+}
+]]></programlisting>
+    </dbs:foil>
+
+    <dbs:foil>
+        <title>Modifiable (Mutable) Primary Keys</title>
+        <itemizedlist>
+            <listitem>
+                <para>Only sensible for composite keys</para>
+            </listitem>
+            <listitem>
+                <para>Must mark the attributes in XML:</para>
+                <programlisting language="xml"><![CDATA[<Attribute name="currency" javaType="String"
+    columnName="PROD_CURRENCY_C" primaryKey="true"
+    trim="true" maxLength="3"/>
+<Attribute name="source" javaType="int"
+    columnName="SOURCE_I" primaryKey="true"
+    ]]><emphasis role="strong"><emphasis>mutablePrimaryKey</emphasis></emphasis><![CDATA[="true" nullable="true"/>
+<Attribute name="date" javaType="Timestamp"
+    columnName="THRU_Z" primaryKey="true"
+    ]]><emphasis role="strong"><emphasis>mutablePrimaryKey</emphasis></emphasis><![CDATA[="true"/>
+]]></programlisting>
+            </listitem>
+            <listitem>
+                <para>setSource and setDate methods are now allowed to be called on a persisted object</para>
+                <para>setCurrency is not allowed</para>
+            </listitem>
+            <listitem>
+                <para>SQL looks like:</para>
+                <programlisting language="sql"><![CDATA[update FXRATE
+]]><emphasis role="strong"><emphasis>set SOURCE_I = 12</emphasis></emphasis><![CDATA[
+where PROD_CURRENCY_C = 'USD'
+and ]]><emphasis role="strong"><emphasis>SOURCE_I = 10</emphasis></emphasis><![CDATA[
+and THRU_Z = '2008-03-10 00:00:00'
+]]></programlisting>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+
+    <dbs:foil>
+        <title>Tuples</title>
+        <itemizedlist>
+            <listitem>
+                <para>Occasionally, it’s very useful to be able to do large in-clauses with combination of attributes (aka a "tuple")</para>
+            </listitem>
+            <listitem>
+                <para>The API is simple, just two methods:<emphasis role="strong"><emphasis>tupleWith()</emphasis></emphasis> and <emphasis role="strong"><emphasis>in()</emphasis></emphasis></para>
+            </listitem>
+            <listitem>
+                <para>First, we have to create a tuple using the "tupleWith" method on a normal Attribute</para>
+                <para>For Example:</para>
+                <programlisting language="java"><![CDATA[TupleAttribute tupleAttribute =
+    PositionFinder.accountId().tupleWith(
+        PositionFinder.productId());
+]]></programlisting>
+            </listitem>
+            <listitem>
+                <para>We can keep on adding more attributes with tupleWith</para>
+            </listitem>
+            <listitem>
+                <para>There are various forms of "in" that can then be used with the tuple attribute to create an operation.</para>
+            </listitem>
+            <listitem>
+                <para>Create a MithraArrayTupleTupleSet and call in(set)</para>
+            </listitem>
+            <listitem>
+                <para>Use the (list, Extractor[]) form, just like a regular attribute in(list, Extractor)</para>
+            </listitem>
+            <listitem>
+                <para>Use the (aggregateList, String… aggregateAttributeName) for some advanced use of aggregation combined with a normal query</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+
+    <dbs:foil>
+        <title>Setting up a TCP Notification Server</title>
+        <itemizedlist>
+            <listitem>
+                <para>Reladomo supports multiple notification mechanisms</para>
+            </listitem>
+            <listitem>
+                <para>The TCP notification server is the easiest to setup and works well for a small number of servers and clients (less than 1000)</para>
+            </listitem>
+            <listitem>
+                <para>There are two steps required for this:</para>
+                <itemizedlist>
+                    <listitem>
+                        <para>Setup the notification server:</para>
+                        <programlisting language="java"><![CDATA[java –classpath <all_the_required_jars>
+    –Dport=<some_port_number>
+    com.gs.fw.common.mithra
+        .notification.server.NotificationServer
+]]></programlisting>
+                    </listitem>
+                    <listitem>
+                        <para>In the processes that read or write Reladomo objects, configure them for notification:</para>
+                        <programlisting language="java"><![CDATA[MithraManagerProvider.getMithraManager()
+    .setNotificationEventManager(
+        new MithraNotificationEventManagerImpl(
+            new TcpMessagingAdapterFactory(host, port)));
+]]></programlisting>
+                    </listitem>
+                </itemizedlist>
+            </listitem>
+            <listitem>
+                <para>The host and port should point to where the NotificationServer is running</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+
+    <dbs:foil>
+        <title>Update Listener</title>
+        <itemizedlist>
+            <listitem>
+                <para>Add the update listener in the object XML:</para>
+                <programlisting language="xml"><![CDATA[<MithraObject objectType="transactional">
+
+<PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+<ClassName>Division</ClassName>
+]]><emphasis role="strong"><emphasis><UpdateListener>
+    com.gs.fw.common.mithra.test.domain.DivisionUpdateListener
+</UpdateListener></emphasis></emphasis><![CDATA[<DefaultTable>DIVISION</DefaultTable>
+]]></programlisting>
+            </listitem>
+            <listitem>
+                <para>Implementation must have an empty constructor and implement MithraUpdateListener</para>
+                <programlisting language="java"><![CDATA[public void handleUpdate(T updatedObject, UpdateInfo updateInfo);
+public void handleUpdateAfterCopy(T updatedObject);
+]]></programlisting>
+            </listitem>
+            <listitem>
+                <para>Only called on persistent objects</para>
+            </listitem>
+            <listitem>
+                <para>Typical use case: set the "changed by" field</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+
+    <dbs:foil>
+        <title>Multi-Threaded Matcher Loader</title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="MTLoader_SchematicRepresentation.png" width="8in" depth="2.8in" align="center" format="png"/>
+            </imageobject>
+            <textobject>
+                <phrase>Schematic Representation</phrase>
+            </textobject>
+            <caption>
+                <para>Schematic Representation</para>
+            </caption>
+        </mediaobject>
+
+        <itemizedlist>
+            <listitem>
+                <para>The application finds the intersection of the two Sets</para>
+            </listitem>
+            <listitem>
+                <para>Whatever is in the intersection, will be updated (but only if something changed)</para>
+            </listitem>
+            <listitem>
+                <para>Whatever in in Input Set but not in Output Set will be inserted</para>
+            </listitem>
+            <listitem>
+                <para>Whatever is in Output Set but not in Input Set will be closed out (deleted or terminated)</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+
+    <dbs:foil>
+        <title>Multi-Threaded Matcher Loader</title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="MTLoader_Architecture.png" width="9.5in" depth="6in" align="center" valign="middle" format="png"/>
+            </imageobject>
+            <textobject>
+                <phrase>Multi-Threaded Matcher Loader Architecture</phrase>
+            </textobject>
+            <caption>
+                <para>Multi-Threaded Matcher Loader Architecture</para>
+            </caption>
+        </mediaobject>
+    </dbs:foil>
+
+    <dbs:foil>
+        <title>Multi-Threaded Matcher Loader</title>
+        <itemizedlist>
+            <listitem>
+                <para>Highly customizable behavior</para>
+                <itemizedlist>
+                    <listitem>
+                        <para>Doesn’t have to be File-to-Database; can easily be Database-to-Database or Memory-to-Database, etc.</para>
+                    </listitem>
+                    <listitem>
+                        <para>Subclassing MatcherThread or SingleQueueExecutor allows fine tuning for different requirements</para>
+                    </listitem>
+                    <listitem>
+                        <para>For example, can decide not to delete the left overs.</para>
+                    </listitem>
+                </itemizedlist>
+            </listitem>
+            <listitem>
+                <para>By design, it is re-runnable</para>
+            </listitem>
+            <listitem>
+                <para>Usable under the following conditions:</para>
+                <itemizedlist>
+                    <listitem>
+                        <para>No transactional guarantee or ordering required</para>
+                    </listitem>
+                    <listitem>
+                        <para>Writing to one table only. Writing to multiple tables is possible but without transactional guarantee.</para>
+                    </listitem>
+                </itemizedlist>
+            </listitem>
+            <listitem>
+                <para>Classes to know</para>
+                <itemizedlist>
+                    <listitem>
+                        <para>SingleQueueExecutor – the piece of code that does the actual writing</para>
+                    </listitem>
+                    <listitem>
+                        <para>MatcherThread – the piece of code that matches the two sets</para>
+                    </listitem>
+                    <listitem>
+                        <para>DbLoadThread – the piece of code that reads the database set, using forEachWithCursor</para>
+                    </listitem>
+                    <listitem>
+                        <para>InputThread – the piece of code that generates the input, e.g. from a file.</para>
+                    </listitem>
+                </itemizedlist>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+
+    <dbs:foil>
+        <title>But Wait... There Is More</title>
+        <itemizedlist>
+            <listitem>
+                <para>Time-Zone Conversion</para>
+            </listitem>
+            <listitem>
+                <para>Nested Reladomo Test Resource</para>
+            </listitem>
+            <listitem>
+                <para>Optimistic Locking</para>
+            </listitem>
+            <listitem>
+                <para>Partial Cache Tuning</para>
+            </listitem>
+            <listitem>
+                <para>Class Diagram Generation</para>
+            </listitem>
+            <listitem>
+                <para>DDL Generation</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+
+</dbs:slides>

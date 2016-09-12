@@ -1,0 +1,30 @@
+/*
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+class com.gs.fw.common.mithra.test.domain.OrderDenormalized
+orderId,orderDate,userId,description,state,trackingId,productId,quantity,originalPrice,discountPrice
+4,"2004-04-12 00:00:00.000",2,"Fourth order, different user","In-Progress","126",3,20,20.5,15
+
+class com.gs.fw.common.mithra.test.domain.OrderItem
+id,orderId,productId,quantity,originalPrice,discountPrice,state
+1,1,1,20,10.5,10.5,"In-Progress"
+1,1,1,20,10.5,10.5,"In-Progress"
+2,2,1,20,10.5,10.5,"In-Progress"
+3,2,2,20,15.5,10,"In-Progress"
+5,2,3,20,20.5,15,"With\"Quote"
+6,2,3,20,20.5,15,"With\tTab"
+7,2,3,20,20.5,15,"With\nReturn"
+8,2,3,20,20.5,15,"With'SingleQuote"
+9,2,3,20,20.5,15,"With\\Backslash"

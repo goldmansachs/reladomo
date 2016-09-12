@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="false" context="xml_new" deleted="false" description="Mithra Object XML" enabled="true" name="Mithra Object XML">&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&#13;
+&#13;
+&lt;MithraObject objectType="${OBJECT_TYPE}" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="mithraobject.xsd"&gt;&#13;
+    &lt;PackageName&gt;${PACKAGE}&lt;/PackageName&gt;&#13;
+    &lt;ClassName&gt;${NAME}&lt;/ClassName&gt;&#13;
+    &lt;DefaultTable&gt;${TABLE_NAME}&lt;/DefaultTable&gt;&#13;
+&#13;
+    &lt;Attribute name="" javaType="" columnName="" primaryKey="true"/&gt;&#13;
+    &lt;Attribute name="" javaType="" columnName=""/&gt;&#13;
+    &#13;
+    &lt;Relationship name="" relatedObject="" relatedIsDependent="" cardinality="" &gt;&#13;
+    &#13;
+    &lt;/Relationship&gt; &#13;
+&lt;/MithraObject&gt;</template></templates>

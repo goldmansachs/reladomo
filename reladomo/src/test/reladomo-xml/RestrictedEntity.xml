@@ -1,0 +1,42 @@
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+
+	<PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+	<ClassName>RestrictedEntity</ClassName>
+    <SuperClass name = "com.gs.fw.common.mithra.test.domain.AbstractEntity" />
+	<DefaultTable>RESTRICTED_ENTITY</DefaultTable>
+
+	<AsOfAttribute name="processingDate" fromColumnName="IN_DT" toColumnName="OUT_DT" toIsInclusive="false"
+	    infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]" isProcessingDate="true"
+	    defaultIfNotSpecified="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"/>
+
+	<AsOfAttribute name="businessDate" fromColumnName="FROM_DT" toColumnName="THRU_DT"
+	    infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]" isProcessingDate="false"/>
+
+	<Attribute name="restrictedItemId" javaType="long" primaryKey="true" columnName="RESTRICTED_ITEM_ID" />
+	<Attribute name="controlledEntryId" javaType="long" columnName="CONTROLLED_ENTRY_ID"/>
+	<Attribute name="entityId" javaType="int" columnName="ENTITY_ID"/>
+	<Attribute name="entityName" javaType="String" maxLength="40" columnName="ENTITY_NAME"/>
+	<Attribute name="status" javaType="String" maxLength="10" columnName="STATUS"/>
+	<Attribute name="sideType" javaType="String" maxLength="10" columnName="SIDE_TYPE"/>
+	<Attribute name="gsRole" javaType="String" maxLength="10" columnName="GS_ROLE"/>
+	<Attribute name="gsClientFlg" javaType="String" maxLength="1" columnName="GS_CLIENT_FLG"/>
+
+</MithraObject>

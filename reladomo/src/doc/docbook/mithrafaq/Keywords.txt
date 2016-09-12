@@ -1,0 +1,63 @@
+A simple index of "categories" and "keywords" that we have used in the Mithra FAQ.
+Please re-use where appropriate.  Please keep in alphanumeric order.  Thanks.  :-)
+
+Categories
+==========
+Bulk Insert
+Caching
+Connections
+Dated Objects
+General
+Library Dependencies
+Object XML
+Operations
+Primary Keys
+Primitives
+Relationships
+Table-Inheritance
+Testing
+Transactions
+
+Keywords
+========
+Answer Out-of-Date
+Between
+Business Dates
+Cache Invalidation
+Cache Types
+Column Definition
+Cross-DB
+Cursor
+Dated Objects
+DB2
+Debugging
+Deep-Fetch
+Distinct
+equalsEdgePoint
+Keys
+Lists
+Many-to-Many
+Math Operations
+Non-Dated Objects
+Not Generally Recommended
+Notification Server
+Nulls
+Performance
+PK Generation
+Processing Dates
+Reverse-Relationships
+Runtime Configuration
+Source Attribute
+Stored Procedure
+String Operations
+Table Definition
+Temporary Table
+Termination
+Timezone
+Update
+
+CVS
+Subversion
+VCS
+
+Maven

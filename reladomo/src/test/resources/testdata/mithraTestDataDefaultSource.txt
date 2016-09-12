@@ -1,0 +1,1598 @@
+/*
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+
+class com.gs.fw.common.mithra.test.domain.Trial
+trialId,description
+"001A", "The first trial ever"
+"001B", "The second trial"
+"999Z", "The last trial"
+"001N", "N-Trial"
+"002N", "N-Trial"
+"003N", "N-Trial"
+"004N", "N-Trial"
+
+class com.gs.fw.common.mithra.test.domain.ParaDesk
+deskIdString,activeBoolean,sizeDouble,connectionLong,tagInt,statusChar,createTimestamp,locationByte,closedDate,maxFloat,minShort, bigDouble
+"rnd",true, 10.54, 1000000, 100, "O", "1981-06-08 02:01:00.0", 120,              "1981-06-08", 999999.9, 4545, -999.99
+"cap",true, 10032.23, 1000000, 100, "P", "9999-12-01 23:59:00.0", 120,           "1981-06-08", 6567567.75, 6745, 999.99
+"lsd",true, 4000000000, 1000000, 100, "A", "9999-12-01 23:59:00.0", 120,         "9999-12-01", 36546.43, 3545, 999.99
+"swp",true, 22342.33, 1000000, 100, "A", "1900-01-01 00:00:00.0", 127,           "9999-12-01", 4000000000, 20343, -999.99
+"usd",true, 43.23, 2000000, 100, "B", "9999-12-01 00:00:00.0", -100,             "1981-06-08", 23423.234234234, 100, null
+"gi2",true, 3022.45, 2000000, 100, "H", "1981-06-08 02:01:00.0", -56,            "1900-01-01", 8944654.344453, 2000, null
+"fma",true, 766234324234235.76, 2000000, 100, "T", "1981-06-08 02:01:00.0", 127, "1900-01-01", 2342345.35435345, 3000, 1.99
+"abc",false, 4000000000, 2000000, 100, "E", "9999-12-01 23:59:00.0", -128,       "1981-06-08", 999999.999999999, 4000, -1.99
+"lmn",true, 1564654.34, 1000000, 100, "T", "1981-06-08 02:01:00.0", 0,           "1981-06-08", 34543534.45345345, 2000, 0.99
+"ar",false, 4353453453534543.43, 2000000, 100, "R", "1981-06-08 02:01:00.0", 40, "9999-12-01", 4000000000, 2330, -0.99
+"rpl",true, 657567567.75, 2000000, 100, "R", "9999-12-01 23:59:00.0", 98,        "1981-06-08", -43536456.435345, 100, 2.12
+"gma",true, 4000000000, 3000000, 100, "Q", "1900-01-01 00:00:00.0", -128,        "1981-06-08", 6575667.75, 1200, -2.12
+"gnb",true, 67767352343242.3, 3000000, 100, "G", "1900-01-01 00:00:00.0", 32,    "1900-01-01", -43446546.3453453, 4343, null
+"qqq",false, 454445, 2000000, 100, "J", "1900-01-01 00:00:00.0", 92,             "1900-01-01", 6576584.3452, 100, null
+"nsq",true, 5464565234435.9, 1000000, 100, "M", "9999-12-01 00:00:00.0", -5,     "1981-06-08", 7657453.25324534, 3000, 999.99
+"nmr",true, 5464565234435.9, 1000000, 10, "M", "9999-12-01 00:00:00.0", -127,    "1981-06-08", 7657453.25324534, 3000, 999.99
+"fff",true, 5464565234435.9, 1000000, 5, "M", "9999-12-01 00:00:00.0", -5,       "1981-06-08", 7657453.25324534, 3000, -999.99
+"xyz",true, -10.54, 1000000, 5, "M", "9999-12-01 00:00:00.0", -5,                "1981-06-08", 7657453.25324534, 3000, 1.99
+"moh",true, -45, 1000000, 5, "M", "9999-12-01 00:00:00.0", -5,                   "1981-06-08", 7657453.25324534, 3000, -1.99
+"yus",true, -927, 1000000, -827, "M", "9999-12-01 00:00:00.0", -5,               "1981-06-08", 654.25, 4567, -1.99
+
+class com.gs.fw.common.mithra.test.domain.Contract
+contractType,contractId,accountId,productId,counterParty,buySellInd,unitCost,quantity
+"Swap", 140000, "7410161001", 100, "GS", "B", 121000.00, 2000000
+"Swap", 140001, "7410161001", 100, "GS", "B", 1500.00, 7000000
+"Swap", 140001, "7410161001", 101, "GS", "B", 546000.00, 34000000
+"Swap", 140001, "7410161001", 200, "GS", "B", 1416000.00, 4000000
+"Swap", 140002, "7410161001", 100, "GS", "S", 56000.00, 21000000
+"Swap", 140002, "7410161001", 200, "GS", "S", 16000.00, 76000000
+"Swap", 140002, "7410161001", 201, "GS", "B", 62000.00, 31000000
+"Swap", 140003, "7410161001", 200, "GS", "S", 326000.00, 3000000
+"Swap", 140003, "7410161001", 101, "GS", "B", 726000.00, 73000000
+"Nsp", 140000, "7410161001", 100, "GS", "B", 27000.00, 1000000
+"Nsp", 140001, "7410161001", 100, "GS", "S", 151000.00, 2000000
+"Nsp", 140002, "7410161001", 100, "GS", "B", 4556000.00, 3000000
+"Nsp", 140002, "7410161001", 101, "GS", "S", 56000.00, 4000000
+"Loan", 140000, "7410161001", 200, "GS", "B", 26000.00, 2000000
+"Loan", 140000, "7410161001", 201, "GS", "S", 196000.00, 3000000
+"Loan", 140001, "7410161001", 100, "GS", "B", 134000.00, 7000000
+"Loan", 140001, "7410161001", 101, "GS", "B", 15600.00, 7000000
+"Loan", 140001, "7410161001", 200, "GS", "B", 52000.00, 22000000
+"Fx", 140000, "7410161001", 200, "GS", "B", 157000.00, 56000000
+"Fx", 140000, "7410161001", 201, "GS", "S", 165000.00, 4000000
+"Fx", 140001, "7410161001", 100, "GS", "S", 13000.00, 23000000
+"Fx", 140001, "7410161001", 101, "GS", "S", 12000.00, 56000000
+"Fx", 140001, "7410161001", 200, "GS", "S", 83000.00, 83000000
+"Fx", 140011, "7410161001", 201, "GS", "B", 435000.00, 17000000
+
+
+class com.gs.fw.common.mithra.test.domain.Underlier
+contractType,contractId,accountId,productId,underlierId,description,currency
+"Swap", 140000, "7410161001", 100, 90000, "SwapUnder", "USD"
+"Swap", 140000, "7410161001", 100, 90001, "SwapUnder", "GBP"
+"Swap", 140000, "7410161001", 100, 90002, "SwapUnder", "EUR"
+"Swap", 140000, "7410161001", 100, 90003, "SwapUnder", "CAD"
+"Swap", 140001, "7410161001", 100, 90000, "SwapUnder", "USD"
+"Swap", 140001, "7410161001", 101, 90000, "SwapUnder", "USD"
+"Swap", 140001, "7410161001", 200, 90000, "SwapUnder", "USD"
+"Swap", 140002, "7410161001", 100, 90000, "SwapUnder", "USD"
+"Swap", 140002, "7410161001", 200, 90001, "SwapUnder", "GBP"
+"Swap", 140002, "7410161001", 201, 90001, "SwapUnder", "GBP"
+"Swap", 140003, "7410161001", 200, 90002, "SwapUnder", "EUR"
+"Swap", 140003, "7410161001", 101, 90003, "SwapUnder", "CAD"
+"Nsp", 140002, "7410161001", 100, 90000, "NspUnder", "USD"
+"Nsp", 140002, "7410161001", 100, 90001, "NspUnder", "GBP"
+"Nsp", 140002, "7410161001", 101, 90000, "NspUnder", "USD"
+"Nsp", 140002, "7410161001", 101, 90001, "NspUnder", "GBP"
+"Fx", 140000, "7410161001", 200, 90002, "FxUnder", "EUR"
+"Fx", 140000, "7410161001", 201, 90002, "FxUnder", "EUR"
+"Fx", 140001, "7410161001", 100, 90000, "SwapUnder", "USD"
+"Fx", 140001, "7410161001", 101, 90000, "SwapUnder", "USD"
+"Fx", 140001, "7410161001", 200, 90000, "SwapUnder", "USD"
+"Fx", 140011, "7410161001", 201, 90000, "SwapUnder", "USD"
+
+class com.gs.fw.common.mithra.test.domain.NullTest
+notNullString,notNullBoolean,notNullDouble,notNullLong,notNullInt,notNullChar,notNullTimestamp,notNullByte,notNullDate,notNullFloat,notNullShort,noDefaultNullString,noDefaultNullBoolean,noDefaultNullDouble,noDefaultNullLong,noDefaultNullInt,noDefaultNullChar,noDefaultNullTimestamp,noDefaultNullByte,noDefaultNullDate,noDefaultNullFloat,noDefaultNullShort,nullableString,nullableBoolean,nullableDouble,nullableLong,nullableInt,nullableChar,nullableTimestamp,nullableByte,nullableDate,nullableFloat,nullableShort
+"AllNotNull", true, 80000000.0, 800000000, 8000000, "8", "1981-06-08 02:01:00.0", 88, "1981-06-08", 8888888888.8, 8000, "Neema", true, 10000000.0, 100000000, 1000000, "1", "1981-07-08 02:01:00.0", 11, "1981-08-08", 11111111111.1, 1000, "Raphael", true, 20000000.0, 200000000, 2000000, "2", "1981-09-08 02:01:00.0", 22, "1981-10-08", 22222222222.2, 2000
+"AllNullableNull", true, 80000000.0, 800000000, 8000000, "8", "1981-06-08 02:01:00.0", 88, "1981-06-08", 8888888888.8, 8000, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null
+
+class com.gs.fw.common.mithra.test.domain.StringDatedOrder
+orderId, processingDate, orderDate, userId,description
+1,"2004-01-12 00:00:00.0","2004-01-12", 1, "First order"
+2,"2004-02-12 00:00:00.0","2004-02-12", 1, "Second order"
+3,"2004-03-12 00:00:00.0","2004-03-12", 1, "Third order"
+4,"2004-04-12 00:00:00.0","2004-04-12", 2, "Fourth order, different user"
+
+class com.gs.fw.common.mithra.test.domain.OrderWithAuditedStatus
+orderId,orderDate,userId,description,state,trackingId
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123"
+2,"2004-02-12 00:00:00.0", 1, "Second order", "In-Progress", "124"
+3,"2004-03-12 00:00:00.0", 1, "Third order", "In-Progress", "125"
+4,"2004-04-12 00:00:00.0", 2, "Fourth order, different user", "In-Progress", "126"
+55,"2004-04-12 00:00:00.0", 3, "Order number five", "Gummed up", "127"
+56,"2004-04-12 00:00:00.0", 3, "Sixth order, different user", "Gummed up", "128"
+57,"2004-04-12 00:00:00.0", 3, "Seventh order, different user", "Gummed up", "129"
+
+class com.gs.fw.common.mithra.test.domain.NontemporalWithDateJoin
+factId, businessDate, entity
+1, "2012-06-01 00:00:00.0", "ABCD"
+
+class com.gs.fw.common.mithra.test.domain.BitemporalWithDateJoin
+investmentId, gsEntity, businessDateFrom, businessDateTo, processingDateFrom, processingDateTo
+2, "ABCD", "2012-01-01 00:00:00.0", "9999-12-01 23:59:00.0", "2012-01-01 00:00:00.0", "9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.ProcessingTemporalWithDateJoin
+investmentId, businessDate, entity, approvalStatus, active, processingDateFrom, processingDateTo
+2, "2012-06-01 00:00:00.0", "ABCD", "A", 1, "2012-01-01 00:00:00.0", "9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.testmithraimport.ReadOnlyOrder
+orderId,orderDate,userId,description,state,trackingId
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123"
+
+class com.gs.fw.common.mithra.test.domain.testmithraimport.DatedReadOnlyOrder
+orderId,userId,description,state,trackingId, businessDateFrom, businessDateTo, processingDateFrom, processingDateTo
+1, 1, "First order", "In-Progress", "123", "2007-09-01 18:30:00.0","9999-12-01 23:59:00.0", "2007-09-01 18:30:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.testmithraimport.TransactionalOrder
+orderId,orderDate,userId,description,state,trackingId
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123"
+
+class com.gs.fw.common.mithra.test.domain.testmithraimport.DatedTransactionalOrder
+orderId,userId,description,state,trackingId, businessDateFrom, businessDateTo, processingDateFrom, processingDateTo
+1,1, "First order", "In-Progress", "123", "2007-09-01 18:30:00.0","9999-12-01 23:59:00.0", "2007-09-01 18:30:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.testmithraimport.TransactionalWithSuperOrder
+orderId,orderDate,userId,description,state,trackingId
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123"
+
+class com.gs.fw.common.mithra.test.domain.testmithraimport.DatedTransactionalWithSuperOrder
+orderId,userId,description,state,trackingId, businessDateFrom, businessDateTo, processingDateFrom, processingDateTo
+1,1, "First order", "In-Progress", "123", "2007-09-01 18:30:00.0","9999-12-01 23:59:00.0", "2007-09-01 18:30:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.testmithraimport.RelatedOrder
+orderId,orderDate,userId,description,state,trackingId
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123"
+
+class com.gs.fw.common.mithra.test.domain.OrderAsTxReadOnly
+orderId,orderDate,userId,description,state,trackingId
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123"
+2,"2004-02-12 00:00:00.0", 1, "Second order", "In-Progress", "124"
+3,"2004-03-12 00:00:00.0", 1, "Third order", "In-Progress", "125"
+4,"2004-04-12 00:00:00.0", 2, "Fourth order, different user", "In-Progress", "126"
+55,"2004-04-12 00:00:00.0", 3, "Order number five", "Gummed up", "127"
+56,"2004-04-12 00:00:00.0", 3, "Sixth order, different user", "Gummed up", "128"
+57,"2004-04-12 00:00:00.0", 3, "Seventh order, different user", "Gummed up", "129"
+
+class com.gs.fw.common.mithra.test.domain.OrderStatusAsTxReadOnly
+orderId, status
+1,1
+
+class com.gs.fw.common.mithra.test.domain.Order
+orderId,orderDate,userId,description,state,trackingId
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123"
+2,"2004-02-12 00:00:00.0", 1, "Second order", "In-Progress", "124"
+3,"2004-03-12 00:00:00.0", 1, "Third order", "In-Progress", "125"
+4,"2004-04-12 00:00:00.0", 2, "Fourth order, different user", "In-Progress", "126"
+55,"2004-04-12 00:00:00.0", 3, "Order number five", "Gummed up", "127"
+56,"2004-04-12 00:00:00.0", 3, "Sixth order, different user", "Gummed up", "128"
+57,"2004-04-12 00:00:00.0", 3, "Seventh order, different user", "Gummed up", "129"
+
+class com.gs.fw.common.mithra.test.domain.OrderParentToChildren
+childOrderId,parentOrderId
+56, 55
+57, 55
+
+class com.gs.fw.common.mithra.test.domain.OrderItem
+id,orderId,productId,quantity,originalPrice,discountPrice,state
+1,  1, 1, 20, 10.5, 10.5, "In-Progress"
+2,  2, 1, 20, 10.5, 10.5, "In-Progress"
+3,  2, 2, 20, 15.5, 10.0, "In-Progress"
+4,  2, 3, 20, 20.5, 15.0, "In-Progress"
+5, 55, 1, 20, 10.5, 10.5, "In-Progress"
+6, 55, 3, 20, 10.5, 10.5, "In-Progress"
+
+class com.gs.fw.common.mithra.test.domain.OrderStatus
+orderId,status,lastUser,lastUpdateTime, expectedDate
+1,10,"Fred","2004-01-12 00:00:00.0", "2005-01-01"
+7000,10,"Fred","2005-02-13 00:00:00.0", "2006-02-03"
+
+class com.gs.fw.common.mithra.test.domain.DirectRefOrder
+orderId,orderDate,userId,description,state,trackingId
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123"
+2,"2004-02-12 00:00:00.0", 1, "Second order", "In-Progress", "124"
+3,"2004-03-12 00:00:00.0", 1, "Third order", "In-Progress", "125"
+4,"2004-04-12 00:00:00.0", 2, "Fourth order, different user", "In-Progress", "126"
+
+
+class com.gs.fw.common.mithra.test.domain.DirectRefOrderItem
+id,orderId,productId,quantity,originalPrice,discountPrice,state
+1, 1, 1, 20, 10.5, 10.5, "In-Progress"
+2, 2, 1, 20, 10.5, 10.5, "In-Progress"
+3, 2, 2, 20, 15.5, 10.0, "In-Progress"
+4, 2, 3, 20, 20.5, 15.0, "In-Progress"
+
+class com.gs.fw.common.mithra.test.domain.DirectRefOrderStatus
+orderId,status,lastUser,lastUpdateTime
+1,10,"Fred","2004-01-12 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.OrderItemStatus
+itemId,status,lastUser,lastUpdateTime
+1,10,"Fred"  ,"2004-01-12 00:00:00.0"
+3,20,"Barney","2004-01-12 00:00:00.0"
+5,50,"Jim"   ,"2004-01-12 00:00:00.0"
+6,60,"Sheila","2004-01-12 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.OrderWi
+orderId,orderDate,userId,description,state,trackingId
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123"
+2,"2004-02-12 00:00:00.0", 1, "Second order", "In-Progress", "124"
+3,"2004-03-12 00:00:00.0", 1, "Third order", "In-Progress", "125"
+4,"2004-04-12 00:00:00.0", 2, "Fourth order, different user", "In-Progress", "126"
+
+
+class com.gs.fw.common.mithra.test.domain.OrderClassificationWi
+orderId, classificationId, description
+1, 62, "Iowa Class"
+
+class com.gs.fw.common.mithra.test.domain.OrderItemWi
+id,orderId,productId,quantity,originalPrice,discountPrice,state
+1, 1, 1, 20, 10.5, 10.5, "In-Progress"
+2, 2, 1, 20, 10.5, 10.5, "In-Progress"
+3, 2, 2, 20, 15.5, 10.0, "In-Progress"
+4, 2, 3, 20, 20.5, 15.0, "In-Progress"
+
+class com.gs.fw.common.mithra.test.domain.OrderStatusWi
+orderId,status,lastUser,lastUpdateTime
+1,10,"Fred","2004-01-12 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.BitemporalOrderWi
+orderId,orderDate,userId,description,state,trackingId,businessDateFrom, businessDateTo, processingDateFrom,processingDateTo
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+2,"2004-02-12 00:00:00.0", 1, "Second order", "In-Progress", "124", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+3,"2004-03-12 00:00:00.0", 1, "Third order", "In-Progress", "125", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+4,"2004-04-12 00:00:00.0", 2, "Fourth order, different user", "In-Progress", "126", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+
+class com.gs.fw.common.mithra.test.domain.BitemporalOrderClassificationWi
+orderId, classificationId, description, businessDateFrom       , businessDateTo           , processingDateFrom     , processingDateTo
+      1,               42, "Class 42" , "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.BitemporalOrderItemWi
+id,orderId,productId,quantity,originalPrice,discountPrice,state,businessDateFrom, businessDateTo,processingDateFrom,processingDateTo
+1, 1, 1, 20, 10.5, 10.5, "In-Progress","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+2, 2, 1, 20, 10.5, 10.5, "In-Progress","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+3, 2, 2, 20, 15.5, 10.0, "In-Progress","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+4, 2, 3, 20, 20.5, 15.0, "In-Progress","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.BitemporalOrderStatusWi
+orderId,status,lastUser,lastUpdateTime,businessDateFrom, businessDateTo,processingDateFrom,processingDateTo
+1,10,"Fred","2004-01-12 00:00:00.0","2004-01-01 00:00:00.0", "9999-12-01 23:59:00.000","2004-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.ReadOnlyOrderWi
+orderId,orderDate,userId,description,state,trackingId
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123"
+2,"2004-02-12 00:00:00.0", 1, "Second order", "In-Progress", "124"
+3,"2004-03-12 00:00:00.0", 1, "Third order", "In-Progress", "125"
+4,"2004-04-12 00:00:00.0", 2, "Fourth order, different user", "In-Progress", "126"
+
+
+class com.gs.fw.common.mithra.test.domain.ReadOnlyOrderItemWi
+id,orderId,productId,quantity,originalPrice,discountPrice,state
+1, 1, 1, 20, 10.5, 10.5, "In-Progress"
+2, 2, 1, 20, 10.5, 10.5, "In-Progress"
+3, 2, 2, 20, 15.5, 10.0, "In-Progress"
+4, 2, 3, 20, 20.5, 15.0, "In-Progress"
+
+class com.gs.fw.common.mithra.test.domain.ReadOnlyOrderStatusWi
+orderId,status,lastUser,lastUpdateTime
+1,10,"Fred","2004-01-12 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.ReadOnlyBitemporalOrderWi
+orderId,orderDate,userId,description,state,trackingId,businessDateFrom, businessDateTo,processingDateFrom,processingDateTo
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+2,"2004-02-12 00:00:00.0", 1, "Second order", "In-Progress", "124", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+3,"2004-03-12 00:00:00.0", 1, "Third order", "In-Progress", "125", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+4,"2004-04-12 00:00:00.0", 2, "Fourth order, different user", "In-Progress", "126", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+
+class com.gs.fw.common.mithra.test.domain.ReadOnlyBitemporalOrderItemWi
+id,orderId,productId,quantity,originalPrice,discountPrice,state,businessDateFrom, businessDateTo,processingDateFrom,processingDateTo
+1, 1, 1, 20, 10.5, 10.5, "In-Progress","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+2, 2, 1, 20, 10.5, 10.5, "In-Progress","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+3, 2, 2, 20, 15.5, 10.0, "In-Progress","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+4, 2, 3, 20, 20.5, 15.0, "In-Progress","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.ReadOnlyBitemporalOrderStatusWi
+orderId,status,lastUser,lastUpdateTime,businessDateFrom, businessDateTo,processingDateFrom,processingDateTo
+1,10,"Fred","2004-01-12 00:00:00.0","2004-01-01 00:00:00.0","9999-12-01 23:59:00.000","2004-01-01 00:00:00.0","9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.AuditedOrderAsTxReadOnly
+orderId,orderDate,userId,description,state,trackingId,processingDateFrom,processingDateTo
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+2,"2004-02-12 00:00:00.0", 1, "Second order", "In-Progress", "124", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+3,"2004-03-12 00:00:00.0", 1, "Third order", "In-Progress", "125", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+4,"2004-04-12 00:00:00.0", 2, "Fourth order, different user", "In-Progress", "126", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+5,"2004-01-12 00:00:00.0", 1, "Same product as first order", "In-Progress", "123", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.AuditedOrder
+orderId,orderDate,userId,description,state,trackingId,processingDateFrom,processingDateTo
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+2,"2004-02-12 00:00:00.0", 1, "Second order", "In-Progress", "124", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+3,"2004-03-12 00:00:00.0", 1, "Third order", "In-Progress", "125", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+4,"2004-04-12 00:00:00.0", 2, "Fourth order, different user", "In-Progress", "126", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+5,"2004-01-12 00:00:00.0", 1, "Same product as first order", "In-Progress", "123", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+9999, "2004-01-12 00:00:00.0",1, "Last order", "In-Progress", "123","2007-03-02 00:00:00.0", "2007-04-02 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",2, "Last order", "In-Progress", "123","2007-04-02 00:00:00.0", "2007-04-06 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",3, "Last order", "In-Progress", "123","2007-04-06 00:00:00.0", "2007-04-30 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",2, "Last order", "In-Progress", "123","2007-04-30 00:00:00.0", "2007-05-04 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",1, "Last order", "In-Progress", "123","2007-05-04 00:00:00.0", "2007-05-28 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",2, "Last order", "In-Progress", "123","2007-05-28 00:00:00.0", "2007-06-01 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",3, "Last order", "In-Progress", "123","2007-06-01 00:00:00.0", "2007-07-02 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",2, "Last order", "In-Progress", "123","2007-07-02 00:00:00.0", "2007-07-06 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",1, "Last order", "In-Progress", "123","2007-07-06 00:00:00.0", "2007-07-25 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",2, "Last order", "In-Progress", "123","2007-07-25 00:00:00.0", "2007-07-26 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",3, "Last order", "In-Progress", "123","2007-07-26 00:00:00.0", "2007-07-30 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",2, "Last order", "In-Progress", "123","2007-07-30 00:00:00.0", "2007-08-03 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",1, "Last order", "In-Progress", "123","2007-08-03 00:00:00.0", "2007-08-31 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",2, "Last order", "In-Progress", "123","2007-08-31 00:00:00.0", "2007-09-03 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",3, "Last order", "In-Progress", "123","2007-09-03 00:00:00.0", "2007-09-07 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",2, "Last order", "In-Progress", "123","2007-09-07 00:00:00.0", "2007-10-01 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",1, "Last order", "In-Progress", "123","2007-10-01 00:00:00.0", "2007-10-05 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",2, "Last order", "In-Progress", "123","2007-10-05 00:00:00.0", "2007-10-10 11:53:47.0"
+9999, "2004-01-12 00:00:00.0",2, "Last order", "In-Progress", "123","2007-10-10 11:53:47.0", "2007-10-29 00:00:00.0"
+9999, "2004-01-12 00:00:00.0",1, "Last order", "In-Progress", "123","2007-10-29 00:00:00.0", "9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.AuditedOrderItem
+id,orderId,productId,quantity,originalPrice,discountPrice,state,processingDateFrom,processingDateTo,manufacturerId
+1, 1, 1, 20, 10.5, 10.5, "In-Progress", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000",1
+2, 2, 1, 20, 10.5, 10.5, "In-Progress", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000",1
+3, 2, 2, 20, 15.5, 10.0, "In-Progress", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000",1
+4, 2, 3, 20, 20.5, 15.0, "In-Progress", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000",1
+5, 5, 1, 10, 20.5, 15.0, "In-Progress", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000",1
+
+class com.gs.fw.common.mithra.test.domain.AuditedOrderStatus
+orderId,status,lastUser,lastUpdateTime,processingDateFrom,processingDateTo
+1,10,"Wilma","2004-01-12 00:00:00.0", "2002-01-01 00:00:00.0", "2004-01-01 00:00:00.0"
+1,10,"Fred","2004-01-12 00:00:00.0", "2004-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.AuditedOrderStatusWithNonDatedOrder
+orderId,status,lastUser,lastUpdateTime,processingDateFrom,processingDateTo
+1,10,"Fred","2004-01-12 00:00:00.0", "2004-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.AuditedOrderItemStatus
+itemId,status,lastUser,lastUpdateTime,processingDateFrom,processingDateTo
+1,10,"Fred","2004-01-12 00:00:00.0", "2004-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.AuditedManufacturer
+id,name,creditRating,processingDateFrom,processingDateTo
+1,"Bloggs Widgets",2, "2004-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.BitemporalOrder
+orderId,orderDate,userId,description,state,trackingId,businessDateFrom, businessDateTo, processingDateFrom, processingDateTo
+1,"2004-01-12 00:00:00.0", 1, "First order" , "In-Progress", "123", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+2,"2004-02-12 00:00:00.0", 1, "Second order", "Started"    , "124", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "2005-01-02 00:00:00.0"
+2,"2004-02-12 00:00:00.0", 1, "Second order", "Started"    , "124", "2000-01-01 00:00:00.0", "2005-01-01 00:00:00.0"  , "2005-01-02 00:00:00.0", "9999-12-01 23:59:00.000"
+2,"2004-02-12 00:00:00.0", 1, "Second order", "In-Progress", "124", "2005-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2005-01-02 00:00:00.0", "9999-12-01 23:59:00.000"
+3,"2004-03-12 00:00:00.0", 1, "Third order" , "In-Progress", "125", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+4,"2004-04-12 00:00:00.0", 2, "Fourth order, different user", "In-Progress", "126", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+/*
+12,"2004-04-12 00:00:00.0", 3, "Twelveth order, different user", "Modified"  , "128", "2000-01-01 00:00:00.0", "2011-01-01 00:00:00.0"  , "2000-01-01 00:00:00.0", "2011-08-01 00:00:00.0"
+12,"2004-04-12 00:00:00.0", 3, "Twelveth order, different user", "Modified 2", "128", "2011-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2011-08-01 00:00:00.0", "9999-12-01 23:59:00.000"
+*/
+
+class com.gs.fw.common.mithra.test.domain.BitemporalOrderItem
+id,orderId,productId,quantity,originalPrice,discountPrice,state,businessDateFrom, businessDateTo,processingDateFrom,processingDateTo
+1, 1, 1, 20, 10.5, 10.5, "In-Progress", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+2, 2, 1, 20, 10.5, 10.5, "Started", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "2005-01-02 00:00:00.0"
+2, 2, 1, 20, 10.5, 10.5, "Started", "2000-01-01 00:00:00.0", "2005-01-01 00:00:00.0", "2005-01-02 00:00:00.0", "9999-12-01 23:59:00.000"
+2, 2, 1, 20, 10.5, 10.5, "In-Progress", "2005-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2005-01-02 00:00:00.0", "9999-12-01 23:59:00.000"
+3, 2, 2, 20, 15.5, 10.0, "In-Progress", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+4, 2, 3, 20, 20.5, 15.0, "In-Progress", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+/*
+5, 12, 1, 7, 16.5, 14.0, "Modified", "2000-01-01 00:00:00.0", "2011-01-01 00:00:00.0", "2000-01-01 00:00:00.0", "2011-08-01 00:00:00.0"
+5, 12, 1, 7, 16.5, 15.0, "Modified 2", "2011-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2011-08-01 00:00:00.0", "9999-12-01 23:59:00.000"
+6, 12, 1, 7, 18.5, 16.0, "Modified", "2000-01-01 00:00:00.0", "2011-01-01 00:00:00.0", "2000-01-01 00:00:00.0", "2011-08-01 00:00:00.0"
+6, 12, 1, 7, 18.5, 17.0, "Modified 2", "2011-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2011-08-01 00:00:00.0", "9999-12-01 23:59:00.000"
+*/
+
+class com.gs.fw.common.mithra.test.domain.BitemporalOrderItemStatus
+itemId, businessDateFrom,        businessDateTo,            processingDateFrom,      processingDateTo,          status, lastUser, lastUpdateTime
+1,      "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", 10, "Morpheus", "2004-01-12 00:00:00.0"
+3,      "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", 20, "Trinity" , "2004-01-12 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.BitemporalOrderStatus
+orderId,status,lastUser,lastUpdateTime,businessDateFrom, businessDateTo, processingDateFrom,processingDateTo
+1,20,"Wilma","2002-01-12 00:00:00.0", "2004-01-01 00:00:00.0", "9999-12-01 23:59:00.000","2003-01-01 00:00:00.0", "2004-01-01 00:00:00.0"
+1,10,"Fred","2004-01-12 00:00:00.0", "2004-01-01 00:00:00.0", "9999-12-01 23:59:00.000","2004-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.OptimisticOrder
+orderId,orderDate,userId,description,state,trackingId,version
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123",1
+2,"2004-02-12 00:00:00.0", 1, "Second order", "In-Progress", "124",10
+3,"2004-03-12 00:00:00.0", 1, "Third order", "In-Progress", "125",1
+4,"2004-04-12 00:00:00.0", 2, "Fourth order, different user", "In-Progress", "126",0
+
+class com.gs.fw.common.mithra.test.domain.OptimisticOrderWithTimestamp
+orderId,orderDate,userId,description,state,trackingId,updateTime
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123","2000-01-01 00:00:00.0"
+2,"2004-02-12 00:00:00.0", 1, "Second order", "In-Progress", "124","2000-01-01 00:00:00.0"
+3,"2004-03-12 00:00:00.0", 1, "Third order", "In-Progress", "125","2000-01-01 00:00:00.0"
+4,"2004-04-12 00:00:00.0", 2, "Fourth order, different user", "In-Progress", "126","2000-01-01 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.Product
+productId, productCode,productDescription,manufacturerId
+1, "AA", "Product 1", 1
+2, "AA", "Product 2", 1
+3, "AB", "Product 3", 2
+4, "AB", "Product 4", 3
+
+class com.gs.fw.common.mithra.test.domain.ProductSynonym
+productId, synonymType, synonymValue
+1,"CUS","X"
+1,"GSN","X"
+1,"PRM","1234"
+
+
+class com.gs.fw.common.mithra.test.domain.Book
+inventoryId,description,manufacturerId,inventoryLevel,numberOfPages,author,unitPrice
+1,"Design Patterns", 1, 40, 500, "Gamma et al", 40.0
+2,"Effective Java", 1, 100, 200, "Joshua Bloch", 30.0
+3,"Harry Potter", 4, 100, 200, "Rowling", 30.0
+4,"Ruby", 5, 200, 300, "Dave Thomas", 30.0
+
+class com.gs.fw.common.mithra.test.domain.Phone
+weight,unitPrice,inventoryId,description,manufacturerId,inventoryLevel
+0.6, 200.0, 3, "Nokia 3650", 2, 60
+1.0, 150.0, 4, "Samsung A300", 3, 20
+
+class com.gs.fw.common.mithra.test.domain.SelfJoinConstant
+transactionId,referenceNumber,payReceive
+1, "1", "P"
+2, "1", "R"
+
+class com.gs.fw.common.mithra.test.domain.Synonym
+productId,synonymTypeCode,synonymEndDate,synonym
+1234, "GSN", "2005-01-15 00:30:00.0", "ABCXYZ"
+1234, "GSN", null, "ABCXYZ"
+1235, "GSN", "2005-01-15 00:30:00.0", "XYZABC"
+1236, "GSN", null, "ABXYZC"
+
+class com.gs.fw.common.mithra.test.domain.child.LifeStatus
+isAlive,aliveByte,code
+true, 1, "TAXABLE"
+false, 0, "NON-TAXABLE"
+
+class com.gs.fw.common.mithra.test.domain.parent.ParentType
+id,name,alive,aliveByte
+1, "James Kim", true, 0
+2, "Nabi Lee", false, 1
+3, "David Lee", true, 0
+
+class com.gs.fw.common.mithra.test.domain.child.ChildType
+id,name,parentId,isAlive,aliveByte
+101, "Robert Kim", 1, true, 1
+102, "Linda Kim", 1, false, 0
+103, "Bambi Lee", 2, true, 1
+104, "Alberto Lee", 3, true, 1
+
+class com.gs.fw.common.mithra.test.domain.criters.PetType
+id,name,ownerId,genome,alive
+1001, "Spot", 101, "Canine", true
+1002, "Meow", 101, "Feline", true
+1003, "Tiger", 103, "Feline", false
+1004, "Tiger Jr.", 103, "Feline", true
+
+class com.gs.fw.common.mithra.test.domain.Stock
+stockId,ticker,companyName, stockPriceId,businessDateFrom,businessDateTo
+1, "IBM", "IBM CORPORATION", 1, "2002-11-29 00:00:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.StockPrice
+stockPriceId,lastPrice,active,businessDateFrom,businessDateTo
+1, 100.4,"Y", "2002-11-29 00:00:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.dated.DatedTable
+id,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+1, "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+10, "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+3, "2000-01-01 00:00:00.0", "2001-01-01 00:00:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+3, "2001-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.dated.NotDatedWithBusinessDate
+id,quantity,businessDate
+1, 10,"2009-01-01 00:00:00.0"
+3, 20, "2009-01-01 00:00:00.0"
+7, 30, "2009-01-01 00:00:00.0"
+10, 40, "2010-01-01 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.TamsMithraAccount
+accountNumber,code,trialId,pnlGroupId,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+"71234567","71234567","1","17", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.dated.TestTamsMithraTrial
+trialNodeId, trialId,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+1, "1", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.dated.TestTamsAccountIncomeFunction
+accountId, percentage,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+"1234", 25.5, "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+"1235", 50.5, "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.TamsMithraAccountArbsClassification
+id, accountId, classificationId, businessDateFrom, businessDateTo, processingDateFrom, processingDateTo
+1, "71234567", 1, "2005-08-20 18:30:00.0", "2079-06-06 23:59:00.000", "2005-08-24 22:22:00.0", "9999-12-01 23:59:00.000"
+2, "71234567", 3, "2005-08-20 18:30:00.0", "2079-06-06 23:59:00.000", "2005-08-24 22:22:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.TamsMithraArbsClassification
+id, typeAsString, value, processingDateFrom, processingDateTo
+1, "SOURCE", "PARA", "2005-08-24 22:22:00.0", "9999-12-01 23:59:00.000"
+3, "ASSET_TYPE", "Bonds / Notes", "2005-08-24 22:22:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.dated.NotDatedTable
+id
+1
+2
+3
+
+class com.gs.fw.common.mithra.test.domain.FileDirectory
+fileDirectoryId, creationDate, name,       drive, modificationDate, parentDirectoryId, note,     someOtherTimestamp, isDirectory, someOtherDate
+ 1, "2005-01-01 00:00:00.0",   ""          , "C", "2005-02-08",     0,                 "Root",   "2005-02-08 13:45:00.0", 1, "2005-02-08"
+ 2, "2005-02-01 00:00:00.0",   "temp"      , "C", "2005-02-08",     1,                 null,     null,1, "2005-01-01"
+ 3, "2005-01-01 00:00:00.0",   "projects"  , "C", "2005-02-08",     1,                 "note 1", "2005-01-01 00:00:00.0", 1,"2005-01-01"
+ 4, "2005-01-01 00:00:00.0",   "PARA4.0"   , "C", "2005-02-08",     3,                 "note 1", "2005-01-01 00:00:00.0", 1, "2005-01-01"
+ 5, "2005-01-01 00:00:00.0",   "src"       , "C", "2005-02-08",     4,                 null,     null, 1, "2005-01-01"
+ 6, "2005-01-01 00:00:00.0",   "winnt"     , "C", "2005-02-08",     1,                 null,     null, 1, "2005-01-01"
+ 7, "2005-01-01 00:00:00.0",   "system32"  , "C", "2005-02-08",     6,                 null,     null, 1, "2005-01-01"
+ 8, "2005-01-01 00:00:00.0",   "net"       , "C", "2005-02-08",     1,                 null,     null, 1, "2005-01-01"
+ 9, "2005-01-01 00:00:00.0",   "firefox"   , "C", "2005-02-08",     8,                 null,     null, 1, "2005-01-01"
+10, "2005-01-01 00:00:00.0",   "test1.java", "C", "2005-02-08",     5,                 null,     null, 0, "2005-01-01"
+11, "2005-01-01 00:00:00.0",   "test2.java", "C", "2005-02-08",     5,                 null,     null, 0, "2005-01-01"
+12, "2005-01-01 00:00:00.0",   "com"       , "C", "2005-02-08",     5,                 null,     null, 1, "2005-01-01"
+
+class com.gs.fw.common.mithra.test.domain.Supplier
+supplierId,location,name
+1,"New York", "AllPhones Inc"
+2,"London", "London Warehouse"
+3,"New York", "High Profit Sales"
+4,"New Delhi", "Export House"
+
+
+class com.gs.fw.common.mithra.test.domain.Manufacturer
+manufacturerId,locationId,name
+1,2, "Addison-Wesley"
+2,6, "Nokia"
+3,7, "Samsung"
+4,4, "Oxford"
+5,5, "Oxford"
+6,6, "Oxford"
+7,2, "Smallville"
+
+
+class com.gs.fw.common.mithra.test.domain.SupplierInventoryItem
+supplierId,inventoryId
+1,1
+1,2
+3,1
+3,2
+2,1
+4,1
+2,2
+2,3
+2,4
+3,3
+
+
+class com.gs.fw.common.mithra.test.domain.DatedEntity
+id,rate,fromZ,thruZ,processingDateFrom,processingDateTo
+1,1.1,"2005-01-01 00:00:00.0","2005-02-02 00:00:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+2,1.1,"2005-01-02 00:00:00.0","2005-03-02 00:00:00.0","2005-01-02 00:00:00.0","9999-12-01 23:59:00.0"
+3,1.1,"2005-01-03 00:00:00.0","2005-04-02 00:00:00.0","2005-01-03 00:00:00.0","9999-12-01 23:59:00.0"
+4,1.1,"2005-01-04 00:00:00.0","2005-05-02 00:00:00.0","2005-01-04 00:00:00.0","9999-12-01 23:59:00.0"
+5,1.1,"2005-01-05 00:00:00.0","2005-06-02 00:00:00.0","2005-01-05 00:00:00.0","9999-12-01 23:59:00.0"
+6,1.1,"2005-01-06 00:00:00.0","2005-07-02 00:00:00.0","2005-01-06 00:00:00.0","9999-12-01 23:59:00.0"
+7,1.1,"2005-01-07 00:00:00.0","2005-08-02 00:00:00.0","2005-01-07 00:00:00.0","9999-12-01 23:59:00.0"
+8,1.1,"2005-01-08 00:00:00.0","2005-09-02 00:00:00.0","2005-01-08 00:00:00.0","9999-12-01 23:59:00.0"
+9,1.1,"2005-01-09 00:00:00.0","2005-10-02 00:00:00.0","2005-01-09 00:00:00.0","9999-12-01 23:59:00.0"
+10,1.1,"2005-01-10 00:00:00.0","2005-11-02 00:00:00.0","2005-01-10 00:00:00.0","9999-12-01 23:59:00.0"
+
+
+class com.gs.fw.common.mithra.test.domain.DatedEntityDesc
+id,type,description,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+1,"one","typeone","2004-01-01 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+2,"two","typetwo","2004-01-02 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+3,"three","typetrhee","2004-01-03 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+4,"four","typefour","2004-01-04 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+5,"five","typefive","2004-01-05 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+6,"six","typesix","2004-01-06 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+7,"seven","typeseven","2004-01-07 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+8,"eight","typeeight","2004-01-08 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+9,"nine","typenine","2004-01-09 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+10,"ten","typeten","2004-01-10 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+
+
+class com.gs.fw.common.mithra.test.domain.DatedEntityDescType
+type,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+"one","2004-01-01 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+"two","2004-01-02 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+"trhee","2004-01-03 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+"four","2004-01-04 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+"five","2004-01-05 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+"six","2004-01-06 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+"seven","2004-01-07 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+"eight","2004-01-08 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+"nine","2004-01-09 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+"ten","2003-01-10 00:00:00.0","2004-01-10 00:00:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+"ten","2004-01-10 00:00:00.0","9999-12-01 23:59:00.0","2005-01-01 00:00:00.0","9999-12-01 23:59:00.0"
+
+
+class com.gs.fw.common.mithra.test.domain.TimezoneTest
+timezoneTestId, insensitiveTimestamp, databaseTimestamp, utcTimestamp,  insensitiveDate, databaseDate, utcDate
+1, "2005-10-01 10:12:30.150", "2005-10-01 10:12:30.150", "2005-10-01 10:12:30.150", "2005-10-01 10:12:30.150", "2005-10-01 10:12:30.150", "2005-10-01 10:12:30.150"
+
+class com.gs.fw.common.mithra.test.domain.PkTimezoneTest
+insensitiveDate, databaseDate, utcDate, value
+"2005-10-01 10:12:30.150", "2005-10-01 10:12:30.150", "2005-10-01 10:12:30.150", 1
+"2001-10-01 10:12:30.150", "2001-10-01 10:12:30.150", "2001-10-01 10:12:30.150", 123
+"2002-10-01 10:12:30.150", "2002-10-01 10:12:30.150", "2002-10-01 10:12:30.150", 123
+"2003-10-01 10:12:30.150", "2003-10-01 10:12:30.150", "2003-10-01 10:12:30.150", 123
+
+class com.gs.fw.common.mithra.test.domain.TestEodAcctIfPnl
+accountId, ifCode, businessDate, balanceType, allocation, balance, userId, processingDateFrom, processingDateTo
+"A1", "IF1", "2005-09-01 00:00:00.0", 10, 40, 100, "moh", "2005-09-01 00:00:00.0", "9999-12-01 23:59:00.0"
+"A1", "IF1", "2005-09-02 00:00:00.0", 10, 60, 200, "moh", "2005-09-05 00:00:00.0", "9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.RiskValueTestAccount
+id, riskDateAccountId, riskPointId, riskValue
+1100, 10000, 10000, 100.00
+1101, 10000, 10000, 100.00
+1102, 10000, 10000, 100.00
+
+class com.gs.fw.common.mithra.test.domain.RiskDateTestAccount
+id, riskDate, accountNumber
+1000, "2005-10-01", "0999999990"
+1001, "2005-10-02", "0999999991"
+1002, "2005-10-02", "0999999992"
+
+class com.gs.fw.common.mithra.test.domain.TestAgeBalanceSheetRunRate
+tradingdeskLevelTypeId,tradingDeskorDeskHeadId,value,price,businessDateFrom,businessDateTo
+10,1000,10.3,12.1,"2005-01-24 18:30:00.0","2005-10-01 10:12:30.150"
+10,1000,11.3,13.1,"2005-10-01 10:12:30.150","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.TestBinaryArray
+testBinaryArrayId, pictureData
+1, "FF010200"
+
+class com.gs.fw.common.mithra.test.domain.WallCrossImpl
+listId, wallCrosserEmplid, entityid
+"FFFFFF", "whatever", 1
+"AAAAAA", "something", 2
+"BBBBBB", "other", 3
+
+class com.gs.fw.common.mithra.test.domain.ListEntryContactsImpl
+listId, emplId, listEntryRole, quantity
+"FFFFFF", "one", "x", 1
+"FFFFFF", "two", "y", 1
+"FFFFFF", "three", "z", 2
+"AAAAAA", "something", "a", 2
+
+class com.gs.fw.common.mithra.test.domain.DifferentDataTypes
+id, booleanColumn, byteColumn, floatColumn, shortColumn, longColumn, doubleColumn, charColumn, intColumn
+1, true, 0, 15.0, 100, 45, 10.0, "A", 1
+2, false, 1, 25.0, 200, 15, 100.0, "B", 2
+3, true, 1, 25.0, 110, 235, 1000.0, "C", 2
+4, false, 1, 35.0, 110, 235, 1110.0, "A", 3
+5, true, 3, 45.0, 120, 45, 1110.0, "B", 3
+
+class com.gs.fw.common.mithra.test.domain.MappedDifferentDataTypes
+id, name
+1, "ABCD"
+2, "EFGHIJ"
+3, "KLMNOP"
+4, "QRST"
+5, "UVWXYZ"
+
+class com.gs.fw.common.mithra.test.domain.VariousTypes
+id, booleanColumn, byteColumn, floatColumn, shortColumn, longColumn, doubleColumn, charColumn, intColumn
+1, true, 0, 15.0, 100, 45, 10.0, "A", 2
+2, false, 1, 25.0, 200, 15, 100.0, "B", 3
+
+
+class com.gs.fw.common.mithra.test.domain.TestReplicatedObject
+objectId, userId, name,active
+1, "gonzra", "Rafael", true
+2, "abcd", "Abcd", false
+3, "dcba", "Dcba", false
+
+
+class com.gs.fw.common.mithra.test.domain.NotDatedWithNullablePK
+objectId, nullablePKComponent,quantity,price
+1000,null,1,10.0
+1000,1000,2,10.0
+1001,null,2,10.0
+1001,1001,4,10.0
+1002,1002,6,10.0
+1002,null,8, 10.0
+
+class com.gs.fw.common.mithra.test.domain.DatedWithNullablePK
+objectId, nullablePKComponent,quantity,price,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+1234, null, 100.00, 10.0, "2005-12-01 18:30:00.0","9999-12-01 23:59:00.0","2005-12-01 19:30:00.0","2005-12-15 18:49:00.0"
+1234, null, 100.00, 10.0, "2005-12-01 18:30:00.0","2005-12-15 18:30:00.0","2005-12-15 18:49:00.0","9999-12-01 23:59:00.0"
+1234, null, 200.00, 10.0, "2005-12-15 18:30:00.0","9999-12-01 23:59:00.0","2005-12-15 18:30:00.0","9999-12-01 23:59:00.0"
+
+1234, 1, 100.00, 10.0, "2005-12-01 18:30:00.0","9999-12-01 23:59:00.0","2005-12-01 19:30:00.0","2005-12-15 18:49:00.0"
+1234, 1, 100.00, 10.0, "2005-12-01 18:30:00.0","2005-12-15 18:30:00.0","2005-12-15 18:49:00.0","9999-12-01 23:59:00.0"
+1234, 1, 200.00, 10.0, "2005-12-15 18:30:00.0","9999-12-01 23:59:00.0","2005-12-15 18:30:00.0","9999-12-01 23:59:00.0"
+
+1235, null, 200.00, 10.0, "2005-12-01 18:30:00.0","9999-12-01 23:59:00.0","2005-12-01 19:30:00.0","2005-12-15 18:49:00.0"
+1235, null, 200.00, 10.0, "2005-12-01 18:30:00.0","2005-12-15 18:30:00.0","2005-12-15 18:49:00.0","9999-12-01 23:59:00.0"
+1235, null, 400.00, 10.0, "2005-12-15 18:30:00.0","9999-12-01 23:59:00.0","2005-12-15 18:30:00.0","9999-12-01 23:59:00.0"
+
+1235, 2, 200.00, 10.0, "2005-12-01 18:30:00.0","9999-12-01 23:59:00.0","2005-12-01 19:30:00.0","2005-12-15 18:49:00.0"
+1235, 2, 200.00, 10.0, "2005-12-01 18:30:00.0","2005-12-15 18:30:00.0","2005-12-15 18:49:00.0","9999-12-01 23:59:00.0"
+1235, 2, 400.00, 10.0, "2005-12-15 18:30:00.0","9999-12-01 23:59:00.0","2005-12-15 18:30:00.0","9999-12-01 23:59:00.0"
+
+1236, null, 400.00, 10.0, "2005-12-01 18:30:00.0","9999-12-01 23:59:00.0","2005-12-01 19:30:00.0","2005-12-15 18:49:00.0"
+1236, null, 400.00, 10.0, "2005-12-01 18:30:00.0","2005-12-15 18:30:00.0","2005-12-15 18:49:00.0","9999-12-01 23:59:00.0"
+1236, null, 800.00, 10.0, "2005-12-15 18:30:00.0","9999-12-01 23:59:00.0","2005-12-15 18:30:00.0","9999-12-01 23:59:00.0"
+
+1236, 3, 400.00, 10.0, "2005-12-01 18:30:00.0","9999-12-01 23:59:00.0","2005-12-01 19:30:00.0","2005-12-15 18:49:00.0"
+1236, 3, 400.00, 10.0, "2005-12-01 18:30:00.0","2005-12-15 18:30:00.0","2005-12-15 18:49:00.0","9999-12-01 23:59:00.0"
+1236, 3, 800.00, 10.0, "2005-12-15 18:30:00.0","9999-12-01 23:59:00.0","2005-12-15 18:30:00.0","9999-12-01 23:59:00.0"
+
+1237, null, 400.00, 10.0, "2006-08-01 18:30:00.0","9999-12-01 23:59:00.0","2006-08-01 19:30:00.0","2006-08-15 18:49:00.0"
+1237, null, 400.00, 10.0, "2006-08-01 18:30:00.0","2006-08-15 18:30:00.0","2006-08-15 18:49:00.0","9999-12-01 23:59:00.0"
+1237, null, 800.00, 10.0, "2006-08-15 18:30:00.0","9999-12-01 23:59:00.0","2006-08-15 18:30:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.inherited.ReadOnlyAnimal
+animalId, name
+1, "moh"
+2, "nelly"
+
+class com.gs.fw.common.mithra.test.domain.inherited.ReadOnlyMammal
+animalId, bodyTemp
+1, 95.3
+2, 90.4
+
+class com.gs.fw.common.mithra.test.domain.inherited.ReadOnlyMonkey
+animalId, tailLength, alphaMaleDate
+1, 9.5, "1988-08-15 18:30:00.0"
+
+class com.gs.fw.common.mithra.test.domain.inherited.ReadOnlyCow
+animalId, farm
+2, "green acres"
+
+class com.gs.fw.common.mithra.test.domain.inherited.TxAnimal
+animalId, name
+1, "moh"
+2, "nelly"
+
+class com.gs.fw.common.mithra.test.domain.inherited.TxMammal
+animalId, bodyTemp
+1, 95.3
+2, 90.4
+
+class com.gs.fw.common.mithra.test.domain.inherited.TxMonkey
+animalId, tailLength, alphaMaleDate
+1, 9.5, "1988-08-15 18:30:00.0"
+
+class com.gs.fw.common.mithra.test.domain.inherited.TxCow
+animalId, farm
+2, "green acres"
+
+class com.gs.fw.common.mithra.test.domain.ParentNumericAttribute
+id, userId, doubleAttr, floatAttr, longAttr, intAttr, shortAttr, charAttr, byteAttr, bigDecimalAttr, veryBigDecimalAttr
+1, 1, 100.50, 10.1, 90000000, 10000, 100, "a", 1,100.50,"111111111111111111"
+2, 1, 200.50, 11.1, 110000000,20000, 200, "b", 2,200.50,"222222222222222222"
+3, 1, 300.50, 12.1, 120000000,30000, 300, "c", 3,300.50,"333333333333333333"
+4, 2, 400.50, 13.1, 130000000,40000, 400, "d", 4,400.50,"444444444444444444"
+5, 2, 500.50, 14.1, 140000000,50000, 500, "e", 5,500.50,"555555555555555555"
+6, 2, 600.00, 15.1, 150000000,60000, 600, "f", 6,600.50,"666666666666666666"
+
+class com.gs.fw.common.mithra.test.domain.Sale
+saleId,saleDate,sellerId,description,discountPercentage,settleDate, activeBoolean, nullableBigDecimal,nullableVeryBigDecimal, nullableDouble, nullableInt, nullableDate, nullableTimestamp, nullableString, nullableBoolean
+1, "2004-01-12 00:00:00.0", 1, "Sale 0001", 0.05, "2004-01-13", false, 1000.50, 10000.99999, 10.0, 1, "2004-01-13", "2004-01-12 00:00:00.0", "Sale 001", true
+2, "2004-02-12 00:00:00.0", 1, "Sale 0002", 0.07, "2004-02-14", true, null, 20000.99999,11.0, 2, "2004-02-14", "2004-02-12 00:00:00.0", "Sale 002",false
+3, "2004-02-13 00:00:00.0", 1, "Sale 0003", 0.03, "2004-02-15", true, 2000.999,30000.99999,null, 3,  null, null, "Sale 003", null
+4, "2004-02-12 00:00:00.0", 2, "Sale 0004", 0.1, "2004-02-12", false, 3000.999, 40000.99999,13.0,null, "2004-02-12", null, "Sale 004", true
+5, "2004-02-13 00:00:00.0", 2, "Sale 0005", 0.08, "2004-02-13", false,null,null,null, null,"2004-02-13", null, null, false
+6, "2004-02-14 00:00:00.0", 2, "Sale 0006", 0.07, "2004-02-14", true, 555.9999,60000.99999,null, 6,  null, null, "Sale 006" , null
+7, "2004-02-12 00:00:00.0", 3, "Sale 0007", 0.08, "2004-02-15", true, 667.999, null,16.0, 7, null, null, null, null
+8, "2004-02-12 01:00:00.0", 3, "Sale 0008", 0.09, "2004-02-17", true, 777.9999,80000.99999,17.0, 8, null,  null, null , null
+9, "2004-02-12 02:00:00.0", 4, "Sale 0009", 0.07, "2004-03-01", false,null,null, null,null, null, "2004-02-12 00:00:0.0", "Sale 009", null
+10, "2004-02-12 00:00:0.0", 4, "Sale 0010", 0.07, "2004-04-01", false,null,null, null,null, null, "2004-02-12 00:00:0.0", "Sale 010", null
+
+class com.gs.fw.common.mithra.test.domain.SaleAggregateData
+saleId, sellerId, priceDouble, priceInt, priceShort, priceLong, priceFloat, priceByte, priceBigDecimal
+1, 1, 1.0, 1, 1, 1, 1, 1, 1.12
+2, 1, 2.0, 2, 2, 2, 2, 2, 2.12
+3, 1, 3.0, 3, 3, 3, 3, 3, 4.12
+4, 2, 1.0, 1, 1, 1, 1, 1, 1.12
+5, 2, 1.0, 1, 1, 1, 1, 1, 1.12
+6, 3, 1.0, 1, 1, 1, 1, 1, 1.12
+
+class com.gs.fw.common.mithra.test.domain.SalesLineItem
+itemId,saleId,productId,manufacturerId, quantity
+
+//Items for Sale 0001
+1, 	1, 1, 1, 20
+
+//Items for Sale 0002
+2, 	2, 1, 1, 20
+3, 	2, 2, 1, 20
+4, 	2, 3, 2, 20
+
+//Items for Sale 0003
+5, 	3, 2, 2, 5
+6, 	3, 3, 2, 10
+7, 	3, 1, 2, 10
+
+//Items for Sale 0004
+8, 	4, 1, 1, 10
+9, 	4, 2, 1, 20
+
+//Items for Sale 0005
+10, 5, 3, 1, 15
+11, 5, 4, 2, 17
+12, 5, 1, 1, 23
+
+//Items for Sale 0006
+13, 6, 4, 2, 12
+14, 6, 5, 2, 15
+
+//Items for Sale 0007
+15, 7, 4, 1, 20
+16, 7, 5, 1, 10
+
+//Items for Sale 0008
+17, 8, 5, 1, 20
+18, 8, 6, 1, 10
+
+//Items for Sale 0009
+19, 9, 1, 1, 15
+20, 9, 4, 1, 16
+
+//Items for Sale 0010
+21, 10, 1, 1, 10
+22, 10, 4, 1, 12
+
+class com.gs.fw.common.mithra.test.domain.ProductSpecification
+productId,productCode,productName,manufacturerId,manufacturerName,originalPrice,discountPrice,otherPrice, minQuantity,deltaPrice
+1, "AA", "PROD 1", 1, "M1",12.5, 11.50, 12, 150,1.55
+2, "AB", "PROD 2", 2, "M2",19.99, 15.00, 17, 225,-0.97
+3, "BA", "PROD 3", null, null, 10.00, 9.99, 10, 350,-1.13
+4, "BB", "PROD 4", 1, "M1",25.00, 25.00, 25, 150,2.01
+5, "AC", "PROD 5", null,null, 30.00, 25.00, 27, 500,3.33
+6, "CA", "PROD 6", null, null,33.00, 28.00, 30, 600,-9.99
+
+class com.gs.fw.common.mithra.test.domain.WishListItem
+itemId,saleId,productId,manufacturerId, quantity
+//Items for Sale 0001
+1, 1, 1, 1,20
+2, 1, 2, 1, 10
+3, 1, 3, 1, 35
+//Items for Sale 0002
+4, 2, 1, 1, 5
+5, 2, 2, 1, 7
+6, 2, 3, 2, 12
+//Items for Sale 0003
+7, 3, 2, 2, 4
+8, 3, 3, 2, 6
+9, 3, 1, 2, 7
+//Items for Sale 0004
+10, 4, 1, 1, 11
+11, 4, 2, 1, 13
+//Items for Sale 0005
+12, 5, 3, 1, 15
+13, 5, 4, 2, 17
+14, 5, 1, 1, 23
+
+class com.gs.fw.common.mithra.test.domain.Seller
+sellerId,name,active,zipCode
+
+1, "John Doe", false, "10001"
+2, "Moh Rezaei", true, "10001"
+3, "Rafael Gonzalez",true,  "10001"
+4, "Jane Doe", false,"10002"
+
+class com.gs.fw.common.mithra.test.domain.DisplayText
+displayTextI, displayTextT, languageN, businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+1234, "FFFFFF", "Esperanto", "2005-12-01 18:30:00.0","9999-12-01 23:59:00.0","2005-12-01 19:30:00.0","2005-12-15 18:49:00.0"
+1234, "FFFFFF", "Esperanto", "2005-12-01 18:30:00.0","2005-12-15 18:30:00.0","2005-12-15 18:49:00.0","9999-12-01 23:59:00.0"
+1234, "AAAAAA", "Esperanto", "2005-12-15 18:30:00.0","9999-12-01 23:59:00.0","2005-12-15 18:30:00.0","9999-12-01 23:59:00.0"
+9999, null, "Nothing", "2005-12-15 18:30:00.0","9999-12-01 23:59:00.0","2005-12-15 18:30:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.ControlDefinition
+controlCode,processingDateFrom,processingDateTo
+1000,"2005-12-15 18:49:00.0","9999-12-01 23:59:00.0"
+1001,"2005-12-15 18:49:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.ListDefinition
+listId,processingDateFrom,processingDateTo
+"abc","2005-12-15 18:49:00.0","9999-12-01 23:59:00.0"
+"def","2005-12-15 18:49:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.ControlListDefinitionMapping
+controlCode,listId,processingDateFrom,processingDateTo
+1001,"def","2005-12-15 18:49:00.0","9999-12-01 23:59:00.0"
+
+/*class com.gs.fw.common.mithra.test.domain.ParentOrder
+parentId
+0
+
+class com.gs.fw.common.mithra.test.domain.Execution
+executionId	, parentId
+0			, 0
+
+class com.gs.fw.common.mithra.test.domain.Allocation
+tradeId	, executionId
+0		, 0
+ */
+class com.gs.fw.common.mithra.test.domain.Trade
+tradeId, tradeRef, createCode, businessDateFrom, businessDateTo, processingDateFrom, processingDateTo
+0, "testRef", 10, "2005-12-01 18:30:00.0","9999-12-01 23:59:00.0","2005-12-01 19:30:00.0","9999-12-01 23:59:00.0"
+
+//Embedded Value Objects
+
+//----Type 1 Inheritance
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType1ReadOnlyTypes
+pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute,booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoBigDecimalAttribute, rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoBigDecimalAttribute, rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute, rootEvoNestedEvoLeafEvoBigDecimalAttribute
+true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","111111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","211111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","31111111.11"
+false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","12222222.22",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","122222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","222222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","32222222.22"
+true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "13333333.33",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","133333333333333.333",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","233333333333333.333",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","33333333.33"
+false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","14444444.44",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","144444444444444.444",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","244444444444444.444",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","34444444.44"
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType1TxnTypes
+pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute,booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoBigDecimalAttribute,rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoBigDecimalAttribute,rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute, rootEvoNestedEvoLeafEvoBigDecimalAttribute
+true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","111111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","211111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","31111111.11"
+false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","12222222.22",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","122222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","222222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","32222222.22"
+true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "13333333.33",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","133333333333333.333",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","233333333333333.333",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","33333333.33"
+false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","14444444.44",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","144444444444444.444",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","244444444444444.444",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","34444444.44"
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType1DatedReadOnlyTypes
+businessDateFrom,businessDateTo,processingDateFrom,processingDateTo,pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute,booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoBigDecimalAttribute, rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoBigDecimalAttribute,rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute,rootEvoNestedEvoLeafEvoBigDecimalAttribute
+//1st object
+"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","2007-09-15 20:45:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,100,4,5,"readonly","2000-12-31 23:59:59.9", "111111111111111.111", false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",  "21111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9" ,"31111111.11"
+"2007-09-01 18:30:00.0","2007-09-15 18:30:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,100,4,5,"readonly","2000-12-31 23:59:59.9", "111111111111111.111", false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",  "21111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9" ,"31111111.11"
+"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","12222222.22",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,200,4,5,"readonly","2000-12-31 23:59:59.9", "122222222222222.222", false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",  "22222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9" ,"32222222.22"
+
+"2007-09-01 18:30:00.0","2007-09-06 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,100,4,5,"readonly","2000-12-31 23:59:59.9", "111111111111111.111", false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "21111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9" ,"31111111.11"
+"2007-09-06 18:30:00.0","2007-09-15 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,150,4,5,"readonly","2000-12-31 23:59:59.9", "111111111111111.111", false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "21111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9" ,"31111111.11"
+"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","12222222.22",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,250,4,5,"readonly","2000-12-31 23:59:59.9", "122222222222222.222", false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "22222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9" ,"32222222.22"
+//2nd object
+"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","12222222.22",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",  "122222222222222.222", false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "222222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","32222222.22"
+//3rd object
+"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","13333333.33",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",   "133333333333333.333", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "233333333333333.333",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","33333333.33"
+//4th object
+"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","14444444.44",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",  "144444444444444.444", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "244444444444444.444",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","34444444.44"
+
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType1DatedTxnTypes
+businessDateFrom,businessDateTo,processingDateFrom,processingDateTo,pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute, booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute, rootEvoBigDecimalAttribute, rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute, rootEvoNestedEvoBigDecimalAttribute, rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute, rootEvoNestedEvoLeafEvoBigDecimalAttribute
+//1st object
+"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0", true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "11111111.11", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",  "111111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","211111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","31111111.11"
+//2nd object
+"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0", false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","12222222.22", false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",  "122222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","222222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","32222222.22"
+//3rd object
+"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","2007-09-15 20:45:00.0", true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "13333333.33", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", false,0,"B","2000-01-01",1.1,2.2,100,4,5,"txn","2000-12-31 23:59:59.9","133333333333333.333",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","233333333333333.333",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","33333333.33"
+"2007-09-01 18:30:00.0","2007-09-15 18:30:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0", true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "13333333.33", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", false,0,"B","2000-01-01",1.1,2.2,100,4,5,"txn","2000-12-31 23:59:59.9","133333333333333.333",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","233333333333333.333",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","33333333.33"
+"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0", true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "14444444.44", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", false,0,"B","2000-01-01",1.1,2.2,200,4,5,"txn","2000-12-31 23:59:59.9","144444444444444.444",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","244444444444444.444",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","34444444.44"
+"2007-09-01 18:30:00.0","2007-09-06 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0", true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "13333333.33", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", false,0,"B","2000-01-01",1.1,2.2,100,4,5,"txn","2000-12-31 23:59:59.9","133333333333333.333",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","233333333333333.333",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","33333333.33"
+"2007-09-06 18:30:00.0","2007-09-15 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0", true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "13333333.33", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", false,0,"B","2000-01-01",1.1,2.2,150,4,5,"txn","2000-12-31 23:59:59.9","133333333333333.333",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","233333333333333.333",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","33333333.33"
+"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0", true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "14444444.44", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", false,0,"B","2000-01-01",1.1,2.2,250,4,5,"txn","2000-12-31 23:59:59.9","144444444444444.444",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","244444444444444.444",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","34444444.44"
+//4th object
+"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","14444444.44", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",  "144444444444444.444",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","244444444444444.444",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","34444444.44"
+
+//----Type 2 Inheritance
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType2ReadOnlyTypesA
+pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute,booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoBigDecimalAttribute,rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoBigDecimalAttribute, rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute,rootEvoNestedEvoLeafEvoBigDecimalAttribute
+true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","111111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","211111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","31111111.11"
+false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","12222222.22",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","122222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","222222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "32222222.22"
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType2ReadOnlyTypesB
+pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute,booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoBigDecimalAttribute,rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoBigDecimalAttribute,rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute,rootEvoNestedEvoLeafEvoBigDecimalAttribute
+true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "11111111.11", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "111111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","211111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "31111111.11"
+false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","12222222.22", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","122222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","222222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "32222222.22"
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType2TxnTypesA
+pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute, booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoBigDecimalAttribute, rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoBigDecimalAttribute, rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute, rootEvoNestedEvoLeafEvoBigDecimalAttribute
+true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "11111111.11", false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","111111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","211111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "31111111.11"
+false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","12222222.22", false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","122222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","222222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "32222222.22"
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType2TxnTypesB
+pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute, booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoBigDecimalAttribute, rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoBigDecimalAttribute,rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute,rootEvoNestedEvoLeafEvoBigDecimalAttribute
+true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "11111111.11",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9" ,"111111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "211111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"  , "31111111.11"
+false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","12222222.22",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","122222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","222222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9" , "32222222.22"
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType1TimeTypes
+pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkTimeAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute, booleanAttribute,byteAttribute,charAttribute,dateAttribute,timeAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoTimeAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoBigDecimalAttribute
+true,0,"B","2000-01-01","01:25:30.00",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "11111111.11",true,0,"B","2000-01-01","01:25:30.00",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+false,0,"A","2000-01-01","01:25:30.00",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","12222222.22",false,0,"B","2000-01-01","01:25:30.00",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType2DatedReadOnlyTypesA
+businessDateFrom,businessDateTo,processingDateFrom,processingDateTo,pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute,booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoBigDecimalAttribute, rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoBigDecimalAttribute,rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute,rootEvoNestedEvoLeafEvoBigDecimalAttribute
+//1st object
+"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","2007-09-15 20:45:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,100,4,5,"readonly","2000-12-31 23:59:59.9", "111111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "211111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","31111111.11"
+"2007-09-01 18:30:00.0","2007-09-15 18:30:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,100,4,5,"readonly","2000-12-31 23:59:59.9", "111111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "211111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","31111111.11"
+"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "12222222.22",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,200,4,5,"readonly","2000-12-31 23:59:59.9", "122222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "222222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","32222222.22"
+"2007-09-01 18:30:00.0","2007-09-06 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,100,4,5,"readonly","2000-12-31 23:59:59.9", "111111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "211111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","31111111.11"
+"2007-09-06 18:30:00.0","2007-09-15 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,150,4,5,"readonly","2000-12-31 23:59:59.9", "111111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "211111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","31111111.11"
+"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "12222222.22",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,250,4,5,"readonly","2000-12-31 23:59:59.9", "122222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "222222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","32222222.22"
+//2nd object
+"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","12222222.22",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",   "122222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","222222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "32222222.22"
+
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType2DatedReadOnlyTypesB
+businessDateFrom,businessDateTo,processingDateFrom,processingDateTo,pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute, booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute, rootEvoBigDecimalAttribute,rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoBigDecimalAttribute, rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute, rootEvoNestedEvoLeafEvoBigDecimalAttribute
+//1st object
+"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","2007-09-15 20:45:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "11111111.11",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,100,4,5,"readonly","2000-12-31 23:59:59.9","111111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "211111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","31111111.11"
+"2007-09-01 18:30:00.0","2007-09-15 18:30:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "11111111.11",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,100,4,5,"readonly","2000-12-31 23:59:59.9","111111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "211111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","31111111.11"
+"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "12222222.22",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,200,4,5,"readonly","2000-12-31 23:59:59.9","122222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "222222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","32222222.22"
+"2007-09-01 18:30:00.0","2007-09-06 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "11111111.11",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,100,4,5,"readonly","2000-12-31 23:59:59.9","111111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "211111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","31111111.11"
+"2007-09-06 18:30:00.0","2007-09-15 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "11111111.11",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,150,4,5,"readonly","2000-12-31 23:59:59.9","111111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "211111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","31111111.11"
+"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "12222222.22",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,250,4,5,"readonly","2000-12-31 23:59:59.9","122222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "222222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","32222222.22"
+//2nd object
+"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","11111111.11",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",  "122222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "222222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","32222222.22"
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType2DatedTxnTypesA
+businessDateFrom,businessDateTo,processingDateFrom,processingDateTo,pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute, booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoBigDecimalAttribute, rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoBigDecimalAttribute, rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute, rootEvoNestedEvoLeafEvoBigDecimalAttribute
+//1st object
+"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","2007-09-15 20:45:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,100,4,5,"txn","2000-12-31 23:59:59.9","111111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","211111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","31111111.11"
+"2007-09-01 18:30:00.0","2007-09-15 18:30:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,100,4,5,"txn","2000-12-31 23:59:59.9","111111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","211111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","31111111.11"
+"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "12222222.22",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,200,4,5,"txn","2000-12-31 23:59:59.9","122222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","222222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","32222222.22"
+"2007-09-01 18:30:00.0","2007-09-06 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,100,4,5,"txn","2000-12-31 23:59:59.9","111111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","211111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","31111111.11"
+"2007-09-06 18:30:00.0","2007-09-15 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,150,4,5,"txn","2000-12-31 23:59:59.9","111111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","211111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","31111111.11"
+"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "12222222.22",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,250,4,5,"txn","2000-12-31 23:59:59.9","122222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","222222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","32222222.22"
+//2nd object
+"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",  "122222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","222222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","32222222.22"
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType2DatedTxnTypesB
+businessDateFrom,businessDateTo,processingDateFrom,processingDateTo,pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute,booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoBigDecimalAttribute, rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoBigDecimalAttribute,rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute, rootEvoNestedEvoLeafEvoBigDecimalAttribute
+//1st object
+"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","2007-09-15 20:45:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "11111111.11", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,100,4,5,"txn","2000-12-31 23:59:59.9","111111111111111.111", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","211111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","31111111.11"
+"2007-09-01 18:30:00.0","2007-09-15 18:30:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "11111111.11", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,100,4,5,"txn","2000-12-31 23:59:59.9","111111111111111.111", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","211111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","31111111.11"
+"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "12222222.22", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,200,4,5,"txn","2000-12-31 23:59:59.9","122222222222222.222", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","222222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","32222222.22"
+"2007-09-01 18:30:00.0","2007-09-06 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "11111111.11", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,100,4,5,"txn","2000-12-31 23:59:59.9","111111111111111.111", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","211111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","31111111.11"
+"2007-09-06 18:30:00.0","2007-09-15 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "11111111.11", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,150,4,5,"txn","2000-12-31 23:59:59.9","111111111111111.111", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","211111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","31111111.11"
+"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "12222222.22", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,250,4,5,"txn","2000-12-31 23:59:59.9","122222222222222.222", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","222222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","32222222.22"
+//2nd object
+"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","12222222.22", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",  "122222222222222.222", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","222222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","32222222.22"
+
+//----Type 3 Inheritance
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType3ReadOnlyTypes
+pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute
+true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9" ,"11111111.11"
+false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","12222222.22"
+true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9" ,"13333333.33"
+false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","14444444.44"
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType3ReadOnlyTypesA
+pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute,booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoBigDecimalAttribute,rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoBigDecimalAttribute,rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute,rootEvoNestedEvoLeafEvoBigDecimalAttribute
+true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "11111111.11",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","111111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","211111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","31111111.11"
+false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","12222222.22",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","122222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","222222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","32222222.22"
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType3ReadOnlyTypesB
+pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute,booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoBigDecimalAttribute,rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoBigDecimalAttribute,rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute,rootEvoNestedEvoLeafEvoBigDecimalAttribute
+true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "11111111.11",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "111111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9", "211111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9" ,"31111111.11"
+false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","12222222.22",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","122222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","222222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9","32222222.22"
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType3TxnTypes
+pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute
+true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9" ,"11111111.11"
+false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","12222222.22"
+true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9" ,"11111111.11"
+false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","12222222.22"
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType3TxnTypesA
+pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute, booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute, rootEvoBigDecimalAttribute, rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoBigDecimalAttribute,rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute,rootEvoNestedEvoLeafEvoBigDecimalAttribute
+true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "11111111.11", false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","111111111111111.111",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","211111111111111.111" ,false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","31111111.11"
+false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","12222222.22", false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","122222222222222.222",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","222222222222222.222" ,false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","32222222.22"
+
+class com.gs.fw.common.mithra.test.domain.evo.EvoType3TxnTypesB
+pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,pkBigDecimalAttribute,booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoBigDecimalAttribute,rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoBigDecimalAttribute,rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute,rootEvoNestedEvoLeafEvoBigDecimalAttribute
+true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9", "11111111.11", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","111111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","211111111111111.111",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","31111111.11"
+false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","12222222.22", false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","122222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","222222222222222.222",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9","32222222.22"
+
+//class com.gs.fw.common.mithra.test.domain.evo.EvoType3DatedReadOnlyTypes
+//businessDateFrom,businessDateTo,processingDateFrom,processingDateTo,pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute
+//1st object
+//"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","2007-09-15 20:45:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-01 18:30:00.0","2007-09-15 18:30:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-01 18:30:00.0","2007-09-06 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-06 18:30:00.0","2007-09-15 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//2nd object
+//"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//3rd object
+//"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","2007-09-15 20:45:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-01 18:30:00.0","2007-09-15 18:30:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-01 18:30:00.0","2007-09-06 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-06 18:30:00.0","2007-09-15 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//4th object
+//"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+
+//class com.gs.fw.common.mithra.test.domain.evo.EvoType3DatedReadOnlyTypesA
+//businessDateFrom,businessDateTo,processingDateFrom,processingDateTo,pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute
+//1st object
+//"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","2007-09-15 20:45:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,100,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-01 18:30:00.0","2007-09-15 18:30:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,100,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,200,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-01 18:30:00.0","2007-09-06 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,100,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-06 18:30:00.0","2007-09-15 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,150,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,250,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//2nd object
+//"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+
+//class com.gs.fw.common.mithra.test.domain.evo.EvoType3DatedReadOnlyTypesB
+//businessDateFrom,businessDateTo,processingDateFrom,processingDateTo,pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute
+//3rd object
+//"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","2007-09-15 20:45:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,100,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-01 18:30:00.0","2007-09-15 18:30:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,100,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,200,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-01 18:30:00.0","2007-09-06 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,100,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-06 18:30:00.0","2007-09-15 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,150,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,250,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+//4th object
+//"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"readonly","2000-12-31 23:59:59.9"
+
+//class com.gs.fw.common.mithra.test.domain.evo.EvoType3DatedTxnTypes
+//businessDateFrom,businessDateTo,processingDateFrom,processingDateTo,pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute
+//1st object
+//"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","2007-09-15 20:45:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-01 18:30:00.0","2007-09-15 18:30:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-01 18:30:00.0","2007-09-06 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-06 18:30:00.0","2007-09-15 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//2nd object
+//"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//3rd object
+//"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","2007-09-15 20:45:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-01 18:30:00.0","2007-09-15 18:30:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-01 18:30:00.0","2007-09-06 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-06 18:30:00.0","2007-09-15 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//4th object
+//"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+
+//class com.gs.fw.common.mithra.test.domain.evo.EvoType3DatedTxnTypesA
+//businessDateFrom,businessDateTo,processingDateFrom,processingDateTo,pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute
+//1st object
+//"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","2007-09-15 20:45:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,100,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-01 18:30:00.0","2007-09-15 18:30:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,100,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,200,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-01 18:30:00.0","2007-09-06 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,100,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-06 18:30:00.0","2007-09-15 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,150,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,250,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//2nd object
+//"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"A","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+
+//class com.gs.fw.common.mithra.test.domain.evo.EvoType3DatedTxnTypesB
+//businessDateFrom,businessDateTo,processingDateFrom,processingDateTo,pkBooleanAttribute,pkByteAttribute,pkCharAttribute,pkDateAttribute,pkDoubleAttribute,pkFloatAttribute,pkIntAttribute,pkLongAttribute,pkShortAttribute,pkStringAttribute,pkTimestampAttribute,booleanAttribute,byteAttribute,charAttribute,dateAttribute,doubleAttribute,floatAttribute,intAttribute,longAttribute,shortAttribute,stringAttribute,timestampAttribute,rootEvoBooleanAttribute,rootEvoByteAttribute,rootEvoCharAttribute,rootEvoDateAttribute,rootEvoDoubleAttribute,rootEvoFloatAttribute,rootEvoIntAttribute,rootEvoLongAttribute,rootEvoShortAttribute,rootEvoStringAttribute,rootEvoTimestampAttribute,rootEvoNestedEvoBooleanAttribute,rootEvoNestedEvoByteAttribute,rootEvoNestedEvoCharAttribute,rootEvoNestedEvoDateAttribute,rootEvoNestedEvoDoubleAttribute,rootEvoNestedEvoFloatAttribute,rootEvoNestedEvoIntAttribute,rootEvoNestedEvoLongAttribute,rootEvoNestedEvoShortAttribute,rootEvoNestedEvoStringAttribute,rootEvoNestedEvoTimestampAttribute,rootEvoNestedEvoLeafEvoBooleanAttribute,rootEvoNestedEvoLeafEvoByteAttribute,rootEvoNestedEvoLeafEvoCharAttribute,rootEvoNestedEvoLeafEvoDateAttribute,rootEvoNestedEvoLeafEvoDoubleAttribute,rootEvoNestedEvoLeafEvoFloatAttribute,rootEvoNestedEvoLeafEvoIntAttribute,rootEvoNestedEvoLeafEvoLongAttribute,rootEvoNestedEvoLeafEvoShortAttribute,rootEvoNestedEvoLeafEvoStringAttribute,rootEvoNestedEvoLeafEvoTimestampAttribute
+//3rd object
+//"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","2007-09-15 20:45:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,100,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-01 18:30:00.0","2007-09-15 18:30:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,100,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-09-15 20:45:00.0","2007-10-01 12:15:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,200,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-01 18:30:00.0","2007-09-06 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,100,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-06 18:30:00.0","2007-09-15 18:30:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,150,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//"2007-09-15 18:30:00.0","9999-12-01 23:59:00.0","2007-10-01 12:15:00.0","9999-12-01 23:59:00.0",true,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,250,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+//4th object
+//"2007-09-01 18:30:00.0","9999-12-01 23:59:00.0","2007-09-01 19:30:00.0","9999-12-01 23:59:00.0",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9",false,0,"B","2000-01-01",1.1,2.2,3,4,5,"txn","2000-12-31 23:59:59.9"
+
+class com.gs.fw.common.mithra.test.domain.TestConflictCheckImpl
+id
+1
+2
+3
+4
+5
+6
+7
+
+class com.gs.fw.common.mithra.test.domain.TestBankingDealDetailImpl
+checkId
+1
+2
+3
+
+class com.gs.fw.common.mithra.test.domain.TestSecuritiesDealDetailImpl
+checkId
+4
+5
+6
+7
+
+class com.gs.fw.common.mithra.test.domain.TestSellSideDealDetail
+checkId
+2
+
+class com.gs.fw.common.mithra.test.domain.TestNonAcquisitionDealDetail
+checkId
+3
+
+class com.gs.fw.common.mithra.test.domain.TestInvestmentFinancingDealDetail
+checkId
+4
+
+class com.gs.fw.common.mithra.test.domain.GsDesk
+id, name, divisionCode
+1, "Desk1", "Division1"
+2, "Desk2", "Division2"
+
+class com.gs.fw.common.mithra.test.domain.TestCheckGsDesk
+checkId, gsDeskId, name
+4, 1, "foo"
+5, 2, "bar"
+6, 2, "test"
+
+
+class com.gs.fw.common.mithra.test.domain.BitemporalOrderNull
+orderId,orderDate,userId,description,state,trackingId,businessDateFrom, businessDateTo, processingDateFrom,processingDateTo
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123", "2000-01-01 00:00:00.0", null, "2000-01-01 00:00:00.0", null
+2,"2004-02-12 00:00:00.0", 1, "Second order", "In-Progress", "124", "2000-01-01 00:00:00.0", null, "2000-01-01 00:00:00.0", null
+3,"2004-03-12 00:00:00.0", 1, "Third order", "In-Progress", "125", "2000-01-01 00:00:00.0", null, "2000-01-01 00:00:00.0", null
+4,"2004-04-12 00:00:00.0", 2, "Fourth order, different user", "In-Progress", "126", "2000-01-01 00:00:00.0", null, "2000-01-01 00:00:00.0", null
+
+
+class com.gs.fw.common.mithra.test.domain.BitemporalOrderItemNull
+id,orderId,productId,quantity,originalPrice,discountPrice,state,businessDateFrom, businessDateTo,processingDateFrom,processingDateTo
+1, 1, 1, 20, 10.5, 10.5, "In-Progress", "2000-01-01 00:00:00.0", null, "2000-01-01 00:00:00.0", null
+2, 2, 1, 20, 10.5, 10.5, "In-Progress", "2000-01-01 00:00:00.0", null, "2000-01-01 00:00:00.0", null
+3, 2, 2, 20, 15.5, 10.0, "In-Progress", "2000-01-01 00:00:00.0", null, "2000-01-01 00:00:00.0", null
+4, 2, 3, 20, 20.5, 15.0, "In-Progress", "2000-01-01 00:00:00.0", null, "2000-01-01 00:00:00.0", null
+
+class com.gs.fw.common.mithra.test.domain.BitemporalOrderStatusNull
+orderId,status,lastUser,lastUpdateTime,businessDateFrom, businessDateTo, processingDateFrom,processingDateTo
+1,10,"Fred","2004-01-12 00:00:00.0", "2004-01-01 00:00:00.0", null,"2004-01-01 00:00:00.0", null
+
+class com.gs.fw.common.mithra.test.domain.TestAgeBalanceSheetRunRateNull
+tradingdeskLevelTypeId,tradingDeskorDeskHeadId,value,price,businessDateFrom,businessDateTo
+10,1000,10.3,12.1,"2005-01-24 18:30:00.0","2005-10-01 10:12:30.150"
+10,1000,11.3,13.1,"2005-10-01 10:12:30.150",null
+
+class com.gs.fw.common.mithra.test.domain.BigOrder
+orderId,orderDate,userId,description,discountPercentage
+100,"2000-01-01 00:00:00.0",1,"Order 100","0.010"
+101,"2000-01-01 00:00:00.0",1,"Order 101","0.050"
+102,"2000-01-01 00:00:00.0",1,"Order 102","0.010"
+103,"2000-01-01 00:00:00.0",2,"Order 103","0.100"
+104,"2000-01-01 00:00:00.0",2,"Order 104","0.005"
+
+class com.gs.fw.common.mithra.test.domain.BigOrderItem
+id,orderId,productId,quantity,price,bigPrice,state
+1, 100, 1, 5, 9.5, "111111111111111111.11111111111111111111","In-Progress"
+2, 101, 1, 10, 10.5,"888888888888888888.88888888888888888888", "In-Progress"
+3, 101, 2, 10, 15.5,"333333333333333333.33333333333333333333", "In-Progress"
+4, 102, 3, 20, 20.5,"444444444444444444.44444444444444444444", "In-Progress"
+5, 102, 1, 20, 10.5,"555555555555555555.55555555555555555555", "In-Progress"
+6, 103, 1, 20, 9.99,"666666666666666666.66666666666666666666", "In-Progress"
+7, 104, 2, 50, 15.5,"777777777777777777.77777777777777777777", "In-Progress"
+8, 104, 3, 100, 1.5,"888888888888888888.88888888888888888888", "In-Progress"
+8888888888.9,104, 3, 1000000.999,1.0,"123456789012345678.12345678901234567899", "Completed"
+9999999999,104, 3, 1000000.999,1.0,"123456789012345678.12345678901234567899", "Completed"
+9999999998,104, 4, 999999.999,1.0,"888888888888888888.88888888888888888888", "Completed"
+
+class com.gs.fw.common.mithra.test.domain.BitemporalBigOrder
+orderId,orderDate,userId,description,discountPercentage, businessDateFrom, businessDateTo,processingDateFrom,processingDateTo
+100,"2000-01-01 00:00:00.0",1,"Order 100","0.010","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+101,"2000-01-01 00:00:00.0",1,"Order 101","0.050","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+102,"2000-01-01 00:00:00.0",1,"Order 102","0.010","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+103,"2000-01-01 00:00:00.0",2,"Order 103","0.100","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+104,"2000-01-01 00:00:00.0",2,"Order 104","0.005","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+999,"2005-01-14 18:30:00.0",1,"Order 999","0.100","2005-01-14 18:30:00.0","2005-01-24 18:30:00.0","2004-01-15 00:30:00.0","2005-01-15 00:30:00.0" // outzed
+999,"2005-01-14 18:30:00.0",1,"Order 999","0.100","2005-01-14 18:30:00.0","2005-01-24 18:30:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+999,"2005-01-14 18:30:00.0",1,"Order 999","0.200","2005-01-24 18:30:00.0","9999-12-01 23:59:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.BitemporalBigOrderItem
+id,orderId,productId,quantity,price,bigPrice,state,businessDateFrom, businessDateTo,processingDateFrom,processingDateTo
+1, 100, 1, 5, 9.5, "999999999999999999.11111111111111111111", "In-Progress","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+2, 101, 1, 10, 10.5, null,"In-Progress","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+3, 101, 2, 10, 15.5, null,"In-Progress","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+4, 102, 3, 20, 20.5, null,"In-Progress","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+5, 102, 1, 20, 10.5, null,"In-Progress","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+6, 103, 1, 20, 9.99, null,"In-Progress","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+7, 104, 2, 50, 15.5, null,"In-Progress","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+8, 104, 3, 100, 1.5, null,"In-Progress","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+8888888888.9,104, 3, 1000000.999,1.0, null, "Completed","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+9999999999,104, 3, 1000000.999,1.0, null,"Completed","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+9999999998,104, 4, 999999.999,1.0, null,"Completed","2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.TestAsOfToTimestampJoinObjectA
+businessDateFrom,businessDateTo,id
+"2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", 1
+"2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000", 2
+
+class com.gs.fw.common.mithra.test.domain.TestAsOfToTimestampJoinObjectB
+businessDate,id
+"2011-05-01 23:59:00.0", 1
+"2011-05-01 23:59:00.0", 2
+
+class com.gs.fw.common.mithra.test.domain.AltProduct
+productId, name
+10, "Boddingtons"
+11, "Stella"
+12, "Heineken"
+
+class com.gs.fw.common.mithra.test.domain.alarm.Alarm
+id, time, description
+1, "10:30:59.011", "alarm 1"
+2, "03:11:23.000", "alarm 2"
+3, "14:59:10.043", "alarm 3"
+
+class com.gs.fw.common.mithra.test.domain.alarm.AlarmCategory
+id, category, time, description
+1, 1, "10:30:59.011", "alarm 1"
+2, 1, "03:11:23.000", "alarm 2"
+3, 2, "10:30:59.011", "alarm 3"
+4, 2, "03:11:23.000", "alarm 4"
+5, 3, "10:30:59.011", "alarm 5"
+6, 3, "03:11:23.000", "alarm 6"
+7, 3, "01:02:02.003", "alarm 600"
+
+class com.gs.fw.common.mithra.test.domain.alarm.AlarmPrimaryKey
+id, time, description
+1, "10:30:59.011", "alarm 1"
+2, "03:11:23.000", "alarm 2"
+
+class com.gs.fw.common.mithra.test.domain.alarm.Cellphone
+id, description
+1, "cell 1"
+2, "cell 2"
+
+class com.gs.fw.common.mithra.test.domain.alarm.Cellphone2
+id, time, description
+1, "10:30:59.011", "cell 1"
+2, "03:11:23.000", "cell 2"
+
+class com.gs.fw.common.mithra.test.domain.alarm.Alarm2
+id, time, time2, description
+1, "10:30:59.010", "04:32:19.000", "alarm 1"
+2, "03:11:23.000", "04:33:19.002", "alarm 2"
+3, "14:59:10.043", "04:34:19.003", "alarm 3"
+
+class com.gs.fw.common.mithra.test.domain.alarm.AlarmTenMillis
+id, time, description
+1, "10:30:59.010", "alarm 1"
+2, "03:11:23.000", "alarm 2"
+3, "14:59:10.043", "alarm 3"
+
+4, "14:59:10.000", "alarm 3"
+5, "14:59:10.001", "alarm 3"
+
+6, "14:59:10.002", "alarm 3"
+7, "14:59:10.003", "alarm 3"
+8, "14:59:10.004", "alarm 3"
+
+9, "14:59:10.005", "alarm 3"
+10, "14:59:10.006", "alarm 3"
+11, "14:59:10.007", "alarm 3"
+12, "14:59:10.008", "alarm 3"
+
+13, "14:59:10.009", "alarm 3"
+14, "14:59:10.010", "alarm 3"
+15, "14:59:10.011", "alarm 3"
+
+16, "14:59:10.199", "alarm 3"
+17, "14:59:10.999", "alarm 3"
+
+class com.gs.fw.common.mithra.test.domain.alarm.AlarmNonTransactional
+id, time, description
+1, "10:30:59.011", "alarm 1"
+2, "03:11:23.000", "alarm 2"
+3, "14:59:10.043", "alarm 3"
+4, null, "null alarm"
+
+class com.gs.fw.common.mithra.test.domain.alarm.AlarmDatedNonTransactional
+id, time, description, processingDateFrom,processingDateTo
+1, "10:30:59.011", "alarm 1", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+2, "03:11:23.000", "alarm 2", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+3, "14:59:10.043", "alarm 3", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+4, null, "null alarm", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.alarm.AlarmDatedTransactional
+id, time, description, processingDateFrom,processingDateTo
+1, "10:30:59.011", "alarm 1", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+2, "03:11:23.000", "alarm 2", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+3, "14:59:10.043", "alarm 3", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.alarm.AlarmBitemporalTransactional
+id, time, description, businessDateFrom, businessDateTo, processingDateFrom,processingDateTo
+1, "10:30:59.011", "alarm 1", "2012-01-01 23:59:00.0", "9999-12-01 23:59:00.0", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+2, "03:11:23.000", "alarm 2", "2012-01-01 23:59:00.0", "9999-12-01 23:59:00.0", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+3, "14:59:10.043", "alarm 3", "2012-01-01 23:59:00.0", "9999-12-01 23:59:00.0", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.AltSynonym
+productId, synonymTypeId, value
+10, 100, "BODS"
+10, 101, "BDDGS"
+10, 102, "8675309"
+11, 100, "STLA"
+11, 102, "5551234"
+
+class com.gs.fw.common.mithra.test.domain.AltSynonymType
+synonymTypeId, name
+100, "VALOREN"
+101, "CUSIP"
+102, "SEDOL"
+
+class com.gs.fw.common.mithra.test.domain.PersonRO
+id, firstName, lastName, firmId, addressId
+1, "Lloyd", "Blankfein", null, 1
+
+class com.gs.fw.common.mithra.test.domain.FirmRO
+id, legalName, ceoId
+1, "GS", null
+
+class com.gs.fw.common.mithra.test.domain.PersonAddressRO
+id, addressType, street, city
+1, null, "Washington Street", "Hoboken"
+1, "Vacation", "Corolla Blvd", "Corolla"
+
+class com.gs.fw.common.mithra.test.domain.AuditedTree
+nodeId, parentId, name, processingDateFrom, processingDateTo
+1, null, "Root", "2012-01-02 10:00:00.0", "9999-12-01 23:59:00.0"
+2, 1, "Level 1 Child 1", "2012-01-02 10:00:00.0", "9999-12-01 23:59:00.0"
+3, 1, "Level 1 Child 2", "2012-01-02 10:00:00.0", "9999-12-01 23:59:00.0"
+4, 3, "Level 2 Child 1", "2012-01-02 10:00:00.0", "9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.glew.BitemporalProductSynonym
+instrumentId, synonymType, synonymValue, businessDateFrom, businessDateTo, processingDateFrom, processingDateTo
+1, "CUS", "ABCD", "2012-01-01 23:59:00.0", "9999-12-01 23:59:00.0", "2012-01-02 10:00:00.0", "9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.Projito
+id, name, bvp, dueDate, status, processingDateFrom, processingDateTo
+1, "name 1", "bvp 1", "2015-01-01 00:00:00.0", "Doodling", "2000-01-01 00:00:00.0", "9999-12-01 00:00:00.0"
+2, "name 2", "bvp 2", "2015-02-01 00:00:00.0", "Doodling", "2000-02-01 00:00:00.0", "9999-12-01 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.ProjitoVersion
+id, versionedRootId, number, processingDateFrom, processingDateTo
+1, 1, 1, "2000-01-01 00:00:00.0", "9999-12-01 00:00:00.0"
+2, 2, 1, "2000-02-01 00:00:00.0", "2000-03-01 00:00:00.0"
+2, 2, 2, "2000-03-01 00:00:00.0", "9999-12-01 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.ProjitoMembership
+id, projitoId, kerberos, processingDateFrom, processingDateTo
+1, 1, "tester1", "2000-01-01 00:00:00.0", "9999-12-01 00:00:00.0"
+2, 2, "tester2", "2000-02-01 00:00:00.0", "9999-12-01 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.ProjitoMeasureOfSuccess
+id, projitoId, name, description, accountableKerberos, processingDateFrom, processingDateTo
+1, 2, "MoS 1", "Measure of success description 1",  "tester1", "2000-02-01 00:00:00.0", "9999-12-01 00:00:00.0"
+2, 2, "MoS 2", "Measure of success description 2",  "tester2", "2000-02-01 00:00:00.0", "2000-03-01 00:00:00.0"
+2, 2, "MoS 2", "Measure of success description 2a", "tester2", "2000-03-01 00:00:00.0", "9999-12-01 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.ProjitoEmployee
+kerberos, name, processingDateFrom, processingDateTo
+"tester1", "Bob", "2000-01-01 00:00:00.0", "9999-12-01 00:00:00.0"
+"tester2", "Ali", "2000-01-01 00:00:00.0", "9999-12-01 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.ProjitoAddress
+id, kerberos, street, city, state, zipCode, processingDateFrom, processingDateTo
+1, "tester1", "1 Infinite Loop", "CA", "Cupertino",  "95014", "2000-01-01 00:00:00.0", "9999-12-01 00:00:00.0"
+2, "tester2", "1 Infinite Loop", "CA", "Cupertino",  "95014", "2000-01-01 00:00:00.0", "9999-12-01 00:00:00.0"
+3, "tester2", "1 Hacker Way",    "CA", "Menlo Park", "94025", "2000-01-01 00:00:00.0", "9999-12-01 00:00:00.0"
+
+
+
+class com.gs.fw.common.mithra.test.domain.FullyCachedTinyBalance
+balanceId,quantity,businessDateFrom,businessDateTo,processingDateFrom,processingDateTo
+1,-6851,"2002-11-29 00:00:00.0","9999-12-01 23:59:00.0","2002-11-30 00:30:00.0","9999-12-01 23:59:00.0"
+2,11.2,"2003-01-01 00:00:00.0","9999-12-01 23:59:00.0","2003-01-03 00:30:00.0","9999-12-01 23:59:00.0"
+3,1000,"2002-02-01 00:00:00.0","9999-12-01 23:59:00.0","2002-02-02 00:30:00.0","9999-12-01 23:59:00.0"
+4,-3000,"2002-12-27 00:00:00.0","9999-12-01 23:59:00.0","2002-12-28 00:30:00.0","9999-12-01 23:59:00.0"
+5,10,"2002-01-27 00:00:00.0","9999-12-01 23:59:00.0","2002-01-28 00:30:00.0","9999-12-01 23:59:00.0"
+10,100,"2005-01-14 18:30:00.0","2005-01-24 18:30:00.0","2004-01-15 00:30:00.0","2005-01-15 00:30:00.0" // outzed
+10,100,"2005-01-14 18:30:00.0","2005-01-24 18:30:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+10,200,"2005-01-24 18:30:00.0","9999-12-01 23:59:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+20,50,"2005-01-10 18:30:00.0","2005-01-14 18:30:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+20,100,"2005-01-14 18:30:00.0","2005-01-24 18:30:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+20,200,"2005-01-24 18:30:00.0","9999-12-01 23:59:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+40,-6851,"2002-11-29 00:00:00.0","2003-01-01 00:00:00.0","2002-11-30 00:30:00.0","9999-12-01 23:59:00.0"
+50,50,"2003-01-01 18:30:00.0","2004-01-01 18:30:00.0","2005-01-15 00:30:00.0","2005-02-15 00:30:00.0"
+50,60,"2003-01-01 18:30:00.0","2004-01-01 18:30:00.0","2005-02-15 00:30:00.0","2005-03-15 00:30:00.0"
+50,70,"2003-01-01 18:30:00.0","2004-01-01 18:30:00.0","2005-03-15 00:30:00.0","9999-12-01 23:59:00.0"
+50,100,"2004-01-01 18:30:00.0","2005-01-01 18:30:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+50,200,"2005-01-01 18:30:00.0","9999-12-01 23:59:00.0","2005-01-15 00:30:00.0","9999-12-01 23:59:00.0"
+8765, 19644704.95261119, "2005-11-03 18:30:00.0", "2005-11-25 18:30:00.0", "2005-11-05 01:18:18.0", "9999-12-01 23:59:00.0"
+8765, 19644704.49246518, "2006-03-02 18:30:00.0", "2006-03-31 18:30:00.0", "2006-03-04 01:18:15.0", "9999-12-01 23:59:00.0"
+8765, 19644705.30387255, "2006-04-06 18:30:00.0", "2006-04-28 18:30:00.0", "2006-04-08 02:57:03.0", "9999-12-01 23:59:00.0"
+8765, 19644704.63011611, "2006-05-04 18:30:00.0", "2006-05-26 18:30:00.0", "2006-05-06 02:57:21.0", "9999-12-01 23:59:00.0"
+8765, 19644704.61086023, "2006-06-01 18:30:00.0", "2006-06-30 18:30:00.0", "2006-06-03 05:15:48.0", "9999-12-01 23:59:00.0"
+8765, 19644704.85640967, "2006-07-06 18:30:00.0", "2006-07-28 18:30:00.0", "2006-07-08 03:56:10.0", "9999-12-01 23:59:00.0"
+8765, 19644706.36509228, "2006-08-03 18:30:00.0", "2006-08-25 18:30:00.0", "2006-08-05 02:41:55.0", "9999-12-01 23:59:00.0"
+8765, 19644704.80704653, "2006-08-31 18:30:00.0", "2006-09-29 18:30:00.0", "2006-09-02 02:54:11.0", "9999-12-01 23:59:00.0"
+8765, 19644705.41001805, "2006-10-09 18:30:00.0", "2006-10-27 18:30:00.0", "2006-10-11 14:04:49.0", "9999-12-01 23:59:00.0"
+8765, 19644704.47623301, "2006-11-02 18:30:00.0", "2006-11-24 18:30:00.0", "2006-11-04 10:24:34.0", "9999-12-01 23:59:00.0"
+8765, 19644705.24258852, "2006-11-30 18:30:00.0", "2006-12-29 18:30:00.0", "2006-12-02 00:45:25.0", "9999-12-01 23:59:00.0"
+8765, 19644705.2976799, "2007-01-04 18:30:00.0", "2007-01-26 18:30:00.0", "2007-01-06 00:30:27.0", "9999-12-01 23:59:00.0"
+8765, 19644705.20455837, "2007-02-01 18:30:00.0", "2007-02-23 18:30:00.0", "2007-02-02 23:54:37.0", "9999-12-01 23:59:00.0"
+8765, 19644705.97286183, "2007-03-01 18:30:00.0", "2007-03-30 18:30:00.0", "2007-03-03 07:39:44.0", "9999-12-01 23:59:00.0"
+8765, -600082153.89371634, "2007-03-30 18:30:00.0", "2007-04-05 18:30:00.0", "2007-04-03 00:27:37.0", "9999-12-01 23:59:00.0"
+8765, 19644706.0877701, "2007-04-05 18:30:00.0", "2007-04-27 18:30:00.0", "2007-04-07 02:00:15.0", "9999-12-01 23:59:00.0"
+8765, -556289456.11958635, "2007-04-27 18:30:00.0", "2007-05-03 18:30:00.0", "2007-05-01 01:59:38.0", "9999-12-01 23:59:00.0"
+8765, 19644706.48041368, "2007-05-03 18:30:00.0", "2007-05-25 18:30:00.0", "2007-05-05 03:00:54.0", "9999-12-01 23:59:00.0"
+8765, -596089603.30842626, "2007-05-25 18:30:00.0", "2007-05-31 18:30:00.0", "2007-05-29 00:53:51.0", "9999-12-01 23:59:00.0"
+8765, 19644705.68157375, "2007-05-31 18:30:00.0", "2007-06-29 18:30:00.0", "2007-06-02 06:41:27.0", "9999-12-01 23:59:00.0"
+8765, -702388075.04554534, "2007-06-29 18:30:00.0", "2007-07-05 18:30:00.0", "2007-07-03 04:49:51.0", "9999-12-01 23:59:00.0"
+8765, -700388230.8653239, "2007-07-05 18:30:00.0", "2007-07-06 18:30:00.0", "2007-07-07 02:52:16.0", "2007-07-07 03:08:41.0"
+8765, 19522202.78467608, "2007-07-05 18:30:00.0", "2007-07-24 18:30:00.0", "2007-07-07 03:08:41.0", "9999-12-01 23:59:00.0"
+8765, 19644707.34467607, "2007-07-24 18:30:00.0", "2007-07-25 18:30:00.0", "2007-07-26 00:47:24.0", "9999-12-01 23:59:00.0"
+8765, 19644706.34467607, "2007-07-25 18:30:00.0", "2007-07-27 18:30:00.0", "2007-07-27 00:02:56.0", "9999-12-01 23:59:00.0"
+8765, -593525109.43269861, "2007-07-27 18:30:00.0", "2007-08-02 18:30:00.0", "2007-07-31 00:05:03.0", "9999-12-01 23:59:00.0"
+8765, -593989607.64014387, "2007-08-02 18:30:00.0", "2007-08-03 18:30:00.0", "2007-08-04 08:19:17.0", "2007-08-04 08:37:02.0"
+8765, 19644705.2698561, "2007-08-02 18:30:00.0", "2007-08-30 18:30:00.0", "2007-08-04 08:37:02.0", "9999-12-01 23:59:00.0"
+8765, 19644703.5398561, "2007-08-30 18:30:00.0", "2007-08-31 18:30:00.0", "2007-09-01 00:34:36.0", "9999-12-01 23:59:00.0"
+8765, -692867766.39118838, "2007-08-31 18:30:00.0", "2007-09-06 18:30:00.0", "2007-09-04 00:11:23.0", "9999-12-01 23:59:00.0"
+8765, -701576484.07081711, "2007-09-06 18:30:00.0", "2007-09-07 18:30:00.0", "2007-09-08 05:53:55.0", "2007-09-08 06:15:34.0"
+8765, 19644706.27918291, "2007-09-06 18:30:00.0", "2007-09-28 18:30:00.0", "2007-09-08 06:15:34.0", "9999-12-01 23:59:00.0"
+8765, -595573638.12757134, "2007-09-28 18:30:00.0", "2007-10-04 18:30:00.0", "2007-10-02 05:56:11.0", "9999-12-01 23:59:00.0"
+8765, -576549871.95451009, "2007-10-04 18:30:00.0", "2007-10-05 18:30:00.0", "2007-10-06 05:46:01.0", "2007-10-06 06:01:44.0"
+8765, 19644703.65548992, "2007-10-04 18:30:00.0", "2007-10-08 18:30:00.0", "2007-10-06 06:01:44.0", "9999-12-01 23:59:00.0"
+8765, 19644705.31548992, "2007-10-08 18:30:00.0", "9999-12-01 23:59:00.0", "2007-10-10 11:53:49.0", "9999-12-01 23:59:00.0"
+
+8764, 19644705.97286183, "2007-03-02 00:00:00.0", "2007-04-02 00:00:00.0", "2007-03-03 07:32:05.0", "9999-12-01 23:59:00.0"
+8764, -600082153.89371634, "2007-04-02 00:00:00.0", "2007-04-06 00:00:00.0", "2007-04-02 21:25:20.0", "9999-12-01 23:59:00.0"
+8764, 19644706.0877701, "2007-04-06 00:00:00.0", "2007-04-30 00:00:00.0", "2007-04-06 20:06:38.0", "9999-12-01 23:59:00.0"
+8764, -556289456.11958635, "2007-04-30 00:00:00.0", "2007-05-04 00:00:00.0", "2007-04-30 21:36:04.0", "9999-12-01 23:59:00.0"
+8764, 19644706.48041368, "2007-05-04 00:00:00.0", "2007-05-28 00:00:00.0", "2007-05-04 21:05:20.0", "9999-12-01 23:59:00.0"
+8764, -596089603.30842626, "2007-05-28 00:00:00.0", "2007-06-01 00:00:00.0", "2007-05-28 19:53:57.0", "9999-12-01 23:59:00.0"
+8764, 19644705.68157375, "2007-06-01 00:00:00.0", "2007-07-02 00:00:00.0", "2007-06-02 04:36:37.0", "9999-12-01 23:59:00.0"
+8764, -702388075.04554534, "2007-07-02 00:00:00.0", "2007-07-06 00:00:00.0", "2007-07-02 21:58:11.0", "9999-12-01 23:59:00.0"
+8764, 19522202.78467608, "2007-07-06 00:00:00.0", "2007-07-25 00:00:00.0", "2007-07-07 02:54:03.0", "9999-12-01 23:59:00.0"
+8764, 19644707.34467607, "2007-07-25 00:00:00.0", "2007-07-26 00:00:00.0", "2007-07-25 10:15:27.0", "9999-12-01 23:59:00.0"
+8764, 19644706.34467607, "2007-07-26 00:00:00.0", "2007-07-30 00:00:00.0", "2007-07-26 21:36:45.0", "9999-12-01 23:59:00.0"
+8764, -593525109.43269861, "2007-07-30 00:00:00.0", "2007-08-03 00:00:00.0", "2007-07-30 21:44:41.0", "9999-12-01 23:59:00.0"
+8764, 19644705.2698561, "2007-08-03 00:00:00.0", "2007-08-31 00:00:00.0", "2007-08-04 08:21:40.0", "9999-12-01 23:59:00.0"
+8764, 19644703.5398561, "2007-08-31 00:00:00.0", "2007-09-03 00:00:00.0", "2007-08-31 20:23:25.0", "9999-12-01 23:59:00.0"
+8764, -692867766.39118838, "2007-09-03 00:00:00.0", "2007-09-07 00:00:00.0", "2007-09-02 20:03:46.0", "9999-12-01 23:59:00.0"
+8764, 19644706.27918291, "2007-09-07 00:00:00.0", "2007-10-01 00:00:00.0", "2007-09-08 05:58:06.0", "9999-12-01 23:59:00.0"
+8764, -595573638.12757134, "2007-10-01 00:00:00.0", "2007-10-05 00:00:00.0", "2007-10-01 21:37:23.0", "9999-12-01 23:59:00.0"
+8764, 19644703.65548992, "2007-10-05 00:00:00.0", "2007-10-10 11:53:47.0", "2007-10-06 05:47:50.0", "2007-10-10 11:53:47.0"
+8764, 19644703.65548992, "2007-10-05 00:00:00.0", "2007-10-09 00:00:00.0", "2007-10-10 11:53:47.0", "9999-12-01 23:59:00.0"
+8764, 19644705.31548992, "2007-10-09 00:00:00.0", "2007-10-29 00:00:00.0", "2007-10-10 11:53:47.0", "9999-12-01 23:59:00.0"
+8764, -1336922075.5390835, "2007-10-29 00:00:00.0", "9999-12-01 23:59:00.0", "2007-10-28 19:53:40.0", "9999-12-01 23:59:00.0"
+
+8800,200.00,"2005-12-15 00:00:00.0","9999-12-01 23:59:00.0","2005-12-15 00:00:00.0","2011-07-01 10:00:00.0"
+8800,200.00,"2005-12-15 00:00:00.0","2011-02-01 00:00:00.0","2011-07-01 10:00:00.0","9999-12-01 23:59:00.0"
+8800,250.00,"2011-02-01 00:00:00.0","9999-12-01 23:59:00.0","2011-07-01 10:00:00.0","9999-12-01 23:59:00.0"
+8801,100.00,"2005-12-15 00:00:00.0","9999-12-01 23:59:00.0","2005-12-15 00:00:00.0","2011-07-01 10:00:00.0"
+8801,100.00,"2005-12-15 00:00:00.0","2011-07-03 00:00:00.0","2011-07-01 10:00:00.0","9999-12-01 23:59:00.0"
+8802,150.00,"2005-12-15 00:00:00.0","9999-12-01 23:59:00.0","2011-07-01 10:00:00.0","9999-12-01 23:59:00.0"
+
+
+/*
+
+This is the actual EOF
+
+*/
+
+
+/*class com.gs.fw.common.mithra.test.domain.Sale
+saleId,sellerId, nullableBigDecimal,nullableVeryBigDecimal
+1,  1, 1000.50, 10000.99999
+2,  1, null, 20000.99999
+3,  1, 2000.999,30000.99999
+4,  2, 3000.999, 40000.99999
+5,  2, null,null
+6,  2, 555.9999,60000.99999
+7,  3, null,70000.99999
+8,  3, 777.9999,80000.99999
+9,  4, null,null
+10, 4, null,null
+ */

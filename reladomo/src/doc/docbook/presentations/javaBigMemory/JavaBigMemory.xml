@@ -1,0 +1,1060 @@
+<?xml version='1.0'?>
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreeyee[ to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<dbs:slides xmlns="http://docbook.org/ns/docbook"
+            xmlns:dbs="http://docbook.org/ns/docbook-slides">
+    <slidesinfo>
+        <title>Java Big Memory: Replication for Resiliency and Load Balancing of Milestoned Data</title>
+        <copyright>
+            <year>2016</year>
+            <holder>Goldman Sachs &amp; Co.</holder>
+        </copyright>
+    </slidesinfo>
+    <dbs:foil>
+        <title>Java Big Memory: Replication for Resiliency and Load Balancing of Milestoned Data</title>
+
+        <para>
+            Mohammad Rezaei
+        </para>
+        <para>
+            June 2014
+        </para>
+    </dbs:foil>
+
+    <dbs:foil>
+        <title>
+            Agenda
+        </title>
+
+        <itemizedlist>
+            <listitem>
+                <para>What is cache replication?</para>
+            </listitem>
+            <listitem>
+                <para>Motivation</para>
+            </listitem>
+            <listitem>
+                <para>When is replication appropriate?</para>
+            </listitem>
+            <listitem>
+                <para>C-heap data storage and Strings</para>
+            </listitem>
+            <listitem>
+                <para>How does replication work?</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>MasterCacheService</para>
+                </listitem>
+                <listitem>
+                    <para>Replication data organization</para>
+                </listitem>
+                <listitem>
+                    <para>Replication data stream</para>
+                </listitem>
+                <listitem>
+                    <para>Master sync algorithm</para>
+                </listitem>
+                <listitem>
+                    <para>Replica sync algorithm</para>
+                </listitem>
+                <listitem>
+                    <para>Removing data from the master cache</para>
+                </listitem>
+                <listitem>
+                    <para>Restarting Master</para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>Milestone Consistency</para>
+            </listitem>
+            <listitem>
+                <para>Performance numbers</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            What is replication?
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>Cache replication involves copying data from a
+                    <emphasis>master</emphasis>
+                    cache to one or more
+                    <emphasis>replica</emphasis>
+                    caches.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Replication has to correctly copy the data so that:</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>No data is missing</para>
+                </listitem>
+                <listitem>
+                    <para>When master is updated, the replica can catch up (efficiently).</para>
+                </listitem>
+                <listitem>
+                    <para>The application knows the status of the replication so it can construct correct queries (it
+                        must
+                        not query data that the replica doesn’t have).
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>Each Reladomo class has its own cache. Replication is performed at the same (class) level.</para>
+            </listitem>
+            <listitem>
+                <para>A replica typically has a single master, but it may have multiple masters (for different
+                    domains/classes).
+                </para>
+            </listitem>
+            <listitem>
+                <para>A replica can have non-replicated classes.</para>
+            </listitem>
+            <listitem>
+                <para>A replicated class is read-only on the replica.</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Why an in-memory store?
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>"Gartner Says In-Memory Computing Is Racing Towards Mainstream Adoption"</para>
+            </listitem>
+        </itemizedlist>
+        <itemizedlist>
+            <listitem>
+                <para>http://www.gartner.com/newsroom/id/2405315</para>
+            </listitem>
+            <listitem>
+                <para>
+                    http://www.slideshare.net/SAP_Nederland/the-next-generation-architecture-inmemory-computing-massimo-pezzini
+                </para>
+            </listitem>
+        </itemizedlist>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="JavaBigMemory_4_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Why an in-memory store?
+        </title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="JavaBigMemory_5_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Why an in-memory store?
+        </title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="JavaBigMemory_6_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Technical advantages of an in-memory store
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>Latency numbers every programmer should know:
+                </para>
+            </listitem>
+        </itemizedlist>
+        <para>L1 cache reference ......................... 0.5 ns</para>
+        <para>Branch mispredict ............................ 5 ns</para>
+        <para>L2 cache reference ........................... 7 ns</para>
+        <para>Mutex lock/unlock ........................... 25 ns</para>
+        <para>Main memory reference ...................... 100 ns</para>
+        <para>SSD random read ........................ 150,000 ns = 150 µs</para>
+        <para>Round trip within same datacenter ...... 500,000 ns = 0.5 ms</para>
+        <para>Disk seek ........................... 10,000,000 ns = 10 ms</para>
+        <para>Send packet CA->Netherlands->CA .... 150,000,000 ns = 150 ms</para>
+        <itemizedlist>
+            <listitem>
+                <para>Bandwidth numbers:</para>
+            </listitem>
+        </itemizedlist>
+        <para>Read 1 MB seq. from memory ................ 20,000 ns = 20 µs</para>
+        <para>Read 1 MB seq. from FiberChannel ......... 400,000 ns = 400 µs</para>
+        <para>Read 1 MB seq. from SSD ................ 2,000,000 ns = 2 ms</para>
+        <para>Read 1 MB seq. over 1 Gbps network .... 10,000,000 ns = 10 ms</para>
+        <para>Read 1 MB seq. from disk .............. 20,000,000 ns = 20 ms</para>
+        <itemizedlist>
+            <listitem>
+                <para>Disks suffer from physical seek contention.</para>
+            </listitem>
+            <listitem>
+                <para>Networks suffer from line/router contention.</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Motivation
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>Certain problems are best solved in memory.</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>A low collapse factor aggregation where the aggregation can happen along any dimension is such
+                        an example.
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>Storing large amounts of data in memory causes some issues.</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>GC – a Full GC can bring all processing to a halt</para>
+                </listitem>
+                <listitem>
+                    <para>Low resiliency: recover time can be very large.</para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>Replication has the following benefits:</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>A replicated cache is more resilient: if a replica goes down, other replica can still
+                        function.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Replication adds horizontal scalability to a system. Queries should be load balanced across
+                        replicas.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Recovery is much faster: it’s faster to shutdown/restart a replica than reload from a database
+                        or
+                        cache archive.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Since only the master cache interacts with the database, the database load is lower than
+                        having
+                        all
+                        caches talk to the database.
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            When is replication a good fit?
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>An application using replication should fit the following profile:</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Heavy read, no write (to the replicated classes).</para>
+                </listitem>
+                <listitem>
+                    <para>Can load balance queries between replicas.</para>
+                </listitem>
+                <listitem>
+                    <para>Large amounts of data (many GB).</para>
+                </listitem>
+                <listitem>
+                    <para>Configured for C-heap (only dated objects can go on the C-heap).</para>
+                </listitem>
+                <listitem>
+                    <para>Data is loaded via the Mithra CacheLoader.xml. Master cache is configured for periodic refresh
+                        from
+                        the database.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>All queries have a non-infinity processing date (aka snapshot). 9</para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Reladomo Java-heap only memory layout
+        </title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="JavaBigMemory_10_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Reladomo C and Java-heap memory layout
+        </title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="JavaBigMemory_11_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            C-heap data storage and Strings
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>MithraData objects are stored on the C-heap in a contiguous chunk of memory (per class).</para>
+            </listitem>
+            <listitem>
+                <para>Each data object occupies a fixed number of bytes in a fixed format.</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>E.g. the first 4 bytes is an integer account id; the next 8 bytes is the double quantity, etc.
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>Strings are not primitives and can’t be stored on the C-heap.</para>
+            </listitem>
+            <listitem>
+                <para>Reladomo assigns a unique integer id to every String and stores this on the C- heap.</para>
+            </listitem>
+            <listitem>
+                <para>A simple String array is kept on-heap. The array index of a String is the same number that’s
+                    stored on the c-heap for all occurrences of that String.
+                </para>
+            </listitem>
+            <listitem>
+                <para>What makes Strings and replication tricky is that the integers assigned to the Strings in the
+                    replica may not be the same as the ones on the master!
+                </para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>This can easily happen if the replica has non-replicated classes or multiple masters.</para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Replication data organization
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>MithraData objects are stored on the C-heap in a contiguous chunk of memory (per class).</para>
+            </listitem>
+            <listitem>
+                <para>We only replicate the object data and not the indices.</para>
+            </listitem>
+            <listitem>
+                <para>Every 1024 objects are called a<emphasis>page</emphasis>.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Every page has a long page version. Version "0" is reserved for "dirty".</para>
+            </listitem>
+            <listitem>
+                <para>On the master, any write to the C-heap marks the corresponding page as dirty. Replicas are
+                    read-only; the only writes are through replication.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Each class has a long<emphasis>currentPageVersion</emphasis>.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Every time a call from a replica arrives, the master cache is locked, the currentPageVersion is
+                    incremented, all dirty pages are assigned the new currentPageVersion, and finally the cache is
+                    unlocked.
+                </para>
+            </listitem>
+            <listitem>
+                <para>One of the core implementation criteria for replication is that there must never be any cache
+                    locks while data is sent on the network.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Each replica knows the last synced currentPageVersion (per class). This value is included in the
+                    call to sync.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Conceptually, the master looks for pages that have a higher page version and sends only those.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Replication data stream
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>The data stream between the master and replica caches is organized in terms of pages.</para>
+            </listitem>
+            <listitem>
+                <para>The replica calls into the master cache, telling it what the max page version is that the replica
+                    has synced to.
+                </para>
+            </listitem>
+            <listitem>
+                <para>The master cache looks for any pages that have a higher page version and sends them to the
+                    replica.
+                </para>
+            </listitem>
+            <listitem>
+                <para>The tricky part is to do this without holding a lock while transferring data and still keep the
+                    data consistent.
+                </para>
+            </listitem>
+            <listitem>
+                <para>The main solution is to hold a lock, copy data elsewhere, release the lock and then transfer the
+                    copied version.
+                </para>
+            </listitem>
+            <listitem>
+                <para>To avoid using large amounts of memory, the amount of data copied is limited to 10 pages.</para>
+            </listitem>
+            <listitem>
+                <para>There is a separate call to sync strings.</para>
+            </listitem>
+            <listitem>
+                <para>MithraCacheUplink holds a map of the local (replica) integers to the master integers.</para>
+            </listitem>
+            <listitem>
+                <para>When data arrives at the replica, the string integers are replaced with the local value.</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Master sync algorithm
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>Under a lock, the pages that have to be sent are computed.</para>
+            </listitem>
+            <listitem>
+                <para>If the number of pages to send is less than 10, the pages are copied (still under lock) and the
+                    lock is released. The copied pages are sent and we’re done.
+                </para>
+            </listitem>
+            <listitem>
+                <para>If the number of pages to send is greater than 10, they are sent in batches.</para>
+            </listitem>
+            <listitem>
+                <para>For each batch (10 pages), the cache is locked, we look at the page versions for that batch, if
+                    nothing has changed, we copy the pages, release
+                    the lock and send the pages.
+                </para>
+            </listitem>
+            <listitem>
+                <para>If something has changed, we re-scan the cache for pages that need to be sent and restart from the
+                    beginning.
+                </para>
+            </listitem>
+            <listitem>
+                <para>A replica can therefore see the same page more than once in its incoming stream. It’ll ignore the
+                    older copies.
+                </para>
+            </listitem>
+            <listitem>
+                <para>See the algorithm in FastUnsafeOffHeapDataStorage.serializeSyncResult</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Heap State before Sync
+        </title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="JavaBigMemory_16_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Initial Page Scan
+        </title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="JavaBigMemory_17_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            First Group Sent
+        </title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="JavaBigMemory_18_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Cache is updated during first group send
+        </title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="JavaBigMemory_19_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Second Group Sent
+        </title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="JavaBigMemory_20_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Third Group Rescan
+        </title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="JavaBigMemory_21_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Third Group Sent
+        </title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="JavaBigMemory_22_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Fourth Group Sent
+        </title>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="JavaBigMemory_23_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Replica sync algorithm
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>The replica receives a set of pages from the master.</para>
+            </listitem>
+            <listitem>
+                <para>Each page has a page number, page version, page data and used data array.</para>
+            </listitem>
+            <listitem>
+                <para>The used data array is a bit set representing which data slots on a page are actually used.</para>
+            </listitem>
+            <listitem>
+                <para>The replica then has to compare the incoming page with the exiting page (if any) and correctly
+                    update its local cache indices according to the modified data.
+                </para>
+            </listitem>
+        </itemizedlist>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="JavaBigMemory_24_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Removing data from the master cache
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>It is occasionally useful to remove data from a cache (e.g. drop a date).</para>
+            </listitem>
+            <listitem>
+                <para>It is critical that the data not be currently in use on any replica.</para>
+            </listitem>
+            <listitem>
+                <para>This has to be implemented at the application level. The typical implementation uses a quiesce
+                    algorithm:
+                </para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>The application will disallow any further queries involving the data.</para>
+                </listitem>
+                <listitem>
+                    <para>It will then wait for all running queries to finish.</para>
+                </listitem>
+                <listitem>
+                    <para>Finally, it can remove the data from the master.</para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>Removed data is marked for deletion on the replica. The data object is only</para>
+            </listitem>
+            referenced via a Weak reference.
+            <listitem>
+                <para>Once the GC removes the reference, the data is released and the slot is marked as unused.</para>
+            </listitem>
+            <listitem>
+                <para>If the GC cycle happens faster on the master, it’s possible that the data on the replica is not
+                    fully released yet.
+                </para>
+            </listitem>
+            <listitem>
+                <para>If new data is added to the master, its possible that the data on the replica has to be thrown
+                    away (destroyed).
+                </para>
+            </listitem>
+            <listitem>
+                <para>Any destroyed data will throw exceptions if accessed. That’s why it’s critical the application has
+                    safeguards against referencing deleted data.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Restarting Master
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>The data synchronization between the master and replica is based on the physical layout of the
+                    data on the master.
+                </para>
+            </listitem>
+            <listitem>
+                <para>The physical layout of the data can’t be easily reproduced if the master goes down.</para>
+            </listitem>
+            <listitem>
+                <para>Therefore, when a master goes down, the running replicas cannot switch to a new master. A replica
+                    that has lost its master is called a ronin.
+                </para>
+            </listitem>
+            <listitem>
+                <para>To restart the replica, the following procedure must be implemented:</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>A new master is started.</para>
+                </listitem>
+                <listitem>
+                    <para>A single replica is quiesced (no new queries are allowed, existing queries run to completion).
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>The replica is then shutdown and restarted pointing to the new master.</para>
+                </listitem>
+                <listitem>
+                    <para>The steps are repeated for other replicas until they are all on the new master.</para>
+                </listitem>
+                <listitem>
+                    <para>Queries can be served from either the new or old replicas while the procedure is continuing.
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Milestone Consistency
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>Central question:</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>How do we query the replicas (that may be in different sync states) and get consistent
+                        results?
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>The question exists even when we don't have replication, because we read many different types of
+                    data
+                    out of the database
+                </para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>It's just as important that the trade data and product data it joins to are consistent</para>
+                </listitem>
+            </itemizedlist>
+
+            <listitem>
+                <para>We'll cover this in three steps:</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>How can this be done with a query against a database?</para>
+                </listitem>
+                <listitem>
+                    <para>How can this be done with a query against a singular cache?</para>
+                </listitem>
+                <listitem>
+                    <para>
+                        How can this be done with replication?
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Milestone Consistency: Queries and Mutation
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>In a system that implements audit milestoning, we have to understand when a query is guaranteed to
+                    be repeatable.
+                </para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>The query must refer to a fixed point in time that is guaranteed to never mutate.</para>
+                </listitem>
+            </itemizedlist>
+
+            <listitem>
+                <para>All mutations occur within the context of a transaction.</para>
+            </listitem>
+            <listitem>
+                <para>All objects in the same transaction have the same mutation time, which is taken to be the
+                    transaction start time.
+                </para>
+            </listitem>
+            <listitem>
+                <para>"now" is not a fixed point (yet), because there may be transactions in flight that have started
+                    and not finished yet.
+                </para>
+            </listitem>
+            <listitem>
+                <para>It is imperative for all transactions to have a guaranteed timeout. 2 minutes is our production
+                    setting.
+                </para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>"now" is not fixed, but "now - 2 minutes" is. We usually add a little bit for clock
+                        synchronization, e.g. "now- 2.5 minutes", which we'll call
+                        <emphasis>"stability time"</emphasis>
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>So when doing queries against the DB, a query of the form IN &lt;= processingTime &amp;&amp; &gt;
+                    processingTime is guaranteed to be correct if processingtime less than stability time.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Milestone Consistency: Master Cache
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>A cache (master or stand alone) maintains its own stability time (sometime called "now snapshot").
+                </para>
+            </listitem>
+            <listitem>
+                <para>When a cache performs a refresh, it asks for all data newer than its current stability time, but
+                    older than database stability time. when the refresh is
+                    finished, the cache's stability time is moved forward.
+                </para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Example:</para>
+                </listitem>
+                <itemizedlist>
+                    <listitem>
+                        <para>Wall clock: 4:11:00 pm</para>
+                    </listitem>
+                    <listitem>
+                        <para>DB stability time: 4:08:30 pm</para>
+                    </listitem>
+                    <listitem>
+                        <para>Cache stability time 4:00:00 pm</para>
+                    </listitem>
+                    <listitem>
+                        <para>at 4:11, cache asks for data between 4:00:00 and 4:08:30. refresh finishes at 4:15.
+                            cache's stability time is moved to 4:08:30
+                        </para>
+                    </listitem>
+                </itemizedlist>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Master &amp; replica database refresh time
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>Reladomo cache loader has a periodic refresh.</para>
+            </listitem>
+            <listitem>
+                <para>This refresh is running on the master.</para>
+            </listitem>
+            <listitem>
+                <para>A refresh cycle picks a refresh time, does a database refresh across all classes and marks them
+                    with the new refresh time.
+                </para>
+            </listitem>
+            <listitem>
+                <para>As part of the master-replica sync, this refresh value is sent to the replica (per class).</para>
+            </listitem>
+            <listitem>
+                <para>The replica can then compute the minimum refresh time from all its classes to arrive at the
+                    replica refresh time.
+                </para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>It’s possible different classes have different refresh times on the replica because the sync
+                        guarantee is on a per-class basis.
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>A replica may also have multiple masters, which will naturally have different refresh times.
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>The application must be aware of this refresh time and construct all queries accordingly
+                    (processing date must not be greater than the refresh time).
+                </para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Performance numbers
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>100 GB cache, takes 3.5 hours to load from database.</para>
+            </listitem>
+            <listitem>
+                <para>10.8 GB compressed cache archive.</para>
+            </listitem>
+            <listitem>
+                <para>About 24 minutes to read the cache archive on a bare metal.</para>
+            </listitem>
+            <listitem>
+                <para>BM master to BM replica takes about 8 minutes to sync with 15 threads.</para>
+            </listitem>
+            <listitem>
+                <para>
+                    Subsequent refresh syncs take a few seconds.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Conclusion
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>As we solve the problems of large Java memory foot print, we start to run a new set of problems.
+                </para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Resiliency</para>
+                </listitem>
+                <itemizedlist>
+                    <listitem>
+                        <para>Single point of failure.</para>
+                    </listitem>
+                    <listitem>
+                        <para>Time to recover.</para>
+                    </listitem>
+                </itemizedlist>
+                <listitem>
+                    <para>Processing power</para>
+                </listitem>
+                <itemizedlist>
+                    <listitem>
+                        <para>Servicing a large number of requests from many users/systems.</para>
+                    </listitem>
+                    <listitem>
+                        <para>Dealing with application growth over time.</para>
+                    </listitem>
+                </itemizedlist>
+            </itemizedlist>
+            <listitem>
+                <para>Replication can be an effective way to address these issues.</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>It has to be combined with</para>
+                </listitem>
+                <itemizedlist>
+                    <listitem>
+                        <para>C-heap storage</para>
+                    </listitem>
+                    <listitem>
+                        <para>Proper milestoning</para>
+                    </listitem>
+                    <listitem>
+                        <para>Smart loadbalancing</para>
+                    </listitem>
+                    <listitem>
+                        <para>
+                            Proper refresh
+                        </para>
+                    </listitem>
+                </itemizedlist>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Appendix: Configuring Replication
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>A master cache is configured by enabling MasterCacheService on the server.</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>That usually means adding a PSP service that uses MasterCacheService/Impl for its interface
+                        and implementation.
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>A replica cache is configured by adding MasterCacheReplicationServer to the runtime
+                    configuration.
+                </para>
+            </listitem>
+            <listitem>
+                <programlisting language="xml"><![CDATA[
+<MithraRuntime>
+    <MasterCacheReplicationServer masterCacheId="mithra.test.master"
+                                  className="com.gs.fw.common.mithra.test.util.PspBasedMithraMasterServerFactory"
+                                  syncIntervalInMilliseconds="2000"/>
+</MithraRuntime>
+]]></programlisting>
+            </listitem>
+            <listitem>
+                <para>The replica will create a MasterCacheUplink for every configured master.</para>
+            </listitem>
+            <listitem>
+                <para>The job of the MasterCacheUplink is to use the remote MasterCacheService and keep the replica in
+                    sync with the
+                    master.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Periodically, the uplink will poll the master cache to get new updates.</para>
+            </listitem>
+            <listitem>
+                <para>The process of copying the data to the replica is called "sync".</para>
+            </listitem>
+            <listitem>
+                <para>During each sync, the uplink uses a fixed (configurable) number of threads to poll the master.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Appendix: MasterCacheService
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>public RemoteMithraObjectConfig[] getObjectConfigurations();</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Used for getting the initial configuration from the master cache.</para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>public MasterSyncResult syncWithMasterCache(String businessClassName, long
+                    maxReplicatedPageVersion);
+                </para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>The main method that gets called periodically for each class.</para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>public MasterRetrieveStringResult retrieveStrings(int startIndex);</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Strings need special handling. More on this later.</para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>public MasterRetrieveInitialSyncSizeResult retrieveInitialSyncSize();</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>
+                        Used to optimize the initial sync. Larger classes are synced first.
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+</dbs:slides>

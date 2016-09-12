@@ -1,0 +1,67 @@
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:annotation>
+        <xsd:documentation xml:lang="en">
+            Definition of the Mithra Cache Loader config.
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:element name="CacheLoader" type="CacheLoaderType"/>
+
+    <xsd:complexType name="CacheLoaderType">
+        <xsd:sequence>
+            <xsd:element name="TopLevelLoader" type="TopLevelLoaderType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="DependentLoader" type="DependentLoaderType" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="defaultTopLevelLoaderFactory" type="xsd:token" use="optional"/>
+        <xsd:attribute name="defaultDependentLoaderFactory" type="xsd:token" use="optional"/>
+        <xsd:attribute name="defaultDependentLoaderHelperFactory" type="xsd:token" use="optional"/>
+        <xsd:attribute name="threadsPerDbServer" type="xsd:token" use="optional" default="10"/>
+        <xsd:attribute name="syslogCheckThreshold" type="xsd:token" use="optional" default="45"/>
+        <xsd:attribute name="syslogCheckWaitTime" type="xsd:token" use="optional" default="1200"/>
+        <xsd:attribute name="reportedSlowSQLTime" type="xsd:token" use="optional" default="17"/>
+        <xsd:attribute name="reportedSlowSQLPerRowTime" type="xsd:token" use="optional" default="5"/>
+        <xsd:attribute name="captureLoadingTaskDetails" type="xsd:token" use="optional" default="false"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="TopLevelLoaderType">
+        <xsd:sequence>
+            <xsd:element name="Param" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="factoryClass" type="xsd:token" use="optional"/>
+        <xsd:attribute name="classToLoad" type="xsd:token" use="required"/>
+        <xsd:attribute name="sourceAttributes" type="xsd:token" use="optional"/>
+        <xsd:attribute name="prerequisiteClasses" type="xsd:token" use="optional"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="DependentLoaderType">
+        <xsd:sequence>
+            <xsd:element name="Param" type="ParamType" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="factoryClass" type="xsd:token" use="optional"/>
+        <xsd:attribute name="helperFactoryClass" type="xsd:token" use="optional"/>
+        <xsd:attribute name="classToLoad" type="xsd:token" use="optional"/>
+        <xsd:attribute name="relationship" type="xsd:token" use="required"/>
+        <xsd:attribute name="sourceAttributes" type="xsd:token" use="optional"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="ParamType">
+        <xsd:attribute name="name" type="xsd:token" use="required"/>
+        <xsd:attribute name="value" type="xsd:token" use="required"/>
+    </xsd:complexType>
+</xsd:schema>

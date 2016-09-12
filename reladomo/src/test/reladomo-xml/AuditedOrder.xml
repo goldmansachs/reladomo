@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="../mithraobject.xsd"
+              objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>AuditedOrder</ClassName>
+    <Import>com.gs.collections.impl.set.mutable.primitive.IntHashSet</Import>
+    <DefaultTable>AUDITED_ORDER</DefaultTable>
+
+    <MithraInterface>OrderItemRelationInterface</MithraInterface>
+
+    <AsOfAttribute name="processingDate" fromColumnName="IN_Z" toColumnName="OUT_Z" toIsInclusive="false"
+        infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]" isProcessingDate="true"
+        defaultIfNotSpecified="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"/>
+
+    <Attribute name="orderId" javaType="int" columnName="ORDER_ID" primaryKey="true"/>
+    <Attribute name="orderDate" javaType="Timestamp" columnName="ORDER_DATE"/>
+    <Attribute name="userId" javaType="int" columnName="USER_ID"/>
+    <Attribute name="description" javaType="String" columnName="DESCRIPTION" maxLength="50" truncate="true" inPlaceUpdate="true"/>
+    <Attribute name="state" javaType="String" columnName="STATE" maxLength="20"/>
+    <Attribute name="trackingId" javaType="String" columnName="TRACKING_ID" maxLength="15"/>
+
+    <Relationship name="items" relatedObject="AuditedOrderItem" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-many">AuditedOrderItem.orderId = this.orderId</Relationship>
+    <Relationship name="directRefitems" relatedObject="AuditedOrderItem" reverseRelationshipName="directRefOrder" cardinality="one-to-many" directReference="true">AuditedOrderItem.orderId = this.orderId</Relationship>
+    <Relationship name="orderStatus" relatedObject="AuditedOrderStatus" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-one" >AuditedOrderStatus.orderId = this.orderId</Relationship>
+    <Relationship name="itemForProduct" relatedObject="AuditedOrderItem" cardinality="one-to-one" parameters="int productId">AuditedOrderItem.orderId = this.orderId and AuditedOrderItem.productId = {productId}</Relationship>
+    <Relationship name="itemForProductSet" relatedObject="AuditedOrderItem" cardinality="one-to-one" parameters="IntHashSet productIds">AuditedOrderItem.orderId = this.orderId and AuditedOrderItem.productId in {productIds}</Relationship>
+    <Relationship name="expensiveItems" relatedObject="AuditedOrderItem" cardinality="one-to-many" parameters="double price">
+        <![CDATA[
+        AuditedOrderItem.orderId = this.orderId and AuditedOrderItem.originalPrice >= {price}
+        ]]>
+    </Relationship>
+    <Relationship name="cheapItems" relatedObject="AuditedOrderItem" cardinality="one-to-many" parameters="double price" returnType="List">
+        <![CDATA[
+        AuditedOrderItem.orderId = this.orderId and AuditedOrderItem.originalPrice < {price}
+        ]]>
+    </Relationship>
+    <Relationship name="leftNullFilteredItems" relatedObject="AuditedOrderItem" cardinality="one-to-many">
+        AuditedOrderItem.orderId = this.orderId and this.userId is not null
+    </Relationship>
+    <Relationship name="leftNullFilteredStatus" relatedObject="AuditedOrderStatus" cardinality="one-to-one">
+        AuditedOrderStatus.orderId = this.orderId and this.userId is not null
+    </Relationship>
+    <Relationship name="orderStatus2" relatedObject="AuditedOrderStatusTwo" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-one" >AuditedOrderStatusTwo.orderId = this.orderId</Relationship>
+    <Index name="byUserId">userId</Index>
+    <Index name="byState">state</Index>
+    <Index name="byTrackingId" unique="true">trackingId</Index>
+</MithraObject>

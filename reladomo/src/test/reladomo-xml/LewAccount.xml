@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>LewAccount</ClassName>
+    <!--
+    <DatedTransactionalTemporalDirector>com.gs.fw.lew.common.LewBiTemporalDirector</DatedTransactionalTemporalDirector>
+    -->
+    <DefaultTable>LEW_ACCOUNT</DefaultTable>
+
+    <AsOfAttribute name="businessDate" fromColumnName="FROM_Z" toColumnName="THRU_Z" toIsInclusive="false"
+                   infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"/>
+    <AsOfAttribute name="processingDate" fromColumnName="IN_Z" toColumnName="OUT_Z"
+                   toIsInclusive="false"
+                   isProcessingDate="true"
+                   infinityDate="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"
+                   defaultIfNotSpecified="[com.gs.fw.common.mithra.test.domain.InfinityTimestamp.getParaInfinity()]"/>
+
+    <Attribute name="accountId" javaType="int" columnName="ACCT_I" primaryKey="true"/>
+    <Attribute name="accountNumber" javaType="String" maxLength="15" columnName="ACCT_N"/>
+    <Attribute name="accountSubNumber" javaType="String"  maxLength="3" columnName="ACCT_SUB_N" nullable="true"/>
+    <Attribute name="legalEntity" javaType="int" columnName="LEGAL_ENTITY_I"/>
+    <Attribute name="procCompanyId" javaType="int" columnName="PROC_COMPANY_I"/>
+    <Attribute name="trialCode" javaType="String" maxLength="4" columnName="TRIAL_C"/>
+    <Attribute name="accountType" javaType="String" maxLength="3" columnName="ACCT_TYP_C"/>
+    <Attribute name="acctMnem" javaType="String" maxLength="8" columnName="ACCT_MNEM_N"/>
+    <Attribute name="acctExtLookup" javaType="String" maxLength="15" columnName="ACCT_EXT_LOOKUP_N"/>
+    <Attribute name="acctDesc" javaType="String" maxLength="80" columnName="ACCT_DESC_T"/>
+    <Attribute name="createCode" javaType="int" columnName="ACCT_CREATE_C"/>
+    <Attribute name="changeCode" javaType="int" columnName="ACCT_CHANGE_C"/>
+	<Attribute name="changeNumber" javaType="String" maxLength="8" columnName="ACCT_CHANGE_N"/>
+	<Attribute name="acctMstrSrc" javaType="int" columnName="ACCT_MSTR_SRC_I"/>
+
+    <Relationship name="contracts" relatedObject="LewContract" cardinality="one-to-many">
+            LewContract.acctId = this.accountId and
+            LewContract.region = "NYK"
+    </Relationship>
+
+    <Relationship name="contractsToLoad" relatedObject="LewContract" cardinality="one-to-many">
+            LewContract.acctId = this.accountId
+    </Relationship>
+
+    <Index name="byNumber" unique="true">accountNumber,accountSubNumber,acctMstrSrc</Index>
+</MithraObject>

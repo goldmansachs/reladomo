@@ -1,0 +1,236 @@
+<%--
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+--%>
+<%@ page import="com.gs.fw.common.mithra.generator.type.StringJavaType,
+                 com.gs.fw.common.mithra.generator.type.CharJavaType,
+                 com.gs.fw.common.mithra.generator.Attribute,
+                 com.gs.fw.common.mithra.generator.AsOfAttribute,
+                 com.gs.fw.common.mithra.generator.SourceAttribute,
+                 com.gs.fw.common.mithra.generator.util.StringUtility,
+                 java.util.Arrays"%>
+<%@ page import="com.gs.fw.common.mithra.generator.MithraObjectTypeWrapper"%>
+
+    public MithraObjectPortal getMithraObjectPortal()
+    {
+        return <%= wrapper.getFinderClassName()%>.getMithraObjectPortal();
+    }
+
+    public RelatedFinder getFinder()
+    {
+        return <%= wrapper.getFinderClassName()%>.getFinderInstance();
+    }
+
+    public static <%= wrapper.getDataClassName()%> allocateOnHeapData()
+    {
+        return new <%= wrapper.getOnHeapDataClassName()%>();
+    }
+
+    public static <%= wrapper.getDataClassName()%> allocateOffHeapData()
+    {
+        <% if (wrapper.hasOffHeap()) { %>
+        return new <%= wrapper.getOffHeapDataClassName()%>();
+        <% } else { %>
+        throw new RuntimeException("no off heap implementation");
+        <% } %>
+    }
+
+    public MithraDataObject deserializeFullData(ObjectInput in) throws IOException, ClassNotFoundException
+    {
+        <% if (wrapper.isTablePerClassSubClass() || wrapper.isTablePerClassSuperClass()) { %>
+            Class dataClass = com.gs.fw.common.mithra.remote.MithraSerialUtil.getDataClassToInstantiate((String) in.readObject());
+            MithraDataObject data = com.gs.fw.common.mithra.remote.MithraSerialUtil.instantiateData(dataClass);
+        <% } else { %>
+            MithraDataObject data = new <%= wrapper.getOnHeapDataClassName()%>();
+        <% } %>
+            data.zDeserializeFullData(in);
+            return data;
+    }
+
+<% if (wrapper.hasAsOfAttributes()) { %>
+    public void deserializeAsOfAttributes(ObjectInput in, Timestamp[] asof) throws IOException, ClassNotFoundException
+    {
+            <% for (int i = 0; i < asOfAttributes.length; i++) { %>
+            asof[<%= i %>] = <%= asOfAttributes[i].getDeserializationStatement()%>;
+            <% } %>
+    }
+<% } %>
+
+    public MithraObject deserializeForRefresh(ObjectInput in) throws IOException, ClassNotFoundException
+    {
+        <%= wrapper.getDataClassName()%> data = new <%= wrapper.getOnHeapDataClassName()%>();
+        data.zDeserializePrimaryKey(in);
+        <% if (wrapper.hasAsOfAttributes()) { %>
+        Timestamp[] asof = new Timestamp[<%= asOfAttributes.length %>];
+            <% for (int i = 0; i < asOfAttributes.length; i++) { %>
+            asof[<%= i %>] = <%= asOfAttributes[i].getDeserializationStatement()%>;
+            <% } %>
+        return this.createObject(data, asof);
+        <% } else { %>
+        return this.createObject(data);
+        <% } %>
+    }
+
+    public Cache instantiateFullCache(MithraConfigurationManager.Config config)
+    {
+<% if (wrapper.isTablePerClassSubClass()) { %>
+        Cache result = new TypedCache(<%= wrapper.getRootWrapper().getFinderClassName()%>.getMithraObjectPortal().getCache(), <%= wrapper.getClassName()%>.class);
+        if (!result.isFullCache())
+        {
+            throw new RuntimeException("The type of parent and child cache must be the same. It's different for <%= wrapper.getClassName()%> and <%= wrapper.getRootWrapper().getClassName()%>");
+        }
+<% } else if (wrapper.hasOffHeap()) { %>
+        Cache result;
+        if (config.isOffHeapFullCache())
+        {
+            OffHeapDataStorage dataStorage = new FastUnsafeOffHeapDataStorage(<%= wrapper.getDataClassName() %>.OFF_HEAP_DATA_SIZE, "<%= wrapper.getBusinessClassNameWithDots() %>", <%= wrapper.getClassName() %>Finder.getFinderInstance());
+            <%= wrapper.getDataClassName() %>.<%= wrapper.getDataClassName() %>OffHeap.zSetStorage(dataStorage);
+            <% if (wrapper.isTransactional()) { %>
+            if (config.isParticipatingInTx())
+            {
+			    result = new <%= wrapper.getOffHeapFullCacheClass(true)%>;
+            }
+            else
+            {
+                result = new <%= wrapper.getOffHeapFullCacheClass(false)%>;
+            }
+            <% } else { %>
+            result = new <%= wrapper.getOffHeapFullCacheClass(false)%>;
+            <% } %>
+        }
+        else
+        {
+            <% if (wrapper.isTransactional()) { %>
+            if (config.isParticipatingInTx())
+            {
+			    result = new <%= wrapper.getFullCacheClass(true)%>;
+            }
+            else
+            {
+                result = new <%= wrapper.getFullCacheClass(false)%>;
+            }
+            <% } else { %>
+            result = new <%= wrapper.getFullCacheClass(false)%>;
+            <% } %>
+        }
+<% } else { %>
+        Cache result;
+        <% if (wrapper.isTransactional()) { %>
+        if (config.isParticipatingInTx())
+        {
+            result = new <%= wrapper.getFullCacheClass(true)%>;
+        }
+        else
+        {
+            result = new <%= wrapper.getFullCacheClass(false)%>;
+        }
+        <% } else { %>
+        result = new <%= wrapper.getFullCacheClass(false)%>;
+        <% } %>
+<% } %>
+        initPortal(result, config);
+        return result;
+    }
+
+    public Cache instantiatePartialCache(MithraConfigurationManager.Config config)
+    {
+<% if (wrapper.isTablePerClassSubClass()) { %>
+        Cache result = new TypedCache(<%= wrapper.getRootWrapper().getFinderClassName()%>.getMithraObjectPortal().getCache(), <%= wrapper.getClassName()%>.class);
+        if (!result.isPartialCache())
+        {
+            throw new RuntimeException("The type of parent and child cache must be the same. It's different for <%= wrapper.getClassName()%> and <%= wrapper.getRootWrapper().getClassName()%>");
+        }
+<% } else { %>
+        Cache result;
+        <% if (wrapper.isTransactional()) { %>
+        if (config.isParticipatingInTx())
+        {
+            result = new <%= wrapper.getPartialCacheClass(true)%>;
+        }
+        else
+        {
+            result = new <%= wrapper.getPartialCacheClass(false)%>;
+        }
+        <% } else { %>
+        result = new <%= wrapper.getPartialCacheClass(false)%>;
+        <% } %>
+<% } %>
+        initPortal(result, config);
+        return result;
+    }
+
+    private void initPortal(Cache cache, MithraConfigurationManager.Config config)
+    {
+        if (config.isThreeTierClient())
+        {
+            <%= wrapper.getClassName() %>Finder.initializeClientPortal(this, cache, config);
+        }
+        else
+        {
+            <%= wrapper.getClassName() %>Finder.initializePortal(this, cache, config);
+        }
+        <% if (wrapper.isTransactional()) { %>
+        if (config.isParticipatingInTx())
+        {
+            <%= wrapper.getImplClassName() %>.zConfigFullTx();
+        }
+        else
+        {
+            <%= wrapper.getImplClassName() %>.zConfigNonTx();
+        }
+        <% } %>
+    }
+
+<%boolean isSetPKGeneratorStrategy = false;
+  Attribute[] pkAttributes = wrapper.getPrimaryKeyAttributes();
+  for(int i = 0; i < pkAttributes.length; i++)
+  {
+      if(!isSetPKGeneratorStrategy && pkAttributes[i].isSetPrimaryKeyGeneratorStrategy())
+      {
+          isSetPKGeneratorStrategy = true;
+      }
+  }
+  if(isSetPKGeneratorStrategy){%>
+    public List getSimulatedSequenceInitValues()
+    {
+    ArrayList simulatedSequenceInitValues = new ArrayList(<%= primaryKeyAttributes.length %>);
+    Attribute[] primaryKeyAttributes = <%=wrapper.getFinderClassName()%>.getPrimaryKeyAttributes();
+    SimulatedSequenceInitValues initValues = null;
+    <%
+    int size = primaryKeyAttributes.length;
+    com.gs.fw.common.mithra.generator.metamodel.SimulatedSequenceType simulatedSequenceType = null;
+    for(int i = 0; i < size; i++) {
+       if(primaryKeyAttributes[i].isPrimaryKeyUsingSimulatedSequence()){
+          simulatedSequenceType = primaryKeyAttributes[i].getSimulatedSequence();
+
+          if(primaryKeyAttributes[i].hasSimulatedSequenceSourceAttribute()){%>
+       initValues = new SimulatedSequenceInitValues("<%=simulatedSequenceType.getSequenceName()%>",
+                                                 <%=simulatedSequenceType.getBatchSize()%>, <%=simulatedSequenceType.getIncrementSize()%>, <%=simulatedSequenceType.getInitialValue()%>,
+                                                 "<%=simulatedSequenceType.getSequenceObjectFactoryName()%>", true, primaryKeyAttributes[<%=i%>], primaryKeyAttributes[<%=i%>].getSourceAttributeType() );
+         <%}else{%>
+       initValues = new SimulatedSequenceInitValues("<%=simulatedSequenceType.getSequenceName()%>",
+                                                 <%=simulatedSequenceType.getBatchSize()%>, <%=simulatedSequenceType.getIncrementSize()%>, <%=simulatedSequenceType.getInitialValue()%>,
+                                                 "<%=simulatedSequenceType.getSequenceObjectFactoryName()%>", false, primaryKeyAttributes[<%=i%>], primaryKeyAttributes[<%=i%>].getSourceAttributeType());
+       <%}%>
+         simulatedSequenceInitValues.add(initValues);
+       <%}%>
+    <%}%>
+       return simulatedSequenceInitValues;
+    }
+ <%}else{%>
+   public List getSimulatedSequenceInitValues()
+   {
+       return null;
+   }
+ <%}%>

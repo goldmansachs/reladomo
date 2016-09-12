@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.tax</PackageName>
+    <ClassName>Address</ClassName>
+    <DefaultTable>ADDRESS</DefaultTable>   
+
+    <AsOfAttribute name="processingDate" fromColumnName="IN_Z" toColumnName="OUT_Z"  
+    	infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+        defaultIfNotSpecified="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+        isProcessingDate="true"/>   
+
+    <Attribute name="addressId" javaType="long" columnName="ADDRESS_ID" primaryKey="true" />
+
+	<!-- attributes of related object -->
+	<Attribute name="locationDesc" javaType="String" columnName="LOCATION_DESC"/>
+	<Attribute name="address1" javaType="String" columnName="ADDRESS1"/>
+	<Attribute name="address2" javaType="String" columnName="ADDRESS2"/>
+	<Attribute name="address3" javaType="String" columnName="ADDRESS3"/>
+	<Attribute name="city" javaType="String" columnName="CITY"/>
+	<Attribute name="state" javaType="String" columnName="STATE"/>
+	<Attribute name="zip" javaType="String" columnName="ZIP"/>
+	<Attribute name="country" javaType="String" columnName="COUNTRY"/>
+	<Attribute name="changedBy" javaType="String" columnName="CHANGED_BY" nullable="false"/>
+
+</MithraObject>

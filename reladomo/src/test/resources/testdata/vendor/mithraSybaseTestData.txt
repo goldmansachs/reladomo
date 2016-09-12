@@ -1,0 +1,226 @@
+/*
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+*/
+
+class com.gs.fw.common.mithra.test.domain.Product
+productId, productCode,productDescription,manufacturerId,dailyProductionRate
+1, "AA", "Product 1", 1, 100.10
+2, "AA", "Product 2", 1, 120.20
+3, "AB", "Product 3", 2, 300
+4, "AB", "Product 4", 3, 400
+
+class com.gs.fw.common.mithra.test.domain.AllTypes
+id,booleanValue,byteValue,shortValue,charValue,intValue,longValue,floatValue,doubleValue,dateValue,timeValue,timestampValue,stringValue,byteArrayValue,nullableByteValue,nullableShortValue,nullableCharValue,nullableIntValue,nullableLongValue,nullableFloatValue,nullableDoubleValue,nullableDateValue,nullableTimeValue,nullableTimestampValue,nullableStringValue,nullableByteArrayValue
+9876,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-01-01", "03:03:03.333", "2007-01-01 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9877,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-02-01", "03:03:03.333", "2007-01-02 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9878,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-03-01", "03:03:03.333", "2007-01-03 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9879,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-04-01", "03:03:03.333", "2007-01-04 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9880,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-05-01", "03:03:03.333", "2007-01-05 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9881,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-06-01", "03:03:03.333", "2007-01-06 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9882,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-07-01", "03:03:03.333", "2007-01-07 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9883,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-08-01", "03:03:03.333", "2007-01-08 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9884,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-09-01", "03:03:03.333", "2007-01-09 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9885,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-10-01", "03:03:03.333", "2007-01-10 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9480,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2008-11-22", "03:03:03.333", "2008-10-14 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+
+class com.gs.fw.common.mithra.test.domain.SaleAggregateData
+saleId, sellerId, priceDouble, priceInt, priceShort, priceLong, priceFloat, priceByte, priceBigDecimal
+1, 1, 1.0, 1, 1, 1, 1, 1, 1.12
+2, 1, 2.0, 2, 2, 2, 2, 2, 2.12
+3, 1, 3.0, 3, 3, 3, 3, 3, 4.14
+4, 2, 1.0, 1, 1, 1, 1, 1, 1.12
+5, 2, 1.0, 1, 1, 1, 1, 1, 1.12
+6, 3, 1.0, 1, 1, 1, 1, 1, 1.12
+
+class com.gs.fw.common.mithra.test.domain.ParaDesk
+deskIdString,activeBoolean,sizeDouble,connectionLong,tagInt,statusChar,createTimestamp,locationByte,closedDate,maxFloat,minShort, bigDouble
+"rnd",true, 10.54, 1000000, 100, "O", "1981-06-08 02:01:00.0", 0,              "1981-06-08", 999999.9, 4545, -999.99
+"cap",true, 10032.23, 1000000, 100, "P", "9999-12-01 23:59:00.0", 0,           "1981-06-08", 6567567.75, 6745, 999.99
+"lsd",true, 4000000000, 1000000, 100, "A", "9999-12-01 23:59:00.0", 0,         "9999-12-01", 36546.43, 3545, 999.99
+"swp",true, 22342.33, 1000000, 100, "A", "1900-01-01 00:00:00.0", 0,           "9999-12-01", 4000000000, 20343, -999.99
+"usd",true, 43.23, 2000000, 100, "B", "9999-12-01 00:00:00.0", 0,             "1981-06-08", 23423.234234234, 100, null
+"gi2",true, 3022.45, 2000000, 100, "H", "1981-06-08 02:01:00.0", 0,            "1900-01-01", 8944654.344453, 2000, null
+"fma",true, 766234324234235.76, 2000000, 100, "T", "1981-06-08 02:01:00.0", 0, "1900-01-01", 2342345.35435345, 3000, 1.99
+"abc",false, 4000000000, 2000000, 100, "E", "9999-12-01 23:59:00.0", 0,        "1981-06-08", 999999.999999999, 4000, -1.99
+"lmn",true, 1564654.34, 1000000, 100, "T", "1981-06-08 02:01:00.0", 0,           "1981-06-08", 34543534.45345345, 2000, 0.99
+"ar",false, 4353453453534543.43, 2000000, 100, "R", "1981-06-08 02:01:00.0", 0, "9999-12-01", 4000000000, 2330, -0.99
+"rpl",true, 657567567.75, 2000000, 100, "R", "9999-12-01 23:59:00.0", 0,        "1981-06-08", -43536456.435345, 100, 2.12
+"gma",true, 4000000000, 3000000, 100, "Q", "1900-01-01 00:00:00.0", 0,        "1981-06-08", 6575667.75, 1200, -2.12
+"gnb",true, 67767352343242.3, 3000000, 100, "G", "1900-01-01 00:00:00.0", 0,    "1900-01-01", -43446546.3453453, 4343, null
+"qqq",false, 454445, 2000000, 100, "J", "1900-01-01 00:00:00.0", 0,             "1900-01-01", 6576584.3452, 100, null
+"nsq",true, 5464565234435.9, 1000000, 100, "M", "9999-12-01 00:00:00.0", 0,     "1981-06-08", 7657453.25324534, 3000, 999.99
+"nmr",true, 5464565234435.9, 1000000, 10, "M", "9999-12-01 00:00:00.0", 0,    "1981-06-08", 7657453.25324534, 3000, 999.99
+"fff",true, 5464565234435.9, 1000000, 5, "M", "9999-12-01 00:00:00.0", 0,       "1981-06-08", 7657453.25324534, 3000, -999.99
+"xyz",true, -10.54, 1000000, 5, "M", "9999-12-01 00:00:00.0", 0,                "1981-06-08", 7657453.25324534, 3000, 1.99
+"moh",true, -45, 1000000, 5, "M", "9999-12-01 00:00:00.0", 0,                   "1981-06-08", 7657453.25324534, 3000, -1.99
+"yus",true, -927, 1000000, -827, "M", "9999-12-01 00:00:00.0", 0,               "1981-06-08", 654.25, 4567, -1.99
+
+class com.gs.fw.common.mithra.test.domain.TimestampConversion
+id, timestampValueUTC, timestampValueDB, timestampValueNone
+1, "2007-01-01 01:00:00.000", "2007-01-01 01:01:01.999", "2007-01-01 01:01:01.999"
+2, "2007-01-01 06:00:00.000", "2007-01-02 01:01:01.999", "2007-01-02 01:01:01.999"
+3, "2007-01-01 12:01:01.999", "2007-01-03 01:01:01.999", "2007-01-03 01:01:01.999"
+4, "2006-12-31 23:59:59.999", "2006-12-31 23:59:59.999", "2006-12-31 23:59:59.990",
+
+class com.gs.fw.common.mithra.test.domain.alarm.Alarm
+id, time, description
+1, "10:30:59.010", "alarm 1"
+2, "03:11:23.000", "alarm 2"
+3, "14:59:10.043", "alarm 3"
+
+class com.gs.fw.common.mithra.test.domain.alarm.AlarmCategory
+id, category, time, description
+1, 1, "10:30:59.011", "alarm 1"
+2, 1, "03:11:23.000", "alarm 2"
+3, 2, "10:30:59.011", "alarm 3"
+4, 2, "03:11:23.000", "alarm 4"
+5, 3, "10:30:59.011", "alarm 5"
+6, 3, "03:11:23.000", "alarm 6"
+7, 3, "01:02:02.003", "alarm 600"
+
+class com.gs.fw.common.mithra.test.domain.alarm.AlarmSybase
+id, time, description
+1, "10:30:59.010", "alarm 1"
+2, "03:11:23.000", "alarm 2"
+3, "14:59:10.043", "alarm 3"
+
+4, "14:59:10.000", "alarm 3"
+5, "14:59:10.001", "alarm 3"
+
+6, "14:59:10.002", "alarm 3"
+7, "14:59:10.003", "alarm 3"
+8, "14:59:10.004", "alarm 3"
+
+9, "14:59:10.005", "alarm 3"
+10, "14:59:10.006", "alarm 3"
+11, "14:59:10.007", "alarm 3"
+12, "14:59:10.008", "alarm 3"
+
+13, "14:59:10.009", "alarm 3"
+14, "14:59:10.010", "alarm 3"
+15, "14:59:10.011", "alarm 3"
+
+16, "14:59:10.012", "alarm 3"
+17, "14:59:10.013", "alarm 3"
+18, "14:59:10.014", "alarm 3"
+
+19, "14:59:10.015", "alarm 3"
+20, "14:59:10.016", "alarm 3"
+21, "14:59:10.017", "alarm 3"
+22, "14:59:10.018", "alarm 3"
+
+23, "14:59:10.019", "alarm 3"
+24, "14:59:10.020", "alarm 3"
+25, "14:59:10.021", "alarm 3"
+
+26, "14:59:10.199", "alarm 3"
+27, "14:59:10.999", "alarm 3"
+
+class com.gs.fw.common.mithra.test.domain.alarm.AlarmNonTransactional
+id, time, description
+1, "10:30:59.010", "alarm 1"
+2, "03:11:23.000", "alarm 2"
+3, "14:59:10.043", "alarm 3"
+4, null, "null alarm"
+
+class com.gs.fw.common.mithra.test.domain.alarm.AlarmDatedNonTransactional
+id, time, description, processingDateFrom,processingDateTo
+1, "10:30:59.010", "alarm 1", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+2, "03:11:23.000", "alarm 2", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+3, "14:59:10.043", "alarm 3", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+4, null, "null alarm", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.alarm.AlarmDatedTransactional
+id, time, description, processingDateFrom,processingDateTo
+1, "10:30:59.010", "alarm 1", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+2, "03:11:23.000", "alarm 2", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+3, "14:59:10.043", "alarm 3", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.alarm.AlarmBitemporalTransactional
+id, time, description, businessDateFrom, businessDateTo, processingDateFrom,processingDateTo
+1, "10:30:59.011", "alarm 1", "2012-01-01 23:59:00.0", "9999-12-01 23:59:00.0", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+2, "03:11:23.000", "alarm 2", "2012-01-01 23:59:00.0", "9999-12-01 23:59:00.0", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+3, "14:59:10.043", "alarm 3", "2012-01-01 23:59:00.0", "9999-12-01 23:59:00.0", "2000-01-01 00:00:00.0", "9999-12-01 23:59:00.000"
+
+class com.gs.fw.common.mithra.test.domain.Order
+orderId,orderDate,userId,description,state,trackingId
+1,"2004-01-12 00:00:00.0", 1, "First order", "In-Progress", "123"
+2,"2004-02-12 00:00:00.0", 1, "Second order", "In-Progress", "124"
+3,"2004-03-12 00:00:00.0", 1, "Third order", "In-Progress", "125"
+4,"2004-04-12 00:00:00.0", 2, "Fourth order, different user", "In-Progress", "126"
+55,"2004-04-12 00:00:00.0", 3, "Order number five", "Gummed up", "127"
+56,"2004-04-12 00:00:00.0", 3, "Sixth order, different user", "Gummed up", "128"
+57,"2004-04-12 00:00:00.0", 3, "Seventh order, different user", "Gummed up", "129"
+
+class com.gs.fw.common.mithra.test.domain.OrderItem
+id,orderId,productId,quantity,originalPrice,discountPrice,state
+1, 1, 1, 20, 10.5, 10.5, "In-Progress"
+2, 2, 1, 20, 10.5, 10.5, "In-Progress"
+3, 2, 2, 20, 15.5, 10.0, "In-Progress"
+4, 2, 3, 20, 20.5, 15.0, "In-Progress"
+
+class com.gs.fw.common.mithra.test.domain.OrderItemStatus
+itemId,status,lastUser,lastUpdateTime
+1,10,"Fred","2004-01-12 00:00:00.0"
+3,20,"Barney","2004-01-12 00:00:00.0"
+
+class com.gs.fw.common.mithra.test.domain.IdentityTable
+objectId, month, orderId, description
+1, "2008-3-3 18:30:00.0", 1234, "LENNY KRAVITZ"
+2, "2008-3-3 18:30:00.0", 2345, "ZERO 7"
+3, "2008-3-3 18:30:00.0", 3456, "EARL GREYHOUND"
+
+class com.gs.fw.common.mithra.test.domain.StringDatedOrder
+orderId, processingDate, orderDate, userId,description
+1,"2004-01-12 00:00:00.0","2004-01-12", 1, "First order"
+2,"2004-02-12 00:00:00.0","2004-02-12", 1, "Second order"
+3,"2004-03-12 00:00:00.0","2004-03-12", 1, "Third order"
+4,"2004-04-12 00:00:00.0","2004-04-12", 2, "Fourth order, different user"
+
+class com.gs.fw.common.mithra.test.domain.FileDirectory
+fileDirectoryId, creationDate, name, drive, modificationDate, parentDirectoryId, note, someOtherTimestamp, isDirectory, someOtherDate
+1, "2005-01-01 00:00:00.0", "", "C", "2005-02-08", 0, "Root", "2005-02-08 13:45:00.0", 1, "2005-02-08"
+2, "2005-02-01 00:00:00.0", "temp", "C",  "2005-02-08", 1, null, null,1, "2005-01-01"
+3, "2005-01-01 00:00:00.0", "projects", "C",  "2005-02-08", 1, "note 1", "2005-01-01 00:00:00.0", 1,"2005-01-01"
+4, "2005-01-01 00:00:00.0", "PARA4.0", "C", "2005-02-08", 3, "note 1", "2005-01-01 00:00:00.0", 1, "2005-01-01"
+5, "2005-01-01 00:00:00.0", "src", "C", "2005-02-08", 4, null, null, 1, "2005-01-01"
+6, "2005-01-01 00:00:00.0", "winnt", "C",  "2005-02-08", 1, null, null, 1, "2005-01-01"
+7, "2005-01-01 00:00:00.0", "system32", "C",  "2005-02-08", 6, null, null, 1, "2005-01-01"
+8, "2005-01-01 00:00:00.0", "net", "C",  "2005-02-08", 1, null, null, 1, "2005-01-01"
+9, "2005-01-01 00:00:00.0", "firefox", "C",  "2005-02-08", 8, null, null, 1, "2005-01-01"
+10, "2005-01-01 00:00:00.0", "test1.java", "C",  "2005-02-08", 5, null, null, 0, "2005-01-01"
+11, "2005-01-01 00:00:00.0","test2.java", "C",  "2005-02-08", 5, null, null, 0, "2005-01-01"
+12, "2005-01-01 00:00:00.0", "com", "C",  "2005-02-08", 5, null, null, 1, "2005-01-01"
+
+class com.gs.fw.common.mithra.test.domain.TestEodAcctIfPnl
+accountId, ifCode, businessDate, balanceType, allocation, balance, userId, processingDateFrom, processingDateTo
+"A1", "IF1", "2005-09-01 00:00:00.0", 10, 40, 100, "moh", "2005-09-01 00:00:00.0", "9999-12-01 23:59:00.0"
+"A1", "IF1", "2005-09-02 00:00:00.0", 10, 60, 200, "moh", "2005-09-05 00:00:00.0", "9999-12-01 23:59:00.0"
+
+ class com.gs.fw.common.mithra.test.domain.BigOrder
+ orderId,orderDate,userId,description,discountPercentage
+ 100,"2000-01-01 00:00:00.0",1,"Order 100","0.010"
+ 101,"2000-01-01 00:00:00.0",1,"Order 101","0.050"
+ 102,"2000-01-01 00:00:00.0",1,"Order 102","0.010"
+ 103,"2000-01-01 00:00:00.0",2,"Order 103","0.100"
+ 104,"2000-01-01 00:00:00.0",2,"Order 104","0.005"
+
+class com.gs.fw.common.mithra.test.domain.TestBalanceNoAcmap
+accountId, productId, positionType, quantity, businessDateFrom, businessDateTo, processingDateFrom, processingDateTo
+"7000601", 1, 1, 300.0,"2012-01-01 23:59:00.0", "9999-12-01 23:59:00.0", "2012-01-01 00:00:00.0", "2012-01-01 12:00:00.0"
+"7000601", 1, 1, 400.0,"2012-01-01 23:59:00.0", "2012-01-03 23:59:00.0", "2012-01-01 12:00:00.0", "2012-01-02 10:00:00.0"
+"7000601", 1, 1, 400.0,"2012-01-01 23:59:00.0", "2012-01-02 23:59:00.0", "2012-01-02 10:00:00.0", "9999-12-01 23:59:00.0"
+"7000601", 1, 1, 500.0,"2012-01-02 23:59:00.0", "9999-12-01 23:59:00.0", "2012-01-02 10:00:00.0", "2012-01-02 22:00:00.0"
+"7000601", 1, 1, 600.0,"2012-01-02 23:59:00.0", "9999-12-01 23:59:00.0", "2012-01-02 22:00:00.0", "2012-01-03 22:00:00.0"

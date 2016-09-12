@@ -1,0 +1,70 @@
+/*
+ Copyright 2016 Goldman Sachs.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ */
+
+body {
+    background-color: white;
+    color: black;
+    font-family: Arial, sans-serif;
+    font-size: small;
+    margin: 8px;
+}
+
+.mcu-header
+{
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 12pt;
+    background-color: #E0E0FF;
+    text-align: center;
+    padding: 0;
+}
+
+.mcu-header-table
+{
+    padding: 0;
+    border-bottom: 2px solid #aaaaaa;
+    border-collapse: collapse;
+}
+
+.mcu-bold-label
+{
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+.mcu-text-dark
+{
+    font-family: Arial, sans-serif;
+    font-size: 10pt;
+    background-color: #E0E0E0;
+}
+
+.mcu-text-light
+{
+    font-family: Arial, sans-serif;
+    font-size: 10pt;
+    background-color: #FFFFFF;
+}
+
+.gwt-Label
+{
+    font-size: 10pt;
+}
+
+.gwt-TextBox
+{
+    font-size: 10pt;
+}

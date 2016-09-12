@@ -1,0 +1,463 @@
+<?xml version="1.0"?>
+
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<article>
+    <articleinfo>
+        <title>Reladomo Test Resource</title>
+        <pubdate>October 16, 2006</pubdate>
+        <author>Rafael Gonzalez</author>
+    </articleinfo>
+
+    <sect1>
+        <title>Creating test cases using Reladomo objects</title>
+        <para>
+            This document explains the steps required to use Reladomo objects in unit tests.
+        </para>
+    </sect1>
+
+    <sect1>
+        <title>MithraTestResource Introduction</title>
+        <para>
+            MithraTestResource supports writing test cases that use Reladomo objects.
+            To use this test resource, you'll need to do the following:
+        </para>
+        <itemizedlist mark="1">
+            <listitem>
+                <para>
+                    Provide a Reladomo runtime configuration that uses ConnectionManagerForTests (or a subclass) as
+                    its connection manager. The runtime configuration must include all Reladomo objects that you'll
+                    use for your test(s).
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Provide a data file that has the data you'll use for your tests. The format for the data is
+                    specified at the end of this document.
+                </para>
+            </listitem>
+
+        </itemizedlist>
+        <para>
+            You may use multiple data files or different data for different tests. All the files used are picked up from
+            the classpath. Typically, you'll want to use the same data for the same suite. In other words, you'll setup
+            the MithraTestResource in your setUp() method (as opposed to each individual test). A typical setUp method
+            might look like this:
+        </para>
+        <programlisting language="java"><![CDATA[this.mithraTestResource = new MithraTestResource
+    ("services/Reladomo/TestPostingEngineReladomoConfiguration.xml");
+
+ConnectionManagerForTests connectionManagerForTestDb = ConnectionManagerForTests.getInstance("test_db");
+
+this.mithraTestResource.createDatabaseForStringSourceAttribute(
+connectionManager,TEST_ACMAP_CODE, "testIntradayData.txt");
+
+this.mithraTestResource.setUp();
+]]></programlisting>
+        <para>
+            You must also call the mithraTestResource.tearDown() in your tearDown() method.
+        </para>
+    </sect1>
+    <sect2>
+        <title>Reladomo runtime configuration for tests</title>
+        <para>
+            The runtime configuration is used by the MithraTestReosurce to create the neccesary table in the in memory database used for tests.
+            Also, the MithraTestResource initializes Reladomo using that runtime configuration. It is required that a "resourceName" property is
+            defined.
+            <programlisting language="xml"><![CDATA[
+ <MithraRuntime>
+    <ConnectionManager className="com.gs.fw.common.mithra.test.ConnectionManagerForTests">
+        <Property name="resourceName" value="test_db"/>
+        <MithraObjectConfiguration className="com.gs.fw.myapp.Foo" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.myapp.Bar" cacheType="partial"/>
+        ...
+    </ConnectionManager>
+ </MithraRuntime>
+]]></programlisting>
+
+            More than one <![CDATA[<ConnectionManager></ConnectionManager>]]> section can be defined in the runtime configuration in case
+            test cases with more than one database are created. Each section must specify a "resourceName" corresponding to the name of the
+            database to be used in the test cases(s). You must group together under the same section all the MithraObjectConfiguration that are going
+            to reside in the same database.
+            <programlisting language="xml"><![CDATA[
+<MithraRuntime>
+    <ConnectionManager className="com.gs.fw.common.mithra.test.ConnectionManagerForTests">
+        <Property name="resourceName" value="test_db"/>
+        <MithraObjectConfiguration className="com.gs.fw.myapp.Foo" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.myapp.Bar" cacheType="partial"/>
+        ...
+    </ConnectionManager>
+    <ConnectionManager className="com.gs.fw.common.mithra.test.ConnectionManagerForTests">
+        <Property name="resourceName" value="desk_db"/>
+        <MithraObjectConfiguration className="com.gs.fw.myapp.Product" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.myapp.Account" cacheType="partial"/>
+        ...
+    </ConnectionManager>
+ </MithraRuntime>
+]]></programlisting>
+        </para>
+    </sect2>
+    <sect3>
+        <title>ConnectionManagerForTests</title>
+        <para>
+            The ConnectionManagerForTests is a convenient class that implement all the ConnectionManager interfaces.
+            This class contains factory methods to create ConnectionManager for the specified reosurce or database name.
+            <programlisting language="java"><![CDATA[
+/**
+ * This method returns an instance of a ConnectionManagerForTests.
+ * The properties must contain a property with name "resourceName".
+ * The value of this property is the database name used by the
+ * connection manager when creating a Connection.
+ *
+ * @param properties Properties use to create the instance of the ConnectionManagerForTests
+ * @return An instance of a ConnectionManagerForTests
+ */
+public static ConnectionManagerForTests getInstance(Properties properties)
+
+/**
+ * This method returns an instance of a ConnectionManagerForTests.
+ *
+ * @param resourceName The database name used by the connection manager when creating a Connection.
+ * @return An instance of a ConnectionManagerForTests
+ */
+public static ConnectionManagerForTests getInstance(String resourceName)
+
+
+ /**
+ * This method returns an instance of a ConnectionManagerForTests.
+ *
+ * @param dbName The database name used by the connection manager when creating a Connection.
+ * @return An instance of a ConnectionManagerForTests
+ */
+public static ConnectionManagerForTests getInstanceForDbName(String dbName)
+
+]]></programlisting>
+            <para>
+                The resourceName used to create an instance of a ConnectionManager must be the same resourceName used in the runtime configuration.
+            </para>
+       </para>
+    </sect3>
+    <sect1>
+        <title>MithraTestResource Detailed API</title>
+        <para>
+            MithraTestResource provides convenience methods to perform database (starts the transaction manager,
+            starts the database server, create the database, create tables, drop tables, insert data, and delete data
+            from the tables) and Reladomo lifecycle operations (Initialize Reladomo objects, load Reladomo cache).
+        </para>
+        <para>
+            public MithraTestResource(String configFilename)
+        </para>
+        <para>
+            The MithraTestResource constructor expects the filename of the Reladomo configuration XML file.
+            During construction, several things are being performed:
+        </para>
+        <itemizedlist>
+            <listitem>
+                <para>Starts the database server.</para>
+            </listitem>
+            <listitem>
+                <para>Initializes the Reladomo objects.</para>
+            </listitem>
+            <listitem>
+                <para>Creates all the database tables for the Reladomo objects.</para>
+            </listitem>
+        </itemizedlist>
+        <para>
+            The Reladomo configuration file is an xml file that specifies the Reladomo objects and the connection manager.
+        </para>
+
+    </sect1>
+    <sect1>
+
+        <para>
+            Three methods are provided to create the database:
+        </para>
+        <programlisting language="java"><![CDATA[public void createSingleDatabase(SourcelessConnectionManager connectionManager, String testDataFilename)
+    throws InitialiseException, ParseException
+]]></programlisting>
+        <para>
+            This method creates a database with the name specified in databaseName using the specified connectionManager.
+            Before calling this method in MithraTestResource, a default source must be specified in the connectionManager.
+            The connectionManager will use this default source to get connections. Be aware that only one default source can be
+            specified and calling this method with a databaseName different than the default source may cause unexpected results.
+        </para>
+
+        <programlisting language="java"><![CDATA[
+public void createDatabaseForStringSourceAttribute(ObjectSourceConnectionManager connectionManager,
+           String sourceAttribute, String testDataFilename)
+                    throws InitialiseException, ParseException
+
+public void createDatabaseForIntSourceAttribute(IntSourceConnectionManager connectionManager,
+            int sourceAttribute, String testDataFilename)
+                    throws InitialiseException, ParseException
+]]></programlisting>
+
+        <para>
+            These methods create a database with the name specified in databaseName using the specified
+            connectionManager. The connectionManager maps the sourceAttribute to the databaseName.
+        </para>
+
+        <para>Where :</para>
+        <itemizedlist>
+            <listitem>
+                <para>
+                    connectionManager - The connection manager that will be used for the tests. This value should be the
+                    same as the connection manager specified in the MithraConfiguration xml file.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    sourceAttribute - This value is the acmap code. The connection manager will use this value as the
+                    key to map a database name. For testing purposes, if the database is created using a String source
+                    attribute, the name of the database and the sourceAttribute will be the same.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    testDataFileName - The name of the test data file.
+                </para>
+            </listitem>
+        </itemizedlist>
+        <programlisting language="java"><![CDATA[
+ public void setUp() throws Exception
+        ]]></programlisting>
+        <para>
+            This method performs several things for you:
+        </para>
+        <itemizedlist>
+            <listitem>
+                <para>
+                    Gets the Mithra manager.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Sets the transaction manager provider in the Mithra manager.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Populates database tables (from the file specified during the database creation).
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Loads Reladomo cache.
+                </para>
+            </listitem>
+        </itemizedlist>
+        <para>
+           This method needs to be called from the setUp() method in the test cases
+        </para>
+
+        <programlisting language="java"><![CDATA[
+public void tearDown() throws Exception
+]]></programlisting>
+        <para>
+            This method cleans the database tables after the test. This method should be called from the tearDown()
+            method in the test cases.
+        </para>
+        <para>
+            The following is an example of how to use the MithraTestResource. In the setup method of the test case,
+            an instance of a MithraTestResource is created. The instance is used to create a database and populate
+            the tables in the setup method and to clean the data in the teardown method.
+        </para>
+        <programlisting language="java"><![CDATA[
+MihtraTestResource  mihtraTestResource = null;
+protected void setUp() throws Exception
+{
+   String xmlFile = "MithraConfigurationTest.xml"
+   mithraTestResource = new MithraTestResource(xmlFile);
+
+   ConnectionManagerForTests connMgrForTestDb =
+        ConnectionManagerForTests.getInstance("test_db");
+
+   ConnectionManagerForTests connMgrForDeskDb =
+        ConnectionManagerForTests.getInstance("desk_db");
+
+   mithraTestResource.createSingleDatabase(
+        connMgForTestDb, "mithraTestData.txt");
+
+   mithraTestResource.createDatabaseForStringSourceAttribute(
+        connMgForDeskDb, "deskA", "mithraTestDataForDesk.txt");
+
+   mithraTestResource.createDatabaseForStringSourceAttribute(
+        connMgForDeskDb, "deskB", "mithraTestDataForDesk.txt");
+        
+   mithraTestResource.setUp();
+}
+
+protected void tearDown() throws Exception
+{
+     mithraTestResource.tearDown();
+}
+]]></programlisting>
+        <para>
+           Please, refer to MithraTestAbstract.java for a complete
+           example of how to use the MithraTestResource.
+        </para>
+    </sect1>
+    <sect1>
+        <title>Test data file format</title>
+
+        <programlisting language="txt"><![CDATA[
+class <classname>
+<attribute name 1>, <attribute name 2>... <attribute name N>
+<value 1, 1>, <value 1, 2> ... <value 1, N>
+<value 2, 1>, <value 2, 2> ... <value 2, N>
+...
+...
+<value M, 1>, <value M, 2> ... <value M, N>
+]]></programlisting>
+        <para>
+           Where:
+        </para>
+        <itemizedlist>
+            <listitem>
+                <para>
+                    classname = Fully qualified MithraObject classname.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    attribute name = Name of the attribute as specified in the MithraObject configuration xml file.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                   value = The value for the specified attribute.
+                </para>
+            </listitem>
+        </itemizedlist>
+        <para>
+             There are few things worth mentioning about the values in the test data file:
+        </para>
+        <itemizedlist>
+            <listitem>
+                <para>
+                    Comments - Java style comments are allowed. The parsing mechanism used to read the test data
+                    files will recognize and ignore single-line (//) and multi-line () Java style comments.
+                    Comments can be placed anywhere in the file.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    String attributes - Java like Strings are allowed. The parser will recognize escape sequences inside
+                    a string value.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                     Date attributes - The value is specified within double quotes. The format used for date attributes
+                    is "yyyy-MM-dd".
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Timestamp attributes - The value is specified within double quotes. The format used for timestamp
+                    attributes is "yyyy-MM-dd HH:mm:ss.SSS".
+                    <para>Where:</para>
+                    <itemizedlist>
+                        <listitem>
+                            <para>
+                                yyyy - year
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                MM - month
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                dd - day in the month
+                            </para>
+                        </listitem>
+                         <listitem>
+                            <para>
+                                HH - hour
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                                mm - minutes
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                               ss - seconds
+                            </para>
+                        </listitem>
+                        <listitem>
+                            <para>
+                               SSS - milliseconds
+                            </para>
+                        </listitem>
+                    </itemizedlist>
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Numeric attributes (byte, short, integer, long, float, double)
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Boolean attributes - The values allowed for this type of attributes are: true or false.
+                    Please note that these values are not specified within single nor double quotes.
+                </para>
+            </listitem>
+            <listitem>
+                <para>
+                    Null values - In every row of data there must be a value for every single attribute specified.
+                    In the case that the attribute accepts null values, the value null (no quotes) can be specified.
+                </para>
+            </listitem>
+        </itemizedlist>
+        <para>
+            Each line represents a row that will be inserted into the database. White space is generally ignored,
+            except when it acts as line separators (you may not split the data for a single row across multiple lines).
+        </para>
+        <para>
+            This is an example of how the test data can be specified for an Account and ExchangeRate objects:
+        </para>
+        <programlisting language="java"><![CDATA[
+class <classname>
+class com.gs.fw.common.mithra.test.domain.Account
+accountNumber, code, trialId, pnlGroupId
+"7410161001", "74101610", "001A", "999A"
+"7410161101", "74101611", "001A", "999A"
+"7410161201", "74101612", "001A", "999A"
+"7410161301", "74101613", "001A", "999A"
+"null trial", "testnull", null, "NULLTEST"
+"with trial", "testnull", "001A", "NULLTEST"
+
+class com.gs.fw.common.mithra.test.domain.ExchangeRate
+currency, source, date, exchangeRate
+"EUR", 10, "2004-09-30 18:30:00.0", 1.25
+"USD", 10, "2004-09-30 18:30:00.0", 1
+
+"GBP", 10, "2004-09-30 18:30:00.0", 1.81
+"JPY", 10, "2004-09-30 18:30:00.0", .009
+]]></programlisting>
+        <para>
+           For an example of a Reladomo test data file, please refer to mithraTestDataStringSourceA.txt
+        </para>
+    </sect1>
+</article>

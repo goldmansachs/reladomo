@@ -1,0 +1,1113 @@
+<?xml version='1.0'?>
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreeyee[ to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<dbs:slides xmlns="http://docbook.org/ns/docbook"
+            xmlns:dbs="http://docbook.org/ns/docbook-slides">
+    <slidesinfo>
+        <title>Reladomo Features</title>
+        <copyright>
+            <year>2016</year>
+            <holder>Goldman Sachs &amp; Co.</holder>
+        </copyright>
+    </slidesinfo>
+
+    <dbs:foil dbs:incremental="0">
+        <title>
+            Reladomo: An Object Relational Mapping Framework
+        </title>
+    </dbs:foil>
+
+    <dbs:foil>
+        <title>
+            Agenda
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>An introduction to Reladomo</para>
+            </listitem>
+            <listitem>
+                <para>Why another persistence framework?</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Chaining logic</para>
+                </listitem>
+                <listitem>
+                    <para>Object oriented, compiled time checked query language</para>
+                </listitem>
+                <listitem>
+                    <para>Transparent multi-schema support</para>
+                </listitem>
+                <listitem>
+                    <para>Object oriented batch operations</para>
+                </listitem>
+                <listitem>
+                    <para>Unit testable code</para>
+                </listitem>
+                <listitem>
+                    <para>Flexible object relationship inflation</para>
+                </listitem>
+                <listitem>
+                    <para>...</para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>Focus on "why" and "how" of various features</para>
+            </listitem>
+            <listitem>
+                <para>User Driven Presentation: You decide the particular topics</para>
+            </listitem>
+            <listitem>
+                <para>Future directions</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Reladomo Features
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>Metadata driven</para>
+            </listitem>
+            <listitem>
+                <para>Code generation</para>
+            </listitem>
+            <listitem>
+                <para>Object oriented query mechanism</para>
+            </listitem>
+            <listitem>
+                <para>Junit integration</para>
+            </listitem>
+            <listitem>
+                <para>Chaining</para>
+            </listitem>
+            <listitem>
+                <para>Caching: Bi-level, transactionally guaranteed, keyless</para>
+            </listitem>
+            <listitem>
+                <para>Flexible relationships</para>
+            </listitem>
+            <listitem>
+                <para>Collections based operations (mass insert/update/delete; deep fetch)</para>
+            </listitem>
+            <listitem>
+                <para>Multi-schema horizontally scaled databases</para>
+            </listitem>
+            <listitem>
+                <para>Database vendor independence</para>
+            </listitem>
+            <listitem>
+                <para>Temp Object (temp tables)</para>
+            </listitem>
+            <listitem>
+                <para>Embedded Value Objects</para>
+            </listitem>
+            <listitem>
+                <para>Natural handling of composite keys</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Reladomo Features
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>2-tier and 3-tier (middle tier) operation</para>
+            </listitem>
+            <listitem>
+                <para>Notification</para>
+            </listitem>
+            <listitem>
+                <para>Primary Key Generation</para>
+            </listitem>
+            <listitem>
+                <para>DDL Generator</para>
+            </listitem>
+            <listitem>
+                <para>Database to XML Generator</para>
+            </listitem>
+            <listitem>
+                <para>RUNS (Replication Update Notification System) integration</para>
+            </listitem>
+            <listitem>
+                <para>Fast Sybase/UDB inserts</para>
+            </listitem>
+            <listitem>
+                <para>Sybase bulk insert (pure Java)</para>
+            </listitem>
+            <listitem>
+                <para>GS Integrator Transport</para>
+            </listitem>
+            <listitem>
+                <para>Global Time support</para>
+            </listitem>
+            <listitem>
+                <para>Documentation: javadoc, xsddoc, docbook</para>
+            </listitem>
+            <listitem>
+                <para>Transaction support (local and 1.5 Phase XA via JOLT)</para>
+            </listitem>
+            <listitem>
+                <para>Domain class diagram generation</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Metadata Driven
+        </title>
+        <para>Why?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Declarative</para>
+            </listitem>
+            <listitem>
+                <para>DRY Principle: adding an attribute should ideally be a single change</para>
+            </listitem>
+            <listitem>
+                <para>Secondary uses: DDL generation, Visualization</para>
+            </listitem>
+        </itemizedlist>
+        <para>How?</para>
+        <itemizedlist>
+            <listitem>
+                <para>XML</para>
+            </listitem>
+            <listitem>
+                <para>Custom SQL-like relationship language</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Metadata Driven
+        </title>
+        <para>Example:</para>
+        <programlisting language="xml"><![CDATA[<MithraObject objectType="transactional">
+        <PackageName>com.gs.fw.para.domain.desk.product</PackageName>
+        <ClassName>Product</ClassName>
+        <DefaultTable>PRODUCT</DefaultTable>
+        <SourceAttribute name="acmapCode" javaType="String"/>
+        <Attribute name="productId" javaType="int" columnName="PROD_SEC_ID_I" primaryKey="true"
+                   primaryKeyGeneratorStrategy="Max"/>
+        <Attribute name="gsn" javaType="String" columnName="PROD_SEC_NBR_C" maxLength="15"/>
+        <Attribute name="cusip" javaType="String" columnName="PROD_SEC_CUSIP_C" maxLength="15" nullable="true"/>
+        <Attribute name="issuerName" javaType="String" columnName="PROD_GEN_ISSUER_N" maxLength="30"
+                   truncate="true"/>
+        <Attribute name="issuerNumber" javaType="int" columnName="PROD_ISSUER_NUMBER" nullable="true"/>
+        <Attribute name="description" javaType="String" columnName="PROD_DESC_1_C" maxLength="60" poolable="false"
+                   truncate="true"/>
+
+        <Relationship name="synonyms" relatedObject="ProductSynonym" cardinality="one-to-many"
+                      reverseRelationshipName="product">ProductSynonym.productId = this.productId
+        </Relationship>
+        <Relationship name="history" relatedObject="ProductHistory" cardinality="one-to-many"
+                      reverseRelationshipName="product">this.productId = ProductHistory.productId
+        </Relationship>
+        <Relationship name="currencySynonym" relatedObject="ProductSynonym" cardinality="one-to-one">
+            ProductSynonym.productId =
+            this.productId and ProductSynonym.type = "CID"
+        </Relationship>
+        <Relationship name="parentProduct" relatedObject="Product" cardinality="many-to-one">
+            ProductRelation.productChildId = this.productId
+            and Product.productId = ProductRelation.productParentId and ProductRelation.relationshipType in (3200,
+            3214, 9800, 3201, 3202, 3207,
+            3208, 3209, 3210)
+        </Relationship>
+        <Index name="byGsn" unique="true">gsn</Index>
+    </MithraObject>]]></programlisting>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Code Generation
+        </title>
+        <para>Why?</para>
+        <itemizedlist>
+            <listitem>
+                <para>DRY: use the metadata to its fullest</para>
+            </listitem>
+            <listitem>
+                <para>Quality: code written by domain experts</para>
+            </listitem>
+            <listitem>
+                <para>Consistency: code is the same for all objects. Fixes/enhancements are propagated to all instances.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Productivity: developers are freed to code the business logic instead of plumbing</para>
+            </listitem>
+        </itemizedlist>
+        <para>How?</para>
+        <itemizedlist>
+            <listitem>
+                <para>JAXB XML parser: fast, easy to use</para>
+            </listitem>
+            <listitem>
+                <para>Java based templates (similar to Eclipse JET): no need to learn another syntax. Supported by
+                    existing IDE’s (code completion, syntax highlighting, etc)
+                </para>
+            </listitem>
+            <listitem>
+                <para>JavaCC based relationship expression parser</para>
+            </listitem>
+            <listitem>
+                <para>Extensible style code generation: generate abstract classes.</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Object Oriented Query Language
+        </title>
+        Why?
+        <itemizedlist>
+            <listitem>
+                <para>In-line SQL is difficult to write, harder to reader and nearly impossible to maintain</para>
+            </listitem>
+            <listitem>
+                <para>In-line SQL is difficult to abstract and reuse</para>
+            </listitem>
+            <listitem>
+                <para>String based solutions (e.g. HQL, OQL, EQL, etc) do not solve these issues</para>
+            </listitem>
+            <listitem>
+                <para>Reladomo uses an object oriented query language that fits comfortably within the programming
+                    environment:
+                </para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Compile time checked: if something changes, problems will be found earlier</para>
+                </listitem>
+                <listitem>
+                    <para>No strings: easy to reuse and abstract</para>
+                </listitem>
+                <listitem>
+                    <para>Overcomes some shortcomings of SQL: "Do not repeat yourself" (DRY) principle applied to
+                        relationships between objects
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Developers think in terms of objects and their relationships, not tables and joins.</para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            In-line SQL Example
+        </title>
+        <programlisting language="java"><![CDATA[public void selectTransactions()
+throws TransactionQueryException, SQLException, CriteriaException
+{
+    this.createUpdateStatementWrapper();
+    try
+    {
+        StringBuffer sb = new StringBuffer();
+        sb.append(" select BTV.*, NPV.NPV, F.RATE, NPV.RAW_UNREAL, NPV.DISC_UNREAL, NPV.ADJ_NPV ");
+        sb.append(" into #tran_union ");
+        sb.append(" from BASIC_TRANSACT_VIEW BTV, #accounts A, FX_FORWARD_NPV NPV,
+        SECDB_FOREX_RATE F, TCURRENCY C ");
+        sb.append(" where BTV.ACCT_ID = A.ACCT ");
+        sb.append(" and BTV.TRAN_ID = NPV.TRAN_ID ");
+        sb.append(" and BTV.TRUE_STATUS = 'ACTIVE' ");
+        sb.append(" and BTV.OUT_Z >= ? ");
+        this.addTimestampParameter(this.getBasicDateProvider().fetchCheckPoint(this.getBasicDateProvider().getAsOfDate()));
+        sb.append(" and BTV.IN_Z < ? ");
+        this.addTimestampParameter(this.getBasicDateProvider().fetchCheckPoint(this.getBasicDateProvider().getAsOfDate()));
+        sb.append(" and BTV.TRAN_SETTLE_D > ? ");
+        this.addTimestampParameter(this.getBasicDateProvider().getAsOfDate());
+        sb.append(" and NPV.FROM_Z < ? ");
+        this.addTimestampParameter(this.getBasicDateProvider().getAsOfDate());]]></programlisting>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            In-line SQL Example Continued
+        </title>
+        <programlisting language="java"><![CDATA[sb.append(" and NPV.THRU_Z >= ? ");
+this.addTimestampParameter(this.getBasicDateProvider().getAsOfDate());
+sb.append(" and NPV.IN_Z < ? ");
+this.addTimestampParameter(this.getBasicDateProvider().getEternity());
+sb.append(" and NPV.OUT_Z >= ? ");
+this.addTimestampParameter(this.getBasicDateProvider().getEternity());
+sb.append( "and F.CURRENCY = 'USD' ");
+sb.append(" and BTV.TRAN_SETTLE_D = F.VALUE_DATE");
+sb.append(" and F.FROM_Z < ? ");
+this.addTimestampParameter(this.getBasicDateProvider().getAsOfDate());
+sb.append(" and F.THRU_Z >= ? ");
+this.addTimestampParameter(this.getBasicDateProvider().getAsOfDate());
+sb.append(" and F.IN_Z < ? ");
+this.addTimestampParameter(this.getBasicDateProvider().getEternity());
+sb.append(" and F.OUT_Z >= ? ");
+this.addTimestampParameter(this.getBasicDateProvider().getEternity());
+sb.append(" and BTV.PROD_SEC_ID_I = C.PROD_SEC_ID_I");
+this.getStatementWrapper().setStatementString(sb.toString());
+this.executeUpdateStatement();
+}
+catch (DataStoreException e)
+{
+this.getLogger().error(e);
+}
+}]]></programlisting>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Object Oriented Query Example
+        </title>
+        <programlisting language="java"><![CDATA[public List buildOperation (PnlObjectOperationProvider pnlObjectOpProvider, ProductOperationProvider
+productOpProvider, ParaDate milestoneBusinessDate, ActivityReviewManager activityReviewManager)
+{
+    this.activityReviewManager = activityReviewManager;
+    ParaTransactionList basicTranList = new ParaTransactionList();
+    List tranList = this.buildBusinessDateBasicTransactionOperation(pnlObjectOpProvider, productOpProvider,
+    milestoneBusinessDate);
+    for(int i = 0; i< tranList.size(); i++)
+    {
+        ParaTransactionList itemList = (ParaTransactionList)tranList.get(i);
+        Timestamp busDate = new Timestamp(milestoneBusinessDate.getTime());
+        businessDate = busDate;
+        Operation op = itemList.getOperation().and(ParaTransactionFinder.status().eq("ACTIVE"))
+            .and(ParaTransactionFinder.settleDate().greaterThan(busDate));
+
+        op = op.and(getStringOperation(getActivityReviewManager().getCounterPartyNumber(),ParaTransactionFinder.customerTransaction().crossAccount()));
+        basicTranList.add(new ParaTransactionList(op));
+        basicTranList.deepFetch(ParaTransactionFinder.underlierTransactions());
+        basicTranList.deepFetch(ParaTransactionFinder.customerTransaction());
+    }
+    return basicTranList;
+}]]></programlisting>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Object Oriented Query Language
+        </title>
+        <para>How?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Non-trivial: Large part of the Reladomo code base (> 20%)</para>
+            </listitem>
+            <listitem>
+                <para>Various types of operations</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Atomic (equals, in, greaterThan, lessThan, etc)</para>
+                </listitem>
+                <listitem>
+                    <para>Mapped (traversing a relationship, aka join)</para>
+                </listitem>
+                <listitem>
+                    <para>Boolean (and, or)</para>
+                </listitem>
+                <listitem>
+                    <para>Miscellaneous (all, absolute value, etc)</para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>Before evaluation of a complex operation, it’s simplified.</para>
+            </listitem>
+            <listitem>
+                <para>Operation is evaluated against the cache (if applicable) and then the server</para>
+            </listitem>
+            <listitem>
+                <para>SQL generation can be a bit tricky (especially for dated objects)</para>
+            </listitem>
+        </itemizedlist>
+
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Testable Code
+        </title>
+        <para>Why?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Testable code has become an indispensable part of our development methodology</para>
+            </listitem>
+            <listitem>
+                <para>Persistent objects are traditionally difficult to unit test because they’re tied to a database
+                </para>
+            </listitem>
+            <listitem>
+                <para>The core Reladomo code was written using test driven development</para>
+            </listitem>
+        </itemizedlist>
+        <para>How?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Create a test resource: text file for initial data + in memory SQL database (H2)</para>
+            </listitem>
+            <listitem>
+                <para>Reladomo provides a simple testing framework that fits right into Junit.</para>
+            </listitem>
+            <listitem>
+                <para>All operations are supported: query, insert, update, delete, chaining, etc.</para>
+            </listitem>
+            <listitem>
+                <para>Examples: Large production application</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>The crux of the code is processing of data.</para>
+                </listitem>
+                <listitem>
+                    <para>Reladomo-enabled testing covers > 80% of the code.</para>
+                </listitem>
+                <listitem>
+                    <para>Result: shortened development time, highly reliable code with very few bugs encountered in
+                        production.
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Flexible Relationships
+        </title>
+        <para>Why?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Relationships between objects can take interesting forms in real life.</para>
+            </listitem>
+            <listitem>
+                <para>Can dramatically reduce IO to the database. Can also be used for interesting searches.</para>
+            </listitem>
+            <listitem>
+                <para>Two common examples: a parametrized relationship, or a relationship with extra conditions.</para>
+            </listitem>
+        </itemizedlist>
+        <para>How?</para>
+        <itemizedlist>
+            <listitem>
+                <para>This feature works because of Reladomo’s dynamic relationship resolution. Examples:
+                    Relationships from Product
+                    <programlisting language="xml"><![CDATA[<Relationship name="parentProduct" relatedObject="Product" cardinality="many-to-one">
+    ProductRelation.productChildId = this.productId and Product.productId =
+    ProductRelation.productParentId and
+    ProductRelation.relationshipType in (3200, 3214, 9800, 3201, 3202, 3207, 3208, 3209, 3210, 3211)
+</Relationship>
+<Relationship name="synonymItem" relatedObject="ProductSynonym" cardinality="one-to-one"
+              parameters="String sym">
+    ProductSynonym.productId = this.productId and ProductSynonym.type = {sym}
+</Relationship>]]></programlisting>
+                </para>
+            </listitem>
+        </itemizedlist>
+
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Chaining
+        </title>
+        <para>Chaining is an umbrella term that describes a way of storing time series data, audit data or
+            both in a relational database. The different versions (audit only, time series only and
+            bitemporal) are described below.
+        </para>
+        <itemizedlist>
+            <listitem>
+                <para>1.Audit Only</para>
+            </listitem>
+            <listitem>
+                <para>2.Business Time Series Only</para>
+            </listitem>
+            <listitem>
+                <para>3.Both Audit and Business Time Series: Bitemporal</para>
+            </listitem>
+        </itemizedlist>
+
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Chaining
+        </title>
+        <para>Why?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Chaining is complicated</para>
+            </listitem>
+            <listitem>
+                <para>The algorithm is only maintainable if it’s managed from one single piece of code</para>
+            </listitem>
+            <listitem>
+                <para>Chaining affects the core of object-relational mapping. It is very difficult to implement chaining
+                    as an add-on to an existing OR framework.
+                </para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Chained objects are queried and persisted differently</para>
+                </listitem>
+                <listitem>
+                    <para>Chained objects don’t have the same operations (insert, update, delete) as regular objects
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>
+                        Chained objects support more complicated operations: insert, insert until, update, update until,
+                        increment, increment until, terminate.
+                    </para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Chaining
+        </title>
+        <para>How?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Not a large piece of code (6%), but complicated: 30% of test code is just for chaining</para>
+            </listitem>
+            <listitem>
+                <para>Information held in a single object is usually not enough to calculate new state</para>
+            </listitem>
+            <listitem>
+                <para>Object delegates complex operations to the TemporalDirector</para>
+            </listitem>
+            <listitem>
+                <para>TemporalDirector uses TemporalContainer to calculate new state</para>
+            </listitem>
+            <listitem>
+                <para>TemporalContainer keeps data for a range of dates. Can fetch more from the database, on demand.
+                </para>
+            </listitem>
+            <listitem>
+                <para>TemporalContainers are held in the transactional cache and discarded at end of transaction</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Audit Only Chaining
+        </title>
+        <para>
+            Here is an example of this type of audit trail for an account object. The account was created on 1/1/2005:
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="ReladomoFeatures_19_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+        <para>
+            On 2/5/2005, the trader changes to Jane Doe:
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="ReladomoFeatures_19_2.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Audit Only Chaining
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>The IN and OUT columns represent real time. They have nothing to do with the business calendar.
+                </para>
+            </listitem>
+            <listitem>
+                <para>The interesting row (meaning, the row we think has the correct information) always has OUT =
+                    Infinity
+                </para>
+            </listitem>
+            <listitem>
+                <para>There is no way to alter the history. The only allowed update operation to a row is to change its
+                    OUT value from infinity to current time.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title></title>
+        <para>
+            On 1/1/2005, we buy 100 shares of a product. We always do our accounting at 6:30 pm (even if it takes
+            several hours, our business calendar is set to 6:30 pm):
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="ReladomoFeatures_21_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+        <para>
+            On 2/5/2005, we buy another 100 shares:
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="ReladomoFeatures_21_2.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+        <para>
+            So far, this looks very much like the first example. To clarify the difference, we can do an
+            "as of trade". On 2/10/2005, we find out that we missed a trade for 50 shares that
+            happened on 1/15/2005:
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="ReladomoFeatures_21_2.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+    </dbs:foil>
+    <dbs:foil>
+        <title></title>
+        <para>
+            Let’s consider the same example
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="ReladomoFeatures_22_1.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+        <para>We now add 100 on 2/5/2005:</para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="ReladomoFeatures_22_2.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+        <para>
+            On 2/10/2005, we find a trade that was done on 1/15/2005 for 50 shares:
+        </para>
+        <mediaobject>
+            <imageobject>
+                <imagedata fileref="ReladomoFeatures_22_3.png" align="center" valign="middle" format="png"
+                           scalefit="1"/>
+            </imageobject>
+        </mediaobject>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Collections Based Operations
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>Two types of batching:</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Prepared statement batching: reuse the same statement multiple times. X 2 performance
+                        improvement
+                    </para>
+                </listitem>
+                <listitem>
+                    <para>Use of SQL statements that update more than one row at a time. X 50 performance improvement
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>Collections are a core of the Reladomo API.</para>
+            </listitem>
+            <listitem>
+                <para>Example mass delete:</para>
+                <programlisting language="java"><![CDATA[Operation op = SwapPriceFinder.sourceId().eq( id ); op = op.and(
+    SwapPriceFinder.businessDate().eq( busDate ) );
+
+op = op.and( SwapPriceFinder.feedNumber().eq( feedNumber ) );
+
+SwapPriceList priceList = new SwapPriceList(op);
+
+priceList.deleteAll();]]></programlisting>
+            </listitem>
+            <listitem>
+                <para>65,583 rows took 562 seconds without deleteAll implementation. With the implementation it took 12
+                    seconds.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Deep Fetching: a better approach to relationship resolution</para>
+            </listitem>
+            <listitem>
+                <para>Collections based operations make Reladomo suitable for most types of large retrievals (report
+                    style), OLTP, and batch style processing.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Collections Based Operations
+        </title>
+        <para>Why?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Reduce object relational impedance mismatch</para>
+            </listitem>
+            <listitem>
+                <para>Reduced chattiness</para>
+            </listitem>
+            <listitem>
+                <para>Performance</para>
+            </listitem>
+        </itemizedlist>
+        <para>How?</para>
+        <itemizedlist>
+            <listitem>
+                <para>List object used as gateway to collective operations</para>
+            </listitem>
+            <listitem>
+                <para>Special SQL generation for mass/bulk operations</para>
+            </listitem>
+            <listitem>
+                <para>Deep fetch uses joins: solves 1+N problem</para>
+            </listitem>
+            <listitem>
+                <para>BCP support for Sybase: 5x faster than plain insert</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Investigating pure Java alternative to file generation</para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Transparent Multi-schema Support
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>For scalability, we’ve partitioned ledger data into a large number of databases (about 150). The
+                    schema is identical in these database, but the data is different.
+                </para>
+            </listitem>
+            <listitem>
+                <para>The class of objects can therefore be retrieved from multiple sources</para>
+            </listitem>
+            <listitem>
+                <para>Traditional ORMs have difficulty keeping objects tied to the original source. This is particularly
+                    a problem with caching.
+                </para>
+            </listitem>
+            <listitem>
+                <para>We even have transactions that read from one database and write to another. That is, the access
+                    patterns are not necessarily one-database-at-a-time.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Support for this is built into the core of Reladomo.</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Transparent Multi-schema Support
+        </title>
+        <para>Why?</para>
+        <itemizedlist>
+            <listitem>
+                <para>How an object is identified must include where the object came from:</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Transaction 123 in Database A can be 100 shares of IBM</para>
+                </listitem>
+                <listitem>
+                    <para>Transaction 123 in Database B can be 300 shares of BMW</para>
+                </listitem>
+                <listitem>
+                    <para>When both objects are loaded, they must not be confused.</para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>Enables horizontally scalable solutions</para>
+            </listitem>
+        </itemizedlist>
+        <para>How?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Metadata includes special attribute (SourceAttribute)</para>
+            </listitem>
+            <listitem>
+                <para>All operations (find, insert, update, delete) use this attribute to obtain the proper
+                    connection.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Caching
+        </title>
+        <para>Why?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Uniquing: an object with a given primary key must correspond to exactly one memory location</para>
+            </listitem>
+            <listitem>
+                <para>Performance</para>
+            </listitem>
+            <listitem>
+                <para>Reduced IO and latency</para>
+            </listitem>
+        </itemizedlist>
+        <para>How?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Can be configured as none, partial (dynamic) or full on a per class basis.</para>
+            </listitem>
+            <listitem>
+                <para>Can be bypassed on a per query basis.</para>
+            </listitem>
+            <listitem>
+                <para>Cache is a searchable set of indices. An index is a keyless set.</para>
+            </listitem>
+            <listitem>
+                <para>Queries are cached in the query cache. Also facilitates deep fetched relationships.</para>
+            </listitem>
+            <listitem>
+                <para>Transaction disregards pre-transaction cached results.</para>
+            </listitem>
+            <listitem>
+                <para>Partial cache can only answer queries based on unique identifiers.</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Three Tier Operation
+        </title>
+        <para>Why?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Security (fat client applications):</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>User ID must not be able to access database directly (especially write)</para>
+                </listitem>
+                <listitem>
+                    <para>Batch/App ID must not be used from unauthorized IP’s (see PACT AppFilter)</para>
+                </listitem>
+                <listitem>
+                    <para>For a large, semi-mobile user community, maintaining IP lists is undesirable and opens iSQL
+                        hole
+                    </para>
+                </listitem>
+            </itemizedlist>
+            <listitem>
+                <para>Connection sharing: database connections can be expensive. Many users can share same connection.
+                </para>
+            </listitem>
+        </itemizedlist>
+        <para>How?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Third tier acts like a relational source. Supports relational-like operations: find, insert,
+                    update, delete.
+                </para>
+            </listitem>
+            <listitem>
+                <para>No object graphs. Not a complex object source. Serializaton based on metadata. Wire format looks
+                    like a result set.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Lightweight: can be configured as pass-through with no caching.</para>
+            </listitem>
+            <listitem>
+                <para>Remoting API must be implemented by application.</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Notification
+        </title>
+        <para>Why?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Allow multiple VM’s to independently update data.</para>
+            </listitem>
+            <listitem>
+                <para>Polling considered harmful ("Are we there yet?" syndrome)</para>
+            </listitem>
+        </itemizedlist>
+        <para>How?</para>
+        <itemizedlist>
+            <listitem>
+                <para>At the end of a transaction, message is constructed. Message contains the primary keys for objects
+                    that were inserted/updated/deleted. Message is sent to a topic that encodes the database identity.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Listeners only register interest in databases they have accessed. Upon receipt of message, any
+                    objects (if any) are marked as dirty.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Asynchronous message processing to avoid messaging and IO bottlenecks in application’s main flow.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Messaging API can be implemented by application. RV implementation provided.</para>
+            </listitem>
+            <listitem>
+                <para>Notification is entirely independent of three tier operation. Most important production uses are
+                    in two tier scenarios. Notification is off by default.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Notification
+        </title>
+        <para>Examples:</para>
+        <itemizedlist>
+            <listitem>
+                <para>Posting Engine creates an account. Adjustment server processes a request for the trial or
+                    income function containing the new account some time later.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Age Inventory Firm to Firm processor on Desk A updates age transfer status. Age Inventory Firm to
+                    Firm processor on corresponding desk will see new status.
+                </para>
+            </listitem>
+            <listitem>
+                <para>Posting Engine updates feed status. Notification is sent for the status object. Next time a
+                    controller queries for status, they will not get stale results.
+                </para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            RUNS Integration
+        </title>
+        <para>Why?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Replication from remote sources can cause staleness.</para>
+            </listitem>
+            <listitem>
+                <para>For low volume update data (e.g. account data) hitting database all the time is wasteful.</para>
+            </listitem>
+            <listitem>
+                <para>Object metadata can be used the same way with RUNS tables as regular tables.</para>
+            </listitem>
+            <listitem>
+                <para>Staleness typically exasperated because objects are configured as read only.</para>
+            </listitem>
+        </itemizedlist>
+        <para>How?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Application configuration flags objects that are replicated.</para>
+            </listitem>
+            <listitem>
+                <para>Background thread reads RUNS queue tables periodically.</para>
+            </listitem>
+            <listitem>
+                <para>Send notification based on primary key found in RUNS child tables</para>
+            </listitem>
+            <listitem>
+                <para>Clear RUNS tables.</para>
+            </listitem>
+            <listitem>
+                <para>Fully optional. Can be setup as a lightweight, independent process.</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            DDL Generator
+        </title>
+        <para>Why?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Metadata contains all necessary data. DRY: get the DDL from the metadata.</para>
+            </listitem>
+            <listitem>
+                <para>Productivity: DDL files are hard to write and maintain.</para>
+            </listitem>
+            <listitem>
+                <para>Junior developers have problems writing DDL files, especially index creation.</para>
+            </listitem>
+        </itemizedlist>
+        <para>How?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Based on the metadata and target database type, emit DDL.</para>
+            </listitem>
+            <listitem>
+                <para>Hardest part is generating decent indices. Primary key index is easy. Foreign key indices are
+                    based on defined relationships.
+                </para>
+            </listitem>
+        </itemizedlist>
+
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Generate metadata from existing schema
+        </title>
+        <para>Why?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Large legacy systems can be converted quickly and painlessly.</para>
+            </listitem>
+        </itemizedlist>
+        <para>How?</para>
+        <itemizedlist>
+            <listitem>
+                <para>Create object definition from table definition.</para>
+            </listitem>
+            <listitem>
+                <para>Choose object primary key based on unique index.</para>
+            </listitem>
+        </itemizedlist>
+    </dbs:foil>
+    <dbs:foil>
+        <title>
+            Long term plan
+        </title>
+        <itemizedlist>
+            <listitem>
+                <para>The direction of Reladomo is set by its users.</para>
+            </listitem>
+            <listitem>
+                <para>Help us make Reladomo a better product:</para>
+            </listitem>
+            <itemizedlist>
+                <listitem>
+                    <para>Feedback is the most valuable thing. What’re we doing right or wrong?</para>
+                </listitem>
+                <listitem>
+                    <para>What features would make your code better?</para>
+                </listitem>
+                <listitem>
+                    <para>If you find a bug, a test case would be exceptionally helpful.</para>
+                </listitem>
+                <listitem>
+                    <para>If you’re feeling adventurous, contribute code!</para>
+                </listitem>
+            </itemizedlist>
+        </itemizedlist>
+    </dbs:foil>
+</dbs:slides>

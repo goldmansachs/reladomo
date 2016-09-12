@@ -1,0 +1,36 @@
+<%--
+Copyright 2016 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+--%>
+<% for (Iterator iterator = wrapper.getImports().iterator(); iterator.hasNext();)
+	{
+		String classToImport = (String) iterator.next();
+	%>
+import <%=classToImport%>;	<%}%>
+import java.io.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.attribute.*;
+import com.gs.fw.common.mithra.util.*;
+
+<%
+    String valueSelectorClassName = "com.gs.collections.api.block.function.Function";
+    String valueSelectorSimpleClassName = "Function";
+%>
+import com.gs.fw.common.mithra.notification.*;
+import com.gs.fw.common.mithra.notification.listener.*;
+
+import com.gs.fw.common.mithra.list.cursor.Cursor;
+import com.gs.fw.common.mithra.bulkloader.*;

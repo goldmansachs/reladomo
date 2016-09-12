@@ -1,0 +1,105 @@
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+    <PackageName>com.gs.fw.common.mithra.test.desk.aggregate</PackageName>
+    <ClassName>AggregateTrialCurrencyExposure</ClassName>
+    <DatedTransactionalTemporalDirector>com.gs.fw.common.mithra.test.ParaLikeBiTemporalDirector</DatedTransactionalTemporalDirector>
+
+    <DefaultTable>TAGTRIAL_CURR</DefaultTable>
+
+    <Attribute name="account9Digits" javaType="int" columnName="GROUP_I " primaryKey="true"/>
+    <Attribute name="positionType" javaType="int" columnName="POS_TYP_C" primaryKey="true"/>
+    <Attribute name="currency" javaType="String" columnName="DENOM_CURR_C" primaryKey="true"/>
+    <Attribute name="productCurrency" javaType="String" columnName="PROD_CURR_C" primaryKey="true"/>
+    <Attribute name="dataLevel" javaType="int" columnName="VIEW_I"/>
+    <Attribute name="interestReceivable" javaType="double" columnName="INT_REC_M" defaultIfNull="0.0"/>
+    <Attribute name="interestPayable" javaType="double" columnName="INT_PAY_M" defaultIfNull="0.0"/>
+    <Attribute name="interestIncome" javaType="double" columnName="INT_INC_M" defaultIfNull="0.0"/>
+    <Attribute name="interestExpense" javaType="double" columnName="INT_EXP_M" defaultIfNull="0.0"/>
+    <Attribute name="interestBought" javaType="double" columnName="INT_BOUGHT_M" defaultIfNull="0.0"/>
+    <Attribute name="interestSold" javaType="double" columnName="INT_SOLD_M" defaultIfNull="0.0"/>
+    <Attribute name="interestReceivableDiscount" javaType="double" columnName="INT_REC_DISC_M" defaultIfNull="0.0"/>
+    <Attribute name="interestPayableDiscount" javaType="double" columnName="INT_PAY_DISC_M" defaultIfNull="0.0"/>
+    <Attribute name="interestIncomeDiscount" javaType="double" columnName="INT_INC_DISC_M" defaultIfNull="0.0"/>
+    <Attribute name="interestExpenseDiscount" javaType="double" columnName="INT_EXP_DISC_M" defaultIfNull="0.0"/>
+    <Attribute name="unrecAdjustmentInterest" javaType="double" columnName="ADJ_INT_UNREC_M" defaultIfNull="0.0"/>
+    <Attribute name="otherAdjustmentInterest" javaType="double" columnName="ADJ_INT_OTHER_M" defaultIfNull="0.0"/>
+    <Attribute name="costLong" javaType="double" columnName="COST_LG_M" defaultIfNull="0.0"/>
+    <Attribute name="costShort" javaType="double" columnName="COST_ST_M" defaultIfNull="0.0"/>
+    <Attribute name="marketValueLong" javaType="double" columnName="MKT_VAL_LG_M" defaultIfNull="0.0"/>
+    <Attribute name="marketValueShort" javaType="double" columnName="MKT_VAL_ST_M" defaultIfNull="0.0"/>
+    <Attribute name="futureMarketValueLong" javaType="double" columnName="FUT_MKT_VAL_LG_M" defaultIfNull="0.0"/>
+    <Attribute name="futureMarketValueShort" javaType="double" columnName="FUT_MKT_VAL_ST_M" defaultIfNull="0.0"/>
+    <Attribute name="trading" javaType="double" columnName="ECONOMIC_M" defaultIfNull="0.0"/>
+    <Attribute name="realized" javaType="double" columnName="REALIZED_M" defaultIfNull="0.0"/>
+    <Attribute name="unrealized" javaType="double" columnName="UNREALIZED_M" defaultIfNull="0.0"/>
+    <Attribute name="futureRealized" javaType="double" columnName="FUT_RLZD_M" defaultIfNull="0.0"/>
+    <Attribute name="futureUnrealized" javaType="double" columnName="FUT_UNRLZD_M" defaultIfNull="0.0"/>
+    <Attribute name="currencyRealized" javaType="double" columnName="CURR_RLZD_M" defaultIfNull="0.0"/>
+    <Attribute name="currencyUnrealized" javaType="double" columnName="CURR_UNRLZD_M" defaultIfNull="0.0"/>
+    <Attribute name="unrealizedAdjustment" javaType="double" columnName="UNREALIZED_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="miscellaneousUnrealizedAdjustment" javaType="double" columnName="UNREAL_MISC_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="creditValuationAdjustment" javaType="double" columnName="CRED_VAL_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="liquidityAdjustment" javaType="double" columnName="LIQUIDITY_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="npvAjustment" javaType="double" columnName="NPV_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="modelAdjustment" javaType="double" columnName="MODEL_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="bidOfferAdjustment" javaType="double" columnName="BIDOFFER_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="withholdingTaxAdjustment" javaType="double" columnName="WITHOLDINGTAX_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="customerReceivableAdjustment" javaType="double" columnName="CUSTRECV_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="customerPayableAdjustment" javaType="double" columnName="CUSTPAY_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="marketVsHedgeAdjustment" javaType="double" columnName="MARKVSHEDGE_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="unobsPnlAdjustment" javaType="double" columnName="UNOBSPNL_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="realizedAdjustment" javaType="double" columnName="REALIZED_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="otherRealized" javaType="double" columnName="OTHER_RLZD_M" defaultIfNull="0.0"/>
+    <Attribute name="newBiz" javaType="double" columnName="NEW_BIZ_M" defaultIfNull="0.0"/>
+    <Attribute name="transferTax" javaType="double" columnName="TRANSFER_TAX_M" defaultIfNull="0.0"/>
+    <Attribute name="exchangeTax" javaType="double" columnName="EXCHANGE_TAX_M" defaultIfNull="0.0"/>
+    <Attribute name="tradeFee" javaType="double" columnName="TRADE_FEE_M" defaultIfNull="0.0"/>
+    <Attribute name="cashDifference" javaType="double" columnName="CASH_DIFF_M" defaultIfNull="0.0"/>
+    <Attribute name="baseControl" javaType="double" columnName="BASE_CONTROL_M" defaultIfNull="0.0"/>
+    <Attribute name="currencyPos" javaType="double" columnName="CURR_POS_M" defaultIfNull="0.0"/>
+    <Attribute name="expensePos" javaType="double" columnName="EXPENSE_POS_M" defaultIfNull="0.0"/>
+    <Attribute name="futureRealizedNd" javaType="double" columnName="FUT_REAL_ND_M" defaultIfNull="0.0"/>
+    <Attribute name="futureOptPremND" javaType="double" columnName="FUT_OPTPREM_ND_M" defaultIfNull="0.0"/>
+    <Attribute name="unsettledPurchaseInterest" javaType="double" columnName="UNSETL_PURCH_INT_M" defaultIfNull="0.0"/>
+    <Attribute name="otherAdjustment" javaType="double" columnName="OTHER_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="pendingAccrualRealized" javaType="double" columnName="PND_ACC_REAL_M" defaultIfNull="0.0"/>
+    <Attribute name="expenseAccrual" javaType="double" columnName="EXP_ACC_M" defaultIfNull="0.0"/>
+    <Attribute name="expensePayable" javaType="double" columnName="EXP_PAY_M" defaultIfNull="0.0"/>
+    <Attribute name="otherUnrealizedAdjustment" javaType="double" columnName="OTHER_UNRLZD_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="contractNpv" javaType="double" columnName="CONTRACT_NPV_M" defaultIfNull="0.0"/>
+    <Attribute name="valuationAdjustment" javaType="double" columnName="VAL_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="fxRevaluationAdjustment" javaType="double" columnName="FX_REVAL_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="dividendAccrualLong" javaType="double" columnName="DIV_ACC_LG_M" defaultIfNull="0.0"/>
+    <Attribute name="dividendAccrualShort" javaType="double" columnName="DIV_ACC_ST_M" defaultIfNull="0.0"/>
+    <Attribute name="netCost" javaType="double" columnName="NET_COST_M" defaultIfNull="0.0"/>
+    <Attribute name="dividendPaidReceived" javaType="double" columnName="DIV_PAID_RCVD_M" defaultIfNull="0.0"/>
+    <Attribute name="fwdNewBiz" javaType="double" columnName="FWD_NEW_BIZ_M" defaultIfNull="0.0"/>
+    <Attribute name="fwdRollNewBiz" javaType="double" columnName="FWD_ROLL_NEW_BIZ_M" defaultIfNull="0.0"/>
+    <Attribute name="mtm" javaType="double" columnName="MTM_M" defaultIfNull="0.0"/>
+    <Attribute name="gmiUnrealized" javaType="double" columnName="GMI_UNRLZD_M" defaultIfNull="0.0"/>
+    <Attribute name="reserveMarketValue" javaType="double" columnName="RES_MKT_VAL_M" defaultIfNull="0.0"/>
+    <Attribute name="miscellaneousUnrealizedNbAdjustment" javaType="double" columnName="UNREAL_MISC_NB_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="npvNbAdjustment" javaType="double" columnName="NPV_NB_ADJ_M" defaultIfNull="0.0"/>
+    <Attribute name="allocationPnl" javaType="double" columnName="ALLOC_PNL_M" defaultIfNull="0.0"/>
+    <Attribute name="paydownPnl" javaType="double" columnName="PAYDWN_M" defaultIfNull="0.0"/>
+    <Attribute name="paydownLtdPnl" javaType="double" columnName="PAYDWN_LTD_M" defaultIfNull="0.0"/>
+    <Attribute name="otherPnl" javaType="double" columnName="OTHR_PNL_M" defaultIfNull="0.0"/>
+
+</MithraObject>

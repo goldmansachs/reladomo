@@ -1,0 +1,342 @@
+<?xml version="1.0"?>
+
+
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<article>
+
+    <articleinfo>
+        <title>Transactions with Reladomo</title>
+        <pubdate>20 June 2006</pubdate>
+        <author>Mohammad Rezaei</author>
+    </articleinfo>
+
+    <sect1>
+
+        <title>Introduction</title>
+        <para>Transaction management is traditionally associated with two areas of difficulty: exception handling and propagation.
+            Additionally, when a database resource is involved, transaction retries becomes an important part of transaction management.
+            <itemizedlist>
+                <listitem>
+                   <para>Exception Handling: proper exception handling can be difficult in a transactional context. Failure to
+                   handle exceptions during a transaction can lead to incomplete transactions and dangling resources. By nature,
+                       exceptions occur when we least expect them, making issues hard to predict and find during development and QA.
+                   </para>
+                </listitem>
+                <listitem>
+                   <para>Propagation: in a well factored OO codebase, it is imperative that pieces of code be reusable. This makes it likely
+                   that a transactional piece of code will call another transactional piece of code. Experience has shown that in situations like this,
+                   the most common behavior is to propagate the transaction context. The other choice is to start a new transaction context, but is rarely
+                   used. For example, in a large production codebase, there are only 2 examples where the transaction context should not be propagated, out of a total
+                   of about 200.</para>
+                </listitem>
+                <listitem>
+                   <para>Transaction retry: certain database exceptions, usually involving deadlocks and sometimes timeouts are retriable. Robust applications
+                   will use this information to transparently retry such operations.</para>
+                </listitem>
+            </itemizedlist>
+
+        </para>
+
+    </sect1>
+
+    <sect1>
+
+        <title>Local Transactions</title>
+        <para>
+            Local transactions are handled by Reladomo internally. There is no need for a transaction manager. To use local transactions, use the existing
+            Reladomo connection manager. If an unhandled exception is thrown during the transaction, it will be rolled back.
+            The following code shows how a transaction can be encapsulated:
+            <programlisting language="java"><![CDATA[
+public void mithraTransactionWithPropagationAndRetry()
+{
+    MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand() {
+        public Object executeTransaction(MithraTransaction tx) throws Throwable
+        {
+            // business logic goes here
+        }
+    });
+}
+]]></programlisting>
+            The transaction just before executeTransaction is called and is committed when the method successfully returns.
+        </para>
+
+    </sect1>
+
+    <sect1>
+
+        <title>Global Transactions</title>
+        <para>
+            There are two ways to handle global transactions with Reladomo. Reladomo can join the global transaction context, or
+            Reladomo can be configured with a transaction manager. In the first scenario, the explicit transaction semantics are in
+            the application code. In the second scenario, the application is still responsible for enlisting resources into the
+            transaction, but the semantics are simplified.
+        </para>
+            <sect2>
+                <para>
+                To use Reladomo in a global transaction, the code would look like this:
+                <programlisting language="java"><![CDATA[
+public void simpleTransaction()
+{
+    Transaction tx = null;
+    try
+    {
+        tm.begin();
+        tx = tm.getTransaction();
+        // resource enlistment:
+        XAResource emsResource = getEmsResource();
+        tx.enlistResource(emsResource);
+        MithraManagerProvider.getMithraManager().joinJtaTransaction(tx);
+        // business logic goes here
+        // resource delistment:
+        MithraManagerProvider.getMithraManager().leaveJtaTransaction();
+        tx.delistResource(emsResource, XAResource.TMSUCCESS);
+        tx.commit();
+    }
+    catch (RuntimeException re)
+    {
+        getLogger().error("rolled back tx.", re);
+        try
+        {
+            tx.rollback();
+        }
+        catch (SystemException e)
+        {
+            logger.error("could not rollback transaction", e);
+        }
+        throw re;
+    }
+    catch(Throwable t)
+    {
+        if (tx != null)
+        {
+            try
+            {
+                tx.rollback();
+            }
+            catch (SystemException e)
+            {
+                logger.error("could not rollback transaction", e);
+            }
+        }
+        throw new RuntimeException("unexpected exception", t);
+    }
+}
+]]></programlisting>
+                </para>
+                <para>
+                To add transaction context propagation, we'll need a bit more code:
+                <programlisting language="java"><![CDATA[
+public void transactionWithPropagation()
+{
+    Transaction tx = null;
+    boolean startedTransaction = true;
+    try
+    {
+        if (tm.getStatus() == Status.STATUS_ACTIVE)
+        {
+            startedTransaction = false;
+        }
+        else
+        {
+            tm.begin();
+        }
+        tx = tm.getTransaction();
+        // resource enlistment: NOTE: this will break if resource is already enlisted!!
+        XAResource emsResource = getEmsResource();
+        tx.enlistResource(emsResource);
+        MithraManagerProvider.getMithraManager().joinJtaTransaction(tx);
+        // business logic goes here
+        // resource delistment:
+        MithraManagerProvider.getMithraManager().leaveJtaTransaction();
+        tx.delistResource(emsResource, XAResource.TMSUCCESS);
+        if (startedTransaction)
+        {
+            tx.commit();
+        }
+    }
+    catch (RuntimeException re)
+    {
+        getLogger().error("rolled back tx.", re);
+        try
+        {
+            tx.rollback();
+        }
+        catch (SystemException e)
+        {
+            logger.error("could not rollback transaction", e);
+        }
+        throw re;
+    }
+    catch(Throwable t)
+    {
+        if (tx != null)
+        {
+            try
+            {
+                tx.rollback();
+            }
+            catch (SystemException e)
+            {
+                logger.error("could not rollback transaction", e);
+            }
+        }
+        throw new RuntimeException("unexpected exception", t);
+    }
+}]]></programlisting>
+            </para>
+            <para>
+                To have transaction retry and propagation, we'll need:
+                <programlisting language="java"><![CDATA[
+public void transactionWithRetryAndPropagation()
+{
+    int retriesLeft = 10;
+    boolean retry = true;
+    boolean startedTransaction = true;
+    do
+    {
+        Transaction tx = null;
+        try
+        {
+            if (tm.getStatus() == Status.STATUS_ACTIVE)
+            {
+                startedTransaction = false;
+                retry = false;
+            }
+            else
+            {
+                tm.begin();
+            }
+            tx = tm.getTransaction();
+            // resource enlistment: NOTE: this will break if resource is already enlisted!!
+            XAResource emsResource = getEmsResource();
+            tx.enlistResource(emsResource);
+            MithraManagerProvider.getMithraManager().joinJtaTransaction(tx);
+            // business logic goes here
+            // resource delistment:
+            MithraManagerProvider.getMithraManager().leaveJtaTransaction();
+            tx.delistResource(emsResource, XAResource.TMSUCCESS);
+            if (startedTransaction)
+            {
+                tx.commit();
+            }
+        }
+        catch(MithraBusinessException mithraException)
+        {
+            if (tx != null)
+            {
+                retriesLeft--;
+                if (startedTransaction)
+                {
+                    retry = mithraException.isRetriable() && retriesLeft > 0;
+                }
+                if (retry)
+                {
+                    getLogger().warn(" rolling back tx; will retry "+retriesLeft+" more times.", mithraException);
+                }
+                else
+                {
+                    getLogger().warn(" rolling back tx; will not retry.", mithraException);
+                }
+                try
+                {
+                    tx.rollback();
+                }
+                catch (SystemException e)
+                {
+                    logger.error("could not rollback transaction", e);
+                    retry = false;
+                }
+                if (!retry)
+                {
+                    throw mithraException;
+                }
+            }
+            else
+            {
+                getLogger().error("could not start transaction, will not retry.", mithraException);
+                throw mithraException;
+            }
+        }
+        catch (RuntimeException re)
+        {
+            getLogger().error("rolled back tx.", re);
+            if (tx != null)
+            {
+                try
+                {
+                    tx.rollback();
+                }
+                catch (SystemException e)
+                {
+                    logger.error("could not rollback transaction", e);
+                }
+            }
+            throw re;
+        }
+        catch(Throwable t)
+        {
+            if (tx != null)
+            {
+                try
+                {
+                    tx.rollback();
+                }
+                catch (SystemException e)
+                {
+                    logger.error("could not rollback transaction", e);
+                }
+            }
+            throw new RuntimeException("unexpected exception", t);
+        }
+    }
+    while(retry);
+}]]></programlisting>
+
+            </para>
+        </sect2>
+        <sect2>
+            <para>Reladomo can be configured with a transaction manager:
+                <programlisting language="java"><![CDATA[
+public void mithraTransactionWithPropagationAndRetry()
+{
+    TransactionManager example = ExampleTransactionManager.getManager("appname");
+    MithraManagerProvider.getMithraManager().setJtaTransactionManagerProvider(new DefaultJtaProvider(example));
+}
+]]></programlisting>
+            </para>
+            <para>
+                This allows transactions to be handled with less code. A transaction with propagation and retry can be coded as:
+                <programlisting language="java"><![CDATA[
+public void mithraTransactionWithPropagationAndRetry()
+{
+    MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand() {
+        public Object executeTransaction(MithraTransaction tx) throws Throwable
+        {
+            // resource enlistment:
+            XAResource emsResource = getEmsResource();
+            tx.enlistResource(emsResource);
+            // business logic goes here
+        }
+    });
+}]]></programlisting>
+            </para>
+        </sect2>
+    </sect1>
+
+</article>

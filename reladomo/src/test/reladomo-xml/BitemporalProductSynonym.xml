@@ -1,0 +1,39 @@
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.glew</PackageName>
+    <ClassName>BitemporalProductSynonym</ClassName>
+
+    <DefaultTable>bi_product_synonym</DefaultTable>
+
+    <AsOfAttribute name="businessDate" fromColumnName="from_z" toColumnName="thru_z" toIsInclusive="false"
+                   infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                   setAsString="true">
+    </AsOfAttribute>
+    <AsOfAttribute name="processingDate" fromColumnName="in_z" toColumnName="out_z" toIsInclusive="false"
+                   infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                   defaultIfNotSpecified="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                   isProcessingDate="true"
+                   timezoneConversion="convert-to-database-timezone"/>
+
+    <Attribute name="instrumentId" javaType="int" columnName="prod_hub_ref_i" primaryKey="true"/>
+    <Attribute name="synonymType" javaType="String" maxLength="3" columnName="prod_syn_typ_c" primaryKey="true"/>
+    <Attribute name="synonymValue" javaType="String" maxLength="33" columnName="prod_full_syn_i"/>
+
+
+</MithraObject>

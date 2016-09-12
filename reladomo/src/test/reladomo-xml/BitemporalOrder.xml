@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="../mithraobject.xsd"
+              objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
+    <ClassName>BitemporalOrder</ClassName>
+    <Import>com.gs.collections.impl.set.mutable.primitive.IntHashSet</Import>
+    <Import>com.gs.fw.common.mithra.test.domain.InfinityTimestamp</Import>
+    <DefaultTable>BITEMPORAL_ORDER</DefaultTable>
+
+    <MithraInterface>DatedOrderable</MithraInterface>
+    <MithraInterface>DatedOrderItemRelationInterface</MithraInterface>
+
+    <AsOfAttribute name="businessDate" fromColumnName="FROM_Z" toColumnName="THRU_Z" toIsInclusive="false"
+        infinityDate="[InfinityTimestamp.getParaInfinity()]" isProcessingDate="false"/>
+
+    <AsOfAttribute name="processingDate" fromColumnName="IN_Z" toColumnName="OUT_Z" toIsInclusive="false"
+        infinityDate="[InfinityTimestamp.getParaInfinity()]" isProcessingDate="true"
+        defaultIfNotSpecified="[InfinityTimestamp.getParaInfinity()]"/>
+
+    <Attribute name="orderId" javaType="int" columnName="ORDER_ID" primaryKey="true"/>
+    <Attribute name="orderDate" javaType="Timestamp" columnName="ORDER_DATE"/>
+    <Attribute name="userId" javaType="int" columnName="USER_ID"/>
+    <Attribute name="description" javaType="String" columnName="DESCRIPTION" maxLength="50" truncate="true" inPlaceUpdate="true"/>
+    <Attribute name="state" javaType="String" columnName="STATE" maxLength="20"/>
+    <Attribute name="trackingId" javaType="String" columnName="TRACKING_ID" maxLength="15"/>
+
+    <Relationship name="items" relatedObject="BitemporalOrderItem" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-many" >BitemporalOrderItem.orderId = this.orderId</Relationship>
+    <Relationship name="orderStatus" relatedObject="BitemporalOrderStatus" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-one" >BitemporalOrderStatus.orderId = this.orderId</Relationship>
+    <Relationship name="unconfiguredOrderStatus" relatedObject="UnconfiguredBitemporalOrderStatus" cardinality="one-to-one" >UnconfiguredBitemporalOrderStatus.orderId = this.orderId</Relationship>
+    <Relationship name="itemForProduct" relatedObject="BitemporalOrderItem" cardinality="one-to-one" parameters="int productId">BitemporalOrderItem.orderId = this.orderId and AuditedOrderItem.productId = {productId}</Relationship>
+    <Relationship name="itemForProductSet" relatedObject="BitemporalOrderItem" cardinality="one-to-one" parameters="IntHashSet productIds">BitemporalOrderItem.orderId = this.orderId and AuditedOrderItem.productId in {productIds}</Relationship>
+    <Relationship name="orderStatusViaUnconfiguredJoin" relatedObject="BitemporalOrderStatus" cardinality="one-to-one" >
+        <![CDATA[
+        UnconfiguredBitemporalOrderToOrderStatus.statusId = BitemporalOrderStatus.orderId and
+        UnconfiguredBitemporalOrderToOrderStatus.orderId = this.orderId
+        ]]>
+    </Relationship>
+    <Relationship name="orderStatusWithUnconfiguredFilter" relatedObject="BitemporalOrderStatus" cardinality="one-to-one" >
+        <![CDATA[
+        BitemporalOrderStatus.orderId = this.orderId and
+        UnconfiguredBitemporalOrderStatusFilter.lastUser = BitemporalOrderStatus.lastUser and
+        UnconfiguredBitemporalOrderStatusFilter.isAwesome = true
+        ]]>
+    </Relationship>
+    <Relationship name="orderStatusViaJoin" relatedObject="BitemporalOrderStatus" cardinality="one-to-one" >
+        <![CDATA[
+        BitemporalOrderToOrderStatus.statusId = BitemporalOrderStatus.orderId and
+        BitemporalOrderToOrderStatus.orderId = this.orderId
+        ]]>
+    </Relationship>
+    <Relationship name="orderStatusViaJoinWithFilter" relatedObject="BitemporalOrderStatus" cardinality="one-to-one" >
+        <![CDATA[
+        BitemporalOrderToOrderStatus.statusId = BitemporalOrderStatus.orderId and
+        BitemporalOrderToOrderStatus.orderId = this.orderId and
+        BitemporalOrderStatus.orderId = 130
+        ]]>
+    </Relationship>
+    <Relationship name="orderStatusWithFilter" relatedObject="BitemporalOrderStatus" cardinality="one-to-one" >
+        <![CDATA[
+        BitemporalOrderStatus.orderId = this.orderId and
+        BitemporalOrderStatusFilter.lastUser = BitemporalOrderStatus.lastUser and
+        BitemporalOrderStatusFilter.isAwesome = true
+        ]]>
+    </Relationship>
+    <Relationship name="orderStatusWithFixedOrderId" relatedObject="BitemporalOrderStatus" cardinality="many-to-one" >
+        <![CDATA[
+        BitemporalOrderStatus.businessDate = this.businessDate and
+        BitemporalOrderStatus.processingDate = this.processingDate and
+        BitemporalOrderStatus.orderId = 140
+        ]]>
+    </Relationship>
+    <Relationship name="expensiveItems" relatedObject="BitemporalOrderItem" cardinality="one-to-many" parameters="double price">
+        <![CDATA[
+        BitemporalOrderItem.orderId = this.orderId and BitemporalOrderItem.originalPrice >= {price}
+        ]]>
+    </Relationship>
+    <Relationship name="cheapItems" relatedObject="BitemporalOrderItem" cardinality="one-to-many" parameters="double price" returnType="List">
+        <![CDATA[
+        BitemporalOrderItem.orderId = this.orderId and BitemporalOrderItem.originalPrice < {price}
+        ]]>
+    </Relationship>
+    <Relationship name="sale" relatedObject="Sale" cardinality="one-to-one">Sale.saleId = this.orderId</Relationship>
+    <Relationship name="saleWithUserId" relatedObject="Sale" cardinality="one-to-one">Sale.saleId = this.userId</Relationship>
+    <Index name="byUserId">userId</Index>
+    <Index name="byState">state</Index>
+    <Index name="byTrackingId" unique="true">trackingId</Index>
+</MithraObject>

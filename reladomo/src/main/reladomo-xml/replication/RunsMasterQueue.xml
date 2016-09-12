@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<MithraObject objectType="transactional">
+
+    <PackageName>com.gs.fw.common.mithra.notification</PackageName>
+    <ClassName>RunsMasterQueue</ClassName>
+    <DefaultTable>ap_UPD_QUEUE</DefaultTable>
+
+    <SourceAttribute name="sourceId" javaType="int" />
+
+    <Attribute name="eventId" javaType="int" columnName="event_seq_no" primaryKey="true"/>
+    <Attribute name="lastUpdateTime" javaType="Timestamp" columnName="last_update_time"/>
+    <Attribute name="entity" javaType="String" columnName="entity_n" maxLength="64"/>
+    <Attribute name="lastUpdateUserId" javaType="String" columnName="last_update_userid" maxLength="30"/>
+    <Attribute name="tranId" javaType="byte[]" columnName="rs_origin_xact_id" maxLength="120"/>
+</MithraObject>
