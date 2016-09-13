@@ -46,10 +46,4 @@ public class TestMithraRuntimeConfigVerifier extends TestCase
         MithraRuntimeConfigVerifier verifier = new MithraRuntimeConfigVerifier("reladomo/src/test/resources/MithraConfigClientCache.xml");
         verifier.verifyClasses();
     }
-
-    public void testGsIntegrator() throws Exception
-    {
-        MithraRuntimeConfigVerifier verifier = new MithraRuntimeConfigVerifier("reladomo/src/test/resources/MithraConfigGsIntegrator.xml");
-        verifier.verifyClasses();
-    }
 }

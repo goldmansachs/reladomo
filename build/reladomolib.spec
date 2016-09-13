@@ -5,9 +5,9 @@ central,com.goldmansachs,gs-collections,5.1.0,jar,lib/compile,07114C5349C816EA64
 central,joda-time,joda-time,2.9.4,jar,lib/compile,1C295B462F16702EBE720BBB08F62E1BA80DA41B
 central,org.apache.geronimo.specs,geronimo-jta_1.1_spec,1.1.1,jar,lib/compile,AABAB3165B8EA936B9360ABBF448459C0D04A5A4
 central,org.slf4j,slf4j-api,1.7.21,jar,lib/compile,139535A69A4239DB087DE9BAB0BEE568BF8E0B70
-central,log4j,log4j,1.2.17,jar,lib/compile,5AF35056B4D257E4B64B9E8069C0746E8B08629F
 
 # test libs:
+central,log4j,log4j,1.2.17,jar,lib/test,5AF35056B4D257E4B64B9E8069C0746E8B08629F
 central,org.slf4j,slf4j-log4j12,1.7.21,jar,lib/test,7238B064D1ABA20DA2AC03217D700D91E02460FA
 central,org.slf4j,jcl-over-slf4j,1.7.21,jar,lib/test,331B564A3A42F002A0004B039C1C430DA89062CD
 central,org.apache.geronimo.specs,geronimo-jms_1.1_spec,1.1.1,jar,lib/test,C872B46C601D8DC03633288B81269F9E42762CEA

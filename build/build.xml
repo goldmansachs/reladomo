@@ -14,7 +14,7 @@
   under the License.
   -->
 
-<project name="mithra" default="all" xmlns:jacoco="antlib:org.jacoco.ant">
+<project name="reladomo" default="all" xmlns:jacoco="antlib:org.jacoco.ant">
     <property environment="env"/>
     <property name="jdk.home" value="${env.JDK_HOME}"/>
     <property name="root" value="${env.RELADOMO_HOME}"/>
@@ -42,6 +42,10 @@
 
 
     <import file="${root}/build/reladomo-config.xml"/>
+
+    <fileset dir="${root}/build/lib" id="fileset.build.lib">
+        <include name="**/*.jar"/>
+    </fileset>
 
     <fileset dir="${root}/lib/test" id="fileset.lib.test">
         <include name="**/*.jar"/>
@@ -152,6 +156,7 @@
     <taskdef name="xsd2bean-gen" classname="com.gs.fw.common.freyaxml.generator.ant.FreyaAntTask" loaderRef="freyaXmlGenerator"/>
 
     <target name="clean-reladomo" >
+        <delete quiet="true" dir="${root}/target"/>
         <delete quiet="true" dir="${root}/reladomo/target"/>
         <delete quiet="true" dir="${root}/reladomogen/target"/>
         <delete quiet="true" dir="${root}/reladomoui/target"/>
@@ -183,6 +188,7 @@
 
     <target name="init-reladomo" depends="determine-jdk, sanity-check-build">
         <tstamp/>
+        <mkdir dir="${root}/target"/>
         <mkdir dir="${root}/reladomo/target"/>
         <mkdir dir="${root}/reladomo/target/depend"/>
         <mkdir dir="${root}/reladomo/target/classes"/>
@@ -197,7 +203,9 @@
         <mkdir dir="${root}/reladomo/target/docbook-lib"/>
         <mkdir dir="${root}/reladomo/target/javadoc"/>
         <mkdir dir="${root}/reladomo/target/xsddoc"/>
+        <mkdir dir="${root}/reladomo/target/test-util-javadoc"/>
         <mkdir dir="${root}/reladomogen/target"/>
+        <mkdir dir="${root}/reladomogen/target/javadoc"/>
         <mkdir dir="${root}/reladomogen/target/classes"/>
         <mkdir dir="${root}/reladomogen/target/depend"/>
         <mkdir dir="${root}/reladomogenutil/target"/>
@@ -513,6 +521,21 @@
         </reladomo-graphgen>
     </target>
 
+    <target name="reladomogen-javadoc">
+        <javadoc packagenames="com.gs.fw.common.mithra.generator"
+                 sourcepath="${root}/reladomogen/src/main/java"
+                 defaultexcludes="yes"
+                 access="public"
+                 destdir="${root}/reladomogen/target/javadoc"
+                 use="true"
+                 windowtitle="Reladomo Generator User API"
+                 version="yes"
+                 Verbose="true">
+            <classpath>
+                <path refid="reladomogen.classpath"/>
+            </classpath>
+        </javadoc>
+    </target>
     <!-- ************************** /reladomogen **********************************-->
     <!-- ************************** reladomo **********************************-->
 
@@ -585,7 +608,6 @@
             includeAntRuntime="false">
             <src path="${root}/reladomo/src/main/java"/>
             <src path="${root}/reladomo/target/generated-src"/>
-            <exclude name="com/gs/fw/Jar*.java"/>
             <compilerarg line="-Xlint:-unchecked -Xlint:-deprecation -XDignore.symbol.file"/>
             <classpath>
                 <path refid="reladomo.compile.classpath"/>
@@ -613,6 +635,21 @@
         </javac>
     </target>
 
+    <target name="reladomo-test-util-javadoc">
+        <javadoc packagenames="com.gs.fw.common.mithra.test"
+                 sourcepath="${root}/reladomo/src/test-util/java"
+                 defaultexcludes="yes"
+                 access="public"
+                 destdir="${root}/reladomo/target/test-util-javadoc"
+                 use="true"
+                 windowtitle="Reladomo Test Utils User API"
+                 version="yes"
+                 Verbose="true">
+            <classpath>
+                <path refid="reladomo.test.compile.classpath"/>
+            </classpath>
+        </javadoc>
+    </target>
     <!-- ************************** /reladomo **********************************-->
     <!-- ************************** reladomo test **********************************-->
     <target name="generate-reladomo-test-classes" depends="compile-reladomo-generator">
@@ -805,7 +842,7 @@
            sourcepath="${root}/reladomo/src/main/java;${root}/reladomo/target/generatedsrc"
            defaultexcludes="yes"
            access="public"
-           destdir="${root}/reladomo/target/javvadoc"
+           destdir="${root}/reladomo/target/javadoc"
            use="true"
            windowtitle="Reladomo User API"
            version="yes"
@@ -930,7 +967,7 @@
 
     <target name="reladomo-docbook" depends="reladomo-doc-generate-html, reladomo-doc-generate-pdf"/>
 
-    <target name="generate-reladomo-docs" depends="reladomo-xsddoc, reladomo-javadoc, reladomo-docbook"/>
+    <target name="generate-reladomo-docs" depends="reladomo-xsddoc, reladomo-javadoc, reladomo-docbook, reladomo-slides"/>
 
     <property name="docbook.slides.customization.dir" value="${root}/reladomo/src/doc/docbook/presentations/customization"/>
     <property name="docbook.slides.stylesheet" value="${docbook.slides.customization.dir}/html.xsl"/>
@@ -1081,6 +1118,26 @@
         </javac>
     </target>
 
+    <target name="reladomo-gen-util-javadoc">
+        <javadoc packagenames="com.gs.fw.common.mithra,com.gs.fw.common.mithra.generator.dbgenerator.*, com.gs.fw.common.mithra.generator.objectxmlgenerator.*"
+                 sourcepath="${root}/reladomogenutil/src/main/java"
+                 defaultexcludes="yes"
+                 access="public"
+                 destdir="${root}/reladomogenutil/target/javadoc"
+                 use="true"
+                 windowtitle="Reladomo Generator Utilities"
+                 version="yes"
+                 Verbose="true">
+            <classpath>
+                <path refid="reladomogen.classpath"/>
+                <path refid="reladomo.compile.classpath"/>
+                <pathelement location="${root}/reladomo/target/classes"/>
+                <pathelement location="${root}/reladomogenutil/target/classes"/>
+                <fileset refid="fileset.build.lib"/>
+            </classpath>
+        </javadoc>
+    </target>
+
     <target name="compile-reladomo-genutil-test" depends="compile-reladomo-test">
         <dependset>
             <srcfileset dir="${root}/reladomogenutil/src/test/java"/>
@@ -1108,7 +1165,7 @@
         </javac>
     </target>
 
-    <target name="generate-reladomo-db" depends="compile-reladomo-genutil">
+    <target name="generate-reladomo-db-test" depends="compile-reladomo-genutil">
         <taskdef name="reladomo-gen-db" classname="com.gs.fw.common.mithra.generator.dbgenerator.MithraDbDefinitionGenerator" loaderRef="mithraGeneratorDb">
            <classpath refid="reladomo.run.test.classpath"/>
         </taskdef>
@@ -1148,36 +1205,59 @@
     <!-- ************************** /reladomogenutil **********************************-->
 
     <!-- ************************** release opensource ***********************************-->
-    <target name="jar-mithragen" depends="compile-reladomo-generator">
-        <jar jarfile="${mithra.jars.dir}/mithragen-${reladomo.version}.jar" index="true">
-            <fileset dir="${mithra.home}/xml/mithra">
+    <macrodef name="generate-pom">
+        <attribute name="module" description="The name of module"/>
+        <sequential>
+            <copy file="${root}/build/pom-templates/pom-@{module}.xml"
+                  toFile="${root}/target/@{module}-${reladomo.version}.pom">
+            </copy>
+            <replace casesensitive="true" dir="${root}/target" includes="@{module}-${reladomo.version}.pom">
+                <replacefilter token="@reladomo.version@" value="${reladomo.version}"/>
+            </replace>
+        </sequential>
+    </macrodef>
+
+    <target name="jar-reladomogen" depends="compile-reladomo-generator">
+        <jar jarfile="${root}/target/reladomogen-${reladomo.version}.jar" index="true">
+            <fileset dir="${root}/reladomogen/src/main/xsd">
                 <include name="mithraobject.xsd"/>
             </fileset>
-            <fileset dir="${mithra.classes.dir}">
-                <include name="com/gs/fw/common/mithra/generator/**/*.class"/>
-                <include name="com/gs/fw/common/mithra/templates/**/*.class"/>
-            </fileset>
-            <fileset dir="${mithra.classes.dir}">
-                <include name="com/gs/fw/common/mithra/generator/**/*.properties"/>
-            </fileset>
-            <fileset dir="${mithra.classes.dir}">
-                <include name="com/gs/fw/common/mithra/generator/**/*.tmpl.*"/>
-            </fileset>
-            <fileset dir="${mithra.classes.dir}">
-                <include name="com/gs/fw/common/mithra/generator/*.md5"/>
-            </fileset>
-            <fileset dir="${mithra.classes.dir}">
-                <include name="com/gs/fw/common/mithra/generator/**/*.ser"/>
-            </fileset>
+            <fileset dir="${root}/reladomogen/target/classes"/>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
         </jar>
     </target>
+
+    <target name="jar-reladomogen-src" depends="compile-reladomo-generator">
+        <jar jarfile="${root}/target/reladomogen-${reladomo.version}-sources.jar" index="true">
+            <fileset dir="${root}/reladomogen/src/main/xsd"/>
+            <fileset dir="${root}/reladomogen/src/main/templates"/>
+            <fileset dir="${root}/reladomogen/src/main/java"/>
+            <fileset dir="${root}/reladomogen/target/generated-src"/>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
+    </target>
+
+    <target name="jar-reladomogen-javadoc" depends="reladomogen-javadoc">
+        <jar jarfile="${root}/target/reladomogen-${reladomo.version}-javadoc.jar" index="true">
+            <fileset dir="${root}/reladomogen/target/javadoc"/>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
+    </target>
+
+    <target name="gen-reladomogen-pom" depends="init-reladomo">
+        <generate-pom module="reladomogen"/>
+    </target>
+
+    <target name="prep-reladomogen" depends="gen-reladomogen-pom, jar-reladomogen, jar-reladomogen-src, jar-reladomogen-javadoc"/>
 
     <target name="jar-reladomo" depends="compile-reladomo">
         <taskdef name="jar-with-version" classname="com.gs.fw.JarVersionCreator" loaderRef="jarVersionChecker">
             <classpath>
-                <pathelement location="${root}/reladomo/target/classes"/>
+                <pathelement location="${root}/reladomogen/target/classes"/>
             </classpath>
-
         </taskdef>
 
         <jar-with-version jarfile="${root}/target/reladomo-${reladomo.version}.jar" index="true" applicationName="reladomo" version="${reladomo.version}">
@@ -1187,6 +1267,8 @@
             <fileset dir="${root}/reladomo/target/classes">
                 <include name="**/*"/>
             </fileset>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
         </jar-with-version>
     </target>
 
@@ -1198,87 +1280,207 @@
             <fileset dir="${root}/reladomo/target/generated-src">
                 <include name="**/*.java"/>
             </fileset>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
         </jar>
     </target>
 
+    <target name="jar-reladomo-javadoc" depends="reladomo-javadoc, reladomo-docbook, reladomo-slides, reladomo-xsddoc">
+        <jar jarfile="${root}/target/reladomo-${reladomo.version}-javadoc.jar" index="true">
+            <fileset dir="${root}/reladomo/target/javadoc"/>
+            <fileset dir="${root}/reladomo/target/docbook"/>
+            <fileset dir="${root}/reladomo/target/xsddoc"/>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
+    </target>
 
-    <target name="jar-reladomo-test-util" depends="compile-reladomo-test">
+    <target name="gen-reladomo-pom" depends="init-reladomo">
+        <generate-pom module="reladomo"/>
+    </target>
+
+    <target name="prep-reladomo" depends="gen-reladomo-pom, jar-reladomo, jar-reladomo-src, jar-reladomo-javadoc"/>
+
+    <target name="jar-reladomo-test-util" depends="compile-reladomo-test-util">
         <jar jarfile="${root}/target/reladomo-test-util-${reladomo.version}.jar" index="true">
             <fileset dir="${root}/reladomo/target/test-util-classes">
                 <include name="**/*"/>
             </fileset>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
         </jar>
     </target>
 
-
-
-    <target name="jar-all-mithra" depends="jar-reladomo, jar-mithraui, jar-mithragendb,jar-mithragenxml, jar-mithragen, jar-reladomo-test-util"/>
-    <target name="jar-all" depends="jar-all-mithra"/> <!-- alias for master build -->
-    <target name="war-all-mithra"/>
-    <target name="pom-all" depends="init-reladomo">
-        <generate-pom module="mithra"/>
-        <generate-pom module="mithragen"/>
-        <generate-pom module="mithragendb"/>
-        <generate-pom module="mithragenxml"/>
-        <generate-pom module="mithratestresource"/>
-        <generate-pom module="mithragsi"/>
-        <generate-pom module="mithraui"/>
-        <generate-pom module="mithramiddletier"/>
+    <target name="jar-reladomo-test-util-src" depends="init-reladomo">
+        <jar jarfile="${root}/target/reladomo-test-util-${reladomo.version}-sources.jar" index="true">
+            <fileset dir="${root}/reladomo/src/test-util/java"/>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
     </target>
 
-    <macrodef name="generate-pom">
-        <attribute name="module" description="The name of module"/>
-        <sequential>
-            <copy file="${mithra.pom-template.dir}/pom-@{module}.xml"
-                  tofile="${mithra.jars.dir}/pom-@{module}-${reladomo.version}${snapshot}.xml"
-                  overwrite="true"/>
-            <replace file="${mithra.jars.dir}/pom-@{module}-${reladomo.version}${snapshot}.xml">
-                <replacefilter token="@reladomo.version@"       value="${reladomo.version}${snapshot}"/>
-
-                <replacefilter token="@antjar.version@"           value="${antjar.version}"/>
-                <replacefilter token="@gs-collections.version@"   value="${gs-collections.version}"/>
-                <replacefilter token="@derby.version@"            value="${derby.version}"/>
-                <replacefilter token="@gsintegrator-api.version@" value="${gsintegrator-api.version}"/>
-                <replacefilter token="@gwt.version@"              value="${gwt.version}"/>
-                <replacefilter token="@h2.version@"               value="${h2.version}"/>
-                <replacefilter token="@log4j.version@"            value="${log4j.version}"/>
-                <replacefilter token="@jndijdbc.version@"         value="${jndijdbc.version}"/>
-                <replacefilter token="@slf4j.version@"            value="${slf4j.version}"/>
-            </replace>
-        </sequential>
-    </macrodef>
-
-    <target name="zip-reladomodoc" depends="reladomo-unzip-docbook, reladomo-docbook">
-
-        <delete file="${root}/target/reladomo-docs-${reladomo.version}.zip" failonerror="false"/>
-
-        <!-- Copy documentation -->
-        <mkdir dir="${mithra.jars.dir}/mithradoc"/>
-
-        <copy todir="${mithra.jars.dir}/mithradoc">
-            <fileset dir="${mithra.home}/build/mithra/doc" includes="**/*"/>
-        </copy>
-
-        <zip destfile="${root}/target/reladomo-docs-${reladomo.version}.zip">
-            <zipfileset dir="${root}/reladomo/target/docbook" includes="**/*"/>
-            <zipfileset dir="${root}/reladomo/target/javadoc" includes="**/*"/>
-            <zipfileset dir="${root}/reladomo/target/xsddoc" includes="**/*"/>
-        </zip>
-
+    <target name="jar-reladomo-test-util-javadoc" depends="reladomo-test-util-javadoc">
+        <jar jarfile="${root}/target/reladomo-test-util-${reladomo.version}-javadoc.jar" index="true">
+            <fileset dir="${root}/reladomo/target/test-util-javadoc"/>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
     </target>
 
-    <target name="jar-mithragendb" depends="compile-reladomo-genutil">
-        <jar jarfile="${mithra.jars.dir}/mithragendb-${reladomo.version}.jar" index="true">
-            <fileset dir="${mithra.classes.dir}">
-                <include name="com/gs/fw/common/mithra/generator/dbgenerator/*.class"/>
+    <target name="gen-reladomo-test-util-pom" depends="init-reladomo">
+        <generate-pom module="reladomo-test-util"/>
+    </target>
+
+    <target name="prep-reladomo-test-util" depends="gen-reladomo-test-util-pom, jar-reladomo-test-util, jar-reladomo-test-util-src, jar-reladomo-test-util-javadoc"/>
+
+    <target name="jar-reladomo-gen-util" depends="compile-reladomo-genutil">
+        <jar jarfile="${root}/target/reladomo-gen-util-${reladomo.version}.jar" index="true">
+            <fileset dir="${root}/reladomogenutil/target/classes"/>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
+    </target>
+
+    <target name="jar-reladomo-gen-util-src" depends="init-reladomo">
+        <jar jarfile="${root}/target/reladomo-gen-util-${reladomo.version}-sources.jar" index="true">
+            <fileset dir="${root}/reladomogenutil/src/main/java"/>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
+    </target>
+
+    <target name="jar-reladomo-gen-util-javadoc" depends="reladomo-gen-util-javadoc">
+        <jar jarfile="${root}/target/reladomo-gen-util-${reladomo.version}-javadoc.jar" index="true">
+            <fileset dir="${root}/reladomogenutil/target/javadoc"/>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
+    </target>
+
+    <target name="gen-reladomo-gen-util-pom" depends="init-reladomo">
+        <generate-pom module="reladomo-gen-util"/>
+    </target>
+
+    <target name="prep-reladomo-gen-util" depends="gen-reladomo-gen-util-pom, jar-reladomo-gen-util, jar-reladomo-gen-util-src, jar-reladomo-gen-util-javadoc"/>
+
+    <target name="prep-release" depends="prep-reladomo, prep-reladomogen, prep-reladomo-gen-util, prep-reladomo-test-util"/>
+
+    <target name="bundle-release" >
+        <delete quiet="true" file="${root}/target/bundle-${reladomo.version}.jar"/>
+        <dependset>
+            <srcfileset dir="${root}/target">
+                <include name="reladomo-${reladomo.version}.pom"/>
+                <include name="reladomo-${reladomo.version}.jar"/>
+                <include name="reladomo-${reladomo.version}-sources.jar"/>
+                <include name="reladomo-${reladomo.version}-javadoc.jar"/>
+                <include name="reladomogen-${reladomo.version}.pom"/>
+                <include name="reladomogen-${reladomo.version}.jar"/>
+                <include name="reladomogen-${reladomo.version}-sources.jar"/>
+                <include name="reladomogen-${reladomo.version}-javadoc.jar"/>
+                <include name="reladomo-gen-util-${reladomo.version}.pom"/>
+                <include name="reladomo-gen-util-${reladomo.version}.jar"/>
+                <include name="reladomo-gen-util-${reladomo.version}-sources.jar"/>
+                <include name="reladomo-gen-util-${reladomo.version}-javadoc.jar"/>
+                <include name="reladomo-test-util-${reladomo.version}.pom"/>
+                <include name="reladomo-test-util-${reladomo.version}.jar"/>
+                <include name="reladomo-test-util-${reladomo.version}-sources.jar"/>
+                <include name="reladomo-test-util-${reladomo.version}-javadoc.jar"/>
+            </srcfileset>
+            <targetfileset dir="${root}/target" includes="*.asc"/>
+        </dependset>
+        <fail message="Release files are missing.">
+            <condition>
+                <not>
+                    <resourcecount count="32">
+                        <fileset dir="${root}/target">
+                            <include name="reladomo-${reladomo.version}.pom"/>
+                            <include name="reladomo-${reladomo.version}.jar"/>
+                            <include name="reladomo-${reladomo.version}-sources.jar"/>
+                            <include name="reladomo-${reladomo.version}-javadoc.jar"/>
+                            <include name="reladomogen-${reladomo.version}.pom"/>
+                            <include name="reladomogen-${reladomo.version}.jar"/>
+                            <include name="reladomogen-${reladomo.version}-sources.jar"/>
+                            <include name="reladomogen-${reladomo.version}-javadoc.jar"/>
+                            <include name="reladomo-gen-util-${reladomo.version}.pom"/>
+                            <include name="reladomo-gen-util-${reladomo.version}.jar"/>
+                            <include name="reladomo-gen-util-${reladomo.version}-sources.jar"/>
+                            <include name="reladomo-gen-util-${reladomo.version}-javadoc.jar"/>
+                            <include name="reladomo-test-util-${reladomo.version}.pom"/>
+                            <include name="reladomo-test-util-${reladomo.version}.jar"/>
+                            <include name="reladomo-test-util-${reladomo.version}-sources.jar"/>
+                            <include name="reladomo-test-util-${reladomo.version}-javadoc.jar"/>
+
+                            <include name="reladomo-${reladomo.version}.pom.asc"/>
+                            <include name="reladomo-${reladomo.version}.jar.asc"/>
+                            <include name="reladomo-${reladomo.version}-sources.jar.asc"/>
+                            <include name="reladomo-${reladomo.version}-javadoc.jar.asc"/>
+                            <include name="reladomogen-${reladomo.version}.pom.asc"/>
+                            <include name="reladomogen-${reladomo.version}.jar.asc"/>
+                            <include name="reladomogen-${reladomo.version}-sources.jar.asc"/>
+                            <include name="reladomogen-${reladomo.version}-javadoc.jar.asc"/>
+                            <include name="reladomo-gen-util-${reladomo.version}.pom.asc"/>
+                            <include name="reladomo-gen-util-${reladomo.version}.jar.asc"/>
+                            <include name="reladomo-gen-util-${reladomo.version}-sources.jar.asc"/>
+                            <include name="reladomo-gen-util-${reladomo.version}-javadoc.jar.asc"/>
+                            <include name="reladomo-test-util-${reladomo.version}.pom.asc"/>
+                            <include name="reladomo-test-util-${reladomo.version}.jar.asc"/>
+                            <include name="reladomo-test-util-${reladomo.version}-sources.jar.asc"/>
+                            <include name="reladomo-test-util-${reladomo.version}-javadoc.jar.asc"/>
+                        </fileset>
+                    </resourcecount>
+                </not>
+            </condition>
+        </fail>
+        <jar jarfile="${root}/target/bundle-reladomo-${reladomo.version}.jar" index="false">
+            <fileset dir="${root}/target">
+                <include name="reladomo-${reladomo.version}.pom"/>
+                <include name="reladomo-${reladomo.version}.jar"/>
+                <include name="reladomo-${reladomo.version}-sources.jar"/>
+                <include name="reladomo-${reladomo.version}-javadoc.jar"/>
+
+                <include name="reladomo-${reladomo.version}.pom.asc"/>
+                <include name="reladomo-${reladomo.version}.jar.asc"/>
+                <include name="reladomo-${reladomo.version}-sources.jar.asc"/>
+                <include name="reladomo-${reladomo.version}-javadoc.jar.asc"/>
             </fileset>
         </jar>
-    </target>
+        <jar jarfile="${root}/target/bundle-reladomogen-${reladomo.version}.jar" index="false">
+            <fileset dir="${root}/target">
+                <include name="reladomogen-${reladomo.version}.pom"/>
+                <include name="reladomogen-${reladomo.version}.jar"/>
+                <include name="reladomogen-${reladomo.version}-sources.jar"/>
+                <include name="reladomogen-${reladomo.version}-javadoc.jar"/>
 
-    <target name="jar-mithragenxml" depends="compile-reladomo-genutil">
-        <jar jarfile="${mithra.jars.dir}/genmithraxml-${reladomo.version}.jar" index="true">
-            <fileset dir="${mithra.classes.dir}">
-                <include name="com/gs/fw/common/mithra/generator/objectxmlgenerator/*.class"/>
+                <include name="reladomogen-${reladomo.version}.pom.asc"/>
+                <include name="reladomogen-${reladomo.version}.jar.asc"/>
+                <include name="reladomogen-${reladomo.version}-sources.jar.asc"/>
+                <include name="reladomogen-${reladomo.version}-javadoc.jar.asc"/>
+            </fileset>
+        </jar>
+        <jar jarfile="${root}/target/bundle-reladomo-gen-util-${reladomo.version}.jar" index="false">
+            <fileset dir="${root}/target">
+                <include name="reladomo-gen-util-${reladomo.version}.pom"/>
+                <include name="reladomo-gen-util-${reladomo.version}.jar"/>
+                <include name="reladomo-gen-util-${reladomo.version}-sources.jar"/>
+                <include name="reladomo-gen-util-${reladomo.version}-javadoc.jar"/>
+
+                <include name="reladomo-gen-util-${reladomo.version}.pom.asc"/>
+                <include name="reladomo-gen-util-${reladomo.version}.jar.asc"/>
+                <include name="reladomo-gen-util-${reladomo.version}-sources.jar.asc"/>
+                <include name="reladomo-gen-util-${reladomo.version}-javadoc.jar.asc"/>
+            </fileset>
+        </jar>
+        <jar jarfile="${root}/target/bundle-reladomo-test-util-${reladomo.version}.jar" index="false">
+            <fileset dir="${root}/target">
+                <include name="reladomo-test-util-${reladomo.version}.pom"/>
+                <include name="reladomo-test-util-${reladomo.version}.jar"/>
+                <include name="reladomo-test-util-${reladomo.version}-sources.jar"/>
+                <include name="reladomo-test-util-${reladomo.version}-javadoc.jar"/>
+
+                <include name="reladomo-test-util-${reladomo.version}.pom.asc"/>
+                <include name="reladomo-test-util-${reladomo.version}.jar.asc"/>
+                <include name="reladomo-test-util-${reladomo.version}-sources.jar.asc"/>
+                <include name="reladomo-test-util-${reladomo.version}-javadoc.jar.asc"/>
             </fileset>
         </jar>
     </target>
