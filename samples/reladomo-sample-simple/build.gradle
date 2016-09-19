@@ -1,0 +1,89 @@
+/*
+ Copyright 2016 Goldman Sachs.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ */
+
+apply plugin: 'java'
+
+group = 'sample'
+version = '0.0.1-SNAPSHOT'
+
+description = "Reladomo Sample Application"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.0'
+}
+
+ext.reladomoVersion = '16.0.0'
+
+dependencies {
+    compile "com.goldmansachs.reladomo:reladomo:$reladomoVersion"
+    compile 'com.h2database:h2:1.4.192'
+    compile 'org.slf4j:slf4j-simple:1.7.21'
+    testCompile "com.goldmansachs.reladomo:reladomo-test-util:$reladomoVersion"
+    testCompile 'junit:junit:4.12'
+}
+
+configurations {
+    reladomoGenTask
+}
+
+dependencies {
+    reladomoGenTask "com.goldmansachs.reladomo:reladomogen:$reladomoVersion"
+    reladomoGenTask "com.goldmansachs.reladomo:reladomo-gen-util:$reladomoVersion"
+}
+
+task genReladomo << {
+    ant.taskdef(name: "genReladomo",
+            classpath: configurations.reladomoGenTask.asPath,
+            classname: "com.gs.fw.common.mithra.generator.MithraGenerator")
+    ant.genReladomo(xml: "$projectDir/src/main/resources/reladomo/models/ReladomoClassList.xml",
+            generateGscListMethod: "true",
+            generatedDir: "$buildDir/generated-sources/reladomo",
+            nonGeneratedDir: "$projectDir/src/main/java")
+}
+
+task genDdl << {
+    ant.taskdef(name: "genDdl",
+            classpath: configurations.reladomoGenTask.asPath,
+            classname: "com.gs.fw.common.mithra.generator.dbgenerator.MithraDbDefinitionGenerator")
+    ant.genDdl(xml: "$projectDir/src/main/resources/reladomo/models/ReladomoClassList.xml",
+            generatedDir: "$projectDir/build/generated-db/sql",
+            databaseType: "postgres")
+}
+
+compileJava.dependsOn(genReladomo)
+
+sourceSets {
+    main {
+        java {
+            srcDir 'build/generated-sources/reladomo'
+        }
+        /*
+            "generated-db" is added to resource because the sample app HelloReladomoApp
+            loads generated ddl/idx files to initialize h2 db in memory.
+            No need to do this for typical production apps.
+        */
+        resources {
+            output.dir('build/generated-db', builtBy:genDdl)
+        }
+    }
+}

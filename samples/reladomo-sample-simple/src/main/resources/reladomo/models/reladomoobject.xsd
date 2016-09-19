@@ -1,0 +1,1495 @@
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:annotation>
+        <xsd:documentation xml:lang="en">
+			Schema used to describe Mithra objects
+        </xsd:documentation>
+    </xsd:annotation>
+
+    <xsd:element name="Mithra" type="MithraType"/>
+    <xsd:element name="MithraObject" type="MithraObjectType"/>
+    <xsd:element name="MithraPureObject" type="MithraPureObjectType"/>
+    <xsd:element name="MithraTempObject" type="MithraTempObjectType"/>
+    <xsd:element name="MithraInterface" type="MithraInterfaceType"/>
+    <xsd:element name="MithraEmbeddedValueObject" type="MithraEmbeddedValueObjectType"/>
+    <xsd:element name="MithraEnumeration" type="MithraEnumerationType"/>
+
+    <xsd:complexType name="MithraBaseObjectType">
+        <xsd:sequence>
+            <xsd:element name="PackageName" type="xsd:token" minOccurs="1">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                        The java package for this object
+                </xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <xsd:element name="ClassName" type="xsd:token" minOccurs="1">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                        The java class name for this object
+                </xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <xsd:element name="SuperClass" type="SuperClassAttributeType" minOccurs="0">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                        The fully qualified classname for this object's superclass (if any)
+                </xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Import" type="xsd:token" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                        Any additional import packages to be included in all generated files
+                </xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <xsd:element name="UpdateListener" type="xsd:token" minOccurs="0">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    Optional and only applicable to transactional objects.
+                    The name of the UpdateListener class.
+                    It must have an empty constructor and implement MithraUpdateListener. See MithraUpdateListener javadoc for more information.
+                    There is only one instance of the update listener per class. 
+                </xsd:documentation></xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="initializePrimitivesToNull" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                If set to true, when a new object is constructed, nullable primitive fields are initialized to null.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraCommonObjectType">
+        <xsd:complexContent><xsd:extension base="MithraBaseObjectType">
+        <xsd:sequence>
+            <xsd:element name="DatedTransactionalTemporalDirector" type="xsd:token" minOccurs="0">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                        For dated objects only: overrides the default TemporalDirector implementation.
+                        Usually a subclass of GenericBiTemporalDirector, GenericNonAuditedTemporalDirector or AuditOnlyTemporalDirector
+                </xsd:documentation></xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="objectType" type="ObjectType" default="read-only">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                An object can be "read-only" or "transactional". Read only objects cannot be inserted, modified or deleted.
+                Read only objects are also never refreshed (not even in a transaction).
+                Transactional objects implement MithraTransactionalObject or MithraDatedTransactionalObject.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="disableForeignKeys" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                If set to true, disables foreign keys that would normally be assumed based on the relationships in this
+                object.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="superClassType" type="SuperClassType">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                An object's super class type can be "table-per-subclass", "table-for-all-subclasses", or "table-per-class".
+                For table-per-subclass objects, all the attributes of the object must appear in each table.
+                For table-for-all-subclasses, all objects live in the same table and are differentiated typically by
+                some attribute. It is up to the implementation to override the database object's createObject method
+                to instantiate a different subclass based on the data read.
+                For table-per-class, each class in the hierarchy, including non-leaf classes are represented
+                with their own table. If an attribute
+                appears in a super class, it won't have to be repeated in the subclasses. This type of inheritance is
+                not recommended unless the number of classes in the hierarchy is very small (roughly 3 to 5).
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        </xsd:extension></xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraObjectType">
+        <xsd:complexContent><xsd:extension base="MithraCommonObjectType">
+            <xsd:sequence>
+                <xsd:element name="DefaultTable" type="xsd:token" minOccurs="0" maxOccurs="1">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                            The table that this object will be read from
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                 <xsd:element name="MithraInterface" type="xsd:token" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        Mithra Interface implemented by this class.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="SourceAttribute" type="SourceAttributeType" minOccurs="0">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                            Optional source attribute for objects that can live in multiple databases. Source attribute does not correspond to a
+                            column in the database.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="AsOfAttribute" type="AsOfAttributeType" minOccurs="0" maxOccurs="2">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                            An AsOfAttribute marks an object as "dated". A dated object may have one or two as of attributes.
+                            An AsOfAttribute is a virtual attribute: it does not correspond to a single column.
+                            Instead, its value is between two columns in the database.
+                            See the chaining documentation for more detail.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Attribute" type="AttributeType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                            An attribute of this object, that corresponds to a column in the database.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="EmbeddedValue" type="EmbeddedValueType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        An embedded value object that encapsulates one or more of this MithraObject's database columns.
+                        Embedded value objects are completely dependent upon the MithraObjects which contain them. They
+                        may be nested within each other. The embedding object, whether a MithraObject or another
+                        embedded value object, will expose get[Name] and copy[Name] methods. If the embedding object is
+                        a dated MithraObject, there will also be a functioning copy[Name]Until method provided.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <!--<xsd:element name="ComputedAttribute" type="ComputedAttributeType" minOccurs="0" maxOccurs="unbounded">-->
+                    <!--<xsd:annotation><xsd:documentation xml:lang="en">-->
+                            <!--A computed attribute is defined as a formula using other attributes of this object (but not relationships).-->
+                    <!--</xsd:documentation></xsd:annotation>-->
+                <!--</xsd:element>-->
+                <xsd:element name="EnumerationAttribute" type="EnumerationAttributeType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        This is not implemented.
+                        <!--An attribute whose value is an enumeration. Each member of the enumeration should be mapped to-->
+                        <!--a different underlying database value. All database value mappings must be representable as-->
+                        <!--EITHER ints OR booleans OR Strings. One enumeration member may be mapped to "null". Corresponding-->
+                        <!--getters and setters will be generated for each enumeration attribute.-->
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="TransactionalMethodSignature" type="TransactionalMethodSignatureType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        A method on this object that is marked as transactional. The method signature shown here will be in the generated code
+                        and a method with the same parameters but with "Impl" at the end of the name will be declared abstract and must be
+                        implemented in the concrete subclass. The transaction boundary is the start and end of the method.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Relationship" type="RelationshipType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        Relationships link objects of various types. Self referential relationships are also allowed.
+                        The syntax allows relating attributes from this object to attributes to the related object as well
+                        as constant expressions.
+                        Example 1, simple relationship: OrderItem.orderId = this.orderId
+                        Example 2, relationship with constant expressions: ProductPrice.productId = this.productId and  ProductPrice.type = 3902 and ProductPrice.priceSource = "MTG_FACTOR"
+                        Example 3, many to many via another object: UserGroup.ownerId = this.id and Group.id = UserGroup.dependentId
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Index" type="IndexType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        An index can be added to the cache for this object. Unique indices can improve performance tremendously.
+                        Non-unique indices are only instantiated if the object is fully cached.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:extension></xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraType">
+        <xsd:sequence>
+            <xsd:element name="MithraObjectResource" type="MithraObjectResourceType" minOccurs="0" maxOccurs="unbounded">
+            </xsd:element>
+            <xsd:element name="MithraPureObjectResource" type="MithraPureObjectResourceType" minOccurs="0" maxOccurs="unbounded">
+            </xsd:element>
+            <xsd:element name="MithraTempObjectResource" type="MithraTempObjectResourceType" minOccurs="0" maxOccurs="unbounded">
+            </xsd:element>
+            <xsd:element name="MithraInterfaceResource" type="MithraInterfaceResourceType" minOccurs="0" maxOccurs="unbounded">
+            </xsd:element>
+            <xsd:element name="MithraEmbeddedValueObjectResource" type="MithraEmbeddedValueObjectResourceType" minOccurs="0" maxOccurs="unbounded">
+            </xsd:element>
+            <xsd:element name="MithraEnumerationResource" type="MithraEnumerationResourceType" minOccurs="0" maxOccurs="unbounded">
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="generateInterfaces" type="xsd:boolean" use="optional" default="false"/>
+        <xsd:attribute name="readOnlyInterfaces" type="xsd:boolean" use="optional" default="false"/>
+        <xsd:attribute name="enableOffHeap" type="xsd:boolean" use="optional" default="false"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraBaseObjectResourceType">
+        <xsd:attribute name="name" type="xsd:token" use="required"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraObjectResourceType">
+        <xsd:complexContent><xsd:extension base="MithraBaseObjectResourceType">
+        <xsd:attribute name="replicated" type="xsd:boolean" use="optional" default="false"/>
+        <xsd:attribute name="generateInterfaces" type="xsd:boolean" use="optional" default="false"/>
+        <xsd:attribute name="readOnlyInterfaces" type="xsd:boolean" use="optional" default="false"/>
+        <xsd:attribute name="enableOffHeap" type="xsd:boolean" use="optional" default="false"/>
+        </xsd:extension></xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraInterfaceResourceType">
+		<xsd:attribute name="name" type="xsd:token" use="required"/>
+	</xsd:complexType>
+
+    <xsd:complexType name="MithraPureObjectResourceType">
+        <xsd:complexContent><xsd:extension base="MithraBaseObjectResourceType">
+        <xsd:attribute name="enableOffHeap" type="xsd:boolean" use="optional" default="false"/>
+        </xsd:extension></xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraTempObjectResourceType">
+        <xsd:complexContent><xsd:extension base="MithraBaseObjectResourceType">
+        </xsd:extension></xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraEmbeddedValueObjectResourceType">
+        <xsd:complexContent><xsd:extension base="MithraBaseObjectResourceType">
+        </xsd:extension></xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraEnumerationResourceType">
+        <xsd:complexContent><xsd:extension base="MithraBaseObjectResourceType">
+        </xsd:extension></xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="SourceAttributeType">
+        <xsd:sequence>
+            <xsd:element name="Property" type="PropertyType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    A key value property pair.  Each key represents a defining property of this attribute that can be accessed
+                    by calling attribute.getProperty(key).  If no value is specified, the default is Boolean.TRUE, but any object can be returned.
+                </xsd:documentation></xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The name of the attribute.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="javaType" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The java type of this attribute. The only valid types for source attributes are int and String.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="finalGetter" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Generate a final method for this source attribute to prevent overriding. Default is false for
+                backwards compatibility.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <!--<xsd:complexType name="ComputedAttributeType">-->
+        <!--<xsd:simpleContent>-->
+            <!--<xsd:extension base="xsd:string">-->
+                <!--<xsd:attribute name="name" type="xsd:token" use="required">-->
+                    <!--<xsd:annotation><xsd:documentation xml:lang="en">-->
+                        <!--The name of the attribute.-->
+                    <!--</xsd:documentation></xsd:annotation>-->
+                <!--</xsd:attribute>-->
+                <!--<xsd:attribute name="javaType" type="xsd:token" use="required">-->
+                    <!--<xsd:annotation><xsd:documentation xml:lang="en">-->
+                        <!--The java type of this attribute.-->
+                    <!--</xsd:documentation></xsd:annotation>-->
+                <!--</xsd:attribute>-->
+            <!--</xsd:extension>-->
+        <!--</xsd:simpleContent>-->
+    <!--</xsd:complexType>-->
+
+    <xsd:complexType name="AsOfAttributeType">
+        <xsd:complexContent><xsd:extension base="AsOfAttributePureType">
+            <xsd:attribute name="fromColumnName" type="xsd:token" use="required">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    The column name for the starting point of this object's life.
+                </xsd:documentation></xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="toColumnName" type="xsd:token" use="required">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    The column name for the ending point of this object's life.
+                </xsd:documentation></xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="setAsString" type="xsd:boolean" default="false">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    This is a workaround for Sybase smalldatetime columns that perform badly. If the database
+                    column type is
+                    smalldatetime, setting this value to true improves performance.
+                </xsd:documentation></xsd:annotation>
+            </xsd:attribute>
+        </xsd:extension></xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="AttributeType">
+        <xsd:complexContent><xsd:extension base="AttributePureType">
+            <xsd:attribute name="columnName" type="xsd:token" use="required">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    The column name of corresponding to this attribute.
+                </xsd:documentation></xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="poolable" type="xsd:boolean" default="true">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    This applies to string and Timestamp attributes only and the default is true. Pooled string attributes can significantly reduce memory
+                    overhead. This should be set to false for strings with low repeat rates (e.g. a product description).
+                </xsd:documentation></xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="trim" type="xsd:boolean" default="true">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    For string attributes only. Trims the string (removes white space from the left and right) when it's retrieved from
+                    the database. Very useful for databases that add spaces at the end of fixed length (char) columns.
+                </xsd:documentation></xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="useForOptimisticLocking" type="xsd:boolean" default="false">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    An attribute used for optimistic locking. The attribute can be int, long or Timestamp type. The value is auto incremented
+                    with every update. The application code is not allowed to set the value.
+                </xsd:documentation></xsd:annotation>
+            </xsd:attribute>
+            <xsd:attribute name="setAsString" type="xsd:boolean" default="false">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    This is a workaround for Sybase smalldatetime columns that perform badly. If the database
+                    column type is
+                    smalldatetime, setting this value to true improves performance. This is only valid for Timestamp and Date java types.
+                </xsd:documentation></xsd:annotation>
+            </xsd:attribute>
+        </xsd:extension></xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="EmbeddedValueType">
+        <xsd:complexContent>
+            <xsd:extension base="NestedEmbeddedValueType">
+                <xsd:attribute name="type" type="xsd:token" use="required">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        The type of this embedded value object. This is only required for the root embedded value object
+                        in a nested scenario since the embedded value object's metadata defines which nested types, if
+                        any must be specified.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="finalGetter" type="xsd:boolean" default="false">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        Generate a final method for this embedded value to prevent overriding. Default is false for
+                        backwards compatibility.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="NestedEmbeddedValueType">
+        <xsd:sequence>
+            <xsd:element name="Mapping" type="EmbeddedValueMappingType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    The attribute of the embedded value object to which this column is mapped.
+                </xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <xsd:element name="EmbeddedValue" type="NestedEmbeddedValueType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    An embedded value object nested in this embedded value object.
+                </xsd:documentation></xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The name of this embedded value object.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="finalGetter" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Generate a final method for this embedded value to prevent overriding. Default is false for
+                backwards compatibility.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="EmbeddedValueMappingType">
+        <xsd:sequence>
+            <xsd:element name="SimulatedSequence" type="SimulatedSequenceType" minOccurs="0" maxOccurs="1">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    Defines the simulated sequence for this attribute. Simulated sequences are automatically assigned on insert.
+                    They can also be assigned by calling the "generateAndSet[attribute name]" method.
+                </xsd:documentation></xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="attribute" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The name of the attribute being mapped. Two generated methods are supplied: get[Name], set[Name]
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="underlyingAttribute" type="xsd:token">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The name to use for the normal attribute that underlies this embedded value attribute. By default, the
+                underlying attribute's name is a concatenation of the embedded value object's name and the embedded
+                value attribute's name. This setting may be used to override this default.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="columnName" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The column name of corresponding to this attribute.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="maxLength" type="xsd:int">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Applies to string attributes only. The maximum length of this attribute.
+                If this is set, an exception is thrown if a larger string is set or it is truncated depending on the truncate behavior.
+                If this is not set, a default varchar maxLength is applied.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="truncate" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Automatically truncates string attributes to the length set in maxLength.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="primaryKey" type="xsd:boolean">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Must be set to true if this is a part of the primary key. Multiple attributes can have this set to true.
+                At least one attribute must be designated as the primary key. For dated objects, the as of attribute is automatically
+                part of the primary key. The source attribute, if any, is also automatically part of the primary key.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="mutablePrimaryKey" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Normally primary keys cannot be changed. Setting this value to true allows the primary key to change.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="primaryKeyGeneratorStrategy" type="PrimaryKeyGeneratorStrategyType">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                This must be set for the primary key to be automatically generated. Valid values are "Max" and "SimulatedSequence"
+                The max strategy should only be used for legacy systems. It is far less performant and usable compared to a SimulatedSequence.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="identity" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Must be set to true if this is an identity column. It's usually part of the primary key as well.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="nullable" type="xsd:boolean" default="true">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                When nullable is set to true (which is the default except for primary keys) for primitive attributes, two new methods are generated:
+                is[attribute name]Null() and set[attribute name]Null(). A nullable primary key must be part of complex (multi-column) key.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="poolable" type="xsd:boolean" default="true">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                This applies to string attributes only and the default is true. Pooled string attributes can significantly reduce memory
+                overhead. This should be set to false for strings with low repeat rates (e.g. a product description).
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="defaultIfNull" type="xsd:token">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                This should be used rarely. For primitive attributes, an exception is thrown if the getter method is called when
+                the value in the database is null. By setting this, this value can be returned instead.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="trim" type="xsd:boolean" default="true">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                For string attributes only. Trims the string (removes white space from the left and right) when it's retrieved from
+                the database. Very useful for databases that add spaces at the end of fixed length (char) columns.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="readonly" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                A readonly attribute cannot be modified once it has been written to the database.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="timezoneConversion" type="TimezoneConversionType" >
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Only applies to Timestamp attributes.
+                Supply the timezone conversion for this as of attribute.
+                Possible values are "none", which is the default,  "convert-to-utc" which converts to Universal coordinated time
+                (previously known as GMT) and "convert-to-database-timezone" which converts it to the database's local timezone.
+                The database's local timezone must be supplied by the connection manager.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="timestampPrecision" type="TimestampPrecisionType" default="nanosecond">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Only applies to Timestamp attributes.
+                Supply the precision for this as of attribute.
+                Possible values are "nanosecond", which is the default, and "millisecond" which truncates the value to milli seconds.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="useForOptimisticLocking" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                An attribute used for optimistic locking. The attribute can be int or long type. The value is auto incremented
+                with every update. The application code is not allowed to set the value.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="inPlaceUpdate" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                An attribute that can updated in place (without chaining). The attribute must be a non primary key attribute.
+                This attribute can be updated in place by calling the set&lt;attributeName&gt;InPlace method.
+                This means that there will be no chaining for these types of updates, even if the Mithra class has AsOfAttributes.
+                The normal set method can also be called which does the normal chaining. Use this sparingly and carefully.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="precision" type="xsd:int">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+            precision as defined for NUMERIC or DECIMAL types for a database column. This is subtley different from BigDecimal precision.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="scale" type="xsd:int">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+            scale as defined for NUMERIC or DECIMAL types for a database column. This is subtley different from BigDecimal scale.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="finalGetter" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Generate a final method for this relationship to prevent overriding. Default is false for
+                backwards compatibility.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="EnumerationAttributeType">
+        <xsd:sequence>
+            <xsd:element name="Mapping" type="EnumerationMappingType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    The mapping between an enumeration member and an underlying database value.
+                </xsd:documentation></xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The name of this enumeration attribute.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="type" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The Java 5+ Enum class of this enumeration attribute.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="persistenceType" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The java type that determines how this enumeration attribute is persisted. Possible values include
+                perschar, int, and String.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="columnName" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The database column corresponding to this enumeration attribute.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="nullable" type="xsd:boolean" default="true">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                When nullable is set to true (which is the default except for primary keys) for primitive attributes, two new methods are generated:
+                is[attribute name]Null() and set[attribute name]Null(). A nullable primary key must be part of complex (multi-column) key.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="defaultIfNull" type="xsd:token">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                This enumeration member that will be returned if the underlying database value is null. If an
+                enumeration member is explicitly mapped to "null" then this setting will be ignored, and the mapped
+                enumeration member will be returned.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="readonly" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                A readonly enumeration attribute cannot be modified once it has been written to the database.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="maxLength" type="xsd:int">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Applies only to enumeration attributes whose persistence type is string. The maximum length of this
+                enumeration attribute. If this is set, an exception is thrown if a larger string is set or it truncated
+                depending on the truncate behavior.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="EnumerationMappingType">
+        <xsd:attribute name="memberName" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The enumeration member being mapped.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="databaseValue" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The databaseValue being mapped.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="TransactionalMethodSignatureType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:token">
+                <xsd:attribute name="parentImplements" type="xsd:boolean">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        If set to true, the abstract Impl method will be not generated.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+<!--
+    <xsd:complexType name="JavaDocType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:token">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    Comment to be added tot he JavaDoc on the implementation of this relationship.
+                </xsd:documentation></xsd:annotation>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+-->
+
+    <xsd:complexType name="RelationshipType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+<!--
+                <xsd:sequence>
+                    <xsd:element name="JavaDoc" type="JavaDocType" minOccurs="0" maxOccurs="1">
+                        <xsd:annotation><xsd:documentation xml:lang="en">
+                            Comment to be added tot he JavaDoc on the implementation of this relationship.
+                        </xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+-->
+                <xsd:attribute name="name" type="xsd:token" use="required">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        The name of the relationships. Two methods are generated, get[name] and set[name]. Additionally,
+                        a method is added to the list object: get[name]s().
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="reverseRelationshipName" type="xsd:token">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        Signifies that this relationship is bidirectional and that a getter method must be generated on the
+                        related object with the supplied name.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="relatedObject" type="xsd:token" use="required">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        The class name (not fully qualified) of the related Mithra object. There must be an xml file
+                        for this related object.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="relatedIsDependent" type="xsd:boolean">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        Designates that the related objects' life cycle depends on this object. cascadeInsert and cascadeDelete
+                        will insert and delete these related objects. Detached objects also (lazily) detach their dependent objects.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="cardinality" type="CardinalityType" use="required">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        Possible values are: one-to-one, one-to-many, many-to-one and many-to-many. A to-one relationship
+                        generates a method that returns just one object (null if there is no such object).
+                        A to-many relationship returns a list. The list will be empty, but never null.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="orderBy" type="xsd:token">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        Order the elements in the relationship. A comma separated list of related object attributes. An attribute name
+                        can be followed be 'asc' or 'desc' (without quotes) to designate ascending or descending.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="parameters" type="xsd:token">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        Specifies the parameters for the getter. The syntax is the same as java method parameters
+                        (e.g. parameters="Timestamp businessDate, double price"). The passed in parameters can be used
+                        in the expression using curly braces (e.g. OrderItem.price = {price})
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="returnType" type="xsd:token">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        Overrides the return type for the getter and setter methods. The return type must be a super
+                        class (or interface) of the related object or list.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="foreignKey" type="ForeignKeyType" default="auto">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        Possible values are "auto", and "false". The default is "auto". Auto will assume there is a foreign
+                        key between this object and the related object if one or the other side of the relationship is "to-one".
+                        "False" forces the code to assume there is no foreign key. Foreign keys determine how
+                        a transaction may optimize its operations by reordering them to be more efficient. For example, inserting
+                        a parent object before a child object must happen in that order if there is a foreign key.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="directReference" type="xsd:boolean" default="false">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        Use a direct reference for this relationship. Should only be turned on for relationships where the
+                        resolution of the relationship is in a timing critical part of the code. Only recommended for full cache
+                        scenarios.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="finalGetter" type="xsd:boolean" default="false">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        Generate a final method for this relationship to prevent overriding. Default is false for
+                        backwards compatibility.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="RelationshipInterfaceType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="name" type="xsd:token" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">
+                            The name of the relationships. Two methods are generated, get[name] and set[name].
+                            Additionally,
+                            a method is added to the list object: get[name]s().
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="relatedObject" type="xsd:token" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">
+                            The class name (not fully qualified) of the related Mithra object. There must be an xml file
+                            for this related object.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="cardinality" type="CardinalityType" use="required">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">
+                            Possible values are: one-to-one, one-to-many, many-to-one and many-to-many. A to-one
+                            relationship
+                            generates a method that returns just one object (null if there is no such object).
+                            A to-many relationship returns a list. The list will be empty, but never null.
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="parameters" type="xsd:token">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">
+                            Specifies the parameters for the getter. The syntax is the same as java method parameters
+                            (e.g. parameters="Timestamp businessDate, double price"). The passed in parameters can be
+                            used
+                            in the expression using curly braces (e.g. OrderItem.price = {price})
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="IndexType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="name" type="xsd:token" use="required">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        The name of the index. This attribute may be removed in the future, as it has no purpose.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="unique" type="xsd:boolean">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        True, if the listed attribute(s) uniquely identify this object. Unique indices are critical
+                        for good performance. Incorrectly declaring a unique index will have dire consequences.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+	<xsd:complexType name="SuperClassAttributeType">
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+				<xsd:attribute name="name" type="xsd:token" use="required">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        The name of the super class. If the super class is generated, the non-qualified class name
+                        (e.g. InventoryItem). If the super class is a plain java class, the fully qualified class name
+                        (e.g. com.gs.fw.para.domain.Transaction)
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+				<xsd:attribute name="generated" type="xsd:boolean">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        True, if the super class is another Mithra generated class. False, if the super class
+                        is a plain java class.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+    <xsd:simpleType name="CardinalityType">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="one-to-many">
+            </xsd:enumeration>
+            <xsd:enumeration value="many-to-many">
+            </xsd:enumeration>
+            <xsd:enumeration value="one-to-one">
+            </xsd:enumeration>
+            <xsd:enumeration value="many-to-one">
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="ObjectType">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="read-only">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    Read only objects do not participate in a transaction.
+                    They cannot be inserted, modified or deleted.
+                </xsd:documentation></xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="transactional">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    Transactional objects participate in transactions. They can be inserted, modified or deleted.
+                    A transactional object implements the MithraTransactionalObject interface. Dated transactional
+                    objects implement MithraDatedTransactionalObject.
+                </xsd:documentation></xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="ForeignKeyType">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="auto">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    "auto" - Automatically determine if the relationship qualifies for a foreign key. If one side
+                    of the relationship has a "to-one" cardinality and it's not a dated object,
+                    the code will assume there is a foregin key.
+                </xsd:documentation></xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="false">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    "false" - Force the code to assume there is no foreign key between these two objects.
+                </xsd:documentation></xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="TimezoneConversionType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Timezone conversion can be difficult to understand because of inherent incompatibilty of
+                how databases typically store dates and how java handles dates. Most databases store
+                dates with no notion of timezone. You can think of a database date as a
+                (year,month,day,hour,minute,second) combination. In java, however, time is stored
+                as a long value in the UTC timezone. What causes confusin is java's support for timezones.
+                Even though java really stores time in a single timezone (UTC), it can display
+                the value for any timezone. You must trust that Mithra will do any necessary conversion.
+                Therefore, you must not perform any conversion. Write your code as if there is only
+                one timezone in the universe.
+        </xsd:documentation></xsd:annotation>
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="none">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    "none": The default. No conversion is performed when reading or writing this value to the database.
+                </xsd:documentation></xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="convert-to-utc">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    "convert-to-utc": The value is stored as UTC in the database.
+                </xsd:documentation></xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="convert-to-database-timezone">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    "convert-to-database-timezone": The value is stored in the database's timezone. The
+                    connection manager must return the correct value for the database timezone.
+                </xsd:documentation></xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="TimestampPrecisionType">
+        <xsd:annotation>
+            <xsd:documentation xml:lang="en">
+                Specifies the precision of the timestamp attributes used.
+        </xsd:documentation></xsd:annotation>
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="nanosecond">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    "nanosecond": The default. No conversion is performed when reading or writing this value to the database.
+                </xsd:documentation></xsd:annotation>
+            </xsd:enumeration>
+            <xsd:enumeration value="millisecond">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    "millisecond": The value is truncated to milliseconds when read from the database.
+                </xsd:documentation></xsd:annotation>
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="SuperClassType">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="table-per-subclass">
+            </xsd:enumeration>
+            <xsd:enumeration value="table-for-all-subclasses">
+            </xsd:enumeration>
+            <xsd:enumeration value="table-per-class">
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="PrimaryKeyGeneratorStrategyType">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="Max">
+            </xsd:enumeration>
+            <xsd:enumeration value="SimulatedSequence">
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="Identity">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="true">
+            </xsd:enumeration>
+        </xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:complexType name="SimulatedSequenceType">
+        <xsd:simpleContent>
+			<xsd:extension base="xsd:string">
+                <xsd:attribute name="sequenceName" type="xsd:token" use="required">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        The name of the sequence to use. This name is passed to the implementation of
+                        MithraSequenceObjectFactory.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="sequenceObjectFactoryName" type="xsd:token" use="required">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        Fully qualified class name of an implementation of MithraSequenceObjectFactory. This
+                        implementation must have a no-argument constructor.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="hasSourceAttribute" type="xsd:boolean">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        This must be set to true if the sequence object is tied to the same
+                        source attribute as the object itself. If the sequence will use a central location for all
+                        objects, this must be set to false.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="batchSize" type="xsd:int" default="10">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        The number to borrow on each request. The insertAll method on the list object will
+                        borrow more if there are more items in the list.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="initialValue" type="xsd:int" default="1">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        The initial value of the sequence. Mithra uses this value, the maximum (or minimum for
+                        descending sequences) from the table and the incrementSize to compute the next value.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+                <xsd:attribute name="incrementSize" type="xsd:int" default="1">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        The number to increment by. Using a number bigger than one allows multiple peer-to-peer
+                        replicated databases to generate sequences without running into each other. For example, if
+                        there are 3 locations, the incrementSize can be set to 3, the first location with initial
+                        value 1, the second location initial value 2 and third location initial value 3.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:attribute>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraPureObjectType">
+        <xsd:complexContent><xsd:extension base="MithraCommonObjectType">
+            <xsd:sequence>
+                <xsd:element name="AsOfAttribute" type="AsOfAttributePureType" minOccurs="0" maxOccurs="2">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        An AsOfAttribute marks an object as "dated". A dated object may have one or two as of attributes.
+                        An AsOfAttribute is a virtual attribute: it does not correspond to a single column.
+                        Instead, its value is between two columns in the database.
+                        See the chaining documentation for more detail.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Attribute" type="AttributePureType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        An attribute of this object, that corresponds to a column in the database.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="TransactionalMethodSignature" type="TransactionalMethodSignatureType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        A method on this object that is marked as transactional. The method signature shown here will be in the generated code
+                        and a method with the same parameters but with "Impl" at the end of the name will be declared abstract and must be
+                        implemented in the concrete subclass. The transaction boundary is the start and end of the method.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Relationship" type="RelationshipType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        Relationships link objects of various types. Self referential relationships are also allowed.
+                        The syntax allows relating attributes from this object to attributes to the related object as well
+                        as constant expressions.
+                        Example 1, simple relationship: OrderItem.orderId = this.orderId
+                        Example 2, relationship with constant expressions: ProductPrice.productId = this.productId and  ProductPrice.type = 3902 and ProductPrice.priceSource = "MTG_FACTOR"
+                        Example 3, many to many via another object: UserGroup.ownerId = this.id and Group.id = UserGroup.dependentId
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Index" type="IndexType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        An index can be added to the cache for this object. Unique indices can improve performance tremendously.
+                        Non-unique indices are only instantiated if the object is fully cached.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:extension></xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraInterfaceType">
+            <xsd:sequence>
+                <xsd:element name="PackageName" type="xsd:token" minOccurs="1">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">
+                            The java package for this object
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="ClassName" type="xsd:token" minOccurs="1">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">
+                            The java class (interface) name for this object
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="SuperInterface" type="xsd:token" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">
+                            A Mithra interface that this interface extends
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Import" type="xsd:token" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation>
+                        <xsd:documentation xml:lang="en">
+                            Any additional import packages to be included in all generated files
+                        </xsd:documentation>
+                    </xsd:annotation>
+                </xsd:element>
+                <xsd:element name="AsOfAttribute" type="AsOfAttributeInterfaceType" minOccurs="0" maxOccurs="2">
+                </xsd:element>
+                <xsd:element name="SourceAttribute" type="SourceAttributeInterfaceType" minOccurs="0">
+                </xsd:element>
+                <xsd:element name="Attribute" type="AttributeInterfaceType" minOccurs="0" maxOccurs="unbounded">
+                </xsd:element>
+                <xsd:element name="Relationship" type="RelationshipInterfaceType" minOccurs="0" maxOccurs="unbounded">
+                </xsd:element>
+            </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraTempObjectType">
+        <xsd:complexContent><xsd:extension base="MithraBaseObjectType">
+            <xsd:sequence>
+                <xsd:element name="SourceAttribute" type="SourceAttributeType" minOccurs="0">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                            Optional source attribute for objects that can live in multiple databases. Source attribute does not correspond to a
+                            column in the database.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Attribute" type="AttributePureType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        An attribute of this object, that corresponds to a column in the database.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="TransactionalMethodSignature" type="TransactionalMethodSignatureType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        A method on this object that is marked as transactional. The method signature shown here will be in the generated code
+                        and a method with the same parameters but with "Impl" at the end of the name will be declared abstract and must be
+                        implemented in the concrete subclass. The transaction boundary is the start and end of the method.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Relationship" type="RelationshipType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        Relationships link objects of various types. Self referential relationships are also allowed.
+                        The syntax allows relating attributes from this object to attributes to the related object as well
+                        as constant expressions.
+                        Example 1, simple relationship: OrderItem.orderId = this.orderId
+                        Example 2, relationship with constant expressions: ProductPrice.productId = this.productId and  ProductPrice.type = 3902 and ProductPrice.priceSource = "MTG_FACTOR"
+                        Example 3, many to many via another object: UserGroup.ownerId = this.id and Group.id = UserGroup.dependentId
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+                <xsd:element name="Index" type="IndexType" minOccurs="0" maxOccurs="unbounded">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        An index can be added to the cache for this object. Unique indices can improve performance tremendously.
+                        Non-unique indices are only instantiated if the object is fully cached.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:extension></xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="AsOfAttributePureType">
+        <xsd:sequence>
+            <xsd:element name="Property" type="PropertyType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    A key value property pair.  Each key represents a defining property of this attribute that can be accessed
+                    by calling attribute.getProperty(key).  If no value is specified, the default is Boolean.TRUE, but any object can be returned.
+                </xsd:documentation></xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                    The name of the attribute.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="toIsInclusive" type="xsd:boolean" default="true">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                This determines where the equal sign is put in a query. A typical query looks like:<br/>
+                toIsInclusive="true": the equal sign is on the end (thru or out)<br/>
+                e.g. where FROM &lt; date and THRU &gt;= date<br/>
+                toIsInclusive="false: the equal sign is on the front (from or in)<br/>
+                e.g. where FROM &lt;= date and THRU &gt; date<br/>
+                For historical reasons, the default is "true", but a "false" is a better choice.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="infinityDate" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The infinity date for this as of attribute. This is specified with as a snippet of java code inside
+                square brackets.
+                e.g.: infinityDate="[com.gs.fw.common.reladomo.test.domain.InfinityTimestamp.getParaInfinity()]"
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="infinityIsNull" type="xsd:boolean" use="optional" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The infinity date is set to null in the database store."
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="defaultIfNotSpecified" type="xsd:token">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                When an as of attribute is not specified in an operation, this value is used for this as of attribute.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="futureExpiringRowsExist" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Setting this value to true causes terminations not to change the businessDateTo (THRU) value which is necessary for
+                applications that do future dated queries.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="isProcessingDate" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                This should be set true for a processing date. The processing dimension of a dated object is for audit
+                purposes only. Operations in the past are in the processing dimension are not allowed.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="timezoneConversion" type="TimezoneConversionType" >
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Supply the timezone conversion for this as of attribute. It applies to both columns, but not the infinity date.
+                Possible values are "none", which is the default,  "convert-to-utc" which converts to Universal coordinated time
+                (previously known as GMT) and "convert-to-database-timezone" which converts it to the database's local timezone.
+                The database's local timezone must be supplied by the connection manager.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="timestampPrecision" type="TimestampPrecisionType" default="nanosecond">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Only applies to Timestamp attributes.
+                Supply the precision for this as of attribute.
+                Possible values are "nanosecond", which is the default, and "millisecond" which truncates the value to milli seconds.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="poolable" type="xsd:boolean" default="true">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The default is true. Pooled Timestamp attributes can significantly reduce memory
+                overhead.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="finalGetter" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Generate a final method for this as-of attribute to prevent overriding. Default is false for
+                backwards compatibility.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="AttributeInterfaceType">
+        <xsd:attribute name="name" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The name of this attribute. Two generated methods are supplied: get[Name], set[Name]
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="javaType" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The java type of this attribute; the valid values are any java primitive type as well as BigDecimal, String, Date and Timestamp and byte[] for blobs.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+
+     <xsd:complexType name="SourceAttributeInterfaceType">
+        <xsd:attribute name="name" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The name of the attribute.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="javaType" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The java type of this attribute. The only valid types for source attributes are int and String.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+
+    <xsd:complexType name="AsOfAttributeInterfaceType">
+        <xsd:attribute name="name" type="xsd:token" use="required">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">
+                    The name of the attribute.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="toIsInclusive" type="xsd:boolean" default="true">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">
+                    This determines where the equal sign is put in a query. A typical query looks like:
+                    <br/>
+                    toIsInclusive="true": the equal sign is on the end (thru or out)
+                    <br/>
+                    e.g. where FROM &lt; date and THRU &gt;= date
+                    <br/>
+                    toIsInclusive="false: the equal sign is on the front (from or in)
+                    <br/>
+                    e.g. where FROM &lt;= date and THRU &gt; date
+                    <br/>
+                    For historical reasons, the default is "true", but a "false" is a better choice.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="infinityDate" type="xsd:token" use="required">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">
+                    The infinity date for this as of attribute. This is specified with as a snippet of java code inside
+                    square brackets.
+                    e.g.: infinityDate="[com.gs.fw.common.reladomo.test.domain.InfinityTimestamp.getParaInfinity()]"
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="infinityIsNull" type="xsd:boolean" use="optional" default="false">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">
+                    The infinity date is set to null in the database store."
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="isProcessingDate" type="xsd:boolean" default="false">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">
+                    This should be set true for a processing date. The processing dimension of a dated object is for
+                    audit
+                    purposes only. Operations in the past are in the processing dimension are not allowed.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="timezoneConversion" type="TimezoneConversionType">
+            <xsd:annotation>
+                <xsd:documentation xml:lang="en">
+                    Supply the timezone conversion for this as of attribute. It applies to both columns, but not the
+                    infinity date.
+                    Possible values are "none", which is the default, "convert-to-utc" which converts to Universal
+                    coordinated time
+                    (previously known as GMT) and "convert-to-database-timezone" which converts it to the database's
+                    local timezone.
+                    The database's local timezone must be supplied by the connection manager.
+                </xsd:documentation>
+            </xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+
+    <xsd:complexType name="AttributePureType">
+        <xsd:sequence>
+            <xsd:element name="SimulatedSequence" type="SimulatedSequenceType" minOccurs="0" maxOccurs="1">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    Defines the simulated sequence for this attribute. Simulated sequences are automatically assigned on insert.
+                    They can also be assigned by calling the "generateAndSet[attribute name]" method.
+                </xsd:documentation></xsd:annotation>
+            </xsd:element>
+            <xsd:element name="Property" type="PropertyType" minOccurs="0" maxOccurs="unbounded">
+                <xsd:annotation><xsd:documentation xml:lang="en">
+                    A key value property pair.  Each key represents a defining property of this attribute that can be accessed
+                    by calling attribute.getProperty(key).  If no value is specified, the default is Boolean.TRUE, but any object can be returned.
+                </xsd:documentation></xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The name of this attribute. Two generated methods are supplied: get[Name], set[Name]
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="javaType" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The java type of this attribute; the valid values are any java primitive type as well as BigDecimal, String, Date and Timestamp and byte[] for blobs.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="primaryKey" type="xsd:boolean">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Must be set to true if this is a part of the primary key. Multiple attributes can have this set to true.
+                At least one attribute must be designated as the primary key. For dated objects, the as of attribute is automatically
+                part of the primary key. The source attribute, if any, is also automatically part of the primary key.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="identity" type="xsd:boolean">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Must be set to true if this is an identity column. It's usually part of the primary key as well.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="primaryKeyGeneratorStrategy" type="PrimaryKeyGeneratorStrategyType">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                This must be set for the primary key to be automatically generated. Valid values are "Max" and "SimulatedSequence"
+                The max strategy should only be used for legacy systems. It is far less performant and usable compared to a SimulatedSequence.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="nullable" type="xsd:boolean" default="true">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                When nullable is set to true (which is the default except for primary keys) for primitive attributes, two new methods are generated:
+                is[attribute name]Null() and set[attribute name]Null(). A nullable primary key must be part of complex (multi-column) key.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="defaultIfNull" type="xsd:token">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                This should be used rarely. For primitive attributes, an exception is thrown if the getter method is called when
+                the value in the database is null. By setting this, this value can be returned instead.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="timezoneConversion" type="TimezoneConversionType" >
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Only applies to Timestamp attributes.
+                Supply the timezone conversion for this as of attribute.
+                Possible values are "none", which is the default,  "convert-to-utc" which converts to Universal coordinated time
+                (previously known as GMT) and "convert-to-database-timezone" which converts it to the database's local timezone.
+                The database's local timezone must be supplied by the connection manager.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="timestampPrecision" type="TimestampPrecisionType" default="nanosecond">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Only applies to Timestamp attributes.
+                Supply the precision for this as of attribute.
+                Possible values are "nanosecond", which is the default, and "millisecond" which truncates the value to milli seconds.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="mutablePrimaryKey" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Normally primary keys cannot be changed. Setting this value to true allows the primary key to change.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="readonly" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                A readonly attribute cannot be modified once it has been written to the database.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="maxLength" type="xsd:int">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Applies to string attributes only. The maximum length of this attribute. If this is set, an exception is thrown if a
+                larger string is set or it truncated depending on the truncate behavior.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="truncate" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Automatically truncates string attributes to the length set in maxLength.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="inPlaceUpdate" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                An attribute that can updated in place (without chaining). The attribute must be a non primary key attribute.
+                This attribute can be updated in place by calling the set&lt;attributeName&gt;InPlace method.
+                This means that there will be no chaining for these types of updates, even if the Mithra class has AsOfAttributes.
+                The normal set method can also be called which does the normal chaining. Use this sparingly and carefully.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="precision" type="xsd:int">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+            precision as defined for NUMERIC or DECIMAL types for a database column. This is subtley different from BigDecimal precision.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="scale" type="xsd:int">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+            scale as defined for NUMERIC or DECIMAL types for a database column. This is subtley different from BigDecimal scale.    
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="finalGetter" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Generate a final method for this attribute to prevent overriding. Default is false for
+                backwards compatibility.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraEmbeddedValueObjectType">
+        <xsd:complexContent>
+            <xsd:extension base="MithraBaseObjectType">
+                <xsd:sequence>
+                    <xsd:element name="Attribute" type="AttributeEmbeddedValueType" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation><xsd:documentation xml:lang="en">
+                            An attribute of this embedded value object. For each instance of this embedded value object,
+                            this attribute will be mapped to an underlying attribute in a MithraObject.
+                        </xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="EmbeddedValue" type="ReferenceEmbeddedValueType" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation><xsd:documentation xml:lang="en">
+                            A reference to an embedded value object nested within this embedded value object.
+                        </xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                    <xsd:element name="Relationship" type="RelationshipType" minOccurs="0" maxOccurs="unbounded">
+                        <xsd:annotation><xsd:documentation xml:lang="en">
+                            Relationships link objects of various types. Self referential relationships are also allowed.
+                            The syntax allows relating attributes from this object to attributes to the related object as well
+                            as constant expressions. Reverse relationship and dependent relationships are not supported from embedded
+                            value objects.
+                            Example 1, simple relationship: OrderItem.orderId = this.orderId
+                            Example 2, relationship with constant expressions: ProductPrice.productId = this.productId and  ProductPrice.type = 3902 and ProductPrice.priceSource = "MTG_FACTOR"
+                            Example 3, many to many via another object: UserGroup.ownerId = this.id and Group.id = UserGroup.dependentId
+                        </xsd:documentation></xsd:annotation>
+                    </xsd:element>
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="AttributeEmbeddedValueType">
+        <xsd:attribute name="name" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The name of this attribute. Provided methods include get[Name] and set[Name] in all situations as well
+                as set[Name]Until, increment[Name], and increment[Name]Until when nested in a dated objects.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="javaType" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The Java type of this attribute. Valid values include all Java primitive types as well as String, Date,
+                Timestamp, BigDecimal, and byte[] for blobs.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="finalGetter" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Generate a final method for this embedded value to prevent overriding. Default is false for
+                backwards compatibility.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="ReferenceEmbeddedValueType">
+        <xsd:attribute name="name" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The name of this instance of an embedded value object.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="type" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The type of this instance of an embedded value object.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="finalGetter" type="xsd:boolean" default="false">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Generate a final method for this embedded value to prevent overriding. Default is false for
+                backwards compatibility.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraEnumerationType">
+        <xsd:complexContent><xsd:extension base="MithraBaseObjectType">
+            <xsd:sequence>
+                <xsd:element name="Member" type="EnumerationMemberType" minOccurs="1" maxOccurs="unbounded">
+                    <xsd:annotation><xsd:documentation xml:lang="en">
+                        A member of this enumeration. This member will be mapped to an underlying database value for every
+                        Mithra object in which this enumeration is referenced.
+                    </xsd:documentation></xsd:annotation>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:extension></xsd:complexContent>
+    </xsd:complexType>
+
+    <xsd:complexType name="EnumerationMemberType">
+        <xsd:attribute name="name" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation>
+                The name of this enumeration member.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="PropertyType">
+        <xsd:attribute name="key" type="xsd:token" use="required">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The property map key is a string representing a constant located within the scope of the generated class.
+                The key should be the fully qualified constant name, unless the appropriate class is already included in the scope.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="value" type="xsd:token" use="optional">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                The property map value is a string representing a constant located within the scope of the generated class.
+                The value should be the fully qualified constant name, unless the appropriate class is already included in the scope.
+                In case no value is supplied, the map value defaults to Boolean.TRUE.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+    </xsd:complexType>
+</xsd:schema>
