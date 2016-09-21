@@ -3,7 +3,7 @@
 export CUR_DIR=`pwd`
 export RELADOMO_HOME=${RELADOMO_HOME:-"$CUR_DIR/.."}
 # todo: release: remove path
-export JDK_HOME=${RELADOMO_JDK_HOME:-"/jdk1.6/default/dir"}
+export JDK_HOME=${RELADOMO_JDK_HOME:-"/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home"}
 
 # no need to modify stuff below:
 

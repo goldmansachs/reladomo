@@ -132,7 +132,7 @@
             <java failonerror="true" dir="${root}" classpath="${root}/libboot/target/classes" classname="org.libboot.Libboot" fork="true">
                 <arg value="download" />
                 <arg value="@{specFile}" />
-                <arg value="build\repos.txt" />
+                <arg value="build/repos.txt" />
             </java>
         </sequential>
     </macrodef>
@@ -170,7 +170,7 @@
     <target name="sanity-check-build">
         <available property="jdk.sanity.check" classname="java.sql.Connection" ignoresystemclasses="true">
             <classpath>
-                <pathelement location="${jdk.home}/jre/lib/rt.jar"/>
+                <fileset dir="${jdk.home}" includes="**/*.jar"/>
             </classpath>
         </available>
         <fail message="Could not find the JDK! Check ${jdk.home}." unless="jdk.sanity.check"/>
@@ -564,7 +564,7 @@
     </target>
 
     <target name="jarjar-asm">
-        <libboot specFile="build/asmlib.spec"/>
+        <libboot specFile="${root}/build/asmlib.spec"/>
         <path id="jarjar.classpath">
             <pathelement location="${root}/build/lib/jarjar-1.3.jar"/>
         </path>
