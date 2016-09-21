@@ -1,0 +1,20 @@
+Reladomo Sample Project
+Copyright 2016 Goldman Sachs
+Licensed under Apache 2.0 license
+The Licensor does not indemnify the Licensee against infringement of any third party patent including, but not limited to, United States Patents 5,937,402 and 6,101,502.
+
+See the licenses directory for the full text of the licenses.
+
+This product depends on (links to) the following software:
+
+Reladomo
+Copyright 2016 Goldman Sachs
+Licensed under Apache 2.0 license
+
+H2
+Copyright 2004-2016 H2 Group
+Licensed under the EPL 1.0
+
+slf4j
+Copyright (c) 2004-2011 QOS.ch
+Licensed under the MIT license

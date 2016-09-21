@@ -13,3 +13,6 @@ reladomoui/target/**
 .idea/**
 reladomo.iml
 target/**
+samples/**/target/**
+samples/**/build/**
+.gradle

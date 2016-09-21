@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>sample</groupId>
+    <artifactId>reladomo-sample-simple</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <properties>
+        <reladomo.version>16.0.0</reladomo.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.goldmansachs.reladomo</groupId>
+            <artifactId>reladomo</artifactId>
+            <version>${reladomo.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.goldmansachs.reladomo</groupId>
+            <artifactId>reladomo-test-util</artifactId>
+            <version>${reladomo.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.192</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.21</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/reladomo</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                    <!--
+                        "generated-db" is added to resource because the sample app HelloReladomoApp
+                        loads generated ddl/idx files to initialize h2 db in memory.
+                        No need to do this for typical production apps.
+                    -->
+                    <execution>
+                        <id>add-resource</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>add-resource</goal>
+                        </goals>
+                        <configuration>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/generated-db/</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generateMithra</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <property name="plugin_classpath" refid="maven.plugin.classpath"/>
+                                <taskdef name="gen-reladomo" classpath="plugin_classpath"
+                                    classname="com.gs.fw.common.mithra.generator.MithraGenerator"/>
+                                <gen-reladomo xml="${project.basedir}/src/main/resources/reladomo/models/ReladomoClassList.xml"
+                                            generateGscListMethod="true"
+                                            generatedDir="${project.build.directory}/generated-sources/reladomo"
+                                            nonGeneratedDir="${project.basedir}/src/main/java"/>
+
+                                <taskdef name="gen-ddl"
+                                         classname = "com.gs.fw.common.mithra.generator.dbgenerator.MithraDbDefinitionGenerator"
+                                         loaderRef="reladomoGenerator">
+                                    <classpath refid="maven.plugin.classpath"/>
+                                </taskdef>
+                                <gen-ddl xml="${project.basedir}/src/main/resources/reladomo/models/ReladomoClassList.xml"
+                                            generatedDir="${project.build.directory}/generated-db/sql"
+                                            databaseType="postgres"/>
+                            </tasks>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.goldmansachs.reladomo</groupId>
+                        <artifactId>reladomogen</artifactId>
+                        <version>${reladomo.version}</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>com.goldmansachs.reladomo</groupId>
+                        <artifactId>reladomo-gen-util</artifactId>
+                        <version>${reladomo.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
+</project>
