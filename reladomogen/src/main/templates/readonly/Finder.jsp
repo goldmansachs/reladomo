@@ -1011,7 +1011,7 @@ public class <%= className %>
                 <%= index.getBeanType() %> _bean = <%= index.getBeanType() %>.POOL.getOrConstruct();
                 <%= index.getLookupBeanSetters() %>
                 MithraObjectPortal _portal = this.getMithraObjectPortal();
-                _related = _portal.<%= index.getCacheLookupMethod() %>(<%= index.getLookupCacheParameters() %>);
+                _related = _portal.<%= index.getCacheLookupMethod() %>ForFind(<%= index.getLookupCacheParameters() %>);
                 _bean.release();
             }
             <% } %>

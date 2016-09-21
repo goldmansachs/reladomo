@@ -602,6 +602,26 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
         return wrapResultForFullCache(this.getCache().getAsOneByIndex(indexRef, srcObject, srcData, relationshipHashStrategy, asOfDate0, asOfDate1));
     }
 
+    @Override
+    public Object getAsOneFromCacheForFind(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1)
+    {
+        if (this.isCacheDisabled())
+        {
+            return null;
+        }
+        return getAsOneFromCache(srcObject, srcData, relationshipHashStrategy, asOfDate0, asOfDate1);
+    }
+
+    @Override
+    public Object getAsOneByIndexFromCacheForFind(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1, int indexRef)
+    {
+        if (this.isCacheDisabled())
+        {
+            return null;
+        }
+        return getAsOneByIndexFromCache(srcObject, srcData, relationshipHashStrategy, asOfDate0, asOfDate1, indexRef);
+    }
+
     private Object wrapResultForFullCache(Object result)
     {
         if (result == null && this.getCache().isFullCache()) result = NulledRelation.getInstance();

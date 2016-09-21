@@ -104,6 +104,10 @@ public interface MithraObjectPortal
 
     public Object getAsOneByIndexFromCache(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1, int indexRef);
 
+    public Object getAsOneFromCacheForFind(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1);
+
+    public Object getAsOneByIndexFromCacheForFind(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1, int indexRef);
+
     public CachedQuery findAsCachedQuery(Operation op, OrderBy orderby, boolean bypassCache, boolean forRelationship,
                                          int maxObjectsToRetrieve);
 

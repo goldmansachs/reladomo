@@ -154,6 +154,18 @@ public class UninitializedPortal implements MithraObjectPortal
         return initializeNow("getAsOneByIndexFromCache").getAsOneByIndexFromCache(srcObject, srcData, relationshipHashStrategy, asOfDate0, asOfDate1, indexRef);
     }
 
+    @Override
+    public Object getAsOneFromCacheForFind(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1)
+    {
+        return initializeNow("getAsOneFromCacheForFind").getAsOneFromCacheForFind(srcObject, srcData, relationshipHashStrategy, asOfDate0, asOfDate1);
+    }
+
+    @Override
+    public Object getAsOneByIndexFromCacheForFind(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1, int indexRef)
+    {
+        return initializeNow("getAsOneByIndexFromCacheForFind").getAsOneByIndexFromCacheForFind(srcObject, srcData, relationshipHashStrategy, asOfDate0, asOfDate1, indexRef);
+    }
+
     public Cache getCache()
     {
         return initializeNow("getCache").getCache();
