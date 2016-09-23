@@ -163,9 +163,10 @@ public class UpdateOperation extends TransactionOperation
             if (this.canBeBatched(incoming))
             {
                 if (this.getMithraObject() == op.getMithraObject()) return op;
-                if (this.canBeMultiUpdated(incoming))
+                Attribute diffPk = this.canBeMultiUpdated(incoming);
+                if (diffPk != null)
                 {
-                    return new MultiUpdateOperation(this, incoming);
+                    return new MultiUpdateOperation(this, incoming, diffPk);
                 }
                 return new BatchUpdateOperation(this, incoming);
             }
@@ -209,17 +210,50 @@ public class UpdateOperation extends TransactionOperation
         return false;
     }
 
-    public boolean canBeMultiUpdated(UpdateOperation op)
+    public static Attribute findDifferentPk(MithraObjectPortal portal, Object first, Object second)
     {
-        if (!this.getPortal().useMultiUpdate()) return false;
+        first = portal.zChooseDataForMultiupdate((MithraTransactionalObject)first);
+        second = portal.zChooseDataForMultiupdate((MithraTransactionalObject)second);
+        Attribute[] primaryKeyAttributes = portal.zGetAddressingAttributes();
+        Attribute differentPk = primaryKeyAttributes[0];
+        if (primaryKeyAttributes.length > 1)
+        {
+            int count = 0;
+            for(int i=0;i<primaryKeyAttributes.length;i++)
+            {
+                if (!primaryKeyAttributes[i].valueEquals(first, second))
+                {
+                    differentPk = primaryKeyAttributes[i];
+                    count++;
+                    if (count > 1)
+                    {
+                        return null;
+                    }
+                }
+            }
+            if (count == 0)
+            {
+                return null;
+            }
+        }
+        return differentPk.isSourceAttribute() ? null : differentPk;
+    }
+
+    private Attribute canBeMultiUpdated(UpdateOperation op)
+    {
+        if (!this.getPortal().useMultiUpdate()) return null;
+        Attribute differentPk = findDifferentPk(op.getPortal(), this.getMithraObject(), op.getMithraObject());
+        if (differentPk == null)
+        {
+            return null;
+        }
         for(int i=0;i<this.updates.size();i++)
         {
             AttributeUpdateWrapper left = updates.get(i);
             AttributeUpdateWrapper right = op.updates.get(i);
-            if (!left.hasSameParameter(right)) return false;
+            if (!left.hasSameParameter(right)) return null;
         }
-        return true;
-
+        return differentPk;
     }
 
     public int setSqlParameters(PreparedStatement stm, TimeZone databaseTimeZone, DatabaseType databaseType) throws SQLException

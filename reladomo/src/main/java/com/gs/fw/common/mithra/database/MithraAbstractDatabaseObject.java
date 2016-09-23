@@ -5054,19 +5054,7 @@ public abstract class MithraAbstractDatabaseObject
     protected void zMultiUpdate(MultiUpdateOperation multiUpdateOperation)
     {
         long startTime = System.currentTimeMillis();
-        if (this.hasSourceAttribute())
-        {
-            List segregated = multiUpdateOperation.segregateUpdatesBySourceAttribute();
-            int segregatedSize = segregated.size();
-            for (int i = 0; i < segregatedSize; i++)
-            {
-                this.multiUpdateForSameSourceAttribute((MultiUpdateOperation) segregated.get(i));
-            }
-        }
-        else
-        {
-            this.multiUpdateForSameSourceAttribute(multiUpdateOperation);
-        }
+        this.multiUpdateForSameSourceAttribute(multiUpdateOperation);
         this.getPerformanceData().recordTimeForUpdate(multiUpdateOperation.getMithraObjects().size(), startTime);
     }
 

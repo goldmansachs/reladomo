@@ -16,6 +16,7 @@
 
 package com.gs.fw.common.mithra;
 
+import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.behavior.txparticipation.TxParticipationMode;
 import com.gs.fw.common.mithra.cache.Cache;
 import com.gs.fw.common.mithra.cache.offheap.MasterCacheUplink;
@@ -103,6 +104,10 @@ public interface MithraObjectPortal
     public Object getAsOneFromCache(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1);
 
     public Object getAsOneByIndexFromCache(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1, int indexRef);
+
+    public Object getAsOneFromCacheForFind(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1);
+
+    public Object getAsOneByIndexFromCacheForFind(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1, int indexRef);
 
     public CachedQuery findAsCachedQuery(Operation op, OrderBy orderby, boolean bypassCache, boolean forRelationship,
                                          int maxObjectsToRetrieve);
@@ -218,4 +223,9 @@ public interface MithraObjectPortal
     public long getLatestRefreshTime();
 
     public void setLatestRefreshTime(long time);
+
+    public Attribute[] zGetAddressingAttributes();
+
+    public MithraDataObject zChooseDataForMultiupdate(MithraTransactionalObject obj);
+
 }

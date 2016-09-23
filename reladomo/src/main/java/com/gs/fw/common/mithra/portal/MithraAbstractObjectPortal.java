@@ -23,8 +23,10 @@ import com.gs.collections.impl.map.strategy.mutable.UnifiedMapWithHashingStrateg
 import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.aggregate.attribute.BeanAggregateAttribute;
+import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.MappedAttribute;
+import com.gs.fw.common.mithra.attribute.VersionAttribute;
 import com.gs.fw.common.mithra.cache.Cache;
 import com.gs.fw.common.mithra.cache.CacheClock;
 import com.gs.fw.common.mithra.cache.ExtractorBasedHashStrategy;
@@ -90,6 +92,9 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
     private transient volatile NullPersistedRelation lastPersistedRelation;
     private transient PersisterId persisterId;
     private transient volatile long latestRefreshTime;
+    private transient UpdateDataChooser updateDataChooser;
+    private transient Attribute[] optimisticAddressingAttributes;
+    private transient Attribute[] addressingAttributes;
 
     private static final int MAX_POOL_ARRAY_SIZE = 8;
     private static final int MAX_POOLED = 6;
@@ -532,14 +537,14 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
         }
         else
         {
-            return  findCursorFromServerWithRetry(op, postLoadFilter, orderby, maxObjectsToRetrieve, bypassCache, maxParallelDegree, forceImplicitJoin);
+            return findCursorFromServerWithRetry(op, postLoadFilter, orderby, maxObjectsToRetrieve, bypassCache, maxParallelDegree, forceImplicitJoin);
         }
     }
 
     private Cursor findCursorFromServerWithRetry(Operation op, Filter postLoadFilter, OrderBy orderby, int maxObjectsToRetrieve, boolean bypassCache, int maxParallelDegree, boolean forceImplicitJoin)
     {
         int retriesLeft = MithraTransaction.DEFAULT_TRANSACTION_RETRIES;
-        while(true)
+        while (true)
         {
             try
             {
@@ -602,6 +607,26 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
         return wrapResultForFullCache(this.getCache().getAsOneByIndex(indexRef, srcObject, srcData, relationshipHashStrategy, asOfDate0, asOfDate1));
     }
 
+    @Override
+    public Object getAsOneFromCacheForFind(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1)
+    {
+        if (this.isCacheDisabled())
+        {
+            return null;
+        }
+        return getAsOneFromCache(srcObject, srcData, relationshipHashStrategy, asOfDate0, asOfDate1);
+    }
+
+    @Override
+    public Object getAsOneByIndexFromCacheForFind(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1, int indexRef)
+    {
+        if (this.isCacheDisabled())
+        {
+            return null;
+        }
+        return getAsOneByIndexFromCache(srcObject, srcData, relationshipHashStrategy, asOfDate0, asOfDate1, indexRef);
+    }
+
     private Object wrapResultForFullCache(Object result)
     {
         if (result == null && this.getCache().isFullCache()) result = NulledRelation.getInstance();
@@ -612,7 +637,7 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
     {
         if (op instanceof CompactUpdateCountOperation)
         {
-            if (!((CompactUpdateCountOperation)op).requiresAsOfEqualityCheck())
+            if (!((CompactUpdateCountOperation) op).requiresAsOfEqualityCheck())
             {
                 return false;
             }
@@ -917,7 +942,7 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
                                                     Map<String, MithraGroupByAttribute> nameToGroupByAttributeMap, HavingOperation havingOperation, boolean bypassCache, Class bean)
     {
         int retriesLeft = MithraManagerProvider.getMithraManager().isInTransaction() ? 0 : MithraTransaction.DEFAULT_TRANSACTION_RETRIES;
-        while(true)
+        while (true)
         {
             try
             {
@@ -1135,7 +1160,7 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
         {
             Map<com.gs.fw.common.mithra.MithraAggregateAttribute, String> attributeToNameMap =
                     this.createAggregateAttributeToNameMap(nameToAggregateAttributeMap);
-            for (int i = 0; i < result.size();)
+            for (int i = 0; i < result.size(); )
             {
                 if (!havingOperation.zMatches(result.get(i), attributeToNameMap))
                 {
@@ -1201,7 +1226,7 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
                                                          boolean forRelationship, int maxObjectsToRetrieve, int numOfParallelThreads, boolean bypassCache, boolean forceImplicitJoin)
     {
         int retriesLeft = MithraTransaction.DEFAULT_TRANSACTION_RETRIES;
-        while(true)
+        while (true)
         {
             try
             {
@@ -1528,5 +1553,109 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
     public void setLatestRefreshTime(long latestRefreshTime)
     {
         this.latestRefreshTime = latestRefreshTime;
+    }
+
+    @Override
+    public Attribute[] zGetAddressingAttributes()
+    {
+        if (this.getTxParticipationMode().isOptimisticLocking())
+        {
+            computeOptimisticAddressingAttributes();
+            return this.optimisticAddressingAttributes;
+        }
+        else
+        {
+            computeAddressingAttributes();
+            return this.addressingAttributes;
+        }
+    }
+
+    @Override
+    public MithraDataObject zChooseDataForMultiupdate(MithraTransactionalObject obj)
+    {
+        if (updateDataChooser == null)
+        {
+            if (finder.getAsOfAttributes() == null)
+            {
+                updateDataChooser = NonDatedUpdateDataChooser.getInstance();
+            }
+            else
+            {
+                updateDataChooser = DatedUpdateDataChooser.getInstance();
+            }
+        }
+        return updateDataChooser.chooseDataForMultiUpdate(obj);
+
+    }
+
+    protected void computeAddressingAttributes()
+    {
+        if (this.addressingAttributes == null)
+        {
+            MithraFastList<Attribute> addressingList = createFirstAddressingAttributes();
+
+            this.addressingAttributes = addressingList.toArray(new Attribute[addressingList.size()]);
+        }
+    }
+
+    private MithraFastList<Attribute> createFirstAddressingAttributes()
+    {
+        Attribute[] primaryKeyAttributes = finder.getPrimaryKeyAttributes();
+        AsOfAttribute[] asOfAttributes = finder.getAsOfAttributes();
+        MithraFastList<Attribute> addressingList = new MithraFastList(primaryKeyAttributes.length + 3);
+        for (int i = 0; i < primaryKeyAttributes.length; i++)
+        {
+            if (!primaryKeyAttributes[i].isSourceAttribute())
+            {
+                addressingList.add(primaryKeyAttributes[i]);
+            }
+        }
+        if (asOfAttributes != null)
+        {
+            for (int i = 0; i < asOfAttributes.length; i++)
+            {
+                addressingList.add(asOfAttributes[i].getToAttribute());
+            }
+        }
+        return addressingList;
+    }
+
+    protected void computeOptimisticAddressingAttributes()
+    {
+        if (this.optimisticAddressingAttributes == null)
+        {
+            MithraFastList<Attribute> addressingAttributes = createFirstAddressingAttributes();
+            AsOfAttribute[] asOfAttributes = finder.getAsOfAttributes();
+            VersionAttribute versionAttribute = this.getFinder().getVersionAttribute();
+            if (versionAttribute != null)
+            {
+                addressingAttributes.add(((Attribute)versionAttribute));
+            }
+            if (asOfAttributes != null)
+            {
+                Attribute optimisticAttribute = getOptimisticKey(asOfAttributes);
+                if (optimisticAttribute != null) addressingAttributes.add(optimisticAttribute);
+            }
+            this.optimisticAddressingAttributes = addressingAttributes.toArray(new Attribute[addressingAttributes.size()]);
+        }
+    }
+
+    private Attribute getOptimisticKey(AsOfAttribute[] asOfAttributes)
+    {
+        AsOfAttribute processingDate = null;
+        if (asOfAttributes.length == 2)
+        {
+            processingDate = asOfAttributes[1];
+        }
+        else
+            if (asOfAttributes[0].isProcessingDate())
+            {
+                processingDate = asOfAttributes[0];
+            }
+        if (processingDate != null)
+        {
+            return processingDate.getFromAttribute();
+        }
+        return null;
     }
 }

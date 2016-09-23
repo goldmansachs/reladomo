@@ -17,6 +17,7 @@
 package com.gs.fw.common.mithra.portal;
 
 import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.behavior.txparticipation.TxParticipationMode;
 import com.gs.fw.common.mithra.cache.Cache;
 import com.gs.fw.common.mithra.cache.offheap.MasterCacheUplink;
@@ -152,6 +153,18 @@ public class UninitializedPortal implements MithraObjectPortal
     public Object getAsOneByIndexFromCache(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1, int indexRef)
     {
         return initializeNow("getAsOneByIndexFromCache").getAsOneByIndexFromCache(srcObject, srcData, relationshipHashStrategy, asOfDate0, asOfDate1, indexRef);
+    }
+
+    @Override
+    public Object getAsOneFromCacheForFind(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1)
+    {
+        return initializeNow("getAsOneFromCacheForFind").getAsOneFromCacheForFind(srcObject, srcData, relationshipHashStrategy, asOfDate0, asOfDate1);
+    }
+
+    @Override
+    public Object getAsOneByIndexFromCacheForFind(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1, int indexRef)
+    {
+        return initializeNow("getAsOneByIndexFromCacheForFind").getAsOneByIndexFromCacheForFind(srcObject, srcData, relationshipHashStrategy, asOfDate0, asOfDate1, indexRef);
     }
 
     public Cache getCache()
@@ -368,6 +381,18 @@ public class UninitializedPortal implements MithraObjectPortal
     @Override
     public void setLatestRefreshTime(long time)
     {
+    }
+
+    @Override
+    public Attribute[] zGetAddressingAttributes()
+    {
+        return initializeNow("zGetAddressingAttributes").zGetAddressingAttributes();
+    }
+
+    @Override
+    public MithraDataObject zChooseDataForMultiupdate(MithraTransactionalObject obj)
+    {
+        return initializeNow("zChooseDataForMultiupdate").zChooseDataForMultiupdate(obj);
     }
 
     public void setDisableCache(boolean disableCache)

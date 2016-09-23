@@ -60,6 +60,7 @@ public class TestFindByPrimaryKey extends MithraTestAbstract
                 AuditedOrder.class,
                 BitemporalOrder.class,
                 ListEntryContactsImpl.class,
+                TestCheckGsDesk.class,
                 VariousTypes.class,
         };
     }
@@ -81,6 +82,15 @@ public class TestFindByPrimaryKey extends MithraTestAbstract
         assertNotNull(order);
         assertEquals(1, order.getOrderId());
         assertCorrectCounts(objectCacheHits, queryCacheHits, OrderFinder.getFinderInstance());
+    }
+
+    public void testNoneCache()
+    {
+        int start = getRetrievalCount();
+        assertNotNull(TestCheckGsDeskFinder.findByPrimaryKey(4, 1));
+        assertNotNull(TestCheckGsDeskFinder.findByPrimaryKey(4, 1));
+        assertNotNull(TestCheckGsDeskFinder.findByPrimaryKey(4, 1));
+        assertEquals(start + 3, getRetrievalCount());
     }
 
     public void testThreeInts()
