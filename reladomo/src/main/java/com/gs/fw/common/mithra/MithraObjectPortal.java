@@ -16,6 +16,7 @@
 
 package com.gs.fw.common.mithra;
 
+import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.behavior.txparticipation.TxParticipationMode;
 import com.gs.fw.common.mithra.cache.Cache;
 import com.gs.fw.common.mithra.cache.offheap.MasterCacheUplink;
@@ -222,4 +223,9 @@ public interface MithraObjectPortal
     public long getLatestRefreshTime();
 
     public void setLatestRefreshTime(long time);
+
+    public Attribute[] zGetAddressingAttributes();
+
+    public MithraDataObject zChooseDataForMultiupdate(MithraTransactionalObject obj);
+
 }

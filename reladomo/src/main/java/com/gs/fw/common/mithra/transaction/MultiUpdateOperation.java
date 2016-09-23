@@ -16,22 +16,15 @@
 
 package com.gs.fw.common.mithra.transaction;
 
-import com.gs.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.attribute.*;
 import com.gs.fw.common.mithra.attribute.update.AttributeUpdateWrapper;
 import com.gs.fw.common.mithra.behavior.txparticipation.MithraOptimisticLockException;
-import com.gs.fw.common.mithra.cache.ExtractorBasedHashStrategy;
 import com.gs.fw.common.mithra.cache.FullUniqueIndex;
-import com.gs.fw.common.mithra.cache.HashStrategy;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
-import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
-import com.gs.fw.common.mithra.finder.orderby.OrderBy;
-import com.gs.fw.common.mithra.util.ListFactory;
 import com.gs.fw.common.mithra.util.MithraFastList;
-import com.gs.fw.common.mithra.util.MultiHashMap;
 import org.slf4j.Logger;
 
 import java.sql.PreparedStatement;
@@ -40,48 +33,64 @@ import java.util.*;
 
 public class MultiUpdateOperation extends TransactionOperation
 {
-    private static final byte MULTI_IN = (byte) 10;
-    private static final byte MULTI_OR = (byte) 20;
-    private static final byte SINGLE_UPDATE = (byte) 30;
-
     private final List<AttributeUpdateWrapper> updates;
 
     private final List mithraObjects;
-    private boolean isDated;
+    private final boolean isDated;
 
     private List singleValuedPrimaryKeys;
-    private VersionAttribute versionAttribute;
-    private MithraFastList multiValuedPrimaryKeys;
-    private MithraDataObject[] orderedDataObjects;
+    private final VersionAttribute versionAttribute;
+    private MithraDataObject[] dataObjects;
     private int startIndex = 0;
     private int endIndex = 0;
     private String firstPartSql;
-    private int ungroupableSize = 0;
-    private HashStrategy hashStrategy;
-    private byte currentState = MULTI_IN;
-    private int multiOrClauses;
-    private int firstPartSqlSingleKeyPosition;
-    private String multiOrSql;
-    private boolean issuedMultiUpdate = false;
-    private boolean hasMultiIn = false;
     private FullUniqueIndex index;
+    private final Attribute diffPk;
 
-    public MultiUpdateOperation(UpdateOperation first, UpdateOperation second)
+    public MultiUpdateOperation(UpdateOperation first, UpdateOperation second, Attribute diffPk)
     {
         super(first.getMithraObject(), first.getPortal());
+        this.diffPk = diffPk;
         mithraObjects = new FastList();
         addObject(first);
         addObject(second);
         this.updates = first.getUpdates();
         this.isDated = this.getPortal().getFinder().getAsOfAttributes() != null;
+        if (this.getPortal().getTxParticipationMode().isOptimisticLocking())
+        {
+            this.versionAttribute = first.getPortal().getFinder().getVersionAttribute();
+        }
+        else
+        {
+            this.versionAttribute = null;
+        }
     }
 
     public MultiUpdateOperation(List updates, List mithraObjects)
     {
+        this(updates, mithraObjects, findDiffPk(mithraObjects, ((AttributeUpdateWrapper) updates.get(0)).getAttribute().getOwnerPortal()));
+    }
+
+    private static Attribute findDiffPk(List mithraObjects, MithraObjectPortal ownerPortal)
+    {
+        return UpdateOperation.findDifferentPk(ownerPortal, mithraObjects.get(0), mithraObjects.get(1));
+    }
+
+    protected MultiUpdateOperation(List updates, List mithraObjects, Attribute diffPk)
+    {
         super((MithraTransactionalObject) mithraObjects.get(0), ((AttributeUpdateWrapper) updates.get(0)).getAttribute().getOwnerPortal());
+        this.diffPk = diffPk;
         isDated = this.getPortal().getFinder().getAsOfAttributes() != null;
         this.updates = updates;
         this.mithraObjects = mithraObjects;
+        if (this.getPortal().getTxParticipationMode().isOptimisticLocking())
+        {
+            this.versionAttribute = this.getPortal().getFinder().getVersionAttribute();
+        }
+        else
+        {
+            this.versionAttribute = null;
+        }
     }
 
     private void addObject(UpdateOperation updateOperation)
@@ -227,7 +236,7 @@ public class MultiUpdateOperation extends TransactionOperation
                     AttributeUpdateWrapper otherUpdate = other.updates.get(j);
                     if (otherUpdate.getAttribute().equals(thisUpdate.getAttribute()))
                     {
-                        this.updates.set(i, otherUpdate);
+                        this.updates.set(i, otherUpdate.combineForSameAttribute(thisUpdate));
                         other.updates.remove(j);
                         j--;
                     }
@@ -244,6 +253,14 @@ public class MultiUpdateOperation extends TransactionOperation
 
     private MultiUpdateOperation combineOnSameAttribute(MultiUpdateOperation other)
     {
+        if (this.diffPk != other.diffPk)
+        {
+            return null;
+        }
+        if (diffPk != UpdateOperation.findDifferentPk(this.getPortal(), this.getMithraObject(), other.getMithraObject()))
+        {
+            return null;
+        }
         if (this.updates.size() == other.updates.size())
         {
             for (int i = 0; i < this.updates.size(); i++)
@@ -294,7 +311,7 @@ public class MultiUpdateOperation extends TransactionOperation
                     if (!left.hasSameParameter(right)) return false;
                     if (!right.canBeMultiUpdated(this, otherOperation.getMithraObject())) return false;
                 }
-                return true;
+                return this.diffPk == UpdateOperation.findDifferentPk(this.getPortal(), this.getMithraObject(), otherOperation.getMithraObject());
             }
         }
         return false;
@@ -304,107 +321,44 @@ public class MultiUpdateOperation extends TransactionOperation
     {
         MithraTransactionalObject obj = this.getMithraObject();
         RelatedFinder finder = this.getPortal().getFinder();
-        MithraDataObject[] dataObjects = getDataObjects(isDated);
+        this.dataObjects = getDataObjects(isDated);
         findAllPkAttributes(finder, obj, dataObjects);
-        ObjectIntHashMap totalCounts = countUniquePkInstances(dataObjects);
-        if (multiValuedPrimaryKeys.size() == 0)
-        {
-            // this seems to happen for some odd reason
-            this.currentState = SINGLE_UPDATE;
-        }
-        else
-        {
-            sortDataByCount(totalCounts, dataObjects);
-            createHashStrategy();
-        }
-        this.orderedDataObjects = dataObjects;
-        this.hasMultiIn = databaseType.supportsMultiValueInClause();
         createFirstPartSql(fullyQualifiedTableName);
-    }
-
-    private void createHashStrategy()
-    {
-        if (multiValuedPrimaryKeys.size() > 1)
-        {
-            Extractor[] extractors = new Extractor[multiValuedPrimaryKeys.size() - 1];
-            for(int i=0;i<multiValuedPrimaryKeys.size() - 1;i++)
-            {
-                extractors[i] = (Extractor) multiValuedPrimaryKeys.get(i);
-            }
-            this.hashStrategy = ExtractorBasedHashStrategy.create(extractors);
-        }
-        else
-        {
-            this.hashStrategy = TrivialHashStrategy.instance;
-        }
-    }
-
-    private void sortDataByCount(ObjectIntHashMap totalCounts, MithraDataObject[] dataObjects)
-    {
-        if (multiValuedPrimaryKeys.size() > 1)
-        {
-            multiValuedPrimaryKeys.sortThis(new ByCountComparator(totalCounts));
-            OrderBy orderBy = ((Attribute) multiValuedPrimaryKeys.get(0)).ascendingOrderBy();
-            for(int i=1;i<multiValuedPrimaryKeys.size();i++)
-            {
-                orderBy = orderBy.and(((Attribute) multiValuedPrimaryKeys.get(i)).ascendingOrderBy());
-            }
-            Arrays.sort(dataObjects, orderBy);
-        }
-    }
-
-    private ObjectIntHashMap countUniquePkInstances(MithraDataObject[] dataObjects)
-    {
-        ObjectIntHashMap totalCounts = new ObjectIntHashMap(multiValuedPrimaryKeys.size());
-        this.singleValuedPrimaryKeys = new FastList(multiValuedPrimaryKeys.size());
-        for(int i=0;i < multiValuedPrimaryKeys.size(); )
-        {
-            Attribute attr = (Attribute) multiValuedPrimaryKeys.get(i);
-            int count = attr.zCountUniqueInstances(dataObjects);
-            if (count == 1)
-            {
-                singleValuedPrimaryKeys.add(multiValuedPrimaryKeys.remove(i));
-            }
-            else
-            {
-                i++;
-                totalCounts.put(attr, count);
-            }
-        }
-        return totalCounts;
     }
 
     private void findAllPkAttributes(RelatedFinder finder, MithraTransactionalObject obj, MithraDataObject[] data)
     {
         Attribute[] primaryKeyAttributes = finder.getPrimaryKeyAttributes();
         AsOfAttribute[] asOfAttributes = finder.getAsOfAttributes();
-        VersionAttribute versionAttribute = finder.getVersionAttribute();
-        this.multiValuedPrimaryKeys = new MithraFastList(primaryKeyAttributes.length + 3);
+        this.singleValuedPrimaryKeys = new MithraFastList(primaryKeyAttributes.length + 3);
         for(int i=0;i < primaryKeyAttributes.length; i++)
         {
             if (!primaryKeyAttributes[i].isSourceAttribute())
             {
-                multiValuedPrimaryKeys.add(primaryKeyAttributes[i]);
+                singleValuedPrimaryKeys.add(primaryKeyAttributes[i]);
             }
         }
         if (asOfAttributes != null)
         {
-            isDated = true;
             for(int i=0;i < asOfAttributes.length; i++)
             {
-                multiValuedPrimaryKeys.add(asOfAttributes[i].getToAttribute());
+                singleValuedPrimaryKeys.add(asOfAttributes[i].getToAttribute());
             }
         }
         if (obj.zGetPortal().getTxParticipationMode().isOptimisticLocking())
         {
-            if (versionAttribute != null)
-            {
-                this.versionAttribute = versionAttribute;
-            }
             if (asOfAttributes != null)
             {
                 Attribute optimisticAttribute = getOptimisticKey(asOfAttributes, data);
-                if (optimisticAttribute != null) multiValuedPrimaryKeys.add(optimisticAttribute);
+                if (optimisticAttribute != null) singleValuedPrimaryKeys.add(optimisticAttribute);
+            }
+        }
+        for(int i=0;i<singleValuedPrimaryKeys.size();i++)
+        {
+            if (diffPk == singleValuedPrimaryKeys.get(i))
+            {
+                singleValuedPrimaryKeys.remove(i);
+                break;
             }
         }
     }
@@ -452,18 +406,12 @@ public class MultiUpdateOperation extends TransactionOperation
     private void createFirstPartSql(String fullyQualifiedTableName)
     {
         StringBuffer buf = createFirstPartSingleKeySql(fullyQualifiedTableName);
-        for(int i=0;i<multiValuedPrimaryKeys.size() - 1; i++)
-        {
-            SingleColumnAttribute attr = (SingleColumnAttribute) multiValuedPrimaryKeys.get(i);
-            buf.append(attr.getColumnName());
-            buf.append(" = ? and ");
-        }
         this.firstPartSql = buf.toString();
     }
 
     private StringBuffer createFirstPartSingleKeySql(String fullyQualifiedTableName)
     {
-        StringBuffer buf = new StringBuffer(30 + this.updates.size()*20 + singleValuedPrimaryKeys.size() * 20+(multiValuedPrimaryKeys.size() - 1)*20);
+        StringBuffer buf = new StringBuffer(30 + this.updates.size()*20 + singleValuedPrimaryKeys.size() * 20);
         buf.append("update ");
         buf.append(fullyQualifiedTableName);
         buf.append(" set ");
@@ -484,7 +432,7 @@ public class MultiUpdateOperation extends TransactionOperation
         {
             Attribute attr = (Attribute) singleValuedPrimaryKeys.get(i);
             buf.append(attr.getColumnName());
-            if (attr.isAttributeNull(this.orderedDataObjects[0]))
+            if (attr.isAttributeNull(this.dataObjects[0]))
             {
                 buf.append(" IS NULL ");
                 this.singleValuedPrimaryKeys.remove(i);
@@ -494,12 +442,8 @@ public class MultiUpdateOperation extends TransactionOperation
                 buf.append(" = ? ");
                 i++;
             }
-            if (i < this.singleValuedPrimaryKeys.size() || multiValuedPrimaryKeys.size() > 0)
-            {
-                buf.append(" and ");
-            }
+            buf.append(" and ");
         }
-        this.firstPartSqlSingleKeyPosition = buf.length();
         return buf;
     }
 
@@ -525,177 +469,37 @@ public class MultiUpdateOperation extends TransactionOperation
 
     public String getNextMultiUpdateSql(int maxParams)
     {
-        switch(currentState)
+        if (this.endIndex == dataObjects.length)
         {
-            case MULTI_IN:
-                return getNextMultiUpdateSqlForMultiIn(maxParams);
-            case MULTI_OR:
-                return getNextMultiUpdateSqlForMultiOr();
-            default:
-                return getSingleUpdate();
+            return null; //we're done
         }
-    }
+        int availableParams = maxParams - this.updates.size() + this.singleValuedPrimaryKeys.size();
+        if (availableParams <= 0)
+        {
+            availableParams = 10;
+        }
+        int todo = dataObjects.length - this.endIndex;
+        int batchesLeft = todo / availableParams;
+        if (batchesLeft * availableParams < todo)
+        {
+            batchesLeft++;
+        }
+        int batchSize = todo / batchesLeft;
+        if (this.endIndex + batchSize > dataObjects.length)
+        {
+            batchSize = todo;
+        }
+        if (this.endIndex + batchSize == dataObjects.length - 1)
+        {
+            batchSize++;
+        }
+        String sql = this.firstPartSql + diffPk.getColumnName()+
+                " in (";
+        sql += createQuestionMarks(batchSize) + ")";
+        this.startIndex = this.endIndex;
+        this.endIndex += batchSize;
 
-    private String getSingleUpdate()
-    {
-        if (issuedMultiUpdate)
-        {
-            return null;
-        }
-        this.issuedMultiUpdate = true;
-        return this.firstPartSql;
-    }
-
-    private String getNextMultiUpdateSqlForMultiOr()
-    {
-        if (issuedMultiUpdate)
-        {
-            this.startIndex = this.endIndex + 1;
-        }
-        this.issuedMultiUpdate = true;
-        if (startIndex >= this.ungroupableSize)
-        {
-            return null; // we're done with multi updates
-        }
-        this.endIndex = startIndex + this.multiOrClauses - 1;
-        if (endIndex >= this.ungroupableSize)
-        {
-            this.endIndex = this.ungroupableSize - 1;
-            this.multiOrClauses = endIndex - startIndex + 1;
-            this.createSqlForMultiOr();
-        }
-        return this.multiOrSql;
-    }
-
-    public String getNextMultiUpdateSqlForMultiIn(int maxParams)
-    {
-        if (this.multiValuedPrimaryKeys.size() == 0) return null;
-        maxParams -= this.updates.size() + this.singleValuedPrimaryKeys.size();
-        if (this.endIndex > 0)
-        {
-            this.startIndex = this.endIndex + 1;
-        }
-        if (startIndex == this.orderedDataObjects.length)
-        {
-            setMultiOr(maxParams);
-            return getNextMultiUpdateSqlForMultiOr();
-        }
-        int pos = this.startIndex + 1;
-        int count = 1;
-        while(count == 1 && pos < orderedDataObjects.length)
-        {
-            while(pos < orderedDataObjects.length && count < maxParams
-                    && this.hashStrategy.equals(orderedDataObjects[startIndex], orderedDataObjects[pos]))
-            {
-                pos++;
-                count++;
-            }
-            if (count == 1)
-            {
-                addToUngroupable();
-                pos++;
-            }
-        }
-        if (count == 1)
-        {
-            addToUngroupable();
-            setMultiOr(maxParams);
-            return getNextMultiUpdateSqlForMultiOr();
-        }
-        this.endIndex = pos - 1;
-        if (startIndex < orderedDataObjects.length)
-        {
-            String sql = this.firstPartSql + ((SingleColumnAttribute)multiValuedPrimaryKeys.get(multiValuedPrimaryKeys.size() - 1)).getColumnName()+
-                    " in (";
-            sql += createQuestionMarks(pos - startIndex) + ")";
-            return sql;
-        }
-        setMultiOr(maxParams);
-        return getNextMultiUpdateSqlForMultiOr();
-    }
-
-    private void setMultiOr(int maxParams)
-    {
-        this.currentState = MULTI_OR;
-        this.startIndex = 0;
-        this.endIndex = 0;
-        if (this.ungroupableSize > 0)
-        {
-            maxParams -= this.updates.size() + this.singleValuedPrimaryKeys.size();
-            multiOrClauses = maxParams/multiValuedPrimaryKeys.size();
-            if (multiOrClauses > this.ungroupableSize)
-            {
-                multiOrClauses = this.ungroupableSize;
-            }
-            createSqlForMultiOr();
-        }
-    }
-
-    private void createSqlForMultiOr()
-    {
-        if (this.hasMultiIn)
-        {
-            StringBuilder singleValuesClause = new StringBuilder(multiValuedPrimaryKeys.size()*2+2);
-            singleValuesClause.append("(");
-            for(int i=0;i<multiValuedPrimaryKeys.size() - 1; i++)
-            {
-                singleValuesClause.append("?,");
-            }
-            singleValuesClause.append("?)");
-            StringBuilder buf = new StringBuilder(this.firstPartSqlSingleKeyPosition + multiValuedPrimaryKeys.size() * 20 +
-                    40 + 2*multiOrClauses + multiOrClauses *singleValuesClause.length());
-            buf.append(firstPartSql, 0, this.firstPartSqlSingleKeyPosition);
-            buf.append("(");
-
-            for(int i=0;i<multiValuedPrimaryKeys.size() - 1;i++)
-            {
-                SingleColumnAttribute attr = (SingleColumnAttribute) multiValuedPrimaryKeys.get(i);
-                buf.append(attr.getColumnName());
-                buf.append(",");
-            }
-            buf.append(((SingleColumnAttribute)multiValuedPrimaryKeys.get(multiValuedPrimaryKeys.size() - 1)).getColumnName());
-            buf.append(") in (select * from (VALUES ");
-
-            for(int i=0;i<multiOrClauses - 1;i++)
-            {
-                buf.append(singleValuesClause);
-                buf.append(",");
-            }
-            buf.append(singleValuesClause);
-            buf.append(") as m0)");
-            this.multiOrSql = buf.toString();
-        }
-        else
-        {
-            StringBuilder singleAndClause = new StringBuilder(multiValuedPrimaryKeys.size()*20+2);
-            singleAndClause.append("(");
-            for(int i=0;i<multiValuedPrimaryKeys.size() - 1; i++)
-            {
-                SingleColumnAttribute attr = (SingleColumnAttribute) multiValuedPrimaryKeys.get(i);
-                singleAndClause.append(attr.getColumnName());
-                singleAndClause.append(" = ? and ");
-            }
-            singleAndClause.append(((SingleColumnAttribute)multiValuedPrimaryKeys.get(multiValuedPrimaryKeys.size() - 1)).getColumnName());
-            singleAndClause.append(" = ?)");
-            StringBuilder buf = new StringBuilder(this.firstPartSqlSingleKeyPosition + 2 + 4*multiOrClauses + multiOrClauses *singleAndClause.length());
-            buf.append(firstPartSql, 0, this.firstPartSqlSingleKeyPosition);
-            buf.append("(");
-            for(int i=0;i<multiOrClauses - 1;i++)
-            {
-                buf.append(singleAndClause);
-                buf.append(" or ");
-            }
-            buf.append(singleAndClause);
-            buf.append(")");
-            this.multiOrSql = buf.toString();
-        }
-    }
-
-    private void addToUngroupable()
-    {
-        orderedDataObjects[ungroupableSize] = orderedDataObjects[startIndex];
-        ungroupableSize++;
-        startIndex++;
+        return sql;
     }
 
     protected String createQuestionMarks(int numberOfQuestions)
@@ -713,27 +517,16 @@ public class MultiUpdateOperation extends TransactionOperation
     public void setSqlParameters(PreparedStatement stm, TimeZone databaseTimeZone, DatabaseType databaseType) throws SQLException
     {
         int pos = setUpdateParameters(stm, databaseTimeZone, databaseType);
-        pos = setSingleValuedKeyParameters(stm, databaseTimeZone, pos, orderedDataObjects[startIndex], databaseType);
-        if (currentState == MULTI_IN)
-        {
-            pos = setInitialKeyParameters(stm, databaseTimeZone, pos, orderedDataObjects[startIndex], multiValuedPrimaryKeys.size() - 1, databaseType);
-            setInClauseParameters(stm, databaseTimeZone, pos, databaseType);
-        }
-        else if (currentState == MULTI_OR)
-        {
-            for(int i=startIndex; i<=endIndex; i++)
-            {
-                pos = setInitialKeyParameters(stm, databaseTimeZone, pos, orderedDataObjects[i], multiValuedPrimaryKeys.size(), databaseType);
-            }
-        }
+        pos = setSingleValuedKeyParameters(stm, databaseTimeZone, pos, dataObjects[startIndex], databaseType);
+        setInClauseParameters(stm, databaseTimeZone, pos, databaseType);
     }
 
     private void setInClauseParameters(PreparedStatement stm, TimeZone databaseTimeZone, int pos, DatabaseType databaseType) throws SQLException
     {
-        SingleColumnAttribute attr = (SingleColumnAttribute) multiValuedPrimaryKeys.get(multiValuedPrimaryKeys.size() - 1);
-        for(int i=startIndex; i <= endIndex; i++)
+        SingleColumnAttribute attr = (SingleColumnAttribute) diffPk;
+        for(int i=startIndex; i < endIndex; i++)
         {
-            attr.setSqlParameters(stm, orderedDataObjects[i], pos, databaseTimeZone, databaseType);
+            attr.setSqlParameters(stm, dataObjects[i], pos, databaseTimeZone, databaseType);
             pos++;
         }
     }
@@ -749,18 +542,6 @@ public class MultiUpdateOperation extends TransactionOperation
         for(int i=0;i<singleValuedPrimaryKeys.size();i++)
         {
             SingleColumnAttribute attr = (SingleColumnAttribute) singleValuedPrimaryKeys.get(i);
-            attr.setSqlParameters(stm, data, pos, databaseTimeZone, databaseType);
-            pos++;
-        }
-        return pos;
-    }
-
-    private int setInitialKeyParameters(PreparedStatement stm, TimeZone databaseTimeZone,
-            int pos, MithraDataObject data, int size, DatabaseType databaseType) throws SQLException
-    {
-        for(int i=0;i<size;i++)
-        {
-            SingleColumnAttribute attr = (SingleColumnAttribute) multiValuedPrimaryKeys.get(i);
             attr.setSqlParameters(stm, data, pos, databaseTimeZone, databaseType);
             pos++;
         }
@@ -784,44 +565,6 @@ public class MultiUpdateOperation extends TransactionOperation
         return firstPartSql;
     }
 
-    public List segregateUpdatesBySourceAttribute()
-    {
-        MultiHashMap<Object, MithraTransactionalObject> map = new MultiHashMap<Object, MithraTransactionalObject>();
-        Attribute sourceAttribute = this.getPortal().getFinder().getSourceAttribute();
-        if (isDated)
-        {
-            for(int i=0;i<this.mithraObjects.size();i++)
-            {
-                MithraTransactionalObject mithraTransactionalObject = (MithraTransactionalObject) this.mithraObjects.get(i);
-                MithraDataObject data = mithraTransactionalObject.zGetCurrentData();
-                map.put(sourceAttribute.valueOf(data), mithraTransactionalObject);
-            }
-        }
-        else
-        {
-            for(int i=0;i<this.mithraObjects.size();i++)
-            {
-                MithraTransactionalObject mithraTransactionalObject = (MithraTransactionalObject) this.mithraObjects.get(i);
-                MithraDataObject data = mithraTransactionalObject.zGetTxDataForRead();
-                map.put(sourceAttribute.valueOf(data), mithraTransactionalObject);
-            }
-        }
-
-        if (map.size() > 1)
-        {
-            FastList result = new FastList(map.size());
-            for (List<MithraTransactionalObject> objects : map.values())
-            {
-                result.add(new MultiUpdateOperation(this.updates, objects));
-            }
-            return result;
-        }
-        else
-        {
-            return ListFactory.create(this);
-        }
-    }
-
     public void checkUpdateResult(int actualUpdates, Logger logger) throws MithraDatabaseException
     {
         int expectedUpdates = getExpectedUpdates();
@@ -832,10 +575,10 @@ public class MultiUpdateOperation extends TransactionOperation
             boolean optimistic = mithraObjectPortal.getTxParticipationMode(tx).isOptimisticLocking();
             if (optimistic)
             {
-                for(int i=startIndex; i <= endIndex; i++)
+                for(int i=startIndex; i < endIndex; i++)
                 {
-                    logger.error("Optimistic lock possibly failed on " + orderedDataObjects[i].zGetPrintablePrimaryKey());
-                    mithraObjectPortal.getCache().markDirtyForReload(orderedDataObjects[i], tx);
+                    logger.error("Optimistic lock possibly failed on " + dataObjects[i].zGetPrintablePrimaryKey());
+                    mithraObjectPortal.getCache().markDirtyForReload(dataObjects[i], tx);
                 }
                 MithraOptimisticLockException mithraOptimisticLockException = new MithraOptimisticLockException("Optimistic lock failed, see above log for specific objects.");
                 if (tx.retryOnOptimisticLockFailure())
@@ -853,7 +596,7 @@ public class MultiUpdateOperation extends TransactionOperation
 
     public int getExpectedUpdates()
     {
-        return endIndex - startIndex + 1;
+        return endIndex - startIndex;
     }
 
     public MithraDataObject[] getDataObjectsForNotification()
@@ -864,43 +607,9 @@ public class MultiUpdateOperation extends TransactionOperation
     public String getPrintableSql()
     {
         String result = this.getFirstPartSql();
-        if (multiValuedPrimaryKeys.size() > 0)
-        {
-            result += ((SingleColumnAttribute)multiValuedPrimaryKeys.get(multiValuedPrimaryKeys.size() - 1)).getColumnName()+
+        result += diffPk.getColumnName()+
                 " in (?...)";
-        }
         return result;
-    }
-
-
-    private static class ByCountComparator implements Comparator
-    {
-        private ObjectIntHashMap countByAttribute;
-
-        public ByCountComparator(ObjectIntHashMap countByAttribute)
-        {
-            this.countByAttribute = countByAttribute;
-        }
-
-        public int compare(Object o1, Object o2)
-        {
-            return countByAttribute.get(o1) - countByAttribute.get(o2);
-        }
-    }
-
-    private static class TrivialHashStrategy implements HashStrategy
-    {
-        private static final TrivialHashStrategy instance = new TrivialHashStrategy();
-
-        public int computeHashCode(Object o)
-        {
-            return 0;
-        }
-
-        public boolean equals(Object first, Object second)
-        {
-            return true;
-        }
     }
 
     public boolean isEligibleForUpdateViaInsert()
