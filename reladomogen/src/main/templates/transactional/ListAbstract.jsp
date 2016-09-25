@@ -29,6 +29,7 @@ under the License.
     EmbeddedValue[] embeddedValueObjects = wrapper.getEmbeddedValueObjects();
     Attribute[] nullablePrimitiveAttributes = wrapper.getNullablePrimitiveAttributes();
     Attribute[] pkAttributes = wrapper.getPrimaryKeyAttributes();
+    boolean isGenerateEcListMethod = (Boolean) request.getAttribute("generateEcListMethod");
     boolean isGenerateGscListMethod = (Boolean) request.getAttribute("generateGscListMethod");
 %>
 package <%= wrapper.getPackageName() %>;
@@ -127,6 +128,19 @@ public class <%= className %> extends DelegatingList<<%= wrapper.getClassName() 
     {
         return this.getNonPersistentCopy();
     }
+
+    <% if (isGenerateEcListMethod) { %>
+    /**
+    * Return a view of this list that implements Eclipse Collections MutableList API.
+    * Since the returned list will be operation-based, it is effectively read-only,
+    * so mutating methods will throw a RuntimeException.
+    * (Implemented by a light-weight adapter, not a copy)
+    */
+    public org.eclipse.collections.api.list.MutableList<<%= wrapper.getClassName() %>> asEcList()
+    {
+        return org.eclipse.collections.impl.list.mutable.ListAdapter.adapt(this);
+    }
+    <% } %>
 
     <% if (isGenerateGscListMethod) { %>
     /**

@@ -57,6 +57,11 @@ public class MithraGenerator extends AbstractMithraGenerator
         this.coreGenerator.setWarnAboutConcreteClasses(warnAboutConreteClasses);
     }
 
+    public void setGenerateEcListMethod(boolean generateEcListMethod)
+    {
+        this.coreGenerator.setGenerateEcListMethod(generateEcListMethod);
+    }
+
     public void setGenerateGscListMethod(boolean generateGscListMethod)
     {
         this.coreGenerator.setGenerateGscListMethod(generateGscListMethod);

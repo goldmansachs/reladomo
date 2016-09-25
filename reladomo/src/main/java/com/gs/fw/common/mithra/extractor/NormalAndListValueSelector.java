@@ -19,10 +19,7 @@ package com.gs.fw.common.mithra.extractor;
 import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.ObjectProcedure;
 
-
-
-public interface NormalAndListValueSelector<T, V> extends ListValueSelector, Function<T, V>
+public interface NormalAndListValueSelector<T, V> extends ListValueSelector, Function<T, V>, org.eclipse.collections.api.block.function.Function<T, V>
 {
-
     public void forEach(ObjectProcedure proc, T obj, Object context);
 }

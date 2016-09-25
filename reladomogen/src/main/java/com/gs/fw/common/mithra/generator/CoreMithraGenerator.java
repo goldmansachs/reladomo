@@ -78,6 +78,7 @@ public class CoreMithraGenerator extends BaseMithraGenerator
     private boolean executed = false;
     private boolean generateConcreteClasses = true;
     private boolean warnAboutConcreteClasses = true;
+    private boolean generateEcListMethod = false;
     private boolean generateGscListMethod = false;
     private boolean generateLegacyCaramel = false;
     private String format = FORMAT_FAST;
@@ -145,6 +146,11 @@ public class CoreMithraGenerator extends BaseMithraGenerator
     public void setWarnAboutConcreteClasses(boolean warnAboutConreteClasses)
     {
         this.warnAboutConcreteClasses = warnAboutConreteClasses;
+    }
+
+    public void setGenerateEcListMethod(boolean generateEcListMethod)
+    {
+        this.generateEcListMethod = generateEcListMethod;
     }
 
     public void setGenerateGscListMethod(boolean generateGscListMethod)
@@ -415,6 +421,7 @@ public class CoreMithraGenerator extends BaseMithraGenerator
                         writer = new JspWriter(byteArrayOutputStream);
                         HttpServletRequest request = new HttpServletRequest();
                         request.setAttribute("mithraWrapper", wrapper);
+                        request.setAttribute("generateEcListMethod", Boolean.valueOf(generateEcListMethod));
                         request.setAttribute("generateGscListMethod", Boolean.valueOf(generateGscListMethod));
                         request.setAttribute("generateLegacyCaramel", Boolean.valueOf(false));
                         HttpServletResponse response = new HttpServletResponse(writer);

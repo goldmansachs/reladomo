@@ -2,6 +2,8 @@
 # central,org.apache.ant,ant,1.9.6,jar,build/lib,80E2063B01BAB3C79C2D84E4ED5E73868394C85A
 central,com.goldmansachs,gs-collections-api,5.1.0,jar,lib/compile,EA605CDF64CAB5FC7B48C99F061D4C8DB05B6FF1
 central,com.goldmansachs,gs-collections,5.1.0,jar,lib/compile,07114C5349C816EA645B1EA3FFCC21FA073CBABC
+central,org.eclipse.collections,eclipse-collections-api,7.1.0,jar,lib/compile,DB56A4C791FBC1898EF62BC0B0090C1AB42A8552
+central,org.eclipse.collections,eclipse-collections,7.1.0,jar,lib/compile,2376A19880033964254D6D57C82C1C5587D4C2FB
 central,joda-time,joda-time,2.9.4,jar,lib/compile,1C295B462F16702EBE720BBB08F62E1BA80DA41B
 central,org.apache.geronimo.specs,geronimo-jta_1.1_spec,1.1.1,jar,lib/compile,AABAB3165B8EA936B9360ABBF448459C0D04A5A4
 central,org.slf4j,slf4j-api,1.7.21,jar,lib/compile,139535A69A4239DB087DE9BAB0BEE568BF8E0B70
