@@ -977,7 +977,6 @@
         <slides-to-html docbook-dir="${reladomo.doc.docbook.dir}/presentations/mithraAdvancedUseCases" output-dir="${reladomo.doc.docbook.out.dir}/presentations/mithraAdvancedUseCases" source="ReladomoAdvancedUseCases" presentation-title="Mithra Advanced Use Cases"/>
         <slides-to-html docbook-dir="${reladomo.doc.docbook.dir}/presentations/mithraFeatures" output-dir="${reladomo.doc.docbook.out.dir}/presentations/mithraFeatures" source="ReladomoFeatures" presentation-title="Mithra Features"/>
         <slides-to-html docbook-dir="${reladomo.doc.docbook.dir}/presentations/javaBigMemory" output-dir="${reladomo.doc.docbook.out.dir}/presentations/javaBigMemory" source="JavaBigMemory" presentation-title="Java Big Memory"/>
-        <slides-to-html docbook-dir="${reladomo.doc.docbook.dir}/presentations/mithraKata" output-dir="${reladomo.doc.docbook.out.dir}/presentations/mithraKata" source="ReladomoKata" presentation-title="Mithra Kata"/>
         <slides-to-html docbook-dir="${reladomo.doc.docbook.dir}/presentations/reladomoInternalCacheStructure" output-dir="${reladomo.doc.docbook.out.dir}/presentations/reladomoInternalCacheStructure" source="ReladomoInternalCacheStructure" presentation-title="Reladomo InternalCache Structure"/>
     </target>
 
@@ -985,7 +984,6 @@
         <slides-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/presentations/mithraAdvancedUseCases" output-dir="${reladomo.doc.docbook.out.dir}/presentations/mithraAdvancedUseCases" source="ReladomoAdvancedUseCases" />
         <slides-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/presentations/mithraFeatures" output-dir="${reladomo.doc.docbook.out.dir}/presentations/mithraFeatures" source="ReladomoFeatures" />
         <slides-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/presentations/javaBigMemory" output-dir="${reladomo.doc.docbook.out.dir}/presentations/javaBigMemory" source="JavaBigMemory" />
-        <slides-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/presentations/mithraKata" output-dir="${reladomo.doc.docbook.out.dir}/presentations/mithraKata" source="ReladomoKata" />
         <slides-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/presentations/reladomoInternalCacheStructure" output-dir="${reladomo.doc.docbook.out.dir}/presentations/reladomoInternalCacheStructure" source="ReladomoInternalCacheStructure" />
     </target>
 
