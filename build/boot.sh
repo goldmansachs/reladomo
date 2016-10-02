@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/sh
 
 #  Copyright 2016 Goldman Sachs.
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,7 @@ while [ -h "$PRG" ]; do
 done
 CURRENTDIR=`dirname "$PRG"`
 
-. $CURRENTDIR/setenv.ksh
+. $CURRENTDIR/setenv.sh
 
 mkdir -p $RELADOMO_HOME/libboot/target/classes
 

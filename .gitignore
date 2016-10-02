@@ -2,7 +2,7 @@ libboot/target/**
 build/lib/**
 build/asmlib
 build/setenv.bat
-build/setenv.ksh
+build/setenv.sh
 lib/**
 reladomo/target/**
 reladomogen/target/**

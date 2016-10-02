@@ -1,4 +1,15 @@
-#!/bin/ksh
+#!/bin/sh
+
+# uncomment next line and set to your local jdk
+#export RELADOMO_JDK_HOME=/opt/jdk1.6.0_45
+
+export CUR_DIR=`pwd`
+export RELADOMO_HOME=${RELADOMO_HOME:-"$CUR_DIR/.."}
+export JDK_HOME=${RELADOMO_JDK_HOME:-"/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home"}
+
+# no need to modify stuff below:
+
+export GENERATE_RELADOMO_CONCRETE_CLASSES=true
 
 #  Copyright 2016 Goldman Sachs.
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,26 +24,3 @@
 #  KIND, either express or implied.  See the License for the
 #  specific language governing permissions and limitations
 #  under the License.
-
-#
-# Get hold of the directory we reside in.
-#
-PRG="$0"
-while [ -h "$PRG" ]; do
-  ls=`ls -ld "$PRG"`
-  link=`expr "$ls" : '.*-> \(.*\)$'`
-  if expr "$link" : '.*/.*' > /dev/null; then
-    PRG="$link"
-  else
-    PRG=`dirname "$PRG"`/"$link"
-  fi
-done
-CURRENTDIR=`dirname "$PRG"`
-
-. $CURRENTDIR/setenv.ksh
-
-chmod 755 $CURRENTDIR/boot.ksh
-$CURRENTDIR/boot.ksh
-
-chmod 755 $CURRENTDIR/antbuild.ksh
-$CURRENTDIR/antbuild.ksh $CURRENTDIR/build.xml $*
