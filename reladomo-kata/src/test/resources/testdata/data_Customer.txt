@@ -1,7 +1,0 @@
-class kata.domain.Customer
-customerId , name            , country
-0          , "Hiro Tanaka"   , "JPN"
-1          , "John Smith"    , "USA"
-2          , "Yusuke Sato"   , "JPN"
-3          , "Yuki Suzuki"   , "JPN"
-4          , "Yuri Clark "   , "JPN"
