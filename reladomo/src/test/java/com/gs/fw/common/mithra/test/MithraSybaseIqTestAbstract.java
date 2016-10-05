@@ -56,7 +56,7 @@ public class MithraSybaseIqTestAbstract extends MithraTestAbstract
 
         mithraTestResource.createSingleDatabase(connectionManager, "DVDB", getTestDataFileName());
         mithraTestResource.setTestConnectionsOnTearDown(true);
-        mithraTestResource.createDatabaseForStringSourceAttribute(connectionManager, "A", "sybase/mithraSybaseIqSourceATestData.txt");
+        mithraTestResource.createDatabaseForStringSourceAttribute(connectionManager, "A", "testdata/vendor/mithraSybaseIqSourceATestData.txt");
         mithraTestResource.setUp();
     }
 

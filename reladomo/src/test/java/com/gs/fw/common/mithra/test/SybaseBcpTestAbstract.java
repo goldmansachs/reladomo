@@ -26,7 +26,7 @@ import java.util.concurrent.Callable;
 
 public class SybaseBcpTestAbstract extends MithraTestAbstract
 {
-    private static final String testDataFileName = "sybase/sybaseBcpTestData.txt";
+    private static final String testDataFileName = "testdata/vendor/sybaseBcpTestData.txt";
 
     private MithraTestResource mithraTestResource;
 

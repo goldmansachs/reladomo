@@ -64,6 +64,7 @@ implements SourcelessConnectionManager
         connectionManager.setProperty("com.gs.fw.aig.jdbc.global.DataSourceImpl","com.sybase.jdbc4.jdbc.SybDataSource");
         connectionManager.setProperty("com.gs.fw.aig.jdbc.global.ConnectionPoolDataSourceImpl","com.sybase.jdbc4.jdbc.SybConnectionPoolDataSource");
         connectionManager.setProperty("com.sybase.jdbc4.jdbc.SybDataSource.REPEAT_READ", "false");
+        connectionManager.setProperty("REPEAT_READ", "false");
         connectionManager.initialisePool();
     }
 
