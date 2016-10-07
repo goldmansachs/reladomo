@@ -78,6 +78,17 @@ public class MappedOperation implements Operation
         return combinedOp;
     }
 
+    public List applyOperationToFullCache(EqualityOperation equalityOperation)
+    {
+        CachedQuery cachedQuery = op.getResultObjectPortal().zFindInMemory(getCombinedOp(), null);
+        if (cachedQuery != null)
+        {
+            List joinedList = cachedQuery.getResult();
+            return mapper.map(joinedList, equalityOperation);
+        }
+        return null;
+    }
+
     public List applyOperationToFullCache()
     {
         //List joinedList = op.applyOperationToFullCache();
@@ -648,7 +659,7 @@ public class MappedOperation implements Operation
     {
         if (insertPosition.equals(stack.getCurrentMapperList()))
         {
-            return new MappedOperation(mapper.insertAsOfOperationOnLeft(asOfEqOperations), this.op);
+            return this.and(MultiEqualityOperation.createEqOperation(asOfEqOperations));
         }
         this.mapper.pushMappers(stack);
         Operation newOperation = this.op.insertAsOfEqOperation(asOfEqOperations, insertPosition, stack);

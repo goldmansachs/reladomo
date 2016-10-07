@@ -198,12 +198,35 @@ public class AndOperation implements Operation
     public List applyOperationToFullCache()
     {
         combineOperands();
+        int otherAppliedOperation = -2;
         int appliedOperation = -1;
         List result = null;
         for (int i = 0; i < this.operands.size(); i++)
         {
             Operation operation = ((Operation) operands.get(i));
-            result = operation.applyOperationToFullCache();
+            if (operation instanceof MappedOperation)
+            {
+                for(int j=0;j<this.operands.size();j++)
+                {
+                    if (operands.get(j) instanceof EqualityOperation) // there can be only one of these, because they should collapse into a MultiEquality
+                    {
+                        result = ((MappedOperation)operation).applyOperationToFullCache((EqualityOperation) operands.get(j));
+                        if (result != null)
+                        {
+                            otherAppliedOperation = j;
+                        }
+                        break;
+                    }
+                }
+                if (otherAppliedOperation == -2)
+                {
+                    result = operation.applyOperationToFullCache();
+                }
+            }
+            else
+            {
+                result = operation.applyOperationToFullCache();
+            }
             if (result != null)
             {
                 appliedOperation = i;
@@ -212,7 +235,7 @@ public class AndOperation implements Operation
         }
         if (result != null)
         {
-            result = applyOperationExcept(appliedOperation, result);
+            result = applyOperationExcept(appliedOperation, otherAppliedOperation, result);
         }
         else if (!MithraManagerProvider.getMithraManager().isInTransaction())
         {
@@ -221,21 +244,21 @@ public class AndOperation implements Operation
         return result;
     }
 
-    private List applyOperationExcept(int appliedOperation, List result)
+    private List applyOperationExcept(int appliedOperation, int otherAppliedOperation, List result)
     {
         if (MithraCpuBoundThreadPool.isParallelizable(result.size()))
         {
-            result = applyToLargeResultsInParallel(appliedOperation, result);
+            result = applyToLargeResultsInParallel(appliedOperation, otherAppliedOperation, result);
         }
         else if (result.size() > 100 && operands.size() > 2)
         {
-            result = applyToLargeResults(appliedOperation, result);
+            result = applyToLargeResults(appliedOperation, otherAppliedOperation, result);
         }
         else
         {
             for (int i = 0; i < operands.size() && result != null && result.size() > 0; i++)
             {
-                if (i != appliedOperation) result = ((Operation) operands.get(i)).applyOperation(result);
+                if (i != appliedOperation && i != otherAppliedOperation) result = ((Operation) operands.get(i)).applyOperation(result);
             }
         }
         return result;
@@ -274,12 +297,12 @@ public class AndOperation implements Operation
         return result;
     }
 
-    private List applyToLargeResultsInParallel(int appliedOperation, List result)
+    private List applyToLargeResultsInParallel(int appliedOperation, int otherAppliedOperation, List result)
     {
         final InternalList complexList = new InternalList(operands.size());
         final InternalList parallelComplexList = new InternalList(operands.size());
         final InternalList atomicList = new InternalList(operands.size());
-        separateComplexAndAtomic(appliedOperation, complexList, atomicList, parallelComplexList);
+        separateComplexAndAtomic(appliedOperation, otherAppliedOperation, complexList, atomicList, parallelComplexList);
         final Operation[] atomic = new Operation[atomicList.size()];
         atomicList.toArray(atomic);
         final Operation[] complex = new Operation[complexList.size()];
@@ -402,11 +425,11 @@ public class AndOperation implements Operation
         return result;
     }
 
-    private List applyToLargeResults(int appliedOperation, List result)
+    private List applyToLargeResults(int appliedOperation, int otherAppliedOperation, List result)
     {
         InternalList complex = new InternalList(operands.size() - 1);
         InternalList atomic = new InternalList(operands.size() - 1);
-        separateComplexAndAtomic(appliedOperation, complex, atomic, complex);
+        separateComplexAndAtomic(appliedOperation, otherAppliedOperation, complex, atomic, complex);
         if (atomic.size() > 1)
         {
             int size = result.size();
@@ -439,11 +462,11 @@ public class AndOperation implements Operation
         return result;
     }
 
-    private void separateComplexAndAtomic(int appliedOperation, InternalList complex, InternalList atomic, InternalList parallelComplexList)
+    private void separateComplexAndAtomic(int appliedOperation, int otherAppliedOperation, InternalList complex, InternalList atomic, InternalList parallelComplexList)
     {
         for (int i = 0; i < operands.size(); i++)
         {
-            if (i != appliedOperation)
+            if (i != appliedOperation && i != otherAppliedOperation)
             {
                 Operation o = (Operation) operands.get(i);
                 if (o.zPrefersBulkMatching())
@@ -571,7 +594,7 @@ public class AndOperation implements Operation
     public List applyOperation(List list)
     {
         combineOperands();
-        return applyOperationExcept(-1, list);
+        return applyOperationExcept(-1, -2, list);
     }
 
     private InternalList getOperands()
