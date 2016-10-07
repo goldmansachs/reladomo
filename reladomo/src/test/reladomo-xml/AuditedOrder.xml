@@ -60,6 +60,9 @@
         AuditedOrderStatus.orderId = this.orderId and this.userId is not null
     </Relationship>
     <Relationship name="orderStatus2" relatedObject="AuditedOrderStatusTwo" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-one" >AuditedOrderStatusTwo.orderId = this.orderId</Relationship>
+    <Relationship name="bitemporalOrder" relatedObject="BitemporalOrder" cardinality="one-to-one" parameters="Timestamp businessDate">
+        this.orderId = BitemporalOrder.orderId and BitemporalOrder.businessDate = {businessDate}
+    </Relationship>
     <Index name="byUserId">userId</Index>
     <Index name="byState">state</Index>
     <Index name="byTrackingId" unique="true">trackingId</Index>

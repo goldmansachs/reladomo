@@ -27,15 +27,10 @@ import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.MithraTestAbstract;
-import com.gs.fw.common.mithra.test.domain.ParaBalance;
-import com.gs.fw.common.mithra.test.domain.Sale;
-import com.gs.fw.common.mithra.test.domain.SaleFinder;
-import com.gs.fw.common.mithra.test.domain.SaleList;
-import com.gs.fw.common.mithra.test.domain.SalesLineItem;
-import com.gs.fw.common.mithra.test.domain.SalesLineItemFinder;
-import com.gs.fw.common.mithra.test.domain.TinyBalance;
-import com.gs.fw.common.mithra.test.domain.TinyBalanceFinder;
+import com.gs.fw.common.mithra.test.domain.*;
+
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +39,8 @@ import java.util.List;
 
 public class TestAggregateList extends MithraTestAbstract
 {
+    protected static SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
     public Class[] getRestrictedClassList()
     {
         return new Class[]
@@ -51,6 +48,9 @@ public class TestAggregateList extends MithraTestAbstract
             Sale.class,
             SalesLineItem.class,
             TinyBalance.class,
+            AuditedOrder.class,
+            BitemporalOrder.class,
+            BitemporalOrderStatus.class,
             ParaBalance.class
         };
     }
@@ -501,6 +501,33 @@ public class TestAggregateList extends MithraTestAbstract
         list.addOrderBy("quantity", true);
         assertEquals(89, list.get(0).getAttributeAsInteger("quantity"));
         assertEquals(241, list.get(1).getAttributeAsInteger("quantity"));
+    }
+
+    public void testAggregateUniToBitemporal() throws Exception
+    {
+        final Timestamp oldBusinessDate = new Timestamp(timestampFormat.parse("2006-11-29 00:00:00").getTime());
+
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand<Object>() {
+            @Override
+            public Object executeTransaction(MithraTransaction tx) throws Throwable {
+                Operation op = BitemporalOrderStatusFinder.orderId().eq(1);
+                op = op.and(BitemporalOrderStatusFinder.businessDate().eq(oldBusinessDate));
+                BitemporalOrderStatusFinder.findOne(op).setLastUser("Barny");
+                return null;
+            }
+        });
+
+        Timestamp businessDate = new Timestamp(timestampFormat.parse("2012-11-29 00:00:00").getTime());
+        Timestamp processingDate = new Timestamp(timestampFormat.parse("2013-11-29 10:00:00").getTime());
+
+        Operation op = AuditedOrderFinder.processingDate().eq(processingDate);
+        op = op.and(AuditedOrderFinder.bitemporalOrder(businessDate).orderStatus().status().eq(10));
+
+        AggregateList list = new AggregateList(op);
+        list.addAggregateAttribute("sum", AuditedOrderFinder.userId().sum());
+        list.addGroupBy("group", AuditedOrderFinder.bitemporalOrder(businessDate).orderStatus().lastUser());
+
+        assertEquals(1, list.size());
     }
 
     private void doMutationTest(ListMutationBlock block)
