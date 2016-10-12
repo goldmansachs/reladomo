@@ -776,16 +776,16 @@
             </classpath>
         </javac>
     </target>
-    <target name="run-reladomo-test-suite" depends="compile-reladomo-test, compile-reladomo-genutil-test" description="Run JUnit test cases for Mithra code">
+    <target name="run-reladomo-test-suite" depends="compile-reladomo-test, compile-reladomo-genutil-test, get-cores" description="Run JUnit test cases for Mithra code">
         <property name="jacocovmarg" value="-Dcoverage=none"/>
         <delete quiet="true" dir="${root}/reladomo/target/testresult"/>
         <mkdir dir="${root}/reladomo/target/testresult"/>
         <tstamp>
             <format property="TIME_NOW" pattern="hh:mm:ss a z"/>
         </tstamp>
-        <echo message="JUnit master suite for Reladomo starting at ${TIME_NOW} on ${TODAY} "/>
+        <echo message="JUnit master suite for Reladomo starting at ${TIME_NOW} on ${TODAY} with ${test.threads} jvms."/>
         <echo message="Log4j file: ${root}/reladomo/src/test/resources/log4jWarn.config"/>
-        <parallel threadsPerProcessor ="1" >
+        <parallel threadcount="${test.threads}" >
             <exec-test-suite mithraxmlconfig="MithraConfigFullCache.xml" qualifier="/full" testclass="com.gs.fw.common.mithra.test.MithraTestSuite" heap="onheap"/>
             <exec-test-suite mithraxmlconfig="MithraConfigFullCache.xml" qualifier="/full" testclass="com.gs.fw.common.mithra.test.MithraMultiVmTestSuite" heap="onheap"/>
             <exec-test-suite mithraxmlconfig="MithraConfigPartialCache.xml" qualifier="/partial" testclass="com.gs.fw.common.mithra.test.MithraMultiVmTestSuite" heap="onheap"/>
@@ -1561,14 +1561,34 @@
         </parallel>
     </target>
 
-    <target name="run-reladomo-vendor-test-suite" depends="compile-reladomo-test" description="Run JUnit test cases for Mithra code">
+    <target name="get-cores">
+        <property environment="env"/>
+        <!-- support for Windows -->
+        <condition property="cores.count" value="${env.NUMBER_OF_PROCESSORS}">
+            <os family="windows" />
+        </condition>
+        <!-- support for Linux and Solaris (package SUNWgnu-coreutils is required) -->
+        <exec executable="nproc" outputproperty="cores.count" os="Linux,SunOS,Solaris">
+            <arg value="--all"/>
+        </exec>
+        <!-- support for Mac OS X -->
+        <exec executable="sysctl" outputproperty="cores.count" os="Mac,Darwin">
+            <arg value="-n"/>
+            <arg value="hw.ncpu"/>
+        </exec>
+        <condition property="test.threads" value="${env.RELADOMO_TEST_THREADS}" else="${cores.count}">
+            <isset property="env.RELADOMO_TEST_THREADS"/>
+        </condition>
+    </target>
+
+    <target name="run-reladomo-vendor-test-suite" depends="compile-reladomo-test, get-cores" description="Run JUnit test cases for Reladomo code">
         <property name="jacocovmarg" value="-Dcoverage=none"/>
         <tstamp>
             <format property="TIME_NOW" pattern="hh:mm:ss a z"/>
         </tstamp>
-        <echo message="JUnit master suite for Mithra starting at ${TIME_NOW} on ${TODAY} "/>
+        <echo message="JUnit master suite for Reladomo starting at ${TIME_NOW} on ${TODAY} with ${test.threads} jvms."/>
         <echo message="Log4j config: ${root}/reladomo/src/test/resources/log4jWarn.config"/>
-        <parallel threadsPerProcessor ="1" >
+        <parallel threadcount="${test.threads}" >
             <exec-test-suite mithraxmlconfig="MithraDb2TestConfig.xml" testclass="com.gs.fw.common.mithra.test.MithraDb2TestSuite" heap="onheap"/>
             <exec-test-suite mithraxmlconfig="MithraSybaseIqTestConfig.xml" testclass="com.gs.fw.common.mithra.test.MithraSybaseIqTestSuite" heap="onheap"/>
             <exec-test-suite mithraxmlconfig="MithraOracleTestConfig.xml" testclass="com.gs.fw.common.mithra.test.MithraOracleTestSuite" heap="onheap"/>
