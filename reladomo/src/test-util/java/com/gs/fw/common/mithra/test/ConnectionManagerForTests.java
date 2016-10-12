@@ -389,25 +389,22 @@ public class ConnectionManagerForTests extends AbstractMithraTestConnectionManag
 
     private XAConnectionManager getUnderlyingConnectionManager(Object sourceAttribute)
     {
+        if (sourceAttribute == null)
+        {
+            String requestingClass = this.getRequestingClass();
+            String msg = "sourceAttribute expected for class";
+            if (requestingClass != null)
+            {
+                msg += ": '" + requestingClass + "'";
+            }
+            msg += ", please ensure operation or new object correctly specifies the sourceAttribute!";
+            throw new NullPointerException(msg);
+        }
+
         XAConnectionManager connectionManager = this.connectionManagerMap.get(sourceAttribute);
         if (connectionManager == null)
         {
-            long curThread = Thread.currentThread().getId();
-            ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
-            ThreadInfo threadInfo = threadMXBean.getThreadInfo(curThread, Integer.MAX_VALUE);
-            StackTraceElement[] stackTrace = threadInfo.getStackTrace();
-            String requestingClass = null;
-            boolean hasGenericSource = false;
-            for (int i = 0; i < stackTrace.length; i++)
-            {
-                String className = stackTrace[i].getClassName();
-                if (className.endsWith("DatabaseObjectAbstract"))
-                {
-                    hasGenericSource = stackTrace[i].getMethodName().contains("GenericSource");
-                    requestingClass = className.substring(0, className.length() - "DatabaseObjectAbstract".length());
-                    break;
-                }
-            }
+            String requestingClass = this.getRequestingClass();
             String msg = "";
             if (requestingClass != null)
             {
@@ -419,6 +416,25 @@ public class ConnectionManagerForTests extends AbstractMithraTestConnectionManag
             throw new NullPointerException(msg);
         }
         return connectionManager;
+    }
+
+    private String getRequestingClass()
+    {
+        long curThread = Thread.currentThread().getId();
+        ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
+        ThreadInfo threadInfo = threadMXBean.getThreadInfo(curThread, Integer.MAX_VALUE);
+        StackTraceElement[] stackTrace = threadInfo.getStackTrace();
+
+        for (int i = 0; i < stackTrace.length; i++)
+        {
+            String className = stackTrace[i].getClassName();
+            if (className.endsWith("DatabaseObjectAbstract"))
+            {
+                String requestingClass = className.substring(0, className.length() - "DatabaseObjectAbstract".length());
+                return requestingClass;
+            }
+        }
+        return null;
     }
 
     public Connection getConnection()

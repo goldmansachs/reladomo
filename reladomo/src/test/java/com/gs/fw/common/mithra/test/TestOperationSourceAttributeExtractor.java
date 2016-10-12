@@ -25,7 +25,7 @@ import java.util.Set;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.domain.*;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
-
+import org.junit.Assert;
 
 
 public class TestOperationSourceAttributeExtractor extends MithraTestAbstract
@@ -50,9 +50,34 @@ public class TestOperationSourceAttributeExtractor extends MithraTestAbstract
         };
     }
 
+    public void testSourceAttributeMissing()
+    {
+        try
+        {
+            Player player1 = new Player();
+            player1.setId(100);
+            player1.insert();
+        }
+        catch (Exception e)
+        {
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("sourceAttribute expected for class: 'com.gs.fw.common.mithra.test.domain.Player', please ensure operation or new object correctly specifies the sourceAttribute!",
+                    e.getMessage());
+        }
 
-
-
+        try
+        {
+            Player player2 = new Player();
+            player2.setId(100);
+            player2.setSourceId("NewSource");
+            player2.insert();
+        } catch (Exception e)
+        {
+            Assert.assertTrue(e instanceof NullPointerException);
+            Assert.assertEquals("Could not find connection for class com.gs.fw.common.mithra.test.domain.Player Make sure the class is added to the test xml file. Double check that it's added to the correct connection mananger.  If the object has a source attribute, also ensure that the operation correctly specifies a value for it. No connection manager found. for database: NewSource",
+                    e.getMessage());
+        }
+    }
 
    public void testWeirdRelationships()
    {
