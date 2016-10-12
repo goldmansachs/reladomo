@@ -3,11 +3,28 @@
 # uncomment next line and set to your local jdk
 #export RELADOMO_JDK_HOME=/opt/jdk1.6.0_45
 
-export CUR_DIR=`pwd`
-export RELADOMO_HOME=${RELADOMO_HOME:-"$CUR_DIR/.."}
-export JDK_HOME=${RELADOMO_JDK_HOME:-"/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home"}
-
 # no need to modify stuff below:
+
+#long winded way to find the script directory; works on OSX
+PRG="$0"
+while [ -h "$PRG" ]; do
+  ls=`ls -ld "$PRG"`
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '.*/.*' > /dev/null; then
+    PRG="$link"
+  else
+    PRG=`dirname "$PRG"`/"$link"
+  fi
+done
+SCRIPTPATH=$(dirname "$PRG")
+
+SCRIPTPATH=`cd "$SCRIPTPATH" && pwd`
+
+export RELADOMO_HOME=${RELADOMO_HOME:-"$SCRIPTPATH/.."}
+
+echo RELADOMO_HOME is $RELADOMO_HOME
+
+export JDK_HOME=${RELADOMO_JDK_HOME:-"/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home"}
 
 export GENERATE_RELADOMO_CONCRETE_CLASSES=true
 

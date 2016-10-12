@@ -1,0 +1,24 @@
+language: java
+
+jdk:
+  - openjdk6
+
+install: true
+
+script:
+  - export RELADOMO_JDK_HOME="$JAVA_HOME"
+  - export RELADOMO_TEST_THREADS=1
+  - build/build.sh compile-reladomo-test
+
+branches:
+  only:
+  - master
+
+git:
+  depth: 3
+
+cache:
+  directories:
+  - lib
+  - build/lib
+
