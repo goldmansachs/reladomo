@@ -1,4 +1,5 @@
 # Reladomo
+[![Build Status](https://travis-ci.org/goldmansachs/reladomo.svg?branch=master)](https://travis-ci.org/goldmansachs/reladomo)
 
 ## What is it? 
 Reladomo is an object-relational mapping framework with the following enterprise features:
