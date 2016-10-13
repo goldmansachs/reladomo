@@ -1,0 +1,201 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Reladomo Middle Tier</title><link href="mithradoc.css" type="text/css" rel="stylesheet"><meta content="DocBook XSL Stylesheets V1.79.1" name="generator"><!-- (c) 2016 Copyright Goldman Sachs, Inc. --></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="article"><div class="titlepage"><div><div><h2 class="title"><a name="N40003"></a>Reladomo Middle Tier</h2></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="section"><a href="#N40010">1. Reladomo Middle Tier</a></span></dt><dd><dl><dt><span class="section"><a href="#N40015">1.1. Why?</a></span></dt><dt><span class="section"><a href="#N4003C">1.2. How?</a></span></dt></dl></dd><dt><span class="section"><a href="#N40059">2. Setup</a></span></dt><dd><dl><dt><span class="section"><a href="#N40061">2.1. Servlet</a></span></dt><dt><span class="section"><a href="#N40074">2.2. Remote Service</a></span></dt><dt><span class="section"><a href="#N4008A">2.3. Client-Side Runtime Configuration</a></span></dt><dt><span class="section"><a href="#N400A0">2.4. PspBasedMithraRemoteServerFactory</a></span></dt></dl></dd></dl></div>
+
+    
+
+
+    <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N40010"></a>1.&nbsp;Reladomo Middle Tier</h2></div></div></div>
+        
+
+        <div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="N40015"></a>1.1.&nbsp;Why?</h3></div></div></div>
+            
+            <p>
+                </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                        <p>Security (fat client applications):</p>
+                        <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>User ID must not be able to access database directly (especially write)</p></li><li class="listitem"><p>Batch/App ID must not be used from unauthorized IP&rsquo;s</p></li><li class="listitem"><p>For a large, semi-mobile user community, maintaining IP lists is undesirable and allows random sql client connections</p></li></ul></div>
+                    </li><li class="listitem">
+                        <p>Connection sharing: database connections can be expensive. Many users can share same connection.</p>
+                    </li></ul></div><p>
+            </p>
+        </div>
+
+        <div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="N4003C"></a>1.2.&nbsp;How?</h3></div></div></div>
+            
+            <p>
+                </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>Third tier acts like a relational source. Supports relational-like operations: find, insert, update, delete.</p></li><li class="listitem"><p>No object graphs. Not a complex object source. Serializaton based on metadata. Wire format looks like a result set.</p></li><li class="listitem"><p>Lightweight: can be configured as pass-through with no caching.</p></li><li class="listitem"><p>Remoting API must be implemented by application.</p></li></ul></div><p>
+            </p>
+        </div>
+    </div>
+
+    <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N40059"></a>2.&nbsp;Setup</h2></div></div></div>
+        
+
+        <p>
+            You'll need to setup a server that loads a normal Reladomo configuration.
+            Additionally, the server has to expose a remote interface for its clients to talk to.
+            There is a PSP implementation for that remote service.
+            It's often convenient to use the PSP servlet's load initialization to initialize
+            the underlying Reladomo implementation.
+        </p>
+
+        <div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="N40061"></a>2.1.&nbsp;Servlet</h3></div></div></div>
+            
+
+            <p>
+                This is an example setup where we have a war file that has web.xml containing the following snippet:
+            </p>
+            <div class="example"><a name="N40069"></a><p class="title"><b>Example&nbsp;1.&nbsp;web.xml fragment</b></p><div class="example-contents">
+                
+                <pre class="programlisting">
+<strong xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;servlet&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;servlet-name&gt;</strong>PspServlet<strong style="color: navy" class="hl-tag">&lt;/servlet-name&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;servlet-class&gt;</strong>com.gs.fw.common.base.psp.server.PspServlet<strong style="color: navy" class="hl-tag">&lt;/servlet-class&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;init-param&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;param-name&gt;</strong>serviceInterface.MyappRemoteMithraService<strong style="color: navy" class="hl-tag">&lt;/param-name&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;param-value&gt;</strong>com.gs.fw.common.mithra.remote.RemoteMithraService<strong style="color: navy" class="hl-tag">&lt;/param-value&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;/init-param&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;init-param&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;param-name&gt;</strong>serviceClass.MyAppRemoteMithraService<strong style="color: navy" class="hl-tag">&lt;/param-name&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;param-value&gt;</strong>com.gs.fw.para.common.MyAppRemoteMithraService<strong style="color: navy" class="hl-tag">&lt;/param-value&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;/init-param&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;load-on-startup&gt;</strong>10<strong style="color: navy" class="hl-tag">&lt;/load-on-startup&gt;</strong>
+<strong style="color: navy" class="hl-tag">&lt;/servlet&gt;</strong>
+             </pre>
+            </div></div><br class="example-break">
+        </div>
+
+        <div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="N40074"></a>2.2.&nbsp;Remote Service</h3></div></div></div>
+            
+
+            <p>
+                The constructor of MyAppRemoteMithraService is essentially used to initialize Reladomo.
+            </p>
+
+            <div class="example"><a name="N4007C"></a><p class="title"><b>Example&nbsp;2.&nbsp;Sample implementation of a RemoteMithraService</b></p><div class="example-contents">
+                
+                <pre class="programlisting">
+<strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">class</span></strong> MyAppRemoteMithraService <strong class="hl-keyword"><span style="color: #000080">extends</span></strong> RemoteMithraServiceImpl
+{
+    <strong class="hl-keyword"><span style="color: #000080">private</span></strong> <strong class="hl-keyword"><span style="color: #000080">static</span></strong> <strong class="hl-keyword"><span style="color: #000080">final</span></strong> Logger logger = LoggerFactory.createLogger(MyAppRemoteMithraService.<strong class="hl-keyword"><span style="color: #000080">class</span></strong>);
+
+    <strong class="hl-keyword"><span style="color: #000080">public</span></strong> MyAppRemoteMithraService()
+    {
+        String remoteMithraApplicationName = System.getProperty(<strong class="hl-string"><span style="color: green">"mithra.middle.tier.loader"</span></strong>);
+        <strong class="hl-keyword"><span style="color: #000080">if</span></strong> (remoteMithraApplicationName == null)
+        {
+            remoteMithraApplicationName = <strong class="hl-string"><span style="color: green">"MyAppMithraMiddleTierLoader"</span></strong>;
+        }
+        <strong class="hl-keyword"><span style="color: #000080">try</span></strong>
+        {
+            ApplicationRunner.instance().runApplication(remoteMithraApplicationName);
+            logger.info(<strong class="hl-string"><span style="color: green">"Successfully loaded Reladomo middle tier."</span></strong>);
+        }
+        <strong class="hl-keyword"><span style="color: #000080">catch</span></strong> (Exception e)
+        {
+            logger.error(<strong class="hl-string"><span style="color: green">"Could not load Reladomo middle tier"</span></strong>, e);
+            <strong class="hl-keyword"><span style="color: #000080">throw</span></strong> <strong class="hl-keyword"><span style="color: #000080">new</span></strong> MithraBusinessException(<strong class="hl-string"><span style="color: green">"could not load Reladomo middle tier"</span></strong>, e);
+        }
+    }
+}
+             </pre>
+            </div></div><br class="example-break">
+
+            <p>
+                The actual remote implementation comes from RemoteMithraServiceImpl.
+                The Reladomo runtime configuration for the server will have a real connection manger.
+            </p>
+        </div>
+
+        <div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="N4008A"></a>2.3.&nbsp;Client-Side Runtime Configuration</h3></div></div></div>
+            
+
+            <p>
+                On the client side, you'll have to change your runtime config to point to the middle tier:
+            </p>
+            <div class="example"><a name="N40092"></a><p class="title"><b>Example&nbsp;3.&nbsp;Sample client runtime configuration fragment</b></p><div class="example-contents">
+                
+                <pre class="programlisting">
+<strong style="color: navy" class="hl-tag">&lt;MithraRuntime&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;RemoteServer</strong> <span style="color: blue" class="hl-attribute">className</span>=<span style="color: green" class="hl-value">"com.gs.fw.common.mithra.remote.PspBasedMithraRemoteServerFactory"</span> <span style="color: blue" class="hl-attribute">initialLoaderThreads</span>=<span style="color: green" class="hl-value">"3"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;Property</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"url"</span> <span style="color: blue" class="hl-attribute">value</span>=<span style="color: green" class="hl-value">"http://localhost:7399/mithramiddletier/PspServlet"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+
+        <strong style="color: navy" class="hl-tag">&lt;MithraObjectConfiguration</strong> <span style="color: blue" class="hl-attribute">className</span>=<span style="color: green" class="hl-value">"com.gs.fw.common.mithra.test.domain.AccountTransactionException"</span> <span style="color: blue" class="hl-attribute">cacheType</span>=<span style="color: green" class="hl-value">"none"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;MithraObjectConfiguration</strong> <span style="color: blue" class="hl-attribute">className</span>=<span style="color: green" class="hl-value">"com.gs.fw.common.mithra.test.domain.SpecialAccount"</span> <span style="color: blue" class="hl-attribute">cacheType</span>=<span style="color: green" class="hl-value">"full"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;/RemoteServer&gt;</strong>
+<strong style="color: navy" class="hl-tag">&lt;/MithraRuntime&gt;</strong>
+             </pre>
+            </div></div><br class="example-break">
+
+            <p>
+                In a client runtime configuration, you can think that RemoteServer replaces ConnectionManager.
+                The MithraObjectConfigurations here are completely optional, and simply overrides the values that come from the server.
+                The client will setup a partialCache for the classes that the server is serving but not listed.
+            </p>
+        </div>
+
+        <div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="N400A0"></a>2.4.&nbsp;PspBasedMithraRemoteServerFactory</h3></div></div></div>
+            
+
+            <p>
+                Here is an example, which receives the properties configured in the client runtime config XML,
+                and returns configured instances:
+            </p>
+            <div class="example"><a name="N400A8"></a><p class="title"><b>Example&nbsp;4.&nbsp;PspBasedMithraRemoteServerFactory</b></p><div class="example-contents">
+                
+                <pre class="programlisting">
+<strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">class</span></strong> PspBasedMithraRemoteServerFactory
+{
+    <strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">static</span></strong> RemoteMithraService getInstance(Properties properties)
+    {
+        String url = properties.getProperty(<strong class="hl-string"><span style="color: green">"url"</span></strong>);
+        <strong class="hl-keyword"><span style="color: #000080">if</span></strong> (url == null)
+        {
+            <strong class="hl-keyword"><span style="color: #000080">throw</span></strong> <strong class="hl-keyword"><span style="color: #000080">new</span></strong> MithraException(<strong class="hl-string"><span style="color: green">"you must specify a url property for this factory"</span></strong>);
+        }
+        <strong class="hl-keyword"><span style="color: #000080">return</span></strong> createFactory(properties, url);
+    }
+
+    <strong class="hl-keyword"><span style="color: #000080">protected</span></strong> <strong class="hl-keyword"><span style="color: #000080">static</span></strong> RemoteMithraService createFactory(Properties properties, String url)
+    {
+        FastServletProxyFactory factory;
+        String user = properties.getProperty(<strong class="hl-string"><span style="color: green">"user"</span></strong>);
+        <strong class="hl-keyword"><span style="color: #000080">if</span></strong> (user != null)
+        {
+            String password = properties.getProperty(<strong class="hl-string"><span style="color: green">"password"</span></strong>);
+            <strong class="hl-keyword"><span style="color: #000080">if</span></strong> (password == null)
+            {
+                <strong class="hl-keyword"><span style="color: #000080">throw</span></strong> <strong class="hl-keyword"><span style="color: #000080">new</span></strong> MithraException(<strong class="hl-string"><span style="color: green">"if you specify the 'user' property, you must also specify a password!"</span></strong>);
+            }
+
+            factory = <strong class="hl-keyword"><span style="color: #000080">new</span></strong> FastServletProxyFactory(user, password);
+        }
+        <strong class="hl-keyword"><span style="color: #000080">else</span></strong>
+        {
+            factory = <strong class="hl-keyword"><span style="color: #000080">new</span></strong> FastServletProxyFactory();
+        }
+
+        <strong class="hl-keyword"><span style="color: #000080">try</span></strong>
+        {
+            <strong class="hl-keyword"><span style="color: #000080">return</span></strong> factory.create(RemoteMithraService.<strong class="hl-keyword"><span style="color: #000080">class</span></strong>, url);
+        }
+        <strong class="hl-keyword"><span style="color: #000080">catch</span></strong> (MalformedURLException e)
+        {
+            <strong class="hl-keyword"><span style="color: #000080">throw</span></strong> <strong class="hl-keyword"><span style="color: #000080">new</span></strong> MithraException(<strong class="hl-string"><span style="color: green">"malformed url: "</span></strong>+url, e);
+        }
+    }
+}
+             </pre>
+            </div></div><br class="example-break">
+            <p>
+                The <code class="code">RemoteMithraService</code> returned by the <code class="code">createFactory()</code> method
+                will manage the transfer of requests and results between the client and the middle tier.
+            </p>
+            <div class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><table border="0" summary="Important: Note:"><tr><td valign="top" align="center" rowspan="2" width="25"><img alt="[Important]" src="images/important.png"></td><th align="left">Note:</th></tr><tr><td valign="top" align="left">
+                
+                <p>
+                    <code class="code">PspBasedMithraRemoteServerFactory</code> is available from Reladomo for your use.
+                </p>
+            </td></tr></table></div>
+        </div>
+    </div>
+
+</div></body></html>

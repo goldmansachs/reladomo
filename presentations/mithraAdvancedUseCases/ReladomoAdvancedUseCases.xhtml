@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns="http://www.w3.org/1999/xhtml"><head><title/><meta name="copyright" content=""/><link type="text/css" href="user.css" rel="stylesheet"/><script type="text/javascript" charset="utf-8" src="files/slidy/scripts/slidy.js"/></head><body><div class="background"/><div class="slide cover title"><h1 class="title">Mithra Advanced Use Cases</h1></div><a name="N10013"/><div class="slide ">
+        <h1 class="title">Reladomo Advanced Use Cases</h1>
+        <ul class=""><li class="listitem"><p>Small Features</p></li><li class="listitem"><p>Dated Object Features</p></li><li class="listitem"><p>forEachWithCursor</p></li><li class="listitem"><p>Modifiable (Mutable) Primary Keys</p></li><li class="listitem"><p>Detached Objects</p></li><li class="listitem"><p>Aggregation</p></li><li class="listitem"><p>Temp Object</p></li><li class="listitem"><p>Tuples</p></li><li class="listitem"><p>Setting up a Notification Server</p></li><li class="listitem"><p>Update Listener</p></li><li class="listitem"><p>Multi-Threaded Matcher Loader</p></li></ul>
+    </div><a name="N1003D"/><div class="slide">
+        <h1 class="title">Small Features</h1>
+        <ul class=""><li class="listitem"><p>attribute.in(list, attr)</p><pre class="programlisting">ProductFinder.findMany(
+    ProductFinder.productId()
+        .in(paraTranList, ParaTransactionFinder.productId())
+</pre></li><li class="listitem"><p>attribute.filterEq</p><pre class="programlisting">PositionCarryFinder.income().filterEq(
+    PositionCarryFinder.expense());
+</pre>
+SQL:
+<pre class="programlisting"><strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">SELECT</span></strong> *
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">FROM</span></strong> TPOSFUNDING_CRY t0
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">WHERE</span></strong> t0.INCOME = t0.EXPENSE
+</pre></li><li class="listitem"><p>deleteInBatches</p><pre class="programlisting">FooList list = FooFinder.findMany(op);
+list.deleteAllInBatches(<span  xmlns:xslthl="http://xslthl.sf.net" style="color:blue" class="hl-number">10000</span>);
+can also handle arbitrary list of objects:
+list = <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">new</span></strong> FooList();
+list.add(...);
+list.deleteAllInBatches(<span  xmlns:xslthl="http://xslthl.sf.net" style="color:blue" class="hl-number">50000</span>);
+</pre></li></ul>
+    </div><a name="N1005B"/><div class="slide">
+            <h1 class="title">Advanced Dated Object Features</h1>
+            <ul class=""><li class="listitem"><p>Use these only for archival or special needs: In-place update, purge, insertForRecovery</p></li><li class="listitem"><p>Must not be used in normal course of work</p></li><li class="listitem"><p>In-place update for dated objects</p><p>Must mark the attribute in the xml:</p><pre class="programlisting"><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Attribute</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"description"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">javaType</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"String"</span>
+    <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">columnName</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"DESCRIPTION"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">maxLength</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"50"</span>
+    <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">truncate</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"true"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">inPlaceUpdate</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"true"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&gt;</strong>
+</pre></li><li class="listitem"><p>Must call the setInPlace method:</p><pre class="programlisting"><strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">public</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">void</span></strong> setDescriptionUsingInPlaceUpdate(String newValue)
+</pre></li><li class="listitem"><p>Purge</p><ul class=""><li class="listitem"><p>Can be used to physically delete a dated object</p></li><li class="listitem"><p>Normally, deletes the entire history (past and future)</p></li><li class="listitem"><p>When coupled with equalsEdgePoint, can delete specific range of history, or just one row.</p></li></ul><pre class="programlisting">object.purge(); <em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// deletes all of the object’s history</em>
+list.purgeAll(); <em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// deletes everything specified by the list’s operation</em>
+</pre></li></ul>
+        </div><a name="N10087"/><div class="slide">
+            <h1 class="title">Advanced Dated Object Features</h1>
+            <ul class=""><li class="listitem"><p>insertForRecovery</p><p>can be used to insert an object with arbitrary in/out</p><pre class="programlisting">PositionQuantity pos = <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">new</span></strong> PositionQuantity(infinity);
+pos.setProcessingDateFrom(...);
+pos.setProcessingDateTo(...);
+pos.set...
+
+pos.insertForRecovery();
+</pre></li></ul>
+        </div><a name="N10097"/><div class="slide">
+            <h1 class="title">forEachWithCursor</h1>
+            <ul class=""><li class="listitem"><p>Normally:</p><pre class="programlisting">ProductList list = ProductFinder.findMany(op);
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">for</span></strong>(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">int</span></strong> i = <span  xmlns:xslthl="http://xslthl.sf.net" style="color:blue" class="hl-number">0</span>; i &lt; list.size(); i++)
+{
+    Product prod = list.get(i);
+    ...
+}
+</pre></li><li class="listitem"><p>Instead:</p><pre class="programlisting">list.forEachWithCursor(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">new</span></strong> TObjectProcedure()
+{
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">public</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">boolean</span></strong> execute(Object o)
+    {
+        Product prod = (Product) o;
+        <em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// do something with prod,</em>
+        <em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// but don't call any relationship methods on it</em>
+        <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">return</span></strong> true; <em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// return false would end the loop.</em>
+    }
+});
+</pre></li></ul>
+        </div><a name="N100AB"/><div class="slide">
+            <h1 class="title">forEachWithCursor</h1>
+            <ul class=""><li class="listitem"><p>Normally, we read all products for that list into memory on the first call to size() (or any other methods, like get());</p></li><li class="listitem"><p>forEachWithCursor allows looping through the results one at a time before all the results are loaded</p></li><li class="listitem"><p>Advantages:</p><ul class=""><li class="listitem"><p>Can process data before query is finished: potentially faster processing</p></li><li class="listitem"><p>Less memory requirement: Reladomo won't hold onto the object, so very large result sets can be processed</p></li></ul></li><li class="listitem"><p>Disadvantages:</p><ul class=""><li class="listitem"><p>Does not support deep fetch</p></li><li class="listitem"><p>Does not cache the results, which can be bad if the query is repeated</p></li></ul></li></ul>
+        </div><a name="N100CD"/><div class="slide">
+            <h1 class="title">Detached Objects</h1>
+            <ul class=""><li class="listitem"><p>Detached Objects</p><ul class=""><li class="listitem"><p>Delayed edit functionality; useful for GUI, where the user is modifying objects but can choose to Save or Cancel</p></li><li class="listitem"><p>Don't use this for a transactional scenario, where object is read and modified in the transaction and there is no "cancel"</p></li><li class="listitem"><p>Cannot modify the primary key of a detached object</p></li></ul></li></ul>
+            <pre class="programlisting">Product prod = ProductFinder.findOne(
+    ProductFinder.productId().eq(<span  xmlns:xslthl="http://xslthl.sf.net" style="color:blue" class="hl-number">12</span>));
+Product detachedProd = prod.getDetachedCopy();
+<em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// while the user is editing:</em>
+detachedProd.setDescription(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">"something new"</span></strong>);
+<em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// does not write to the database</em>
+detachedProd.set...
+
+<em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// after the user presses the save button</em>
+detachedProd.copyDetachedValuesToOriginalOrInsertIfNew();
+</pre>
+        </div><a name="N100E6"/><div class="slide">
+        <h1 class="title">Detached Objects</h1>
+        <ul class=""><li class="listitem"><p>Can handle full object graph of dependent objects:</p><ul class=""><li class="listitem"><p>Must mark relationship in object as "relatedIsDependent="true""</p></li></ul><p>TraderPack.xml:</p><pre class="programlisting"><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Relationship</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">relatedObject</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"Section"</span>
+    <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">relatedIsDependent</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"true"</span>
+    <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">cardinality</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"one-to-many"</span>
+    <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"sections"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&gt;</strong>
+    this.traderPackId = Section.traderPackId
+<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/Relationship&gt;</strong>
+</pre></li><li class="listitem"><p>Code:</p><pre class="programlisting">TraderPack detachedPack = pack.getDetachedCopy();
+SectionList sections = detachedPack.getSections();
+<em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// returns a detached list of sections</em>
+sections.get(<span  xmlns:xslthl="http://xslthl.sf.net" style="color:blue" class="hl-number">0</span>).setSectionName(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">"new name"</span></strong>);
+<em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// does not write to the database</em>
+sections.remove(<span  xmlns:xslthl="http://xslthl.sf.net" style="color:blue" class="hl-number">2</span>);
+<em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// remove the 3rd element of the list</em>
+Section newSection = <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">new</span></strong> Section();
+newSection.set...
+sections.add(newSection);
+
+<em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// user presses the save button:</em>
+detachedPack.copyDetachedValuesToOriginalOrInsertIfNew();
+<em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// saves the pack and its sections.</em>
+<em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// removed sections are deleted. New sections are inserted</em>
+</pre></li></ul>
+    </div><a name="N10100"/><div class="slide">
+        <h1 class="title">Detached Objects</h1>
+        <p>Useful methods:</p>
+        <ul class=""><li class="listitem"><p>Compare all non-primary key values</p></li><pre class="programlisting">isModifiedSinceDetachment();</pre><li class="listitem"><p>Returns true if dependent relationship is modified</p><p> </p></li><pre class="programlisting">isModifiedSinceDetachmentByDependentRelationships();</pre><li class="listitem"><p> </p><pre class="programlisting">isModifiedSinceDetachment(Extractor extractor);</pre></li><li class="listitem"><p> </p><pre class="programlisting">detachedProduct.isModifiedSinceDetachment(
+    ProductFinder.description());
+</pre></li><li class="listitem"><p>Same as above, but for relationship</p><pre class="programlisting">isModifiedSinceDetachment(
+    RelatedFinder relationshipFinder);
+</pre></li><li class="listitem"><p>Resets the detached object to the original values</p><pre class="programlisting">resetFromOriginalPersistentObject();</pre></li></ul>
+    </div><a name="N10131"/><div class="slide">
+        <h1 class="title">Aggregation</h1>
+        <ul class=""><li class="listitem"><p>Equivalent to SQL group by</p></li><li class="listitem"><p>Allows aggregate functions: sum, avg, min, max, count</p></li><li class="listitem"><p>Example:</p><pre class="programlisting">AggregateList aggList = <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">new</span></strong> AggregateList(op);
+<em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">//the op determines the where clause</em>
+aggList.addGroupBy(
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">"acct"</span></strong>, PositionCarryFinder.accountId());
+<em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// can call addGroupBy multiple times</em>
+aggList.addAggregateAttribute(
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">"lastProcTime"</span></strong>,
+    PositionCarryFinder.processingDateFrom().max());
+aggList.addAggregateAttribute(
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">"count"</span></strong>,
+    PositionCarryFinder.accountId().count());
+aggList.addAggregateAttribute(
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">"income"</span></strong>,
+    PositionCarryFinder.income().sum());
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">for</span></strong>(AggregateData data: aggList)
+{
+    String accountId = data.getAttributeAsString(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">"acct"</span></strong>);
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">int</span></strong> count = data.getAttributeAsInt(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">"count"</span></strong>);
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">double</span></strong> income = data.getAttributeAsDouble(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">"income"</span></strong>);
+}
+</pre></li><li class="listitem"><p>Can do a bit of math (plus, minus, times, divide):</p><pre class="programlisting">aggList.addAggregateAttribute(
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">"incExp"</span></strong>,
+    PositionCarryFinder.expense()
+        .plus(PositionCarryFinder.income()).sum());
+</pre></li></ul>
+    </div><a name="N1014B"/><div class="slide">
+        <h1 class="title">Temp Objects</h1>
+        <ul class=""><li class="listitem"><p>Usually used for driver of some kind</p></li><li class="listitem"><p>Must pre-define xml:</p><pre class="programlisting"><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;MithraTempObject&gt;</strong>
+    <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;PackageName&gt;</strong>com.gs.fw.para.domain.desk.transaction
+    <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/PackageName&gt;</strong>
+    <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;ClassName&gt;</strong>DividendPositionDriver<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/ClassName&gt;</strong>
+
+    <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;SourceAttribute</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"acmapCode"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">javaType</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"String"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">/&gt;</strong>
+    <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Attribute</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"accountId"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">javaType</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"String"</span>
+        <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">primaryKey</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"true"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">maxLength</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"20"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">/&gt;</strong>
+    <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Attribute</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"productId"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">javaType</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"int"</span>
+        <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">primaryKey</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"true"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">/&gt;</strong>
+<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/MithraTempObject&gt;</strong>
+</pre></li><li class="listitem"><p>Add xml to the class list at the end:</p><pre class="programlisting"><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;MithraTempObjectResource</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span> = <span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"DividendPositionDriver"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">
+/&gt;</strong>
+</pre></li><li class="listitem"><p>Add the temp object to the runtime configuration</p></li></ul>
+    </div><a name="N10165"/><div class="slide">
+        <h1 class="title">Temp Objects</h1>
+        <p>In code, create a temporary context, insert some values, then join to the destination table</p>
+        <pre class="programlisting">TemporaryContext positionDriverContext =
+    DividendPositionDriverFinder.<span class="strong"><strong><span class="emphasis"><em>createTemporaryContext</em></span></strong></span>(getDeskAcmapCode());
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">try</span></strong>
+{
+    DividendPositionDriverList tempList =
+        <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">new</span></strong> DividendPositionDriverList();
+    tempList.add(...);
+    tempList.insertAll();
+    Operation op = ParaTransactionFinder.acmap().eq(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">"VOL"</span></strong>);
+    op = op.and(
+        ParaTransactionFinder.type().beginsWith(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">"SWP"</span></strong>));
+    op = op.and(
+        DividendPositionDriverFinder.<span class="strong"><strong><span class="emphasis"><em>existsWithJoin</em></span></strong></span>(
+            PTF.acmap(), PTF.accountId(), PTF.productId());
+    <em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// PTF == ParaTransactionFinder</em>
+    ParaTransactionList tranList =
+        ParaTransactionFinder.findMany(op);
+    <em  xmlns:xslthl="http://xslthl.sf.net" style="color: gray" class="hl-comment">// use the list</em>
+}
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">finally</span></strong>
+{
+    positionDriverContext.<span class="strong"><strong><span class="emphasis"><em>destroy</em></span></strong></span>();
+}
+</pre>
+    </div><a name="N10181"/><div class="slide">
+        <h1 class="title">Modifiable (Mutable) Primary Keys</h1>
+        <ul class=""><li class="listitem"><p>Only sensible for composite keys</p></li><li class="listitem"><p>Must mark the attributes in XML:</p><pre class="programlisting"><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Attribute</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"currency"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">javaType</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"String"</span>
+    <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">columnName</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"PROD_CURRENCY_C"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">primaryKey</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"true"</span>
+    <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">trim</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"true"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">maxLength</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"3"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">/&gt;</strong>
+<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Attribute</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"source"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">javaType</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"int"</span>
+    <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">columnName</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"SOURCE_I"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">primaryKey</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"true"</span>
+    <span class="strong"><strong><span class="emphasis"><em>mutablePrimaryKey</em></span></strong></span>="true" nullable="true"/&gt;
+<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Attribute</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"date"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">javaType</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"Timestamp"</span>
+    <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">columnName</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"THRU_Z"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">primaryKey</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"true"</span>
+    <span class="strong"><strong><span class="emphasis"><em>mutablePrimaryKey</em></span></strong></span>="true"/&gt;
+</pre></li><li class="listitem"><p>setSource and setDate methods are now allowed to be called on a persisted object</p><p>setCurrency is not allowed</p></li><li class="listitem"><p>SQL looks like:</p><pre class="programlisting"><strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">update</span></strong> FXRATE
+<span class="strong"><strong><span class="emphasis"><em>set SOURCE_I = 12</em></span></strong></span>
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">where</span></strong> PROD_CURRENCY_C = <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">'USD'</span></strong>
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">and</span></strong> <span class="strong"><strong><span class="emphasis"><em>SOURCE_I = 10</em></span></strong></span>
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">and</span></strong> THRU_Z = <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">'2008-03-10 00:00:00'</span></strong>
+</pre></li></ul>
+    </div><a name="N101B1"/><div class="slide">
+        <h1 class="title">Tuples</h1>
+        <ul class=""><li class="listitem"><p>Occasionally, it’s very useful to be able to do large in-clauses with combination of attributes (aka a "tuple")</p></li><li class="listitem"><p>The API is simple, just two methods:<span class="strong"><strong><span class="emphasis"><em>tupleWith()</em></span></strong></span> and <span class="strong"><strong><span class="emphasis"><em>in()</em></span></strong></span></p></li><li class="listitem"><p>First, we have to create a tuple using the "tupleWith" method on a normal Attribute</p><p>For Example:</p><pre class="programlisting">TupleAttribute tupleAttribute =
+    PositionFinder.accountId().tupleWith(
+        PositionFinder.productId());
+</pre></li><li class="listitem"><p>We can keep on adding more attributes with tupleWith</p></li><li class="listitem"><p>There are various forms of "in" that can then be used with the tuple attribute to create an operation.</p></li><li class="listitem"><p>Create a MithraArrayTupleTupleSet and call in(set)</p></li><li class="listitem"><p>Use the (list, Extractor[]) form, just like a regular attribute in(list, Extractor)</p></li><li class="listitem"><p>Use the (aggregateList, String… aggregateAttributeName) for some advanced use of aggregation combined with a normal query</p></li></ul>
+    </div><a name="N101DF"/><div class="slide">
+        <h1 class="title">Setting up a TCP Notification Server</h1>
+        <ul class=""><li class="listitem"><p>Reladomo supports multiple notification mechanisms</p></li><li class="listitem"><p>The TCP notification server is the easiest to setup and works well for a small number of servers and clients (less than 1000)</p></li><li class="listitem"><p>There are two steps required for this:</p><ul class=""><li class="listitem"><p>Setup the notification server:</p><pre class="programlisting">java –classpath &lt;all_the_required_jars&gt;
+    –Dport=&lt;some_port_number&gt;
+    com.gs.fw.common.mithra
+        .notification.server.NotificationServer
+</pre></li><li class="listitem"><p>In the processes that read or write Reladomo objects, configure them for notification:</p><pre class="programlisting">MithraManagerProvider.getMithraManager()
+    .setNotificationEventManager(
+        <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">new</span></strong> MithraNotificationEventManagerImpl(
+            <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">new</span></strong> TcpMessagingAdapterFactory(host, port)));
+</pre></li></ul></li><li class="listitem"><p>The host and port should point to where the NotificationServer is running</p></li></ul>
+    </div><a name="N10200"/><div class="slide">
+        <h1 class="title">Update Listener</h1>
+        <ul class=""><li class="listitem"><p>Add the update listener in the object XML:</p><pre class="programlisting"><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;MithraObject</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">objectType</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"transactional"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&gt;</strong>
+
+<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;PackageName&gt;</strong>com.gs.fw.common.mithra.test.domain<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/PackageName&gt;</strong>
+<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;ClassName&gt;</strong>Division<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/ClassName&gt;</strong>
+<span class="strong"><strong><span class="emphasis"><em><span style="color: red">&lt;UpdateListener&gt;
+    com.gs.fw.common.mithra.test.domain.DivisionUpdateListener
+&lt;/UpdateListener&gt;</span></em></span></strong></span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;DefaultTable&gt;</strong>DIVISION<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/DefaultTable&gt;</strong>
+</pre></li><li class="listitem"><p>Implementation must have an empty constructor and implement MithraUpdateListener</p><pre class="programlisting"><strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">public</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">void</span></strong> handleUpdate(T updatedObject, UpdateInfo updateInfo);
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">public</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">void</span></strong> handleUpdateAfterCopy(T updatedObject);
+</pre></li><li class="listitem"><p>Only called on persistent objects</p></li><li class="listitem"><p>Typical use case: set the "changed by" field</p></li></ul>
+    </div><a name="N10220"/><div class="slide">
+        <h1 class="title">Multi-Threaded Matcher Loader</h1>
+        <div class=""><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;" width="720"><tr style="height: 252px"><td align="center"><img src="MTLoader_SchematicRepresentation.png" align="middle" height="252" alt="Schematic Representation"/></td></tr></table></div>
+
+        <ul class=""><li class="listitem"><p>The application finds the intersection of the two Sets</p></li><li class="listitem"><p>Whatever is in the intersection, will be updated (but only if something changed)</p></li><li class="listitem"><p>Whatever in in Input Set but not in Output Set will be inserted</p></li><li class="listitem"><p>Whatever is in Output Set but not in Input Set will be closed out (deleted or terminated)</p></li></ul>
+    </div><a name="N10243"/><div class="slide">
+        <h1 class="title">Multi-Threaded Matcher Loader</h1>
+        <div class=""><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;" width="855"><tr style="height: 540px"><td align="center" valign="middle"><img src="MTLoader_Architecture.png" align="middle" height="540" alt="Multi-Threaded Matcher Loader Architecture"/></td></tr></table></div>
+    </div><a name="N10259"/><div class="slide">
+        <h1 class="title">Multi-Threaded Matcher Loader</h1>
+        <ul class=""><li class="listitem"><p>Highly customizable behavior</p><ul class=""><li class="listitem"><p>Doesn’t have to be File-to-Database; can easily be Database-to-Database or Memory-to-Database, etc.</p></li><li class="listitem"><p>Subclassing MatcherThread or SingleQueueExecutor allows fine tuning for different requirements</p></li><li class="listitem"><p>For example, can decide not to delete the left overs.</p></li></ul></li><li class="listitem"><p>By design, it is re-runnable</p></li><li class="listitem"><p>Usable under the following conditions:</p><ul class=""><li class="listitem"><p>No transactional guarantee or ordering required</p></li><li class="listitem"><p>Writing to one table only. Writing to multiple tables is possible but without transactional guarantee.</p></li></ul></li><li class="listitem"><p>Classes to know</p><ul class=""><li class="listitem"><p>SingleQueueExecutor – the piece of code that does the actual writing</p></li><li class="listitem"><p>MatcherThread – the piece of code that matches the two sets</p></li><li class="listitem"><p>DbLoadThread – the piece of code that reads the database set, using forEachWithCursor</p></li><li class="listitem"><p>InputThread – the piece of code that generates the input, e.g. from a file.</p></li></ul></li></ul>
+    </div><a name="N1028B"/><div class="slide">
+        <h1 class="title">But Wait... There Is More</h1>
+        <ul class=""><li class="listitem"><p>Time-Zone Conversion</p></li><li class="listitem"><p>Nested Reladomo Test Resource</p></li><li class="listitem"><p>Optimistic Locking</p></li><li class="listitem"><p>Partial Cache Tuning</p></li><li class="listitem"><p>Class Diagram Generation</p></li><li class="listitem"><p>DDL Generation</p></li></ul>
+    </div></body></html>

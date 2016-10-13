@@ -1,0 +1,101 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Visualizing Your Domain Model Using Reladomo Metadata</title><link href="mithradoc.css" type="text/css" rel="stylesheet"><meta content="DocBook XSL Stylesheets V1.79.1" name="generator"><!-- (c) 2016 Copyright Goldman Sachs, Inc. --></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="article"><div class="titlepage"><div><div><h2 class="title"><a name="N40003"></a>Visualizing Your Domain Model Using Reladomo Metadata</h2></div><div><div class="author"><h3 class="author"></h3></div></div><div><p class="pubdate">26 September 2006</p></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="sect1"><a href="#N40014">1. Introduction</a></span></dt><dt><span class="sect1"><a href="#N4001D">2. Required Tools</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N40034">2.1. Running MithraGraphGenerator</a></span></dt><dt><span class="sect2"><a href="#N40071">2.2. Running yEd</a></span></dt></dl></dd></dl></div>
+
+    
+
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N40014"></a>1.&nbsp;Introduction</h2></div></div></div>
+
+        
+        <p>When a persistent set of objects is specified in Reladomo metadata, the objects can be visualized. The output can
+            be used as documentation, or simply browsed through to gain understanding of the domain.
+        </p>
+
+    </div>
+
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N4001D"></a>2.&nbsp;Required Tools</h2></div></div></div>
+
+        
+            <p>
+                To use the visualization, you will need two things:
+                </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                       <p>Run the MithraGraphGenerator using Ant.</p>
+                    </li><li class="listitem">
+                       <p>Load the graph in yEd.</p>
+                    </li></ul></div><p>
+            </p>
+
+        <div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="N40034"></a>2.1.&nbsp;Running MithraGraphGenerator</h3></div></div></div>
+            
+            <p>
+                MithraGraphGenerator is invoked via Ant. Here is an example target:
+            </p>
+
+            <pre class="programlisting">
+<strong xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;target</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"generate-mithra-graph-product"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;taskdef</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"mithra-graphgen"</span>
+        <span style="color: blue" class="hl-attribute">classname</span>=<span style="color: green" class="hl-value">"com.gs.fw.common.mithra.generator.MithraGraphGenerator"</span>
+        <span style="color: blue" class="hl-attribute">loaderRef</span>=<span style="color: green" class="hl-value">"mithraGenerator"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+       <strong style="color: navy" class="hl-tag">&lt;classpath</strong> <span style="color: blue" class="hl-attribute">refid</span>=<span style="color: green" class="hl-value">"mithragen.classpath"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;/taskdef&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;mithra-graphgen</strong> <span style="color: blue" class="hl-attribute">xml</span>=<span style="color: green" class="hl-value">"${mithra.home}/xml/mithra/para/ParaClassList.xml"</span>
+        <span style="color: blue" class="hl-attribute">outputFile</span>=<span style="color: green" class="hl-value">"${generated.src.dir}/paraproduct.graphml"</span>
+        <span style="color: blue" class="hl-attribute">includeList</span>=<span style="color: green" class="hl-value">"Product,PositionQuantity"</span> <span style="color: blue" class="hl-attribute">followRelationshipDepth</span>=<span style="color: green" class="hl-value">"1"</span>
+        <span style="color: blue" class="hl-attribute">showAttributes</span>=<span style="color: green" class="hl-value">"primaryKey"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+<strong style="color: navy" class="hl-tag">&lt;/target&gt;</strong>
+</pre>
+
+            <p>
+                The elements for the <code class="code">mithra-graphgen</code> tag above are:
+            </p>
+
+            <p>
+                The <code class="code">xml</code> element specifies the location
+                of the Reladomo class list -- a list of all of the classes to be graphed by Reladomo. By default, the graph
+                generator will put all the classes in the graph if <code class="code">includeList</code> is not specified. The combination of
+                <code class="code">includeList</code> and <code class="code">followRelationshipDepth</code> further defines what objects are shown on the
+                graph.
+            </p>
+
+            <p>
+                The <code class="code">includeList</code> is a comma separated list of objects to be graphed. This is an optional attribute, and
+                omitting it will cause all the objects to be graphed. These objects, if specified, will
+                be the root from which relationships can be followed. The example above will graph the Product class, the PositionQuantity
+                class as well any objects that have a direct relationship from those two.
+            </p>
+
+            <p>
+                The <code class="code">followRelationshipDepth</code> attribute specifies how deep relationships should be followed from the
+                classes specified in <code class="code">includeList</code>. This attribute has no effect if <code class="code">includeList</code> is not
+                specified. The default value is 1. To see just the classes specified in <code class="code">includeList</code>, set this to zero.
+            </p>
+
+            <p>
+                The <code class="code">showAttributes</code> value determines what object attributes will be visible in the output. The
+                valid values are: "none", "all", "primaryKey" or a number (e.g. "7"). If a number is specified, the primary keys
+                are given precedence and appear at the top of the list.
+            </p>
+
+        </div>
+            <div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="N40071"></a>2.2.&nbsp;Running yEd</h3></div></div></div>
+                
+                <p>
+                    You can download a copy of yEd from http://www.yworks.com/products/yed/. After running yEd, you can open the file
+                    you generated (paraproduct.graphml in the above example).
+                    You'll see a jumble of boxes. Don't panic. You have to use yEd to layout the diagram. yEd and a large number of options for layout.
+                    You should experiment a bit to see what fits your model best. All these options appear under the "Layout" menu.
+                    Here are some recommendations to get you started:
+                </p>
+                <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                       <p>Small number of objects: Hierarchical or Orthogonal works well.</p>
+                    </li><li class="listitem">
+                       <p>Medium number of objects: Organic works well.</p>
+                    </li><li class="listitem">
+                       <p>Large number of objects: Circular works ok.</p>
+                    </li></ul></div>
+                <p>
+                    Once you have the diagram in it's final form, you can export to it to a variety of file type, including PDF, SVG and GIF.
+                    For large diagrams, you can also print the file on multiple pages.
+                </p>
+            </div>
+    </div>
+
+</div></body></html>

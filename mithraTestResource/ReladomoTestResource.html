@@ -1,0 +1,402 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Reladomo Test Resource</title><link href="mithradoc.css" type="text/css" rel="stylesheet"><meta content="DocBook XSL Stylesheets V1.79.1" name="generator"><!-- (c) 2016 Copyright Goldman Sachs, Inc. --></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="article"><div class="titlepage"><div><div><h2 class="title"><a name="N40003"></a>Reladomo Test Resource</h2></div><div><div class="author"><h3 class="author"></h3></div></div><div><p class="pubdate">October 16, 2006</p></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="sect1"><a href="#N40014">1. Creating test cases using Reladomo objects</a></span></dt><dt><span class="sect1"><a href="#N4001D">2. MithraTestResource Introduction</a></span></dt><dt><span class="sect1"><a href="#N40061">3. MithraTestResource Detailed API</a></span></dt><dt><span class="sect1"><a href="#N40088">4. </a></span></dt><dt><span class="sect1"><a href="#N400EA">5. Test data file format</a></span></dt></dl></div>
+    
+
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N40014"></a>1.&nbsp;Creating test cases using Reladomo objects</h2></div></div></div>
+        
+        <p>
+            This document explains the steps required to use Reladomo objects in unit tests.
+        </p>
+    </div>
+
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N4001D"></a>2.&nbsp;MithraTestResource Introduction</h2></div></div></div>
+        
+        <p>
+            MithraTestResource supports writing test cases that use Reladomo objects.
+            To use this test resource, you'll need to do the following:
+        </p>
+        <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: 1; "><li class="listitem" style="list-style-type: 1">
+                <p>
+                    Provide a Reladomo runtime configuration that uses ConnectionManagerForTests (or a subclass) as
+                    its connection manager. The runtime configuration must include all Reladomo objects that you'll
+                    use for your test(s).
+                </p>
+            </li><li class="listitem" style="list-style-type: 1">
+                <p>
+                    Provide a data file that has the data you'll use for your tests. The format for the data is
+                    specified at the end of this document.
+                </p>
+            </li></ul></div>
+        <p>
+            You may use multiple data files or different data for different tests. All the files used are picked up from
+            the classpath. Typically, you'll want to use the same data for the same suite. In other words, you'll setup
+            the MithraTestResource in your setUp() method (as opposed to each individual test). A typical setUp method
+            might look like this:
+        </p>
+        <pre class="programlisting"><strong xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.mithraTestResource = <strong class="hl-keyword"><span style="color: #000080">new</span></strong> MithraTestResource
+    (<strong class="hl-string"><span style="color: green">"services/Reladomo/TestPostingEngineReladomoConfiguration.xml"</span></strong>);
+
+ConnectionManagerForTests connectionManagerForTestDb = ConnectionManagerForTests.getInstance(<strong class="hl-string"><span style="color: green">"test_db"</span></strong>);
+
+<strong class="hl-keyword"><span style="color: #000080">this</span></strong>.mithraTestResource.createDatabaseForStringSourceAttribute(
+connectionManager,TEST_ACMAP_CODE, <strong class="hl-string"><span style="color: green">"testIntradayData.txt"</span></strong>);
+
+<strong class="hl-keyword"><span style="color: #000080">this</span></strong>.mithraTestResource.setUp();
+</pre>
+        <p>
+            You must also call the mithraTestResource.tearDown() in your tearDown() method.
+        </p>
+    </div>
+    <div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="N40040"></a>.1.&nbsp;Reladomo runtime configuration for tests</h3></div></div></div>
+        
+        <p>
+            The runtime configuration is used by the MithraTestReosurce to create the neccesary table in the in memory database used for tests.
+            Also, the MithraTestResource initializes Reladomo using that runtime configuration. It is required that a "resourceName" property is
+            defined.
+            </p><pre class="programlisting">
+ <strong style="color: navy" class="hl-tag">&lt;MithraRuntime&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;ConnectionManager</strong> <span style="color: blue" class="hl-attribute">className</span>=<span style="color: green" class="hl-value">"com.gs.fw.common.mithra.test.ConnectionManagerForTests"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;Property</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"resourceName"</span> <span style="color: blue" class="hl-attribute">value</span>=<span style="color: green" class="hl-value">"test_db"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;MithraObjectConfiguration</strong> <span style="color: blue" class="hl-attribute">className</span>=<span style="color: green" class="hl-value">"com.gs.fw.myapp.Foo"</span> <span style="color: blue" class="hl-attribute">cacheType</span>=<span style="color: green" class="hl-value">"partial"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;MithraObjectConfiguration</strong> <span style="color: blue" class="hl-attribute">className</span>=<span style="color: green" class="hl-value">"com.gs.fw.myapp.Bar"</span> <span style="color: blue" class="hl-attribute">cacheType</span>=<span style="color: green" class="hl-value">"partial"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+        ...
+    <strong style="color: navy" class="hl-tag">&lt;/ConnectionManager&gt;</strong>
+ <strong style="color: navy" class="hl-tag">&lt;/MithraRuntime&gt;</strong>
+</pre><p>
+
+            More than one &lt;ConnectionManager&gt;&lt;/ConnectionManager&gt; section can be defined in the runtime configuration in case
+            test cases with more than one database are created. Each section must specify a "resourceName" corresponding to the name of the
+            database to be used in the test cases(s). You must group together under the same section all the MithraObjectConfiguration that are going
+            to reside in the same database.
+            </p><pre class="programlisting">
+<strong style="color: navy" class="hl-tag">&lt;MithraRuntime&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;ConnectionManager</strong> <span style="color: blue" class="hl-attribute">className</span>=<span style="color: green" class="hl-value">"com.gs.fw.common.mithra.test.ConnectionManagerForTests"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;Property</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"resourceName"</span> <span style="color: blue" class="hl-attribute">value</span>=<span style="color: green" class="hl-value">"test_db"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;MithraObjectConfiguration</strong> <span style="color: blue" class="hl-attribute">className</span>=<span style="color: green" class="hl-value">"com.gs.fw.myapp.Foo"</span> <span style="color: blue" class="hl-attribute">cacheType</span>=<span style="color: green" class="hl-value">"partial"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;MithraObjectConfiguration</strong> <span style="color: blue" class="hl-attribute">className</span>=<span style="color: green" class="hl-value">"com.gs.fw.myapp.Bar"</span> <span style="color: blue" class="hl-attribute">cacheType</span>=<span style="color: green" class="hl-value">"partial"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+        ...
+    <strong style="color: navy" class="hl-tag">&lt;/ConnectionManager&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;ConnectionManager</strong> <span style="color: blue" class="hl-attribute">className</span>=<span style="color: green" class="hl-value">"com.gs.fw.common.mithra.test.ConnectionManagerForTests"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;Property</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"resourceName"</span> <span style="color: blue" class="hl-attribute">value</span>=<span style="color: green" class="hl-value">"desk_db"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;MithraObjectConfiguration</strong> <span style="color: blue" class="hl-attribute">className</span>=<span style="color: green" class="hl-value">"com.gs.fw.myapp.Product"</span> <span style="color: blue" class="hl-attribute">cacheType</span>=<span style="color: green" class="hl-value">"partial"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;MithraObjectConfiguration</strong> <span style="color: blue" class="hl-attribute">className</span>=<span style="color: green" class="hl-value">"com.gs.fw.myapp.Account"</span> <span style="color: blue" class="hl-attribute">cacheType</span>=<span style="color: green" class="hl-value">"partial"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+        ...
+    <strong style="color: navy" class="hl-tag">&lt;/ConnectionManager&gt;</strong>
+ <strong style="color: navy" class="hl-tag">&lt;/MithraRuntime&gt;</strong>
+</pre><p>
+        </p>
+    </div>
+    <div class="sect3"><div class="titlepage"><div><div><h4 class="title"><a name="N40051"></a>.1.&nbsp;ConnectionManagerForTests</h4></div></div></div>
+        
+        <p>
+            The ConnectionManagerForTests is a convenient class that implement all the ConnectionManager interfaces.
+            This class contains factory methods to create ConnectionManager for the specified reosurce or database name.
+            </p><pre class="programlisting">
+<strong style="color: #4D4DFF" class="hl-tag">/**
+ * This method returns an instance of a ConnectionManagerForTests.
+ * The properties must contain a property with name "resourceName".
+ * The value of this property is the database name used by the
+ * connection manager when creating a Connection.
+ *
+ * @param properties Properties use to create the instance of the ConnectionManagerForTests
+ * @return An instance of a ConnectionManagerForTests
+ */</strong>
+<strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">static</span></strong> ConnectionManagerForTests getInstance(Properties properties)
+
+<strong style="color: #4D4DFF" class="hl-tag">/**
+ * This method returns an instance of a ConnectionManagerForTests.
+ *
+ * @param resourceName The database name used by the connection manager when creating a Connection.
+ * @return An instance of a ConnectionManagerForTests
+ */</strong>
+<strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">static</span></strong> ConnectionManagerForTests getInstance(String resourceName)
+
+
+ <strong style="color: #4D4DFF" class="hl-tag">/**
+ * This method returns an instance of a ConnectionManagerForTests.
+ *
+ * @param dbName The database name used by the connection manager when creating a Connection.
+ * @return An instance of a ConnectionManagerForTests
+ */</strong>
+<strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">static</span></strong> ConnectionManagerForTests getInstanceForDbName(String dbName)
+
+</pre><p>
+            </p><p>
+                The resourceName used to create an instance of a ConnectionManager must be the same resourceName used in the runtime configuration.
+            </p><p>
+       </p>
+    </div>
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N40061"></a>3.&nbsp;MithraTestResource Detailed API</h2></div></div></div>
+        
+        <p>
+            MithraTestResource provides convenience methods to perform database (starts the transaction manager,
+            starts the database server, create the database, create tables, drop tables, insert data, and delete data
+            from the tables) and Reladomo lifecycle operations (Initialize Reladomo objects, load Reladomo cache).
+        </p>
+        <p>
+            public MithraTestResource(String configFilename)
+        </p>
+        <p>
+            The MithraTestResource constructor expects the filename of the Reladomo configuration XML file.
+            During construction, several things are being performed:
+        </p>
+        <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                <p>Starts the database server.</p>
+            </li><li class="listitem">
+                <p>Initializes the Reladomo objects.</p>
+            </li><li class="listitem">
+                <p>Creates all the database tables for the Reladomo objects.</p>
+            </li></ul></div>
+        <p>
+            The Reladomo configuration file is an xml file that specifies the Reladomo objects and the connection manager.
+        </p>
+
+    </div>
+    <div class="sect1"><div class="titlepage"></div>
+
+        <p>
+            Three methods are provided to create the database:
+        </p>
+        <pre class="programlisting"><strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">void</span></strong> createSingleDatabase(SourcelessConnectionManager connectionManager, String testDataFilename)
+    <strong class="hl-keyword"><span style="color: #000080">throws</span></strong> InitialiseException, ParseException
+</pre>
+        <p>
+            This method creates a database with the name specified in databaseName using the specified connectionManager.
+            Before calling this method in MithraTestResource, a default source must be specified in the connectionManager.
+            The connectionManager will use this default source to get connections. Be aware that only one default source can be
+            specified and calling this method with a databaseName different than the default source may cause unexpected results.
+        </p>
+
+        <pre class="programlisting">
+<strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">void</span></strong> createDatabaseForStringSourceAttribute(ObjectSourceConnectionManager connectionManager,
+           String sourceAttribute, String testDataFilename)
+                    <strong class="hl-keyword"><span style="color: #000080">throws</span></strong> InitialiseException, ParseException
+
+<strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">void</span></strong> createDatabaseForIntSourceAttribute(IntSourceConnectionManager connectionManager,
+            <strong class="hl-keyword"><span style="color: #000080">int</span></strong> sourceAttribute, String testDataFilename)
+                    <strong class="hl-keyword"><span style="color: #000080">throws</span></strong> InitialiseException, ParseException
+</pre>
+
+        <p>
+            These methods create a database with the name specified in databaseName using the specified
+            connectionManager. The connectionManager maps the sourceAttribute to the databaseName.
+        </p>
+
+        <p>Where :</p>
+        <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                <p>
+                    connectionManager - The connection manager that will be used for the tests. This value should be the
+                    same as the connection manager specified in the MithraConfiguration xml file.
+                </p>
+            </li><li class="listitem">
+                <p>
+                    sourceAttribute - This value is the acmap code. The connection manager will use this value as the
+                    key to map a database name. For testing purposes, if the database is created using a String source
+                    attribute, the name of the database and the sourceAttribute will be the same.
+                </p>
+            </li><li class="listitem">
+                <p>
+                    testDataFileName - The name of the test data file.
+                </p>
+            </li></ul></div>
+        <pre class="programlisting">
+ <strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">void</span></strong> setUp() <strong class="hl-keyword"><span style="color: #000080">throws</span></strong> Exception
+        </pre>
+        <p>
+            This method performs several things for you:
+        </p>
+        <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                <p>
+                    Gets the Mithra manager.
+                </p>
+            </li><li class="listitem">
+                <p>
+                    Sets the transaction manager provider in the Mithra manager.
+                </p>
+            </li><li class="listitem">
+                <p>
+                    Populates database tables (from the file specified during the database creation).
+                </p>
+            </li><li class="listitem">
+                <p>
+                    Loads Reladomo cache.
+                </p>
+            </li></ul></div>
+        <p>
+           This method needs to be called from the setUp() method in the test cases
+        </p>
+
+        <pre class="programlisting">
+<strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">void</span></strong> tearDown() <strong class="hl-keyword"><span style="color: #000080">throws</span></strong> Exception
+</pre>
+        <p>
+            This method cleans the database tables after the test. This method should be called from the tearDown()
+            method in the test cases.
+        </p>
+        <p>
+            The following is an example of how to use the MithraTestResource. In the setup method of the test case,
+            an instance of a MithraTestResource is created. The instance is used to create a database and populate
+            the tables in the setup method and to clean the data in the teardown method.
+        </p>
+        <pre class="programlisting">
+MihtraTestResource  mihtraTestResource = null;
+<strong class="hl-keyword"><span style="color: #000080">protected</span></strong> <strong class="hl-keyword"><span style="color: #000080">void</span></strong> setUp() <strong class="hl-keyword"><span style="color: #000080">throws</span></strong> Exception
+{
+   String xmlFile = <strong class="hl-string"><span style="color: green">"MithraConfigurationTest.xml"</span></strong>
+   mithraTestResource = <strong class="hl-keyword"><span style="color: #000080">new</span></strong> MithraTestResource(xmlFile);
+
+   ConnectionManagerForTests connMgrForTestDb =
+        ConnectionManagerForTests.getInstance(<strong class="hl-string"><span style="color: green">"test_db"</span></strong>);
+
+   ConnectionManagerForTests connMgrForDeskDb =
+        ConnectionManagerForTests.getInstance(<strong class="hl-string"><span style="color: green">"desk_db"</span></strong>);
+
+   mithraTestResource.createSingleDatabase(
+        connMgForTestDb, <strong class="hl-string"><span style="color: green">"mithraTestData.txt"</span></strong>);
+
+   mithraTestResource.createDatabaseForStringSourceAttribute(
+        connMgForDeskDb, <strong class="hl-string"><span style="color: green">"deskA"</span></strong>, <strong class="hl-string"><span style="color: green">"mithraTestDataForDesk.txt"</span></strong>);
+
+   mithraTestResource.createDatabaseForStringSourceAttribute(
+        connMgForDeskDb, <strong class="hl-string"><span style="color: green">"deskB"</span></strong>, <strong class="hl-string"><span style="color: green">"mithraTestDataForDesk.txt"</span></strong>);
+        
+   mithraTestResource.setUp();
+}
+
+<strong class="hl-keyword"><span style="color: #000080">protected</span></strong> <strong class="hl-keyword"><span style="color: #000080">void</span></strong> tearDown() <strong class="hl-keyword"><span style="color: #000080">throws</span></strong> Exception
+{
+     mithraTestResource.tearDown();
+}
+</pre>
+        <p>
+           Please, refer to MithraTestAbstract.java for a complete
+           example of how to use the MithraTestResource.
+        </p>
+    </div>
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N400EA"></a>5.&nbsp;Test data file format</h2></div></div></div>
+        
+
+        <pre class="programlisting">
+class &lt;classname&gt;
+&lt;attribute name 1&gt;, &lt;attribute name 2&gt;... &lt;attribute name N&gt;
+&lt;value 1, 1&gt;, &lt;value 1, 2&gt; ... &lt;value 1, N&gt;
+&lt;value 2, 1&gt;, &lt;value 2, 2&gt; ... &lt;value 2, N&gt;
+...
+...
+&lt;value M, 1&gt;, &lt;value M, 2&gt; ... &lt;value M, N&gt;
+</pre>
+        <p>
+           Where:
+        </p>
+        <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                <p>
+                    classname = Fully qualified MithraObject classname.
+                </p>
+            </li><li class="listitem">
+                <p>
+                    attribute name = Name of the attribute as specified in the MithraObject configuration xml file.
+                </p>
+            </li><li class="listitem">
+                <p>
+                   value = The value for the specified attribute.
+                </p>
+            </li></ul></div>
+        <p>
+             There are few things worth mentioning about the values in the test data file:
+        </p>
+        <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                <p>
+                    Comments - Java style comments are allowed. The parsing mechanism used to read the test data
+                    files will recognize and ignore single-line (//) and multi-line () Java style comments.
+                    Comments can be placed anywhere in the file.
+                </p>
+            </li><li class="listitem">
+                <p>
+                    String attributes - Java like Strings are allowed. The parser will recognize escape sequences inside
+                    a string value.
+                </p>
+            </li><li class="listitem">
+                <p>
+                     Date attributes - The value is specified within double quotes. The format used for date attributes
+                    is "yyyy-MM-dd".
+                </p>
+            </li><li class="listitem">
+                <p>
+                    Timestamp attributes - The value is specified within double quotes. The format used for timestamp
+                    attributes is "yyyy-MM-dd HH:mm:ss.SSS".
+                    </p><p>Where:</p><p>
+                    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem">
+                            <p>
+                                yyyy - year
+                            </p>
+                        </li><li class="listitem">
+                            <p>
+                                MM - month
+                            </p>
+                        </li><li class="listitem">
+                            <p>
+                                dd - day in the month
+                            </p>
+                        </li><li class="listitem">
+                            <p>
+                                HH - hour
+                            </p>
+                        </li><li class="listitem">
+                            <p>
+                                mm - minutes
+                            </p>
+                        </li><li class="listitem">
+                            <p>
+                               ss - seconds
+                            </p>
+                        </li><li class="listitem">
+                            <p>
+                               SSS - milliseconds
+                            </p>
+                        </li></ul></div><p>
+                </p>
+            </li><li class="listitem">
+                <p>
+                    Numeric attributes (byte, short, integer, long, float, double)
+                </p>
+            </li><li class="listitem">
+                <p>
+                    Boolean attributes - The values allowed for this type of attributes are: true or false.
+                    Please note that these values are not specified within single nor double quotes.
+                </p>
+            </li><li class="listitem">
+                <p>
+                    Null values - In every row of data there must be a value for every single attribute specified.
+                    In the case that the attribute accepts null values, the value null (no quotes) can be specified.
+                </p>
+            </li></ul></div>
+        <p>
+            Each line represents a row that will be inserted into the database. White space is generally ignored,
+            except when it acts as line separators (you may not split the data for a single row across multiple lines).
+        </p>
+        <p>
+            This is an example of how the test data can be specified for an Account and ExchangeRate objects:
+        </p>
+        <pre class="programlisting">
+<strong class="hl-keyword"><span style="color: #000080">class</span></strong> &lt;classname&gt;
+<strong class="hl-keyword"><span style="color: #000080">class</span></strong> com.gs.fw.common.mithra.test.domain.Account
+accountNumber, code, trialId, pnlGroupId
+<strong class="hl-string"><span style="color: green">"7410161001"</span></strong>, <strong class="hl-string"><span style="color: green">"74101610"</span></strong>, <strong class="hl-string"><span style="color: green">"001A"</span></strong>, <strong class="hl-string"><span style="color: green">"999A"</span></strong>
+<strong class="hl-string"><span style="color: green">"7410161101"</span></strong>, <strong class="hl-string"><span style="color: green">"74101611"</span></strong>, <strong class="hl-string"><span style="color: green">"001A"</span></strong>, <strong class="hl-string"><span style="color: green">"999A"</span></strong>
+<strong class="hl-string"><span style="color: green">"7410161201"</span></strong>, <strong class="hl-string"><span style="color: green">"74101612"</span></strong>, <strong class="hl-string"><span style="color: green">"001A"</span></strong>, <strong class="hl-string"><span style="color: green">"999A"</span></strong>
+<strong class="hl-string"><span style="color: green">"7410161301"</span></strong>, <strong class="hl-string"><span style="color: green">"74101613"</span></strong>, <strong class="hl-string"><span style="color: green">"001A"</span></strong>, <strong class="hl-string"><span style="color: green">"999A"</span></strong>
+<strong class="hl-string"><span style="color: green">"null trial"</span></strong>, <strong class="hl-string"><span style="color: green">"testnull"</span></strong>, null, <strong class="hl-string"><span style="color: green">"NULLTEST"</span></strong>
+<strong class="hl-string"><span style="color: green">"with trial"</span></strong>, <strong class="hl-string"><span style="color: green">"testnull"</span></strong>, <strong class="hl-string"><span style="color: green">"001A"</span></strong>, <strong class="hl-string"><span style="color: green">"NULLTEST"</span></strong>
+
+<strong class="hl-keyword"><span style="color: #000080">class</span></strong> com.gs.fw.common.mithra.test.domain.ExchangeRate
+currency, source, date, exchangeRate
+<strong class="hl-string"><span style="color: green">"EUR"</span></strong>, <span style="color:blue" class="hl-number">10</span>, <strong class="hl-string"><span style="color: green">"2004-09-30 18:30:00.0"</span></strong>, <span style="color:blue" class="hl-number">1.25</span>
+<strong class="hl-string"><span style="color: green">"USD"</span></strong>, <span style="color:blue" class="hl-number">10</span>, <strong class="hl-string"><span style="color: green">"2004-09-30 18:30:00.0"</span></strong>, <span style="color:blue" class="hl-number">1</span>
+
+<strong class="hl-string"><span style="color: green">"GBP"</span></strong>, <span style="color:blue" class="hl-number">10</span>, <strong class="hl-string"><span style="color: green">"2004-09-30 18:30:00.0"</span></strong>, <span style="color:blue" class="hl-number">1.81</span>
+<strong class="hl-string"><span style="color: green">"JPY"</span></strong>, <span style="color:blue" class="hl-number">10</span>, <strong class="hl-string"><span style="color: green">"2004-09-30 18:30:00.0"</span></strong>, .<span style="color:blue" class="hl-number">009</span>
+</pre>
+        <p>
+           For an example of a Reladomo test data file, please refer to mithraTestDataStringSourceA.txt
+        </p>
+    </div>
+</div></body></html>

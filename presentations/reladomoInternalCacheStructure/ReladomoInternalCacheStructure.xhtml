@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns="http://www.w3.org/1999/xhtml"><head><title/><meta name="copyright" content=""/><link type="text/css" href="user.css" rel="stylesheet"/><script type="text/javascript" charset="utf-8" src="files/slidy/scripts/slidy.js"/></head><body><div class="background"/><div class="slide cover title"><h1 class="title">Reladomo InternalCache Structure</h1></div><a name="N10013"/><div class="slide ">
+        <h1 class="title">
+            Reladomo: Internal Cache Structure
+        </h1>
+        <p>March 2010</p>
+    </div><a name="N1001D"/><div class="slide">
+        <h1 class="title">
+            Agenda
+        </h1>
+        <ul class=""><li class="listitem"><p>Cache structure</p></li><li class="listitem"><p>Cache configuration and general behavior</p></li><li class="listitem"><p>Cache invalidation mechanisms</p></li><li class="listitem"><p>Transactional behavior</p></li><li class="listitem"><p>3-tier caches</p></li><li class="listitem"><p>Operation resolution</p></li><li class="listitem"><p>Relationship resolution</p></li><li class="listitem"><p>Object cache structure</p></li></ul>
+
+    </div><a name="N1003D"/><div class="slide">
+        <h1 class="title">
+            Cache Structure
+        </h1>
+        <ul class=""><li class="listitem"><p>Each class is assigned a query cache and an object cache</p></li><li class="listitem"><p>
+                    Object cache always guarantees uniqueness based on primary key: the same PK is guaranteed to be the
+                    same piece of memory
+                </p></li><li class="listitem"><p>Object cache is a collection of indices</p></li><ul class=""><li class="listitem"><p>Protected by a high performance multi-reader single writer lock</p></li></ul><li class="listitem"><p>Query cache remembers the results of queries that the application has run</p></li><ul class=""><li class="listitem"><p>It's a map of Operation -&gt; CachedQuery</p></li><li class="listitem"><p>Uses soft references</p></li><li class="listitem"><p>It also stores results of deep fetches: it's therefore not a good idea to clear the cache
+                        randomly
+                    </p></li></ul></ul>
+    </div><a name="N1005F"/><div class="slide">
+        <h1 class="title">
+            Cache Configuration and General Behavior
+        </h1>
+        <ul class=""><li class="listitem"><p>Partial cache</p></li><ul class=""><li class="listitem"><p>Empty at start time</p></li><li class="listitem"><p>Populated with whatever queries/objects the application performs</p></li><li class="listitem"><p>Can only answer queries that hit the query cache or the object cache exactly</p></li><li class="listitem"><p>Ignores non-unique indices</p></li><li class="listitem"><p>Uses soft and weak references</p></li><ul class=""><li class="listitem"><p>Weak references are used with forEachWithCursor and newly inserted objects</p></li></ul></ul><li class="listitem"><p>Full cache</p></li><ul class=""><li class="listitem"><p>Loads everything at the start, unless a "loadOperationProvider" is supplied</p></li><li class="listitem"><p>Can answer all queries from the cache (unless in a transaction)</p></li><li class="listitem"><p>With a loadOperationProvider, it can be in a fake-full-cache mode.</p></li><li class="listitem"><p>Pretends the cache has everything in it.</p></li><li class="listitem"><p>Can use both unique and non-unique indices</p></li><li class="listitem"><p>Uses regular (hard) references: nothing will be GC'ed</p></li></ul><li class="listitem"><p>None cache</p></li><ul class=""><li class="listitem"><p>It's just a partial cache that does not answer any user queries of any kind.</p></li><li class="listitem"><p>Used entirely for uniqueing and relationship lookup</p></li></ul></ul>
+
+    </div><a name="N1009E"/><div class="slide">
+        <h1 class="title">
+            Cache Invalidation Mechanisms
+        </h1>
+        <ul class=""><li class="listitem"><p>Common invalidations mechanisms:</p></li><ul class=""><li class="listitem"><p>Programmatically initiated: Finder.clearQueryCache()</p></li><ul class=""><li class="listitem"><p>Clears the query cache</p></li><li class="listitem"><p>Marks all the partial cache entries as "dirty". Dirty entries cannot be used to answer a
+                            query.
+                        </p></li></ul><li class="listitem"><p>Notification</p></li><ul class=""><li class="listitem"><p>Fairly granular: Insert/update/delete events are broadcast for any interested listeners.
+                        </p></li></ul><li class="listitem"><p>Time based expiration: if a query or object has been in the cache longer than the expiration
+                        time, it's not trusted
+                    </p></li><li class="listitem"><p>On a per query level, the cache can be bypassed via findOneBypassCache or setting bypassCache
+                        on the list object
+                    </p></li></ul><li class="listitem"><p>Query cache update counters</p></li><ul class=""><li class="listitem"><p>Each CachedQuery object keep a list of per-class and per-attribute update counter at the time
+                        the
+                        query ran
+                    </p></li><ul class=""><li class="listitem"><p>E.g. ProductFinder.description().startsWith("s") =&gt; CachedQuery remembers Product class
+                            counter
+                            and
+                            Product.description attribute update counter
+                        </p></li></ul><li class="listitem"><p>When inserts/deletes happen, the class update counter is incremented</p></li><li class="listitem"><p>Updates to particular attributes update the attribute update counter</p></li><li class="listitem"><p>Cached query is only considered valid if its update counters are current.</p></li></ul><li class="listitem"><p>Object cache</p></li><ul class=""><li class="listitem"><p>Objects collected via the GC (partial/none cache) : can only happen if no other references
+                        exist
+                    </p></li></ul></ul>
+
+    </div><a name="N100DC"/><div class="slide">
+        <h1 class="title">
+            Transactional Behavior
+        </h1>
+        <ul class=""><li class="listitem"><p>The transaction has a query cache for all classes</p></li><ul class=""><li class="listitem"><p>The query cache is empty when the transaction starts</p></li><li class="listitem"><p>This query cache is not shared with non-transactional queries or other transactions</p></li><li class="listitem"><p>Result: queries prior to the transaction are not trusted. Queries within the transaction are
+                        trusted
+                        within the limits of update counter expiration
+                    </p></li></ul><li class="listitem"><p>Each object knows if it's participating in a transaction (shared or exclusive)</p></li><ul class=""><li class="listitem"><p>The database has to know that the object is in a transaction to provide correct ACID behavior
+                    </p></li><li class="listitem"><p>No object is returned from the object cache without a read from the database</p></li><li class="listitem"><p>It's best to do the reading inside the transaction, otherwise the object is refreshed upon
+                        access
+                    </p></li><ul class=""><li class="listitem"><p>Unless optimistic locking has been requested for an object. In that case, the cache is
+                            trusted, but update/delete statements have extra clauses to ensure the state hasn't changed
+                            since the application retrieved the object originally
+                        </p></li></ul><li class="listitem"><p>When a transaction updates an object, the committed version is kept separate</p></li><li class="listitem"><p>Non-transactional threads don't see the transactional (changed) state</p></li><li class="listitem"><p>Two transactions can't write to the same object simultaneously</p></li></ul><li class="listitem"><p>Object cache keeps delta insert/delete indices</p></li><ul class=""><li class="listitem"><p>When an object is inserted in a transaction, it's not added to the main cache for the class
+                    </p></li><li class="listitem"><p>Instead, it's added to a per-transaction delta cache. Ditto for delete</p></li><li class="listitem"><p>The delta cache takes precedence over the main cache for that transaction</p></li></ul></ul>
+    </div><a name="N10118"/><div class="slide">
+        <h1 class="title">
+            3-tier caches
+        </h1>
+        <ul class=""><li class="listitem"><p>The client has it's own local cache</p></li><ul class=""><li class="listitem"><p>By default it's a partial cache and no configuration is required</p></li><li class="listitem"><p>The default can be overriden in the runtime configuration</p></li><li class="listitem"><p>The client tries to answer queries from its cache first before hitting the middle tier</p></li></ul><li class="listitem"><p>The server also has a cache</p></li><ul class=""><li class="listitem"><p>The server cache has to be configured</p></li><li class="listitem"><p>The server can chose to answer the client's queries from its cache when appropriate</p></li></ul><li class="listitem"><p>3-tier transactional behavior</p></li><ul class=""><li class="listitem"><p>The client starts the transaction and creates a proxy transaction on the server side</p></li><li class="listitem"><p>The server is holding onto the actual transactional database connection</p></li><li class="listitem"><p>The cache behaves as if the client was directly connected to the database</p></li></ul></ul>
+    </div><a name="N10144"/><div class="slide">
+        <h1 class="title">
+            Operation Resolution
+        </h1>
+        <ul class=""><li class="listitem"><p>General flow: hit the query cache, then the object cache, then the server</p></li><ul class=""><li class="listitem"><p>Query cache only looks for exact matches. It will not returned expired CachedQueries</p></li><li class="listitem"><p>A partial cache can only answer queries that map onto its unique indices and have a complete
+                        hit.
+                    </p></li><li class="listitem"><p>A full cache will answer all queries, so long as no transaction is underway</p></li></ul><li class="listitem"><p>Object cache query resolution</p></li><ul class=""><li class="listitem"><p>Operation has 3 methods: applyOperationToFullCache(), applyOperationToPartialCache(),</p></li><li class="listitem"><p>One of the first two methods is called by the portal</p></li><li class="listitem"><p>Operation then finds the most selective index to start with and does an index lookup.</p></li><ul class=""><li class="listitem"><p>If no index is found, we give up in a partial cache scenario, or we get the entire
+                            contents of the
+                            cache in a full cache setup
+                        </p></li></ul></ul><li class="listitem"><p>It then filters the results based on the rest of the operation using applyOperation(List)</p></li><ul class=""><li class="listitem"><p>Example: Cache has 3 indices:</p></li><li class="listitem"><p>Index 1 attributes: a</p></li><li class="listitem"><p>Index 2 attributes: a,b</p></li><li class="listitem"><p>Index 3 attributes: c</p></li><li class="listitem"><p>Query is a = 1 &amp; b = 2 &amp; c = 3.</p></li><li class="listitem"><p>If Index 2 is more selective than Index 3, we do index lookup for (a = 1, b = 2), then filter
+                        the
+                        results for c = 3
+                    </p></li></ul><li class="listitem"><p>Relationships used in operations are typically resolved through auto-generated indices</p></li><li class="listitem"><p>All current index implementations are hash based: can only resolve "=" and "in"</p></li></ul>
+
+    </div><a name="N10187"/><div class="slide">
+        <h1 class="title">
+            Relationship Resolution
+        </h1>
+        <ul class=""><li class="listitem"><p>A one-to-one or many-to-one relationships uses a fast path lookup on the cache directly</p></li><pre class="programlisting"><strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">private</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">static</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">final</span></strong> Extractor[] fororder = <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">new</span></strong> Extractor[]
+{
+    OrderItemFinder.orderId()};
+
+    …
+
+    _portal = OrderFinder.getMithraObjectPortal();
+
+    _result = (Order) _portal.getAsOneFromCache(_data, fororder );
+</pre><li class="listitem"><p>A fast path lookup creates no garbage</p></li><li class="listitem"><p>The code is essentially doing an index lookup</p></li><li class="listitem"><p>If the fast path fails to produce a result, we then create an operation and do a normal loopkup
+                </p></li><li class="listitem"><p>A one-to-many or many-to-many relationship creates a list and operation and resolves it normally
+                </p></li><li class="listitem"><p>During a deep fetch, the query cache is pre-populated with the operations and results that map the
+                    objects in the list to their related objects
+                </p></li><ul class=""><li class="listitem"><p>For queries that map to unique indices, the query cache is only used for negative
+                        (non-existent)
+                        hits
+                    </p></li></ul><li class="listitem"><p>Therefore, a x-to-many relationship usually just hits the query cache</p></li></ul>
+    </div><a name="N101AB"/><div class="slide">
+        <h1 class="title">
+            Object Cache Structure
+        </h1>
+        <ul class=""><li class="listitem"><p>Core concepts:</p></li><ul class=""><li class="listitem"><p>Hashing Strategy</p></li><li class="listitem"><p>An index is a searchable set (not a map!!!)</p></li><li class="listitem"><p>A cache is not a map. It's a collection of indices</p></li></ul><li class="listitem"><p>Non-Dated indices:</p></li><ul class=""><li class="listitem"><p>FullUniqueIndex: similar to a Trove THashSet, but is searchable</p></li><li class="listitem"><p>PartialPrimaryKeyIndex: similar in structure to a HashMap (entry objects)</p></li><ul class=""><li class="listitem"><p>Entry objects are Weak or Soft referenced. An entry can also be marked as dirty</p></li><li class="listitem"><p>Weak references are used with forEachWithCursor and new inserts</p></li></ul><li class="listitem"><p>PartialWeakUniqueIndex: used for partial cache indices other than the primary key</p></li><li class="listitem"><p>NonUniqueIdentityIndex: only used with full caches. It's a compact searchable set that returns
+                        a list
+                    </p></li></ul><li class="listitem"><p>Dated indices:</p></li><ul class=""><li class="listitem"><p>FullSemiUniqueDatedIndex: holds onto the data objects, not the (wrapper) business objects
+                    </p></li><li class="listitem"><p>PartialSemiUniqueDatedIndex: holds weak references to the data objects</p></li><li class="listitem"><p>NonUniqueIndex: full cache only. Holds onto the data objects and returns a list</p></li><li class="listitem"><p>DatedObjectIndex: holds onto the business objects using soft or weak references</p></li></ul></ul>
+    </div><a name="N101E7"/><div class="slide">
+        <h1 class="title">
+            FullUniqueIndex
+        </h1>
+        <ul class=""><li class="listitem"><p>Generally the only class from the Reladomo cache package that's useful outside</p></li><li class="listitem"><p>Used in multi-threaded loader for matching</p></li><li class="listitem"><p>Can be used in application code for matching as well</p></li><li class="listitem"><p>Structurally very similar to a Trove THashSet</p></li><ul class=""><li class="listitem"><p>Hashing Strategy: usually created from a list of Reladomo attributes
+                        (ExtractorBasedHashingStrategy)
+                    </p></li><li class="listitem"><p>Collision resolution is simpler than trove (quadratic probing)</p></li></ul><li class="listitem"><p>However, it's searchable</p></li><ul class=""><li class="listitem"><p>Unlike a JDK set (which has no get method)</p></li><li class="listitem"><p>Search method by the same object class: getFromData</p></li><li class="listitem"><p>Don't use the get() methods, as they are specialized for single attribute searches</p></li><li class="listitem"><p>remove and contains work as you would expect</p></li><li class="listitem"><p>Special feature: can search by a different class using the get(object, Extractor[]) method
+                    </p></li></ul></ul>
+    </div><a name="N10215"/><div class="slide">
+        <h1 class="title">
+            SemiUniqueDatedIndex
+        </h1>
+        <ul class=""><li class="listitem"><p>It's an unusual index for the dated data</p></li><li class="listitem"><p>It simultaneously holds two hash structures (one fully dated and unique, the other not</p></li><li class="listitem"><p>An earlier implementation was using composition of two sets and it wasn't working well</p></li><li class="listitem"><p>A dated cache first finds the data and then the business objects for that data</p></li><ul class=""><li class="listitem"><p>The business object is potentially instantiated if it didn't exist before</p></li></ul><li class="listitem"><p>The business object has the uniqueness guarantee, not the data object</p></li></ul>
+
+    </div><a name="N10231"/><div class="slide">
+        <h1 class="title">
+            SemiUniqueDatedIndex Code
+        </h1>
+        <pre class="programlisting"><strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">public</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">class</span></strong> PartialSemiUniqueDatedIndex <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">implements</span></strong> SemiUniqueDatedIndex
+{
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">private</span></strong> ExtractorBasedHashStrategy hashStrategy;
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">private</span></strong> ExtractorBasedHashStrategy semiUniqueHashStrategy;
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">private</span></strong> SemiUniqueEntry[] nonDatedTable;
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">private</span></strong> SingleEntry[] table;
+}
+
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">private</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">static</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">class</span></strong> SingleEntry <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">extends</span></strong> WeakReference
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">implements</span></strong> SemiUniqueEntry
+{
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">private</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">int</span></strong> pkHash;
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">private</span></strong> SingleEntry pkNext;
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">private</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">int</span></strong> semiUniqueHash;
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">private</span></strong> SemiUniqueEntry semiUniqueNext;
+}
+
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">private</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">interface</span></strong> SemiUniqueEntry <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">extends</span></strong> SemiUniqueObject
+{
+    ...
+}
+
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">private</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">static</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">class</span></strong> MultiEntry <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">implements</span></strong> SemiUniqueEntry
+{
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">private</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">int</span></strong> semiUniqueHash;
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">private</span></strong> SingleEntry[] list;
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">private</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">int</span></strong> size;
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">private</span></strong> SemiUniqueEntry semiUniqueNext;
+}
+</pre>
+    </div><a name="N1023B"/><div class="slide">
+        <h1 class="title">
+            SemiUniqueDatedIndex Instance Diagram
+        </h1>
+        <div class=""><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;"><tr><td align="center" valign="middle"><img src="ReladomoInternalCacheStructure_14_1.png" align="middle"/></td></tr></table></div>
+    </div></body></html>

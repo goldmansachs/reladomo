@@ -1,0 +1,120 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Reladomo Database Definition Generator</title><link href="mithradoc.css" type="text/css" rel="stylesheet"><meta content="DocBook XSL Stylesheets V1.79.1" name="generator"><!-- (c) 2016 Copyright Goldman Sachs, Inc. --></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="article"><div class="titlepage"><div><div><h2 class="title"><a name="N40003"></a>Reladomo Database Definition Generator</h2></div><div><div class="author"><h3 class="author"></h3></div></div><div><p class="pubdate">20 June 2006</p></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="sect1"><a href="#N40014">1. Introduction</a></span></dt><dt><span class="sect1"><a href="#N4001D">2. Usage</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N40028">2.1. DDL Generation from Ant</a></span></dt><dt><span class="sect2"><a href="#N4004A">2.2. Direct DDL Generation</a></span></dt></dl></dd><dt><span class="sect1"><a href="#N4006C">3. Internals</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N40071">3.1. Relevant Hierarchical Information</a></span></dt><dt><span class="sect2"><a href="#N40095">3.2. Caveats</a></span></dt></dl></dd></dl></div>
+
+    
+
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N40014"></a>1.&nbsp;Introduction</h2></div></div></div>
+
+        
+        <p>Database definition language (DDL) file generation is an optional feature in Reladomo that allows users to generate
+            scripts to create tables, indices and foreign keys from the Reladomo object definition XML files.
+            These scripts are stored in .ddl, .idx and .fk files, respectively. To date, there is support for Sybase and
+            UDB databases.
+        </p>
+
+    </div>
+
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N4001D"></a>2.&nbsp;Usage</h2></div></div></div>
+
+        
+            <p>
+                DDL generation may be run through direct interaction with the <code class="code">MithraDbDefinitionGenerator</code> class
+                or, more simply, from an Ant task.
+            </p>
+
+        <div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="N40028"></a>2.1.&nbsp;DDL Generation from Ant</h3></div></div></div>
+            
+            <p>
+            An Ant task provides users with a simple way to generate database files for a large set of Reladomo object
+            definition XML files. Consider the following example as it points to a number of XML elements used by
+            MithraDbDefinitionGenerator:
+            </p>
+
+            <pre class="programlisting"><strong xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;target</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"generate-example-mithra-db"</span>
+        <span style="color: blue" class="hl-attribute">depends</span>=<span style="color: green" class="hl-value">"compile-mithra-generator"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;taskdef</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"mithra-gen"</span>
+        <span style="color: blue" class="hl-attribute">classname</span> = <span style="color: green" class="hl-value">"com.gs.fw.common.mithra.generator.dbgenerator.MithraDbDefinitionGenerator"</span>
+        <span style="color: blue" class="hl-attribute">loaderRef</span>=<span style="color: green" class="hl-value">"mithraGenerator"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;classpath</strong> <span style="color: blue" class="hl-attribute">refid</span>=<span style="color: green" class="hl-value">"mithragen.classpath"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;/taskdef&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;mithra-gen</strong> <span style="color: blue" class="hl-attribute">xml</span>=<span style="color: green" class="hl-value">"${example.home}/xml/mithra/example/ExampleClassList.xml"</span>
+        <span style="color: blue" class="hl-attribute">generatedDir</span>=<span style="color: green" class="hl-value">"${generated.src.dir}/db"</span>
+        <span style="color: blue" class="hl-attribute">buildList</span>=<span style="color: green" class="hl-value">"Product, ProductPrice"</span>
+        <span style="color: blue" class="hl-attribute">databaseType</span>=<span style="color: green" class="hl-value">"sybase"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+<strong style="color: navy" class="hl-tag">&lt;/target&gt;</strong></pre>
+
+            <p>
+            Of interest are the elements for the <code class="code">mithra-gen</code> tag above.
+            </p>
+
+            <p>
+            The <code class="code">xml</code> element specifies the location
+            of the Reladomo class list -- a list of all of the classes to be generated by Reladomo. By default, the DDL
+            generator will create database definition files for all classes. If <code class="code">buildList</code> is provided,
+            the generator will only produce definition files for the classes listed. Keep in mind that the include list
+            is a comma-separated list of the Reladomo classes associated with tables that one wishes to generate.
+            </p>
+
+            <p>
+            The database type must be specified using the <code class="code">databaseType</code> element. Acceptible values
+            for the type are "sybase" and "udb82".
+            </p>
+
+        </div>
+            <div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="N4004A"></a>2.2.&nbsp;Direct DDL Generation</h3></div></div></div>
+                
+                <p>
+                To run DDL generation, one creates an instance of
+                <code class="code">com.gs.fw.common.mithra.generator.dbgenerator.MithraDbDefinitionGenerator</code> and makes a call to
+                <code class="code">MithraDbDefinitionGenerator.execute()</code>. Before calling <code class="code">execute()</code>, one must set the
+                destination directory for the generated database scripts, the location of the Reladomo object definition XML
+                files and the database type with calls to <code class="code">MithraDbDefinitionGenerator.setGeneratedDir()</code>,
+                <code class="code">setXml()</code> and <code class="code">setDatabaseType()</code>, respectively.
+                </p>
+                <p>
+                    The generator currently accepts "sybase" and "udb82" as possible database
+                    types. If no database type is specified or an invalid type is provided, the generator throws a
+                    <code class="code">BuildException</code>.
+                </p>
+            </div>
+    </div>
+
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N4006C"></a>3.&nbsp;Internals</h2></div></div></div>
+        
+        <div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="N40071"></a>3.1.&nbsp;Relevant Hierarchical Information</h3></div></div></div>
+            
+                <p>
+                    The <code class="code">MithraDbDefinitionGenerator</code> class implements the abstract class <code class="code">
+                    AbstractMithraGenerator</code> and makes extensive use of the
+                    <code class="code">com.gs.fw.common.mithra.generator.MithraObjectTypeWrapper</code>  and
+                    <code class="code">com.gs.fw.common.mithra.databasetype.AbstractDatabaseType</code> classes.
+                </p>
+                <p>
+                    A <code class="code">MithraObjectTypeWrapper</code> object maps to a database table. As such, the generator uses it to gather
+                    information about tables, their columns and their indexing.
+                </p>
+                <p>
+                    The SQL data types used in the .ddl files are retrieved from the database-appropriate child of <code class="code">AbstractDatabaseType</code>.
+                    For example, if one specifies Sybase as the database type, the generator will determine the SQL data types from the
+                    <code class="code">SybaseDatabaseType</code> class.
+                </p>
+        </div>
+
+        <div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="N40095"></a>3.2.&nbsp;Caveats</h3></div></div></div>
+            
+                <p>
+                    In general, SQL data types match up reasonably well with Java data types. In cases of multiple options or ambiguity, the
+                    developers were forced to choose specific or peculiar mappings. Where the mapping is not intuitive,
+                    we have provided details:
+
+                    </p><div class="table"><a name="N4009C"></a><p class="title"><b>Table&nbsp;1.&nbsp;</b></p><div class="table-contents">
+                        <table class="table" border="1"><colgroup><col class="col1" width="25%"><col class="col2" width="37%"><col class="col3" width="38%"></colgroup><thead><tr><th>Java Type</th><th>Sybase</th><th>UDB</th></tr></thead><tbody><tr><td><code class="code">long</code></td><td><code class="code">numeric(18,0)</code></td><td><code class="code">bigint</code></td></tr><tr><td><code class="code">String</code></td><td><code class="code">varchar()</code></td><td><code class="code">varchar()</code></td></tr></tbody></table>
+                    </div></div><p><br class="table-break">
+                </p>
+
+                <p>
+                    It is also worth noting that unless <code class="code">maxLength</code> is specified for a String attribute in its
+                    Reladomo object definition XML, the generator will create a column of type <code class="code">varchar(255)</code>.
+                </p>
+        </div>
+    </div>
+</div></body></html>

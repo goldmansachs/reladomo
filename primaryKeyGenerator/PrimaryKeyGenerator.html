@@ -1,0 +1,376 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Reladomo Primary Key Generator</title><link href="mithradoc.css" type="text/css" rel="stylesheet"><meta content="DocBook XSL Stylesheets V1.79.1" name="generator"><!-- (c) 2016 Copyright Goldman Sachs, Inc. --></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="article"><div class="titlepage"><div><div><h2 class="title"><a name="N40003"></a>Reladomo Primary Key Generator</h2></div><div><div class="author"><h3 class="author"></h3></div></div><div><p class="pubdate">July 22, 2007</p></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="section"><a href="#N40014">1. Reladomo PrimaryKey Generator</a></span></dt><dd><dl><dt><span class="section"><a href="#N40023">1.1. Max</a></span></dt><dt><span class="section"><a href="#N4002C">1.2. SimulatedSequence</a></span></dt></dl></dd><dt><span class="section"><a href="#N40065">2. Primary Key Generator XML syntax</a></span></dt><dt><span class="section"><a href="#N400E8">3. Primary Key Generator Programming Model</a></span></dt></dl></div>
+    
+
+    <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N40014"></a>1.&nbsp;Reladomo PrimaryKey Generator</h2></div></div></div>
+        
+        <p>Primary key generator is an optional feature in Reladomo that allows Reladomo objects to declare how the
+            primary key is going to be generated.</p>
+        <p>
+            Two strategies can be used when declaring a primary key generator:
+            <span class="bold"><strong>Max or SimulatedSequence</strong></span>.
+        </p>
+        <div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="N40023"></a>1.1.&nbsp;Max</h3></div></div></div>
+            
+            <p>When using Max strategy, the primary key generator will get the maximum value for the primary key
+                column in the database and it will increment it to generate the next primary key value.</p>
+        </div>
+        <div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="N4002C"></a>1.2.&nbsp;SimulatedSequence</h3></div></div></div>
+            
+            <p>A sequence is a database object from which multiple users may generate integers across the system.
+                Sequences can be used to automatically generate primary key values.
+                A user can create different sequences to generate primary keys for different tables,
+                or can even share the same sequence across many tables.
+            </p>
+            <p>The SimulatedSequence strategy uses a database table to keep the sequence name and the next value of
+                the sequence. In this table, each row represents a different sequence. The user will need to supply a
+                MithraSequence object that is used to access the sequence values from the database and a
+                MithraSequenceObjectFactory object that will return the corresponding MithraSequence object.
+                MithraSequence and MithraSequenceObjectFactory will be explained in the next sections.
+            </p>
+
+            <div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="N40037"></a>1.2.1.&nbsp;com.gs.fw.common.mithra.MithraSequence</h4></div></div></div>
+                
+                <p>For simulated sequence strategy, Reladomo users need to provide a MithraObject that will map to the
+                    sequence table in the database. This Reladomo object must implement the MithraSequence interface:
+                </p>
+                <pre class="programlisting">
+<strong xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">interface</span></strong> MithraSequence
+{
+    <strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">void</span></strong> setSequenceName(String sequenceName);
+
+    <strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">long</span></strong> getNextId();
+
+    <strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">void</span></strong> setNextId(<strong class="hl-keyword"><span style="color: #000080">long</span></strong> nextValue);
+}
+</pre>
+                <p>The MithraSequence implementation will act as an adapter in the case that attributes in the
+                    user-provided MithraSequence object do not match the ones that the primary key generator uses.
+                    This gives the user a way to convert the application programming interface of the user-provided
+                    MithraSequence object to the interface that the primary key generator expects:
+                </p>
+                <pre class="programlisting">
+<strong style="color: navy" class="hl-tag">&lt;MithraObject</strong> <span style="color: blue" class="hl-attribute">objectType</span>=<span style="color: green" class="hl-value">"transactional"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;PackageName&gt;</strong>com.gs.fw.common.mithra.test.domain<strong style="color: navy" class="hl-tag">&lt;/PackageName&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;ClassName&gt;</strong>MithraTestSequence<strong style="color: navy" class="hl-tag">&lt;/ClassName&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;DefaultTable&gt;</strong>MITHRA_TEST_SEQUENCE<strong style="color: navy" class="hl-tag">&lt;/DefaultTable&gt;</strong>
+
+    <strong style="color: navy" class="hl-tag">&lt;Attribute</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"simulatedSequenceName"</span> <span style="color: blue" class="hl-attribute">javaType</span>=<span style="color: green" class="hl-value">"String"</span> <span style="color: blue" class="hl-attribute">columnName</span>=<span style="color: green" class="hl-value">"SEQUENCE_NAME"</span> <span style="color: blue" class="hl-attribute">maxLength</span>=<span style="color: green" class="hl-value">"50"</span> <span style="color: blue" class="hl-attribute">primaryKey</span>=<span style="color: green" class="hl-value">"true"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;Attribute</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"nextValue"</span> <span style="color: blue" class="hl-attribute">javaType</span>=<span style="color: green" class="hl-value">"long"</span> <span style="color: blue" class="hl-attribute">columnName</span>=<span style="color: green" class="hl-value">"NEXT_VALUE"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+<strong style="color: navy" class="hl-tag">&lt;/MithraObject&gt;</strong>
+</pre>
+
+                <pre class="programlisting">
+<strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">class</span></strong> MithraTestSequence <strong class="hl-keyword"><span style="color: #000080">extends</span></strong> MithraTestSequenceAbstract <strong class="hl-keyword"><span style="color: #000080">implements</span></strong> MithraSequence
+{
+    <strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">long</span></strong> getNextId()
+    {
+        <strong class="hl-keyword"><span style="color: #000080">return</span></strong> <strong class="hl-keyword"><span style="color: #000080">this</span></strong>.getNextValue();
+    }
+
+    <strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">void</span></strong> setNextId(<strong class="hl-keyword"><span style="color: #000080">long</span></strong> nextValue)
+    {
+        <strong class="hl-keyword"><span style="color: #000080">this</span></strong>.setNextValue(nextValue);
+    }
+}
+</pre>
+            </div>
+            <div class="section"><div class="titlepage"><div><div><h4 class="title"><a name="N4004F"></a>1.2.2.&nbsp;com.gs.fw.common.mithra.MithraSequenceObjectFactory</h4></div></div></div>
+                
+                <p>In addition, Reladomo users need to provide a sequence object factory class.
+                    This class must implement the MithraSequenceObjectFactory interface:
+                </p>
+                <pre class="programlisting">
+<strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">interface</span></strong> MithraSequenceObjectFactory
+{
+     <strong class="hl-keyword"><span style="color: #000080">public</span></strong> MithraSequence getMithraSequenceObject(String sequenceName, Object sourceAttribute, <strong class="hl-keyword"><span style="color: #000080">int</span></strong> initialValue);
+}
+</pre>
+                <p>
+                    This factory will provide the primary key generator with a common way to access the user provided
+                    MithraSequence.
+                    The getMithraSequenceObject() method must return the simulated sequence object,
+                    and should create and insert it in the database if it does not already exist.
+                </p>
+                <pre class="programlisting">
+<strong class="hl-keyword"><span style="color: #000080">public</span></strong> <strong class="hl-keyword"><span style="color: #000080">class</span></strong> MithraTestSequenceObjectFactory <strong class="hl-keyword"><span style="color: #000080">implements</span></strong> MithraSequenceObjectFactory
+{
+    <strong class="hl-keyword"><span style="color: #000080">public</span></strong> MithraSequence getMithraSequenceObject(String sequenceName, Object sourceAttribute, <strong class="hl-keyword"><span style="color: #000080">int</span></strong> initialValue)
+    {
+        Operation op = MithraTestSequenceFinder.simulatedSequenceName().eq(sequenceName);
+        MithraTestSequence mithraTestSequence = MithraTestSequenceFinder.findOne(op);
+        <strong class="hl-keyword"><span style="color: #000080">if</span></strong> (mithraTestSequence == null)
+        {
+            mithraTestSequence = <strong class="hl-keyword"><span style="color: #000080">new</span></strong> MithraTestSequence()
+            mithraTestSequence.setSequenceName(sequenceName);
+            mithraTestSequence.setNextId(initialValue);
+            mithraTestSequence.insert();
+        }
+        <strong class="hl-keyword"><span style="color: #000080">return</span></strong> mithraTestSequence;
+    }
+}
+</pre>
+            </div>
+        </div>
+    </div>
+    <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N40065"></a>2.&nbsp;Primary Key Generator XML syntax</h2></div></div></div>
+        
+        <p>
+            In order to make use of this feature, some modifications to the primary key attribute tags in the
+            MithraObject XML will be needed.
+        </p>
+        <p>For Max strategy:</p>
+        <pre class="programlisting">
+<strong style="color: navy" class="hl-tag">&lt;Attribute</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"attributeName"</span>
+           <span style="color: blue" class="hl-attribute">javaType</span>=<span style="color: green" class="hl-value">"int or long"</span>
+           <span style="color: blue" class="hl-attribute">columnName</span>=<span style="color: green" class="hl-value">"dbColumn name"</span>
+           <span style="color: blue" class="hl-attribute">primaryKey</span>=<span style="color: green" class="hl-value">"true"</span>
+           <span style="color: blue" class="hl-attribute">primaryKeyGeneratorStrategy</span>=<span style="color: green" class="hl-value">"Max"</span><strong style="color: navy" class="hl-tag"> /&gt;</strong>
+</pre>
+
+        <p>Max strategy example:</p>
+        <pre class="programlisting">
+<strong style="color: navy" class="hl-tag">&lt;MithraObject</strong> <span style="color: blue" class="hl-attribute">objectType</span>=<span style="color: green" class="hl-value">"transactional"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;PackageName&gt;</strong>com.gs.fw.common.mithra.test.domain<strong style="color: navy" class="hl-tag">&lt;/PackageName&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;ClassName&gt;</strong>AccountTransactionMax<strong style="color: navy" class="hl-tag">&lt;/ClassName&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;DefaultTable&gt;</strong>ACCOUNT_TRANSACTION_MAX<strong style="color: navy" class="hl-tag">&lt;/DefaultTable&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;SourceAttribute</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"deskId"</span> <span style="color: blue" class="hl-attribute">javaType</span>=<span style="color: green" class="hl-value">"String"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;Attribute</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"transactionId"</span>
+               <span style="color: blue" class="hl-attribute">javaType</span>=<span style="color: green" class="hl-value">"long"</span>
+               <span style="color: blue" class="hl-attribute">columnName</span>=<span style="color: green" class="hl-value">"TRANSACTION_ID"</span>
+               <span style="color: blue" class="hl-attribute">primaryKey</span>=<span style="color: green" class="hl-value">"true"</span>
+               <span style="color: blue" class="hl-attribute">primaryKeyGeneratorStrategy</span>=<span style="color: green" class="hl-value">"Max"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+                    ...
+<strong style="color: navy" class="hl-tag">&lt;/MithraObject&gt;</strong>
+</pre>
+
+        <p>For SimulatedSequence strategy:</p>
+        <pre class="programlisting">
+<strong style="color: navy" class="hl-tag">&lt;Attribute</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"attributeName"</span>
+           <span style="color: blue" class="hl-attribute">javaType</span>=<span style="color: green" class="hl-value">"int or long"</span>
+           <span style="color: blue" class="hl-attribute">columnName</span>=<span style="color: green" class="hl-value">"dbColumn name"</span>
+           <span style="color: blue" class="hl-attribute">primaryKey</span>=<span style="color: green" class="hl-value">"true"</span>
+           <span style="color: blue" class="hl-attribute">primaryKeyGeneratorStrategy</span>=<span style="color: green" class="hl-value">"SimulatedSequence"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;SimulatedSequence</strong> <span style="color: blue" class="hl-attribute">sequenceName</span>=<span style="color: green" class="hl-value">"sequenceName"</span>
+                           <span style="color: blue" class="hl-attribute">sequenceObjectFactoryName</span>=<span style="color: green" class="hl-value">"sequenceObjectFactory"</span>
+                           <span style="color: blue" class="hl-attribute">hasSourceAttribute</span>=<span style="color: green" class="hl-value">"false"</span>
+                           <span style="color: blue" class="hl-attribute">batchSize</span>=<span style="color: green" class="hl-value">"10"</span>
+                           <span style="color: blue" class="hl-attribute">initialValue</span>=<span style="color: green" class="hl-value">"1"</span>
+                           <span style="color: blue" class="hl-attribute">incrementSize</span>=<span style="color: green" class="hl-value">"1"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+<strong style="color: navy" class="hl-tag">&lt;/Attribute&gt;</strong>
+</pre>
+        <div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                <p><span class="bold"><strong>sequenceName</strong></span> - name of the sequence to be created.</p>
+            </li><li class="listitem">
+                <p>
+                    <span class="bold"><strong>sequenceObjectFactoryName</strong></span> - fully qualified classname for the
+                    sequence object factory. This is a user provided class that follows a factory method pattern for
+                    MithraSequence objects.
+                </p>
+            </li><li class="listitem">
+                <p>
+                    <span class="bold"><strong>hasSourceAttribute</strong></span> - this attribute accepts the values "true" or
+                    "false". If "true" a sequence table is created in every database, otherwise the sequence table is
+                    created in the default database.
+                </p>
+            </li><li class="listitem">
+                <p>
+                    <span class="bold"><strong>batchSize</strong></span> - An optional value representing the size of a batch of
+                    primary key values. This primary key values batch will improve performance since it will allow the
+                    primary key generator to get the next value from the local batch instead of going to the database
+                    every time a new value is requested. This feature is very useful specially when inserting MithraList
+                    objects. This value must be a positive number. <span class="bold"><strong>Default is 10</strong></span>.
+                </p>
+            </li><li class="listitem">
+                <p>
+                    <span class="bold"><strong>initialValue</strong></span> - specifies the initial value for the sequence.
+                    <span class="bold"><strong>Default is 1</strong></span>.
+                </p>
+            </li><li class="listitem">
+                <p>
+                    <span class="bold"><strong>incrementSize</strong></span> - specifies the interval between sequence numbers.
+                    This value can be any positive or negative integer, but it cannot be 0. If this value is negative,
+                    then the sequence descends. If the increment is positive, then the sequence ascends.
+                    <span class="bold"><strong>Default is 1</strong></span>.
+                </p>
+            </li></ul></div>
+        <p>Simulated sequence strategy example:</p>
+        <pre class="programlisting">
+<strong style="color: navy" class="hl-tag">&lt;MithraObject</strong> <span style="color: blue" class="hl-attribute">objectType</span>=<span style="color: green" class="hl-value">"transactional"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;PackageName&gt;</strong>com.gs.fw.common.mithra.test.domain<strong style="color: navy" class="hl-tag">&lt;/PackageName&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;ClassName&gt;</strong>AccountTransaction<strong style="color: navy" class="hl-tag">&lt;/ClassName&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;DefaultTable&gt;</strong>ACCOUNT_TRANSACTION<strong style="color: navy" class="hl-tag">&lt;/DefaultTable&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;SourceAttribute</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"deskId"</span> <span style="color: blue" class="hl-attribute">javaType</span>=<span style="color: green" class="hl-value">"String"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;Attribute</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"transactionId"</span>
+               <span style="color: blue" class="hl-attribute">javaType</span>=<span style="color: green" class="hl-value">"int"</span>
+               <span style="color: blue" class="hl-attribute">columnName</span>=<span style="color: green" class="hl-value">"TRANSACTION_ID"</span>
+               <span style="color: blue" class="hl-attribute">primaryKey</span>=<span style="color: green" class="hl-value">"true"</span>
+               <span style="color: blue" class="hl-attribute">primaryKeyGeneratorStrategy</span>=<span style="color: green" class="hl-value">"SimulatedSequence"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+         <strong style="color: navy" class="hl-tag">&lt;SimulatedSequence</strong> <span style="color: blue" class="hl-attribute">sequenceName</span>=<span style="color: green" class="hl-value">"AccountTransactionSequence"</span>
+                            <span style="color: blue" class="hl-attribute">sequenceObjectFactoryName</span>=<span style="color: green" class="hl-value">"com.gs.fw.common.mithra.test.domain.MithraTestSequenceObjectFactory"</span>
+                            <span style="color: blue" class="hl-attribute">hasSourceAttribute</span>=<span style="color: green" class="hl-value">"false"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;/Attribute&gt;</strong>
+    ...
+<strong style="color: navy" class="hl-tag">&lt;/MithraObject&gt;</strong>
+</pre>
+        <p>
+            Notice, since the values for batchSize, initialValue, and incrementSize where not declared, the sequence
+            will be initialized using the default values mentioned above for those attributes.
+        </p>
+        <p>
+            There are some restrictions when using simulated sequences, for example, simulated sequences can be shared
+            among Reladomo objects. Two or more Reladomo objects can use the same simulated sequence as long as the Reladomo
+            objects have the same source attribute type, and that the values for batchSize, initialValue, and
+            incrementalValue are the same in each Reladomo object definition.
+        </p>
+        <p>
+            In addition, Reladomo objects that have compound primary keys can use primary key generators for more than
+            one of the primary key attributes. If so, the primary key generators can use the same strategy:
+        </p>
+        <pre class="programlisting">
+<strong style="color: navy" class="hl-tag">&lt;MithraObject</strong> <span style="color: blue" class="hl-attribute">objectType</span>=<span style="color: green" class="hl-value">"transactional"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;PackageName&gt;</strong>com.gs.fw.common.mithra.test.domain<strong style="color: navy" class="hl-tag">&lt;/PackageName&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;ClassName&gt;</strong>SpecialAccountMax<strong style="color: navy" class="hl-tag">&lt;/ClassName&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;DefaultTable&gt;</strong>SPECIAL_ACCOUNT_MAX<strong style="color: navy" class="hl-tag">&lt;/DefaultTable&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;SourceAttribute</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"deskId"</span> <span style="color: blue" class="hl-attribute">javaType</span>=<span style="color: green" class="hl-value">"String"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;Attribute</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"specialAccountId"</span>
+               <span style="color: blue" class="hl-attribute">javaType</span>=<span style="color: green" class="hl-value">"long"</span>
+               <span style="color: blue" class="hl-attribute">columnName</span>=<span style="color: green" class="hl-value">"SPECIAL_ACCOUNT_ID"</span>
+               <span style="color: blue" class="hl-attribute">primaryKey</span>=<span style="color: green" class="hl-value">"true"</span>
+               <span style="color: blue" class="hl-attribute">primaryKeyGeneratorStrategy</span>=<span style="color: green" class="hl-value">"Max"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;Attribute</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"accountSpecialCode"</span>
+               <span style="color: blue" class="hl-attribute">javaType</span>=<span style="color: green" class="hl-value">"long"</span>
+               <span style="color: blue" class="hl-attribute">columnName</span>=<span style="color: green" class="hl-value">"ACCOUNT_SPECIAL_CODE"</span>
+               <span style="color: blue" class="hl-attribute">primaryKey</span>=<span style="color: green" class="hl-value">"true"</span>
+               <span style="color: blue" class="hl-attribute">primaryKeyGeneratorStrategy</span>=<span style="color: green" class="hl-value">"Max"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+     ...
+<strong style="color: navy" class="hl-tag">&lt;/MithraObject&gt;</strong>
+</pre>
+
+        <p>Or different strategies:</p>
+        <pre class="programlisting">
+<strong style="color: navy" class="hl-tag">&lt;MithraObject</strong> <span style="color: blue" class="hl-attribute">objectType</span>=<span style="color: green" class="hl-value">"transactional"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;PackageName&gt;</strong>com.gs.fw.common.mithra.test.domain<strong style="color: navy" class="hl-tag">&lt;/PackageName&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;ClassName&gt;</strong>SpecialAccount<strong style="color: navy" class="hl-tag">&lt;/ClassName&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;DefaultTable&gt;</strong>SPECIAL_ACCOUNT<strong style="color: navy" class="hl-tag">&lt;/DefaultTable&gt;</strong>
+
+    <strong style="color: navy" class="hl-tag">&lt;SourceAttribute</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"deskId"</span> <span style="color: blue" class="hl-attribute">javaType</span>=<span style="color: green" class="hl-value">"String"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;Attribute</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"specialAccountId"</span>
+               <span style="color: blue" class="hl-attribute">javaType</span>=<span style="color: green" class="hl-value">"long"</span>
+               <span style="color: blue" class="hl-attribute">columnName</span>=<span style="color: green" class="hl-value">"SPECIAL_ACCOUNT_ID"</span>
+               <span style="color: blue" class="hl-attribute">primaryKey</span>=<span style="color: green" class="hl-value">"true"</span>
+               <span style="color: blue" class="hl-attribute">primaryKeyGeneratorStrategy</span>=<span style="color: green" class="hl-value">"SimulatedSequence"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;SimulatedSequence</strong> <span style="color: blue" class="hl-attribute">sequenceName</span>=<span style="color: green" class="hl-value">"AccountSequence"</span>
+                           <span style="color: blue" class="hl-attribute">sequenceObjectFactoryName</span>=<span style="color: green" class="hl-value">"com.gs.fw.common.mithra.test.domain.MithraTestSequenceObjectFactory"</span>
+                           <span style="color: blue" class="hl-attribute">hasSourceAttribute</span>=<span style="color: green" class="hl-value">"false"</span>
+                           <span style="color: blue" class="hl-attribute">batchSize</span>=<span style="color: green" class="hl-value">"2"</span>
+                           <span style="color: blue" class="hl-attribute">initialValue</span>=<span style="color: green" class="hl-value">"100000000"</span>
+                           <span style="color: blue" class="hl-attribute">incrementSize</span>=<span style="color: green" class="hl-value">"1"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;/Attribute&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;Attribute</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"accountSpecialCode"</span>
+               <span style="color: blue" class="hl-attribute">javaType</span>=<span style="color: green" class="hl-value">"long"</span>
+               <span style="color: blue" class="hl-attribute">columnName</span>=<span style="color: green" class="hl-value">"ACCOUNT_SPECIAL_CODE"</span>
+               <span style="color: blue" class="hl-attribute">primaryKey</span>=<span style="color: green" class="hl-value">"true"</span>
+               <span style="color: blue" class="hl-attribute">primaryKeyGeneratorStrategy</span>=<span style="color: green" class="hl-value">"Max"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+    ...
+<strong style="color: navy" class="hl-tag">&lt;/MithraObject&gt;</strong>
+</pre>
+    </div>
+    <div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N400E8"></a>3.&nbsp;Primary Key Generator Programming Model</h2></div></div></div>
+        
+        <p>Every transactional Reladomo object will provide a convenience method to generate and set the primary key
+            value. In addition, this method will return the generated primary key value. The use of this method is
+            optional since the Reladomo object will check the primary key values (for the primary keys that are using
+            primary key generators) and generate the values if they have not been set when insert() is called on the
+            MithraObject. The method will be of the form:
+        </p>
+        <pre class="programlisting">
+<strong class="hl-keyword"><span style="color: #000080">public</span></strong> &lt;primaryKey attribute type&gt; generateAndSet&lt;primaryKey attribute name&gt;();
+</pre>
+        <p>The MithraList object does not provide any convenience method(s) to work with primary key generators.
+            In the case of the SimulatedSequence strategy, the MithraList object will ensure that the batch has enough
+            capacity for the list.
+        </p>
+        <p>Here is an example of how to insert a MithraObject that uses a SimulatedSequence. In this case
+            transactionId is the primary key for the AccountTransaction object:
+        </p>
+        <pre class="programlisting">
+...
+AccountTransaction accountTransaction0 = <strong class="hl-keyword"><span style="color: #000080">new</span></strong> AccountTransaction();
+accountTransaction0.setDeskId(<strong class="hl-string"><span style="color: green">"A"</span></strong>);
+accountTransaction0.setTransactionDescription(<strong class="hl-string"><span style="color: green">"Account Transaction 0"</span></strong>);
+accountTransaction0.setTransactionDate(<strong class="hl-keyword"><span style="color: #000080">new</span></strong> Timestamp(System.currentTimeMillis()));
+<strong class="hl-keyword"><span style="color: #000080">long</span></strong> transactionId0 = accountTransaction0.generateAndSetTransactionId();
+accountTransaction0.insert();
+...
+</pre>
+        <p>Inserting a MithraList using a simulated sequence:</p>
+        <pre class="programlisting">
+...
+AccountTransactionList list1 = <strong class="hl-keyword"><span style="color: #000080">new</span></strong> AccountTransactionList();
+AccountTransaction accountTransaction1 = null;
+<strong class="hl-keyword"><span style="color: #000080">for</span></strong> (<strong class="hl-keyword"><span style="color: #000080">int</span></strong> i = <span style="color:blue" class="hl-number">0</span>; i &lt; <span style="color:blue" class="hl-number">25</span>; i++)
+{
+    accountTransaction1 = <strong class="hl-keyword"><span style="color: #000080">new</span></strong> AccountTransaction();
+    accountTransaction1.setTransactionDate(<strong class="hl-keyword"><span style="color: #000080">new</span></strong> Timestamp(System.currentTimeMillis()));
+    accountTransaction1.setTransactionDescription(<strong class="hl-string"><span style="color: green">"Transaction failure: "</span></strong>+i);
+    accountTransaction1.setDeskId(<strong class="hl-string"><span style="color: green">"A"</span></strong>);
+    list1.add(accountTransaction1);
+}
+list1.insertAll();
+...
+</pre>
+        <p>
+            In this case the convenience method to generate and set the primary key is not being called.
+            When the insertAll() is called on the MithraList, the list ensures that the primary key generator has a
+            batch with enough capacity for the list. In addition, the MithraList will call insert on each MithraObject
+            in the list and, as we mentioned before, the MithraObject will check, generate, and set the primary key
+            values if necessary.
+        </p>
+        <p>
+           When Max strategy is used in a single-column or compound primary key, the MithraObject must be called within
+           the context of a transaction, for example:
+        </p>
+        <pre class="programlisting">
+...
+ MithraManagerProvider.getMithraManager().executeTransactionalCommand(
+            <strong class="hl-keyword"><span style="color: #000080">new</span></strong> TransactionalCommand()
+            {
+                <strong class="hl-keyword"><span style="color: #000080">public</span></strong> Object executeTransaction(MithraTransaction tx) <strong class="hl-keyword"><span style="color: #000080">throws</span></strong> Throwable
+                {
+                    AccountTransactionMax transaction0 = <strong class="hl-keyword"><span style="color: #000080">new</span></strong> AccountTransactionMax();
+                    transaction0.setTransactionDescription(<strong class="hl-string"><span style="color: green">"New Account"</span></strong>);
+                    transaction0.setTransactionDate(<strong class="hl-keyword"><span style="color: #000080">new</span></strong> Timestamp(System.currentTimeMillis()));
+                    transaction0.setDeskId(<strong class="hl-string"><span style="color: green">"A"</span></strong>);
+                    transaction0.generateAndSetTransactionId();
+                    transaction0.insert();
+                    <strong class="hl-keyword"><span style="color: #000080">return</span></strong> null;
+                }
+            });
+...
+</pre>
+        <p>The same applies for a MithraList which MithraObject is using the Max strategy:</p>
+        <pre class="programlisting">
+...
+MithraManagerProvider.getMithraManager().executeTransactionalCommand(
+    <strong class="hl-keyword"><span style="color: #000080">new</span></strong> TransactionalCommand()
+    {
+        <strong class="hl-keyword"><span style="color: #000080">public</span></strong> Object executeTransaction(MithraTransaction tx) <strong class="hl-keyword"><span style="color: #000080">throws</span></strong> Throwable
+        {
+            AccountTransactionMaxList list0 = <strong class="hl-keyword"><span style="color: #000080">new</span></strong> AccountTransactionMaxList();
+            AccountTransactionMax transaction0 = null;
+
+            <strong class="hl-keyword"><span style="color: #000080">for</span></strong> (<strong class="hl-keyword"><span style="color: #000080">int</span></strong> i = <span style="color:blue" class="hl-number">0</span>; i &lt; <span style="color:blue" class="hl-number">20</span>; i++)
+            {
+                transaction0 = <strong class="hl-keyword"><span style="color: #000080">new</span></strong> AccountTransactionMax();
+                transaction0.setTransactionDescription(<strong class="hl-string"><span style="color: green">"New Account"</span></strong>);
+                transaction0.setTransactionDate(<strong class="hl-keyword"><span style="color: #000080">new</span></strong> Timestamp(System.currentTimeMillis()));
+                transaction0.setDeskId(<strong class="hl-string"><span style="color: green">"A"</span></strong>);
+            }
+            list.insertAll();
+            <strong class="hl-keyword"><span style="color: #000080">return</span></strong> null;
+        }
+    });
+...
+</pre>
+    </div>
+</div></body></html>

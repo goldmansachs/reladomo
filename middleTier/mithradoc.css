@@ -1,0 +1,79 @@
+
+div.article {
+    font-family: Ariel, Helvetica, sans-serif;
+}
+
+.programlisting {
+  background-color: #F0F0F0 ;
+  border: 1px solid #666666 ;
+  -moz-border-radius: 12px;
+  padding:6px;
+}
+
+.syntax0 {
+font-family: Fixedsys, Lucida Console, Monospaced, Courier, monospace;
+font-size: 10pt;
+color: #000000;
+}
+.syntax1 {
+color: #006666;
+font-style: italic;
+}
+.syntax2 {
+color: #990033;
+font-style: italic;
+}
+.syntax3 {
+font-family: Fixedsys, Lucida Console, Monospaced, Courier, monospace;
+font-size: 10pt;
+color: #008000;
+}
+.syntax4 {
+font-family: Fixedsys, Lucida Console, Monospaced, Courier, monospace;
+font-size: 10pt;
+color: #000080;
+}
+.syntax5 {
+color: #3F7F7F;
+}
+.syntax6 {
+font-family: Fixedsys,Lucida Console, Monospaced, Courier, monospace;
+font-size: 10pt;
+color: #000080;
+}
+.syntax7 {
+font-family: Fixedsys,Lucida Console, Monospaced, Courier, monospace;
+font-size: 10pt;
+color: #000080;
+}
+.syntax8 {
+font-family: Fixedsys,Lucida Console, Monospaced, Courier, monospace;
+font-size: 10pt;
+color: #000080;
+}
+.syntax9 {
+color: #000000;
+}
+.syntax10 {
+font-family: Fixedsys,Lucida Console, Monospaced, Courier, monospace;
+font-size: 10pt;
+color: #000080;
+}
+.syntax11 {
+color: #000000;
+font-weight: bold;
+}
+.syntax12 {
+color: #0000FF;
+}
+.syntax13 {
+color: #ff0000;
+}
+.gutter {
+background: #ffffff;
+color: #000000;
+}
+.gutterH {
+background: #ffffff;
+color: #666699;
+}

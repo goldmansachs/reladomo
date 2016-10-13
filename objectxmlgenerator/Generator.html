@@ -1,0 +1,118 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Reladomo Object XML Generator</title><link href="mithradoc.css" type="text/css" rel="stylesheet"><meta content="DocBook XSL Stylesheets V1.79.1" name="generator"><!-- (c) 2016 Copyright Goldman Sachs, Inc. --></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="article"><div class="titlepage"><div><div><h2 class="title"><a name="N40003"></a>Reladomo Object XML Generator</h2></div><div><p class="pubdate">26 June 2006</p></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="sect1"><a href="#N40014">1. Introduction</a></span></dt><dt><span class="sect1"><a href="#N40020">2. Usage</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N40025">2.1. Ant Build Task</a></span></dt><dt><span class="sect2"><a href="#N40071">2.2. Caveats</a></span></dt></dl></dd></dl></div>
+
+    
+
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N40014"></a>1.&nbsp;Introduction</h2></div></div></div>
+
+        
+        <p>
+            Reladomo maps database tables to Java objects. These objects are generated using a set of
+            configuration and object definition XML (mapping) files created by the user. One must create one XML
+            file for every Reladomo object. The object XML file is the metadata definition of the Reladomo object.
+        </p>
+        <p>
+            To expedite the creation of object XML files from existing schema, an object XML file generator has been
+            created. It connects directly to a database, retrieving a list of the existing tables
+            and generating object XML files that appropriately map to these tables. The generator improves Reladomo's
+            usability and also ensures better consistency between the Reladomo objects' definitions and the tables to which
+            they are mapped.
+        </p>
+
+    </div>
+
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N40020"></a>2.&nbsp;Usage</h2></div></div></div>
+
+        
+            <div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="N40025"></a>2.1.&nbsp;Ant Build Task</h3></div></div></div>
+                
+                <p>
+                An Ant task provides users with a simple way to integrate XML generation into a build. Consider the following example
+                as it points to a number of XML elements used by MithraDbDefinitionGenerator:
+            </p>
+
+            <pre class="programlisting"><strong xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;target</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"generate-para-mithra-xml-url"</span>
+        <span style="color: blue" class="hl-attribute">depends</span>=<span style="color: green" class="hl-value">"compile-mithra, compile-mithra-generator"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;taskdef</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"mithra-gen-xml"</span>
+             <span style="color: blue" class="hl-attribute">classname</span>=<span style="color: green" class="hl-value">"com.gs.fw.common.mithra.generator.
+                       objectxmlgenerator.MithraObjectXmlGenerator"</span>
+             <span style="color: blue" class="hl-attribute">loaderRef</span>=<span style="color: green" class="hl-value">"mithraGenerator"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;classpath</strong> <span style="color: blue" class="hl-attribute">refid</span>=<span style="color: green" class="hl-value">"mithragen.classpath"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;/taskdef&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;mithra-gen-xml</strong> <span style="color: blue" class="hl-attribute">userName</span>=<span style="color: green" class="hl-value">"user"</span>
+                    <span style="color: blue" class="hl-attribute">password</span>=<span style="color: green" class="hl-value">"password"</span>
+                    <span style="color: blue" class="hl-attribute">schema</span>=<span style="color: green" class="hl-value">"schema"</span>
+                    <span style="color: blue" class="hl-attribute">databaseType</span>=<span style="color: green" class="hl-value">"sybase"</span>
+                    <span style="color: blue" class="hl-attribute">driver</span>=<span style="color: green" class="hl-value">"com.sybase.jdbc4.jdbc.SybDriver"</span>
+                    <span style="color: blue" class="hl-attribute">url</span>=<span style="color: green" class="hl-value">"jdbc:sybase:Tds:somehost.example.com:8111/
+                         schema"</span>
+                    <span style="color: blue" class="hl-attribute">includeTables</span>=<span style="color: green" class="hl-value">"TABLE_1, TABLE_2"</span>
+                    <span style="color: blue" class="hl-attribute">outputDir</span>=<span style="color: green" class="hl-value">"${para.home}/xml/mithra/generated"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+<strong style="color: navy" class="hl-tag">&lt;/target&gt;</strong>
+
+<strong style="color: navy" class="hl-tag">&lt;target</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"generate-para-mithra-xml-ldap"</span>
+        <span style="color: blue" class="hl-attribute">depends</span>=<span style="color: green" class="hl-value">"compile-mithra, compile-mithra-generator"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;taskdef</strong> <span style="color: blue" class="hl-attribute">name</span>=<span style="color: green" class="hl-value">"mithra-gen-xml"</span>
+             <span style="color: blue" class="hl-attribute">classname</span>=<span style="color: green" class="hl-value">"com.gs.fw.common.mithra.generator.
+                       objectxmlgenerator.MithraObjectXmlGenerator"</span>
+             <span style="color: blue" class="hl-attribute">loaderRef</span>=<span style="color: green" class="hl-value">"mithraGenerator"</span><strong style="color: navy" class="hl-tag">&gt;</strong>
+        <strong style="color: navy" class="hl-tag">&lt;classpath</strong> <span style="color: blue" class="hl-attribute">refid</span>=<span style="color: green" class="hl-value">"mithragen.classpath"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;/taskdef&gt;</strong>
+    <strong style="color: navy" class="hl-tag">&lt;mithra-gen-xml</strong> <span style="color: blue" class="hl-attribute">userName</span>=<span style="color: green" class="hl-value">"user"</span>
+                    <span style="color: blue" class="hl-attribute">password</span>=<span style="color: green" class="hl-value">"password"</span>
+                    <span style="color: blue" class="hl-attribute">schema</span>=<span style="color: green" class="hl-value">"schema"</span>
+                    <span style="color: blue" class="hl-attribute">databaseType</span>=<span style="color: green" class="hl-value">"sybase"</span>
+                    <span style="color: blue" class="hl-attribute">ldapName</span>=<span style="color: green" class="hl-value">"SOME_LDAP_NAME"</span>
+                    <span style="color: blue" class="hl-attribute">includeTablesFromFile</span>=<span style="color: green" class="hl-value">"include.txt"</span>
+                    <span style="color: blue" class="hl-attribute">outputDir</span>=<span style="color: green" class="hl-value">"${para.home}/xml/mithra/generated"</span><strong style="color: navy" class="hl-tag">/&gt;</strong>
+<strong style="color: navy" class="hl-tag">&lt;/target&gt;</strong></pre>
+
+                <p>
+                Of interest are the elements for the <code class="code">mithra-gen-xml</code> attributes above.
+                </p>
+
+                <p>
+                The <code class="code">userName</code> and <code class="code">password</code> elements specify the login credentials for the database to be used.
+                The <code class="code">databaseType</code> element sets the database type to be used. Again, acceptable values
+                for the type are "sybase" and "udb82". <code class="code">outputDir</code> is the directory in which
+                the XML files will be generated. All of these elements must be included.
+            </p>
+
+                <p>
+                The XML generator may connect to a database using a specified URL and JDBC driver or an LDAP name. The <code class="code">driver</code>
+                element specifies the driver to use when connecting to the database. The <code class="code">url</code> is the URL of the database.
+                It is typically prefixed with <code class="code">jdbc</code> to establish the protocol. The <code class="code">ldapName</code> is the name of
+                LDAP server to which the generator is to connect.
+                </p>
+
+                <p>
+                    The <code class="code">schema</code> element is optional. In Sybase, the generator's schema is the equivalent of the catalog in JDBC.
+                    In UDB, it is the equivalent of the schema in JDBC.
+                </p>
+
+                <p>
+                    The <code class="code">includeTables</code> and <code class="code">includeTablesFromFile</code> elements are optional. If not included,
+                    the generator will run on all tables present in the database (given the default schema or schema provided). <code class="code">
+                    includeTables</code> is a comma-separated list of tables from which XML files should be generated. <code class="code">
+                    includeTablesFromFile</code> is the URL of a file containing a newline-delimited list of tables from which XML files
+                    should be generated. <code class="code">includeTables</code> and <code class="code">includeTablesFromFile</code> should be used exclusively.
+                </p>
+            </div>
+
+            <div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="N40071"></a>2.2.&nbsp;Caveats</h3></div></div></div>
+                
+                <p>
+                Note that the generator currently accepts "sybase" and "udb82" as possible database
+                types. If no database type is specified or an invalid type is provided, the generator throws a
+                <code class="code">BuildException</code>.
+                </p>
+                <p>
+                If no primary key is specified in a table, the generator will set the primary key in the object XML
+                file to be the first unique index retrieved from the database. This may not be the intended primary key.
+                To avoid such a problem, users should be careful to specifically set the primary key for every table.
+                </p>
+
+
+            </div>
+        </div>
+
+</div></body></html>

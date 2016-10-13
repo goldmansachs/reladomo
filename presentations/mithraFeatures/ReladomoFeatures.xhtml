@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?><html xmlns="http://www.w3.org/1999/xhtml"><head><title/><meta name="copyright" content=""/><link type="text/css" href="user.css" rel="stylesheet"/><script type="text/javascript" charset="utf-8" src="files/slidy/scripts/slidy.js"/></head><body><div class="background"/><div class="slide cover title"><h1 class="title">Mithra Features</h1></div><a name="N10013"/><div class="slide ">
+        <h1 class="title">
+            Reladomo: An Object Relational Mapping Framework
+        </h1>
+    </div><a name="N1001A"/><div class="slide">
+        <h1 class="title">
+            Agenda
+        </h1>
+        <ul class=""><li class="listitem"><p>An introduction to Reladomo</p></li><li class="listitem"><p>Why another persistence framework?</p></li><ul class=""><li class="listitem"><p>Chaining logic</p></li><li class="listitem"><p>Object oriented, compiled time checked query language</p></li><li class="listitem"><p>Transparent multi-schema support</p></li><li class="listitem"><p>Object oriented batch operations</p></li><li class="listitem"><p>Unit testable code</p></li><li class="listitem"><p>Flexible object relationship inflation</p></li><li class="listitem"><p>...</p></li></ul><li class="listitem"><p>Focus on "why" and "how" of various features</p></li><li class="listitem"><p>User Driven Presentation: You decide the particular topics</p></li><li class="listitem"><p>Future directions</p></li></ul>
+    </div><a name="N10047"/><div class="slide">
+        <h1 class="title">
+            Reladomo Features
+        </h1>
+        <ul class=""><li class="listitem"><p>Metadata driven</p></li><li class="listitem"><p>Code generation</p></li><li class="listitem"><p>Object oriented query mechanism</p></li><li class="listitem"><p>Junit integration</p></li><li class="listitem"><p>Chaining</p></li><li class="listitem"><p>Caching: Bi-level, transactionally guaranteed, keyless</p></li><li class="listitem"><p>Flexible relationships</p></li><li class="listitem"><p>Collections based operations (mass insert/update/delete; deep fetch)</p></li><li class="listitem"><p>Multi-schema horizontally scaled databases</p></li><li class="listitem"><p>Database vendor independence</p></li><li class="listitem"><p>Temp Object (temp tables)</p></li><li class="listitem"><p>Embedded Value Objects</p></li><li class="listitem"><p>Natural handling of composite keys</p></li></ul>
+    </div><a name="N10076"/><div class="slide">
+        <h1 class="title">
+            Reladomo Features
+        </h1>
+        <ul class=""><li class="listitem"><p>2-tier and 3-tier (middle tier) operation</p></li><li class="listitem"><p>Notification</p></li><li class="listitem"><p>Primary Key Generation</p></li><li class="listitem"><p>DDL Generator</p></li><li class="listitem"><p>Database to XML Generator</p></li><li class="listitem"><p>RUNS (Replication Update Notification System) integration</p></li><li class="listitem"><p>Fast Sybase/UDB inserts</p></li><li class="listitem"><p>Sybase bulk insert (pure Java)</p></li><li class="listitem"><p>GS Integrator Transport</p></li><li class="listitem"><p>Global Time support</p></li><li class="listitem"><p>Documentation: javadoc, xsddoc, docbook</p></li><li class="listitem"><p>Transaction support (local and 1.5 Phase XA via JOLT)</p></li><li class="listitem"><p>Domain class diagram generation</p></li></ul>
+    </div><a name="N100A5"/><div class="slide">
+        <h1 class="title">
+            Metadata Driven
+        </h1>
+        <p>Why?</p>
+        <ul class=""><li class="listitem"><p>Declarative</p></li><li class="listitem"><p>DRY Principle: adding an attribute should ideally be a single change</p></li><li class="listitem"><p>Secondary uses: DDL generation, Visualization</p></li></ul>
+        <p>How?</p>
+        <ul class=""><li class="listitem"><p>XML</p></li><li class="listitem"><p>Custom SQL-like relationship language</p></li></ul>
+    </div><a name="N100C4"/><div class="slide">
+        <h1 class="title">
+            Metadata Driven
+        </h1>
+        <p>Example:</p>
+        <pre class="programlisting"><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;MithraObject</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">objectType</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"transactional"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&gt;</strong>
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;PackageName&gt;</strong>com.gs.fw.para.domain.desk.product<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/PackageName&gt;</strong>
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;ClassName&gt;</strong>Product<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/ClassName&gt;</strong>
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;DefaultTable&gt;</strong>PRODUCT<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/DefaultTable&gt;</strong>
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;SourceAttribute</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"acmapCode"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">javaType</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"String"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">/&gt;</strong>
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Attribute</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"productId"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">javaType</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"int"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">columnName</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"PROD_SEC_ID_I"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">primaryKey</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"true"</span>
+                   <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">primaryKeyGeneratorStrategy</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"Max"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">/&gt;</strong>
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Attribute</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"gsn"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">javaType</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"String"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">columnName</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"PROD_SEC_NBR_C"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">maxLength</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"15"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">/&gt;</strong>
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Attribute</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"cusip"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">javaType</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"String"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">columnName</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"PROD_SEC_CUSIP_C"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">maxLength</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"15"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">nullable</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"true"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">/&gt;</strong>
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Attribute</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"issuerName"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">javaType</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"String"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">columnName</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"PROD_GEN_ISSUER_N"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">maxLength</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"30"</span>
+                   <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">truncate</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"true"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">/&gt;</strong>
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Attribute</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"issuerNumber"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">javaType</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"int"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">columnName</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"PROD_ISSUER_NUMBER"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">nullable</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"true"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">/&gt;</strong>
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Attribute</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"description"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">javaType</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"String"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">columnName</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"PROD_DESC_1_C"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">maxLength</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"60"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">poolable</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"false"</span>
+                   <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">truncate</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"true"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">/&gt;</strong>
+
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Relationship</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"synonyms"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">relatedObject</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"ProductSynonym"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">cardinality</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"one-to-many"</span>
+                      <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">reverseRelationshipName</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"product"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&gt;</strong>ProductSynonym.productId = this.productId
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/Relationship&gt;</strong>
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Relationship</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"history"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">relatedObject</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"ProductHistory"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">cardinality</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"one-to-many"</span>
+                      <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">reverseRelationshipName</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"product"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&gt;</strong>this.productId = ProductHistory.productId
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/Relationship&gt;</strong>
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Relationship</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"currencySynonym"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">relatedObject</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"ProductSynonym"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">cardinality</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"one-to-one"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&gt;</strong>
+            ProductSynonym.productId =
+            this.productId and ProductSynonym.type = "CID"
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/Relationship&gt;</strong>
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Relationship</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"parentProduct"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">relatedObject</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"Product"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">cardinality</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"many-to-one"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&gt;</strong>
+            ProductRelation.productChildId = this.productId
+            and Product.productId = ProductRelation.productParentId and ProductRelation.relationshipType in (3200,
+            3214, 9800, 3201, 3202, 3207,
+            3208, 3209, 3210)
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/Relationship&gt;</strong>
+        <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Index</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"byGsn"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">unique</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"true"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&gt;</strong>gsn<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/Index&gt;</strong>
+    <strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/MithraObject&gt;</strong></pre>
+    </div><a name="N100D1"/><div class="slide">
+        <h1 class="title">
+            Code Generation
+        </h1>
+        <p>Why?</p>
+        <ul class=""><li class="listitem"><p>DRY: use the metadata to its fullest</p></li><li class="listitem"><p>Quality: code written by domain experts</p></li><li class="listitem"><p>Consistency: code is the same for all objects. Fixes/enhancements are propagated to all instances.
+                </p></li><li class="listitem"><p>Productivity: developers are freed to code the business logic instead of plumbing</p></li></ul>
+        <p>How?</p>
+        <ul class=""><li class="listitem"><p>JAXB XML parser: fast, easy to use</p></li><li class="listitem"><p>Java based templates (similar to Eclipse JET): no need to learn another syntax. Supported by
+                    existing IDE’s (code completion, syntax highlighting, etc)
+                </p></li><li class="listitem"><p>JavaCC based relationship expression parser</p></li><li class="listitem"><p>Extensible style code generation: generate abstract classes.</p></li></ul>
+    </div><a name="N100F9"/><div class="slide">
+        <h1 class="title">
+            Object Oriented Query Language
+        </h1>
+        Why?
+        <ul class=""><li class="listitem"><p>In-line SQL is difficult to write, harder to reader and nearly impossible to maintain</p></li><li class="listitem"><p>In-line SQL is difficult to abstract and reuse</p></li><li class="listitem"><p>String based solutions (e.g. HQL, OQL, EQL, etc) do not solve these issues</p></li><li class="listitem"><p>Reladomo uses an object oriented query language that fits comfortably within the programming
+                    environment:
+                </p></li><ul class=""><li class="listitem"><p>Compile time checked: if something changes, problems will be found earlier</p></li><li class="listitem"><p>No strings: easy to reuse and abstract</p></li><li class="listitem"><p>Overcomes some shortcomings of SQL: "Do not repeat yourself" (DRY) principle applied to
+                        relationships between objects
+                    </p></li><li class="listitem"><p>Developers think in terms of objects and their relationships, not tables and joins.</p></li></ul></ul>
+    </div><a name="N1011A"/><div class="slide">
+        <h1 class="title">
+            In-line SQL Example
+        </h1>
+        <pre class="programlisting"><strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">public</span></strong> <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">void</span></strong> selectTransactions()
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">throws</span></strong> TransactionQueryException, SQLException, CriteriaException
+{
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.createUpdateStatementWrapper();
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">try</span></strong>
+    {
+        StringBuffer sb = <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">new</span></strong> StringBuffer();
+        sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" select BTV.*, NPV.NPV, F.RATE, NPV.RAW_UNREAL, NPV.DISC_UNREAL, NPV.ADJ_NPV "</span></strong>);
+        sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" into #tran_union "</span></strong>);
+        sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" from BASIC_TRANSACT_VIEW BTV, #accounts A, FX_FORWARD_NPV NPV,
+</span></strong>        SECDB_FOREX_RATE F, TCURRENCY C <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">");
+</span></strong>        sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" where BTV.ACCT_ID = A.ACCT "</span></strong>);
+        sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" and BTV.TRAN_ID = NPV.TRAN_ID "</span></strong>);
+        sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" and BTV.TRUE_STATUS = 'ACTIVE' "</span></strong>);
+        sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" and BTV.OUT_Z &gt;= ? "</span></strong>);
+        <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.addTimestampParameter(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.getBasicDateProvider().fetchCheckPoint(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.getBasicDateProvider().getAsOfDate()));
+        sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" and BTV.IN_Z &lt; ? "</span></strong>);
+        <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.addTimestampParameter(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.getBasicDateProvider().fetchCheckPoint(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.getBasicDateProvider().getAsOfDate()));
+        sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" and BTV.TRAN_SETTLE_D &gt; ? "</span></strong>);
+        <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.addTimestampParameter(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.getBasicDateProvider().getAsOfDate());
+        sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" and NPV.FROM_Z &lt; ? "</span></strong>);
+        <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.addTimestampParameter(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.getBasicDateProvider().getAsOfDate());</pre>
+    </div><a name="N10124"/><div class="slide">
+        <h1 class="title">
+            In-line SQL Example Continued
+        </h1>
+        <pre class="programlisting">sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" and NPV.THRU_Z &gt;= ? "</span></strong>);
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.addTimestampParameter(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.getBasicDateProvider().getAsOfDate());
+sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" and NPV.IN_Z &lt; ? "</span></strong>);
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.addTimestampParameter(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.getBasicDateProvider().getEternity());
+sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" and NPV.OUT_Z &gt;= ? "</span></strong>);
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.addTimestampParameter(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.getBasicDateProvider().getEternity());
+sb.append( <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">"and F.CURRENCY = 'USD' "</span></strong>);
+sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" and BTV.TRAN_SETTLE_D = F.VALUE_DATE"</span></strong>);
+sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" and F.FROM_Z &lt; ? "</span></strong>);
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.addTimestampParameter(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.getBasicDateProvider().getAsOfDate());
+sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" and F.THRU_Z &gt;= ? "</span></strong>);
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.addTimestampParameter(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.getBasicDateProvider().getAsOfDate());
+sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" and F.IN_Z &lt; ? "</span></strong>);
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.addTimestampParameter(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.getBasicDateProvider().getEternity());
+sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" and F.OUT_Z &gt;= ? "</span></strong>);
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.addTimestampParameter(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.getBasicDateProvider().getEternity());
+sb.append(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">" and BTV.PROD_SEC_ID_I = C.PROD_SEC_ID_I"</span></strong>);
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.getStatementWrapper().setStatementString(sb.toString());
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.executeUpdateStatement();
+}
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">catch</span></strong> (DataStoreException e)
+{
+<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.getLogger().error(e);
+}
+}</pre>
+    </div><a name="N1012E"/><div class="slide">
+        <h1 class="title">
+            Object Oriented Query Example
+        </h1>
+        <pre class="programlisting"><strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">public</span></strong> List buildOperation (PnlObjectOperationProvider pnlObjectOpProvider, ProductOperationProvider
+productOpProvider, ParaDate milestoneBusinessDate, ActivityReviewManager activityReviewManager)
+{
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.activityReviewManager = activityReviewManager;
+    ParaTransactionList basicTranList = <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">new</span></strong> ParaTransactionList();
+    List tranList = <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">this</span></strong>.buildBusinessDateBasicTransactionOperation(pnlObjectOpProvider, productOpProvider,
+    milestoneBusinessDate);
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">for</span></strong>(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">int</span></strong> i = <span  xmlns:xslthl="http://xslthl.sf.net" style="color:blue" class="hl-number">0</span>; i&lt; tranList.size(); i++)
+    {
+        ParaTransactionList itemList = (ParaTransactionList)tranList.get(i);
+        Timestamp busDate = <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">new</span></strong> Timestamp(milestoneBusinessDate.getTime());
+        businessDate = busDate;
+        Operation op = itemList.getOperation().and(ParaTransactionFinder.status().eq(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-string"><span style="color: green">"ACTIVE"</span></strong>))
+            .and(ParaTransactionFinder.settleDate().greaterThan(busDate));
+
+        op = op.and(getStringOperation(getActivityReviewManager().getCounterPartyNumber(),ParaTransactionFinder.customerTransaction().crossAccount()));
+        basicTranList.add(<strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">new</span></strong> ParaTransactionList(op));
+        basicTranList.deepFetch(ParaTransactionFinder.underlierTransactions());
+        basicTranList.deepFetch(ParaTransactionFinder.customerTransaction());
+    }
+    <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">return</span></strong> basicTranList;
+}</pre>
+    </div><a name="N10138"/><div class="slide">
+        <h1 class="title">
+            Object Oriented Query Language
+        </h1>
+        <p>How?</p>
+        <ul class=""><li class="listitem"><p>Non-trivial: Large part of the Reladomo code base (&gt; 20%)</p></li><li class="listitem"><p>Various types of operations</p></li><ul class=""><li class="listitem"><p>Atomic (equals, in, greaterThan, lessThan, etc)</p></li><li class="listitem"><p>Mapped (traversing a relationship, aka join)</p></li><li class="listitem"><p>Boolean (and, or)</p></li><li class="listitem"><p>Miscellaneous (all, absolute value, etc)</p></li></ul><li class="listitem"><p>Before evaluation of a complex operation, it’s simplified.</p></li><li class="listitem"><p>Operation is evaluated against the cache (if applicable) and then the server</p></li><li class="listitem"><p>SQL generation can be a bit tricky (especially for dated objects)</p></li></ul>
+
+    </div><a name="N1015F"/><div class="slide">
+        <h1 class="title">
+            Testable Code
+        </h1>
+        <p>Why?</p>
+        <ul class=""><li class="listitem"><p>Testable code has become an indispensable part of our development methodology</p></li><li class="listitem"><p>Persistent objects are traditionally difficult to unit test because they’re tied to a database
+                </p></li><li class="listitem"><p>The core Reladomo code was written using test driven development</p></li></ul>
+        <p>How?</p>
+        <ul class=""><li class="listitem"><p>Create a test resource: text file for initial data + in memory SQL database (H2)</p></li><li class="listitem"><p>Reladomo provides a simple testing framework that fits right into Junit.</p></li><li class="listitem"><p>All operations are supported: query, insert, update, delete, chaining, etc.</p></li><li class="listitem"><p>Examples: Large production application</p></li><ul class=""><li class="listitem"><p>The crux of the code is processing of data.</p></li><li class="listitem"><p>Reladomo-enabled testing covers &gt; 80% of the code.</p></li><li class="listitem"><p>Result: shortened development time, highly reliable code with very few bugs encountered in
+                        production.
+                    </p></li></ul></ul>
+
+    </div><a name="N1018E"/><div class="slide">
+        <h1 class="title">
+            Flexible Relationships
+        </h1>
+        <p>Why?</p>
+        <ul class=""><li class="listitem"><p>Relationships between objects can take interesting forms in real life.</p></li><li class="listitem"><p>Can dramatically reduce IO to the database. Can also be used for interesting searches.</p></li><li class="listitem"><p>Two common examples: a parametrized relationship, or a relationship with extra conditions.</p></li></ul>
+        <p>How?</p>
+        <ul class=""><li class="listitem"><p>This feature works because of Reladomo’s dynamic relationship resolution. Examples:
+                    Relationships from Product
+                    </p><pre class="programlisting"><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Relationship</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"parentProduct"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">relatedObject</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"Product"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">cardinality</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"many-to-one"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&gt;</strong>
+    ProductRelation.productChildId = this.productId and Product.productId =
+    ProductRelation.productParentId and
+    ProductRelation.relationshipType in (3200, 3214, 9800, 3201, 3202, 3207, 3208, 3209, 3210, 3211)
+<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/Relationship&gt;</strong>
+<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;Relationship</strong> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">name</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"synonymItem"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">relatedObject</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"ProductSynonym"</span> <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">cardinality</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"one-to-one"</span>
+              <span  xmlns:xslthl="http://xslthl.sf.net" style="color: blue" class="hl-attribute">parameters</span>=<span  xmlns:xslthl="http://xslthl.sf.net" style="color: green" class="hl-value">"String sym"</span><strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&gt;</strong>
+    ProductSynonym.productId = this.productId and ProductSynonym.type = {sym}
+<strong  xmlns:xslthl="http://xslthl.sf.net" style="color: navy" class="hl-tag">&lt;/Relationship&gt;</strong></pre><p>
+                </p></li></ul>
+
+    </div><a name="N101AE"/><div class="slide">
+        <h1 class="title">
+            Chaining
+        </h1>
+        <p>Chaining is an umbrella term that describes a way of storing time series data, audit data or
+            both in a relational database. The different versions (audit only, time series only and
+            bitemporal) are described below.
+        </p>
+        <ul class=""><li class="listitem"><p>1.Audit Only</p></li><li class="listitem"><p>2.Business Time Series Only</p></li><li class="listitem"><p>3.Both Audit and Business Time Series: Bitemporal</p></li></ul>
+
+    </div><a name="N101C2"/><div class="slide">
+        <h1 class="title">
+            Chaining
+        </h1>
+        <p>Why?</p>
+        <ul class=""><li class="listitem"><p>Chaining is complicated</p></li><li class="listitem"><p>The algorithm is only maintainable if it’s managed from one single piece of code</p></li><li class="listitem"><p>Chaining affects the core of object-relational mapping. It is very difficult to implement chaining
+                    as an add-on to an existing OR framework.
+                </p></li><ul class=""><li class="listitem"><p>Chained objects are queried and persisted differently</p></li><li class="listitem"><p>Chained objects don’t have the same operations (insert, update, delete) as regular objects
+                    </p></li><li class="listitem"><p>
+                        Chained objects support more complicated operations: insert, insert until, update, update until,
+                        increment, increment until, terminate.
+                    </p></li></ul></ul>
+    </div><a name="N101E0"/><div class="slide">
+        <h1 class="title">
+            Chaining
+        </h1>
+        <p>How?</p>
+        <ul class=""><li class="listitem"><p>Not a large piece of code (6%), but complicated: 30% of test code is just for chaining</p></li><li class="listitem"><p>Information held in a single object is usually not enough to calculate new state</p></li><li class="listitem"><p>Object delegates complex operations to the TemporalDirector</p></li><li class="listitem"><p>TemporalDirector uses TemporalContainer to calculate new state</p></li><li class="listitem"><p>TemporalContainer keeps data for a range of dates. Can fetch more from the database, on demand.
+                </p></li><li class="listitem"><p>TemporalContainers are held in the transactional cache and discarded at end of transaction</p></li></ul>
+    </div><a name="N101FD"/><div class="slide">
+        <h1 class="title">
+            Audit Only Chaining
+        </h1>
+        <p>
+            Here is an example of this type of audit trail for an account object. The account was created on 1/1/2005:
+        </p>
+        <div class=""><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;"><tr><td align="center" valign="middle"><img src="ReladomoFeatures_19_1.png" align="middle"/></td></tr></table></div>
+        <p>
+            On 2/5/2005, the trader changes to Jane Doe:
+        </p>
+        <div class=""><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;"><tr><td align="center" valign="middle"><img src="ReladomoFeatures_19_2.png" align="middle"/></td></tr></table></div>
+    </div><a name="N1021B"/><div class="slide">
+        <h1 class="title">
+            Audit Only Chaining
+        </h1>
+        <ul class=""><li class="listitem"><p>The IN and OUT columns represent real time. They have nothing to do with the business calendar.
+                </p></li><li class="listitem"><p>The interesting row (meaning, the row we think has the correct information) always has OUT =
+                    Infinity
+                </p></li><li class="listitem"><p>There is no way to alter the history. The only allowed update operation to a row is to change its
+                    OUT value from infinity to current time.
+                </p></li></ul>
+    </div><a name="N1022C"/><div class="slide">
+        <h1 class="title"/>
+        <p>
+            On 1/1/2005, we buy 100 shares of a product. We always do our accounting at 6:30 pm (even if it takes
+            several hours, our business calendar is set to 6:30 pm):
+        </p>
+        <div class=""><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;"><tr><td align="center" valign="middle"><img src="ReladomoFeatures_21_1.png" align="middle"/></td></tr></table></div>
+        <p>
+            On 2/5/2005, we buy another 100 shares:
+        </p>
+        <div class=""><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;"><tr><td align="center" valign="middle"><img src="ReladomoFeatures_21_2.png" align="middle"/></td></tr></table></div>
+        <p>
+            So far, this looks very much like the first example. To clarify the difference, we can do an
+            "as of trade". On 2/10/2005, we find out that we missed a trade for 50 shares that
+            happened on 1/15/2005:
+        </p>
+        <div class=""><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;"><tr><td align="center" valign="middle"><img src="ReladomoFeatures_21_2.png" align="middle"/></td></tr></table></div>
+    </div><a name="N10255"/><div class="slide">
+        <h1 class="title"/>
+        <p>
+            Let’s consider the same example
+        </p>
+        <div class=""><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;"><tr><td align="center" valign="middle"><img src="ReladomoFeatures_22_1.png" align="middle"/></td></tr></table></div>
+        <p>We now add 100 on 2/5/2005:</p>
+        <div class=""><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;"><tr><td align="center" valign="middle"><img src="ReladomoFeatures_22_2.png" align="middle"/></td></tr></table></div>
+        <p>
+            On 2/10/2005, we find a trade that was done on 1/15/2005 for 50 shares:
+        </p>
+        <div class=""><table border="0" summary="manufactured viewport for HTML img" style="cellpadding: 0; cellspacing: 0;"><tr><td align="center" valign="middle"><img src="ReladomoFeatures_22_3.png" align="middle"/></td></tr></table></div>
+    </div><a name="N1027E"/><div class="slide">
+        <h1 class="title">
+            Collections Based Operations
+        </h1>
+        <ul class=""><li class="listitem"><p>Two types of batching:</p></li><ul class=""><li class="listitem"><p>Prepared statement batching: reuse the same statement multiple times. X 2 performance
+                        improvement
+                    </p></li><li class="listitem"><p>Use of SQL statements that update more than one row at a time. X 50 performance improvement
+                    </p></li></ul><li class="listitem"><p>Collections are a core of the Reladomo API.</p></li><li class="listitem"><p>Example mass delete:</p><pre class="programlisting">Operation op = SwapPriceFinder.sourceId().eq( id ); op = op.and(
+    SwapPriceFinder.businessDate().eq( busDate ) );
+
+op = op.and( SwapPriceFinder.feedNumber().eq( feedNumber ) );
+
+SwapPriceList priceList = <strong  xmlns:xslthl="http://xslthl.sf.net" class="hl-keyword"><span style="color: #000080">new</span></strong> SwapPriceList(op);
+
+priceList.deleteAll();</pre></li><li class="listitem"><p>65,583 rows took 562 seconds without deleteAll implementation. With the implementation it took 12
+                    seconds.
+                </p></li><li class="listitem"><p>Deep Fetching: a better approach to relationship resolution</p></li><li class="listitem"><p>Collections based operations make Reladomo suitable for most types of large retrievals (report
+                    style), OLTP, and batch style processing.
+                </p></li></ul>
+    </div><a name="N102A2"/><div class="slide">
+        <h1 class="title">
+            Collections Based Operations
+        </h1>
+        <p>Why?</p>
+        <ul class=""><li class="listitem"><p>Reduce object relational impedance mismatch</p></li><li class="listitem"><p>Reduced chattiness</p></li><li class="listitem"><p>Performance</p></li></ul>
+        <p>How?</p>
+        <ul class=""><li class="listitem"><p>List object used as gateway to collective operations</p></li><li class="listitem"><p>Special SQL generation for mass/bulk operations</p></li><li class="listitem"><p>Deep fetch uses joins: solves 1+N problem</p></li><li class="listitem"><p>BCP support for Sybase: 5x faster than plain insert</p></li><ul class=""><li class="listitem"><p>Investigating pure Java alternative to file generation</p></li></ul></ul>
+    </div><a name="N102CB"/><div class="slide">
+        <h1 class="title">
+            Transparent Multi-schema Support
+        </h1>
+        <ul class=""><li class="listitem"><p>For scalability, we’ve partitioned ledger data into a large number of databases (about 150). The
+                    schema is identical in these database, but the data is different.
+                </p></li><li class="listitem"><p>The class of objects can therefore be retrieved from multiple sources</p></li><li class="listitem"><p>Traditional ORMs have difficulty keeping objects tied to the original source. This is particularly
+                    a problem with caching.
+                </p></li><li class="listitem"><p>We even have transactions that read from one database and write to another. That is, the access
+                    patterns are not necessarily one-database-at-a-time.
+                </p></li><li class="listitem"><p>Support for this is built into the core of Reladomo.</p></li></ul>
+    </div><a name="N102E2"/><div class="slide">
+        <h1 class="title">
+            Transparent Multi-schema Support
+        </h1>
+        <p>Why?</p>
+        <ul class=""><li class="listitem"><p>How an object is identified must include where the object came from:</p></li><ul class=""><li class="listitem"><p>Transaction 123 in Database A can be 100 shares of IBM</p></li><li class="listitem"><p>Transaction 123 in Database B can be 300 shares of BMW</p></li><li class="listitem"><p>When both objects are loaded, they must not be confused.</p></li></ul><li class="listitem"><p>Enables horizontally scalable solutions</p></li></ul>
+        <p>How?</p>
+        <ul class=""><li class="listitem"><p>Metadata includes special attribute (SourceAttribute)</p></li><li class="listitem"><p>All operations (find, insert, update, delete) use this attribute to obtain the proper
+                    connection.
+                </p></li></ul>
+    </div><a name="N10308"/><div class="slide">
+        <h1 class="title">
+            Caching
+        </h1>
+        <p>Why?</p>
+        <ul class=""><li class="listitem"><p>Uniquing: an object with a given primary key must correspond to exactly one memory location</p></li><li class="listitem"><p>Performance</p></li><li class="listitem"><p>Reduced IO and latency</p></li></ul>
+        <p>How?</p>
+        <ul class=""><li class="listitem"><p>Can be configured as none, partial (dynamic) or full on a per class basis.</p></li><li class="listitem"><p>Can be bypassed on a per query basis.</p></li><li class="listitem"><p>Cache is a searchable set of indices. An index is a keyless set.</p></li><li class="listitem"><p>Queries are cached in the query cache. Also facilitates deep fetched relationships.</p></li><li class="listitem"><p>Transaction disregards pre-transaction cached results.</p></li><li class="listitem"><p>Partial cache can only answer queries based on unique identifiers.</p></li></ul>
+    </div><a name="N10333"/><div class="slide">
+        <h1 class="title">
+            Three Tier Operation
+        </h1>
+        <p>Why?</p>
+        <ul class=""><li class="listitem"><p>Security (fat client applications):</p></li><ul class=""><li class="listitem"><p>User ID must not be able to access database directly (especially write)</p></li><li class="listitem"><p>Batch/App ID must not be used from unauthorized IP’s (see PACT AppFilter)</p></li><li class="listitem"><p>For a large, semi-mobile user community, maintaining IP lists is undesirable and opens iSQL
+                        hole
+                    </p></li></ul><li class="listitem"><p>Connection sharing: database connections can be expensive. Many users can share same connection.
+                </p></li></ul>
+        <p>How?</p>
+        <ul class=""><li class="listitem"><p>Third tier acts like a relational source. Supports relational-like operations: find, insert,
+                    update, delete.
+                </p></li><li class="listitem"><p>No object graphs. Not a complex object source. Serializaton based on metadata. Wire format looks
+                    like a result set.
+                </p></li><li class="listitem"><p>Lightweight: can be configured as pass-through with no caching.</p></li><li class="listitem"><p>Remoting API must be implemented by application.</p></li></ul>
+    </div><a name="N1035F"/><div class="slide">
+        <h1 class="title">
+            Notification
+        </h1>
+        <p>Why?</p>
+        <ul class=""><li class="listitem"><p>Allow multiple VM’s to independently update data.</p></li><li class="listitem"><p>Polling considered harmful ("Are we there yet?" syndrome)</p></li></ul>
+        <p>How?</p>
+        <ul class=""><li class="listitem"><p>At the end of a transaction, message is constructed. Message contains the primary keys for objects
+                    that were inserted/updated/deleted. Message is sent to a topic that encodes the database identity.
+                </p></li><li class="listitem"><p>Listeners only register interest in databases they have accessed. Upon receipt of message, any
+                    objects (if any) are marked as dirty.
+                </p></li><li class="listitem"><p>Asynchronous message processing to avoid messaging and IO bottlenecks in application’s main flow.
+                </p></li><li class="listitem"><p>Messaging API can be implemented by application. RV implementation provided.</p></li><li class="listitem"><p>Notification is entirely independent of three tier operation. Most important production uses are
+                    in two tier scenarios. Notification is off by default.
+                </p></li></ul>
+    </div><a name="N10384"/><div class="slide">
+        <h1 class="title">
+            Notification
+        </h1>
+        <p>Examples:</p>
+        <ul class=""><li class="listitem"><p>Posting Engine creates an account. Adjustment server processes a request for the trial or
+                    income function containing the new account some time later.
+                </p></li><li class="listitem"><p>Age Inventory Firm to Firm processor on Desk A updates age transfer status. Age Inventory Firm to
+                    Firm processor on corresponding desk will see new status.
+                </p></li><li class="listitem"><p>Posting Engine updates feed status. Notification is sent for the status object. Next time a
+                    controller queries for status, they will not get stale results.
+                </p></li></ul>
+    </div><a name="N10398"/><div class="slide">
+        <h1 class="title">
+            RUNS Integration
+        </h1>
+        <p>Why?</p>
+        <ul class=""><li class="listitem"><p>Replication from remote sources can cause staleness.</p></li><li class="listitem"><p>For low volume update data (e.g. account data) hitting database all the time is wasteful.</p></li><li class="listitem"><p>Object metadata can be used the same way with RUNS tables as regular tables.</p></li><li class="listitem"><p>Staleness typically exasperated because objects are configured as read only.</p></li></ul>
+        <p>How?</p>
+        <ul class=""><li class="listitem"><p>Application configuration flags objects that are replicated.</p></li><li class="listitem"><p>Background thread reads RUNS queue tables periodically.</p></li><li class="listitem"><p>Send notification based on primary key found in RUNS child tables</p></li><li class="listitem"><p>Clear RUNS tables.</p></li><li class="listitem"><p>Fully optional. Can be setup as a lightweight, independent process.</p></li></ul>
+    </div><a name="N103C3"/><div class="slide">
+        <h1 class="title">
+            DDL Generator
+        </h1>
+        <p>Why?</p>
+        <ul class=""><li class="listitem"><p>Metadata contains all necessary data. DRY: get the DDL from the metadata.</p></li><li class="listitem"><p>Productivity: DDL files are hard to write and maintain.</p></li><li class="listitem"><p>Junior developers have problems writing DDL files, especially index creation.</p></li></ul>
+        <p>How?</p>
+        <ul class=""><li class="listitem"><p>Based on the metadata and target database type, emit DDL.</p></li><li class="listitem"><p>Hardest part is generating decent indices. Primary key index is easy. Foreign key indices are
+                    based on defined relationships.
+                </p></li></ul>
+
+    </div><a name="N103E2"/><div class="slide">
+        <h1 class="title">
+            Generate metadata from existing schema
+        </h1>
+        <p>Why?</p>
+        <ul class=""><li class="listitem"><p>Large legacy systems can be converted quickly and painlessly.</p></li></ul>
+        <p>How?</p>
+        <ul class=""><li class="listitem"><p>Create object definition from table definition.</p></li><li class="listitem"><p>Choose object primary key based on unique index.</p></li></ul>
+    </div><a name="N103FB"/><div class="slide">
+        <h1 class="title">
+            Long term plan
+        </h1>
+        <ul class=""><li class="listitem"><p>The direction of Reladomo is set by its users.</p></li><li class="listitem"><p>Help us make Reladomo a better product:</p></li><ul class=""><li class="listitem"><p>Feedback is the most valuable thing. What’re we doing right or wrong?</p></li><li class="listitem"><p>What features would make your code better?</p></li><li class="listitem"><p>If you find a bug, a test case would be exceptionally helpful.</p></li><li class="listitem"><p>If you’re feeling adventurous, contribute code!</p></li></ul></ul>
+    </div></body></html>
