@@ -60,9 +60,10 @@ gradle clean build
 Once build is successful, run `src/main/java/sample/HelloReladomoApp` to see how it behaves.
 
 
-## References
+## Documentation
 
-There are number of references available within [Reladomo Javadoc jar file](http://search.maven.org/remotecontent?filepath=com/goldmansachs/reladomo/reladomo/16.0.0/reladomo-16.0.0-javadoc.jar).
+Documentation is available [online] (https://goldmansachs.github.io/reladomo/)
+and also included within the [Reladomo Javadoc jar file](http://search.maven.org/remotecontent?filepath=com/goldmansachs/reladomo/reladomo/16.0.0/reladomo-16.0.0-javadoc.jar).
 Extract the jar file and refer to the docs below.
 
 | Reference        | Description           | File Path  |
