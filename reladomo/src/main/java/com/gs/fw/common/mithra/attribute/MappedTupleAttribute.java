@@ -94,7 +94,7 @@ public class MappedTupleAttribute implements TupleAttribute
     {
         for(Attribute a: attrs)
         {
-            if (!(a instanceof MappedAttribute) || ((MappedAttribute)a).getMapper().equals(this.getMapper()))
+            if (!(a instanceof MappedAttribute) || !((MappedAttribute)a).getMapper().equals(this.getMapper()))
             {
                 throw new MithraBusinessException("Cannot form tuples across relationships. The tuple must be created from attributes of the same object.");
             }
