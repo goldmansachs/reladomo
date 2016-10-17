@@ -263,6 +263,7 @@ public class MithraTestSuite
         suite.addTestSuite(TestYearMonthTuple.class);
 
         suite.addTestSuite(MithraPerformanceDataTest.class);
+        suite.addTestSuite(MultiThreadedBatchProcessorTest.class);
 
         //MTLoader
         suite.addTestSuite(TestMatcherThread.class);
