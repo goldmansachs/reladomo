@@ -17,6 +17,7 @@ package com.gs.fw.common.mithra.test.util;
 
 import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
+import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.test.MithraTestAbstract;
 import com.gs.fw.common.mithra.test.domain.*;
 import com.gs.fw.common.mithra.util.MultiThreadedBatchProcessor;
@@ -34,6 +35,7 @@ public class MultiThreadedBatchProcessorTest extends MithraTestAbstract
     {
         super.setUp();
         createOrdersAndItems();
+        MithraManagerProvider.getMithraManager().clearAllQueryCaches();
     }
 
     public void testNoShards()

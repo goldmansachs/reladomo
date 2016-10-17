@@ -91,6 +91,7 @@ public class MultiThreadedBatchProcessor <T, TL extends MithraList<T>>
      *
      * @param retrievalThreads # of threads to retrieve. Should be less than or equal to the number of shards.
      *                         -1 means the number of retrieval threads will be equal to the number of shards.
+     *                         The number of deep fetch (consumer) threads is three times this value.
      *
      */
     public void setRetrievalThreads(int retrievalThreads)
@@ -140,9 +141,9 @@ public class MultiThreadedBatchProcessor <T, TL extends MithraList<T>>
         }
         AutoShutdownThreadExecutor executor = new AutoShutdownThreadExecutor(threads, "MTBP load");
         executor.setTimeoutInMilliseconds(10);
-        AutoShutdownThreadExecutor deepFetchAndBatchProcessor = new AutoShutdownThreadExecutor(threads, "MTBP process");
-        deepFetchAndBatchProcessor.setTimeoutInMilliseconds(10);
         int deepFetchAndBatchProcessorThreads = threads * 3;
+        AutoShutdownThreadExecutor deepFetchAndBatchProcessor = new AutoShutdownThreadExecutor(deepFetchAndBatchProcessorThreads, "MTBP process");
+        deepFetchAndBatchProcessor.setTimeoutInMilliseconds(10);
         final LinkedBlockingQueue<TL> listBeforeDeepFetchesQueue = new LinkedBlockingQueue<TL>(deepFetchAndBatchProcessorThreads + deepFetchAndBatchProcessorThreads/10 + 10);
         final CountDownLatch loadLatch = new CountDownLatch(shards == null ? 1 : shards.size());
         final CountDownLatch deepFetchLatch = new CountDownLatch(deepFetchAndBatchProcessorThreads);
