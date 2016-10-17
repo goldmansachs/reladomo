@@ -34,6 +34,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * A multi-threaded batch processor. Can be used to process a large number of objects with a fixed memory foot print.
+ * Given a potentially large query over many shards, reads the query via cursors (streaming the objects) in as many
+ * threads as there are shards.
+ * The objects are batched, then each batch is deep fetched and finally passed to the user defined Consumer.
+ * The consumer must be thread safe.
+ * @param <T> The type of Reladomo object
+ * @param <TL> the type of the Reladomo List object
+ */
 public class MultiThreadedBatchProcessor <T, TL extends MithraList<T>>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(MultiThreadedBatchProcessor.class);
@@ -67,16 +76,32 @@ public class MultiThreadedBatchProcessor <T, TL extends MithraList<T>>
         this.batchSize = batchSize;
     }
 
+    /**
+     * The default error handler aborts processing (by throwing an exception).
+     * A custom error handler could handle some exceptions without re-throwing, thereby allowing
+     * for continued processing.
+     * @param errorHandler
+     */
     public void setErrorHandler(ErrorHandler<T, TL> errorHandler)
     {
         this.errorHandler = errorHandler;
     }
 
+    /**
+     *
+     * @param retrievalThreads # of threads to retrieve. Should be less than or equal to the number of shards.
+     *                         -1 means the number of retrieval threads will be equal to the number of shards.
+     *
+     */
     public void setRetrievalThreads(int retrievalThreads)
     {
         this.retrievalThreads = retrievalThreads;
     }
 
+    /**
+     * Add (boolean and) a per-shard operation to the mainOperation
+     * @param additionalPerShardRetrievalOperations a map of shard id to operation. may return null for some shards
+     */
     public void setAdditionalPerShardRetrievalOperations(Map<Object, Operation> additionalPerShardRetrievalOperations)
     {
         this.additionalPerShardRetrievalOperations = additionalPerShardRetrievalOperations;
@@ -333,17 +358,42 @@ public class MultiThreadedBatchProcessor <T, TL extends MithraList<T>>
         }
     }
 
+    /**
+     * A thread safe consumer.
+     * @param <T>
+     * @param <TL>
+     */
     public interface Consumer<T, TL extends MithraList<T>>
     {
+        /**
+         * called once at the start of processing
+         * @param processor
+         */
         public void startConsumption(MultiThreadedBatchProcessor<T, TL> processor);
 
+        /**
+         * called for every batch. This method must be thread safe.
+         * Multiple threads will call consume() on the same instance simultaneously.
+         * @param list
+         * @throws Exception An exception thrown here is passed to the ErrorHandler
+         */
         public void consume(TL list) throws Exception;
 
+        /**
+         * called once at the end of processing
+         * @param processor
+         */
         public void endConsumption(MultiThreadedBatchProcessor<T, TL> processor);
     }
 
     public interface ErrorHandler<T, TL extends MithraList<T>>
     {
+        /**
+         * Handle an exception. Throwing an exception from this method will abort the processing threads.
+         * @param t
+         * @param processor
+         * @param batch
+         */
         public void handleError(Throwable t, MultiThreadedBatchProcessor<T, TL> processor, TL batch);
     }
 
