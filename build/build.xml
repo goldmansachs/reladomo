@@ -884,7 +884,7 @@
                   failonerror="true">
                 <classpath refid="xslt.processor.classpath" />
                 <jvmarg value="-Djava.awt.headless=true"/>
-                <jvmarg value="-Dxslthl.config=&quot;file:///${docbook.xslt.highlightsheet}&quot;"/>
+                <jvmarg value="-Dxslthl.config=file:///${docbook.xslt.highlightsheet}"/>
                 <arg line="-out @{output-dir}/@{source}.html"/>
                 <arg line="-l"/>
                 <arg line="-in @{docbook-dir}/@{source}.xml -xsl ${docbook.html.stylesheet} -param use.extensions 1" />
@@ -921,7 +921,7 @@
                   failonerror="true">
                 <classpath refid="xslt.processor.classpath" />
                 <jvmarg value="-Djava.awt.headless=true"/>
-                <jvmarg value="-Dxslthl.config=&quot;file:///${docbook.xslt.highlightsheet}&quot;"/>
+                <jvmarg value="-Dxslthl.config=file:///${docbook.xslt.highlightsheet}"/>
                 <arg line="-out @{output-dir}/temp.fo"/>
                 <arg line="-l"/>
                 <arg line="-in @{docbook-dir}/@{source}.xml -xsl ${docbook.fo.stylesheet} -param use.extensions 1"/>
@@ -1009,7 +1009,7 @@
                 failonerror="true">
                 <classpath refid="xslt.processor.classpath" />
                 <jvmarg value="-Djava.awt.headless=true"/>
-                <jvmarg value="-Dxslthl.config=&quot;file:///${docbook.xslt.highlightsheet}&quot;"/>
+                <jvmarg value="-Dxslthl.config=file:///${docbook.xslt.highlightsheet}"/>
                 <arg line="-out @{output-dir}/@{source}.xhtml"/>
                 <arg line="-l"/>
                 <arg line="-in @{docbook-dir}/@{source}.xml -xsl ${docbook.slides.stylesheet} -param use.extensions 1" />
@@ -1066,7 +1066,7 @@
                 failonerror="true">
                 <classpath refid="xslt.processor.classpath" />
                 <jvmarg value="-Djava.awt.headless=true"/>
-                <jvmarg value="-Dxslthl.config=&quot;file:///${docbook.xslt.highlightsheet}&quot;"/>
+                <jvmarg value="-Dxslthl.config=file:///${docbook.xslt.highlightsheet}"/>
                 <arg line="-out @{output-dir}/temp.fo"/>
                 <arg line="-l"/>
                 <arg line="-in @{docbook-dir}/@{source}.xml -xsl ${docbook.slides.fo.stylesheet} -param use.extensions 1"/>
