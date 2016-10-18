@@ -1,7 +1,7 @@
 # Change Log
 
-## 16.1.0 - 
-### Enhacements:
+## 16.1.0 - 2016-10-18 
+### Enhancements:
 - multi-update no longer uses or-clauses
 
 ### Bug fixes:
