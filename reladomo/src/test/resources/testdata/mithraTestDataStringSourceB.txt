@@ -72,3 +72,16 @@ accountId,productId,positionType,quantity,businessDateFrom,businessDateTo,proces
 "7616030402",1521,1800,1000,"2002-02-01 00:00:00.0","9999-12-01 23:59:00.0","2002-02-02 00:30:00.0","9999-12-01 23:59:00.0"
 "7616030602",1521,1800,-3000,"2002-12-27 00:00:00.0","9999-12-01 23:59:00.0","2002-12-28 00:30:00.0","9999-12-01 23:59:00.0"
 "7616030702",1521,1800,10,"2002-01-27 00:00:00.0","9999-12-01 23:59:00.0","2002-01-28 00:30:00.0","9999-12-01 23:59:00.0"
+
+class com.gs.fw.common.mithra.test.domain.Team
+teamId,divisionId,name
+999,100,"Para"
+998,100,"Reg"
+997,101,"Compliance"
+
+class com.gs.fw.common.mithra.test.domain.Player
+id,teamId,name,designation,email
+100,999,"John Doe", null, "john.doe@abc.com"
+101,999,"Robert Doe",null,"robert.doe@abc.com"
+102,998,"Joe Smith",null,"joe.smith@abc.com"
+103,997,"Ali G",null,"ali.g@abc.com"
