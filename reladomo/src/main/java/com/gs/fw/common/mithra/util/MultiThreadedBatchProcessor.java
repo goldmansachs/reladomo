@@ -19,7 +19,6 @@ package com.gs.fw.common.mithra.util;
 import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.gs.fw.common.mithra.MithraList;
-import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.finder.Navigation;
@@ -62,13 +61,18 @@ public class MultiThreadedBatchProcessor <T, TL extends MithraList<T>>
     private AtomicLong totalDeepFetchedTime = new AtomicLong();
     private AtomicLong totalDeepFetched = new AtomicLong();
 
-    public MultiThreadedBatchProcessor(RelatedFinder<T> finderInstance, Operation mainOperation, List<Navigation<T>> deepFetches, Consumer<T, TL> consumer, Set<Object> shards)
+    public MultiThreadedBatchProcessor(
+            RelatedFinder<T> finderInstance,
+            Operation mainOperation,
+            List<Navigation<T>> deepFetches,
+            Consumer<T, TL> consumer,
+            Set<Object> shards)
     {
-        this.shards = shards;
         this.finderInstance = finderInstance;
         this.mainOperation = mainOperation;
-        this.consumer = consumer;
         this.deepFetches = deepFetches;
+        this.consumer = consumer;
+        this.shards = shards;
     }
 
     public void setBatchSize(int batchSize)
