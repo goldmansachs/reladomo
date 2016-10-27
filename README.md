@@ -79,3 +79,8 @@ Extract the jar file and refer to the docs below.
 | Reladomo Architecture | Reladomo internal architecture. | architecture/ReladomoInternalArchitecture.html |
 | Presentations | Reladomo presentation materials. | presentations |
 
+
+## Acquiring Reladomo
+
+* [Versions] (https://github.com/goldmansachs/reladomo/releases)
+* [Maven Central] (http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.goldmansachs.reladomo%22)
