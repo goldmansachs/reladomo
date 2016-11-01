@@ -29,7 +29,7 @@ public class CoreMithraGenerator extends BaseMithraGenerator
     private static final String TEMPLATE_PACKAGE_PREFIX = "com.gs.fw.common.mithra.templates";
     private static final Map<String, String> TEMPLATE_PACKAGES = new HashMap<String, String>();
     private static final Map<String, List<String>> TEMPLATE_LISTS = new HashMap<String, List<String>>();
-    private boolean generateFileHeaders = true;
+    private boolean generateFileHeaders = false;
 
     private static final String GENERATED_COMMON_TEMPLATE = "CommonSuper";
 
