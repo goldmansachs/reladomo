@@ -38,6 +38,8 @@ import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.asofop.AsOfExtractor;
 import com.gs.fw.common.mithra.finder.timestamp.TimestampAsOfEqualityMapper;
 import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
+import com.gs.fw.common.mithra.util.serializer.SerialWriter;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -498,5 +500,11 @@ public abstract class TimestampAttribute<Owner> extends NonPrimitiveAttribute<Ow
     public Operation zGetPrototypeOperation(Map<Attribute, Object> tempOperationPool)
     {
         return this.eq(ImmutableTimestamp.ZERO);
+    }
+
+    @Override
+    protected void zWriteNonNullSerial(ReladomoSerializationContext context, SerialWriter writer, Owner reladomoObject) throws IOException
+    {
+        writer.writeTimestamp(context, this.getAttributeName(), this.timestampValueOf(reladomoObject));
     }
 }

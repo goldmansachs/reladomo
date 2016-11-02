@@ -18,10 +18,7 @@
 package com.gs.fw.common.mithra.attribute;
 
 import com.gs.collections.api.block.function.Function;
-import com.gs.fw.common.mithra.AggregateData;
-import com.gs.fw.common.mithra.MithraAggregateAttribute;
-import com.gs.fw.common.mithra.MithraDataObject;
-import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.aggregate.attribute.IntegerAggregateAttribute;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.CountCalculator;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.ObjectProcedure;
@@ -34,6 +31,8 @@ import com.gs.fw.common.mithra.finder.*;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.util.InternalList;
 import com.gs.fw.common.mithra.util.Nullable;
+import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
+import com.gs.fw.common.mithra.util.serializer.SerialWriter;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -683,4 +682,18 @@ public abstract class Attribute<Owner, V> implements com.gs.fw.finder.Attribute<
         this.owningReverseRelationshipOwner = owningReverseRelationshipOwner;
         this.owningReverseRelationshipName = owningReverseRelationshipName;
     }
+
+    public void zWriteSerial(ReladomoSerializationContext context, SerialWriter writer, Owner reladomoObject) throws Exception
+    {
+        if (this.isAttributeNull(reladomoObject))
+        {
+            writer.writeNull(context, this.getAttributeName(), this.valueType());
+        }
+        else
+        {
+            zWriteNonNullSerial(context, writer, reladomoObject);
+        }
+    }
+
+    protected abstract void zWriteNonNullSerial(ReladomoSerializationContext context, SerialWriter writer, Owner reladomoObject) throws IOException;
 }

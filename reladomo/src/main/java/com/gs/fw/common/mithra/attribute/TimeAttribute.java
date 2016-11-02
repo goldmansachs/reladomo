@@ -30,6 +30,8 @@ import com.gs.fw.common.mithra.extractor.TimeExtractor;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.util.MutableComparableReference;
 import com.gs.fw.common.mithra.util.Time;
+import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
+import com.gs.fw.common.mithra.util.serializer.SerialWriter;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -277,4 +279,10 @@ public abstract class TimeAttribute<Owner> extends NonPrimitiveAttribute<Owner, 
     }
 
     public abstract void forEach(final TimeProcedure proc, Owner o, Object context);
+
+    @Override
+    protected void zWriteNonNullSerial(ReladomoSerializationContext context, SerialWriter writer, Owner reladomoObject) throws IOException
+    {
+        writer.writeTime(context, this.getAttributeName(), this.timeValueOf(reladomoObject));
+    }
 }

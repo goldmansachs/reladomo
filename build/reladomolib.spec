@@ -24,6 +24,12 @@ central,org.apache.activemq,activemq-core,5.3.0,jar,lib/test,4C0581D16E94837938C
 central,org.apache.geronimo.specs,geronimo-j2ee-management_1.0_spec,1.1,jar,lib/test,057E32617E47E84FC7A26C7C9D3470B2D253AC34
 #central,com.h2database,h2,1.3.169,jar,lib/test,
 
+#serial libs:
+central,com.google.code.gson,gson,2.8.0,jar,lib/serial,C4BA5371A29AC9B2AD6129B1D39EA38750043EFF
+central,com.fasterxml.jackson.core,jackson-core,2.8.6,jar,lib/serial,2EF7B1CC34DE149600F5E75BC2D5BF40DE894E60
+central,com.fasterxml.jackson.core,jackson-annotations,2.8.6,jar,lib/serial,9577018F9CE3636A2E1CB0A0C7FE915E5098DED5
+central,com.fasterxml.jackson.core,jackson-databind,2.8.6,jar,lib/serial,C43DE61F74ECC61322EF8F402837BA65B0AA2BF4
+
 # Copyright 2016 Goldman Sachs.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

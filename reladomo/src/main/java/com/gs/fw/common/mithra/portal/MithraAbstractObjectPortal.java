@@ -141,6 +141,12 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
         MithraAbstractObjectPortal.TRANSITIVE_THRESHOLD = transitiveThreshold;
     }
 
+    @Override
+    public boolean isTransactional()
+    {
+        return isTransactional;
+    }
+
     public PersisterId getPersisterId()
     {
         return persisterId;

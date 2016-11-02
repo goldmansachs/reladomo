@@ -10,6 +10,7 @@ reladomogenutil/target/**
 reladomogs/target/**
 reladomogsi/target/**
 reladomoui/target/**
+reladomoserial/target/**
 .idea/**
 reladomo.iml
 target/**

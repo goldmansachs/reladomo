@@ -30,6 +30,8 @@ import com.gs.fw.common.mithra.finder.bytearray.ByteArraySet;
 import com.gs.fw.common.mithra.finder.orderby.ByteArrayOrderBy;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
+import com.gs.fw.common.mithra.util.serializer.SerialWriter;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -395,5 +397,11 @@ public abstract class ByteArrayAttribute<Owner> extends NonPrimitiveAttribute<Ow
     public Operation zGetPrototypeOperation(Map<Attribute, Object> tempOperationPool)
     {
         return this.eq(new byte[0]);
+    }
+
+    @Override
+    protected void zWriteNonNullSerial(ReladomoSerializationContext context, SerialWriter writer, Owner reladomoObject) throws IOException
+    {
+        writer.writeByteArray(context, this.getAttributeName(), this.byteArrayValueOf(reladomoObject));
     }
 }

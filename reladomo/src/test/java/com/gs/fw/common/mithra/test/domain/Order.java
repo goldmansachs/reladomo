@@ -18,7 +18,7 @@
 package com.gs.fw.common.mithra.test.domain;
 
 import com.gs.fw.common.mithra.MithraTransaction;
-import com.gs.fw.common.mithra.behavior.inmemory.InMemoryBehavior;
+import com.gs.fw.common.mithra.util.serializer.ReladomoSerialize;
 
 
 public class Order extends OrderAbstract
@@ -47,9 +47,16 @@ public class Order extends OrderAbstract
         return !this.zGetNonTxData().changed(orderAbstract.zGetNonTxData());
     }
 
+    @ReladomoSerialize(serialViews = {SerialView.Shorter.class, SerialView.HandPicked.class})
     public int hashCode()
     {
         return this.getOrderId();
+    }
+
+    @ReladomoSerialize(serialViews = {SerialView.Longer.class})
+    public String getTrackedDescription()
+    {
+        return this.getDescription()+" "+this.getTrackingId();
     }
 
     protected void setUserIdAndDescriptionImpl(int userId, String description, MithraTransaction mithraTransaction) throws IllegalArgumentException

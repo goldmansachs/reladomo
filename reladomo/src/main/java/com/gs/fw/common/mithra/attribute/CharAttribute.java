@@ -19,10 +19,7 @@ package com.gs.fw.common.mithra.attribute;
 import com.gs.collections.api.set.primitive.CharSet;
 import com.gs.collections.api.set.primitive.MutableCharSet;
 import com.gs.collections.impl.set.mutable.primitive.CharHashSet;
-import com.gs.fw.common.mithra.AggregateData;
-import com.gs.fw.common.mithra.MithraBusinessException;
-import com.gs.fw.common.mithra.MithraDataObject;
-import com.gs.fw.common.mithra.MithraNullPrimitiveException;
+import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.aggregate.attribute.CharAggregateAttribute;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.MaxCalculatorCharacter;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.MinCalculatorCharacter;
@@ -37,6 +34,8 @@ import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.orderby.CharOrderBy;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
+import com.gs.fw.common.mithra.util.serializer.SerialWriter;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -425,5 +424,11 @@ public abstract class CharAttribute<T> extends Attribute<T, Character> implement
             return this.isNull();
         }
         return this.eq(this.charValueOf(result));
+    }
+
+    @Override
+    protected void zWriteNonNullSerial(ReladomoSerializationContext context, SerialWriter writer, T reladomoObject) throws IOException
+    {
+        writer.writeChar(context, this.getAttributeName(), this.charValueOf(reladomoObject));
     }
 }

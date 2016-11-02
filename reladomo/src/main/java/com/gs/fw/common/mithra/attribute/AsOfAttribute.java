@@ -51,6 +51,9 @@ import com.gs.fw.common.mithra.finder.asofop.AsOfExtractor;
 import com.gs.fw.common.mithra.finder.asofop.AsOfTimestampEqualityMapper;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.util.ImmutableTimestamp;
+import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
+import com.gs.fw.common.mithra.util.serializer.SerialWriter;
+
 import java.util.Set;
 
 public abstract class AsOfAttribute<T> extends Attribute<T, Timestamp> implements com.gs.fw.finder.attribute.AsOfAttribute<T>, AsOfExtractor<T>, TemporalAttribute
@@ -646,6 +649,12 @@ public abstract class AsOfAttribute<T> extends Attribute<T, Timestamp> implement
     public Operation zGetPrototypeOperation(Map<Attribute, Object> tempOperationPool)
     {
         return this.eq(new ImmutableTimestamp(0));
+    }
+
+    @Override
+    protected void zWriteNonNullSerial(ReladomoSerializationContext context, SerialWriter writer, T reladomoObject) throws IOException
+    {
+        writer.writeTimestamp(context, this.getAttributeName(), this.timestampValueOf(reladomoObject));
     }
 
     @Override

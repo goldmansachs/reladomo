@@ -263,6 +263,11 @@ public class UninitializedPortal implements MithraObjectPortal
         return initializeNow("isPartiallyCached").isPartiallyCached();
     }
 
+    public boolean isTransactional()
+    {
+        return initializeNow("isTransactional").isTransactional();
+    }
+
     public boolean isFullyCached()
     {
         return initializeNow("isFullyCached").isFullyCached();

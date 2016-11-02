@@ -57,8 +57,6 @@ public interface MithraTransactionalObject extends MithraObject, MithraTransacti
 
     public Cache zGetCache();
 
-    public MithraObjectPortal zGetPortal();
-
     public void zSetTxPersistenceState(int state);
 
     public boolean zIsParticipatingInTransaction(MithraTransaction tx);

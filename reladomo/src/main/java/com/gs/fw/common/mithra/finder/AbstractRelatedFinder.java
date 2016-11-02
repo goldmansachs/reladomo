@@ -367,4 +367,34 @@ public abstract class AbstractRelatedFinder<ReturnType, ParentOwnerType, ReturnO
     {
         this.getMithraObjectPortal().registerForApplicationClassLevelNotification(sourceAttributeValueSet, listener);
     }
+
+    public AbstractRelatedFinder<ReturnType, ParentOwnerType, ReturnOrRetunListType, ReturnListType, OwnerType> zWithoutParentSelector()
+    {
+        if (this._parentSelector == null)
+        {
+            return this;
+        }
+        AbstractRelatedFinder copy = (AbstractRelatedFinder) ((DeepRelationshipAttribute) this).copy();
+        copy._parentSelector = null;
+        copy.mapper = ((LinkedMapper)copy.mapper).getLastMapper();
+        return copy;
+    }
+
+    public AbstractRelatedFinder<ReturnType, ParentOwnerType, ReturnOrRetunListType, ReturnListType, OwnerType> zWithoutParent()
+    {
+        if (this._parentSelector == null && this.mapper == null)
+        {
+            return this;
+        }
+        Object getFinderInstance = null;
+        try
+        {
+            getFinderInstance = Class.forName(this.getFinderClassName()).getMethod("getFinderInstance").invoke(null, null);
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException("Could not get top level finder", e);
+        }
+        return (AbstractRelatedFinder<ReturnType, ParentOwnerType, ReturnOrRetunListType, ReturnListType, OwnerType>) getFinderInstance;
+    }
 }

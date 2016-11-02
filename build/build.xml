@@ -1665,4 +1665,76 @@
     </target>
     <!-- ************************** /reladomo gs ******************************* -->
 
+    <!-- ************************** reladomo serial ******************************* -->
+    <fileset dir="${root}/lib/serial" id="fileset.lib.serial">
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <path id="reladomo.serial.compile.classpath">
+        <fileset refid="fileset.lib.serial"/>
+        <path refid="reladomo.compile.classpath"/>
+        <pathelement location="${root}/reladomo/target/classes"/>
+    </path>
+
+    <path id="reladomo.serial.test.compile.classpath">
+        <path refid="reladomo.serial.compile.classpath"/>
+        <path refid="reladomo.run.test.classpath"/>
+        <pathelement location="${root}/reladomoserial/target/classes"/>
+        <pathelement location="${root}/reladomo/target/test-classes-onheap"/>
+        <pathelement location="${root}/reladomo/target/test-util-classes"/>
+    </path>
+
+    <target name="serial-init">
+        <mkdir dir="${root}/reladomoserial/target"/>
+        <mkdir dir="${root}/reladomoserial/target/classes"/>
+        <mkdir dir="${root}/reladomoserial/target/test-classes"/>
+    </target>
+
+    <target name="serial-dependset" unless="${unsafeCompile}">
+        <dependset>
+            <srcfileset dir="${root}/reladomoserial/src/main/java"/>
+            <targetfileset dir="${root}/reladomoserial/target/classes"/>
+        </dependset>
+    </target>
+
+    <target name="compile-reladomo-serial" depends="serial-init, compile-reladomo, serial-dependset">
+        <javac destdir="${root}/reladomoserial/target/classes"
+               debug="true"
+               source="1.5"
+               target="1.5"
+               nowarn="true"
+               includeAntRuntime="false">
+            <src path="${root}/reladomoserial/src/main/java"/>
+            <compilerarg line="-Xlint:-unchecked -Xlint:-deprecation -XDignore.symbol.file"/>
+            <classpath>
+                <path refid="reladomo.serial.compile.classpath"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="serial-test-dependset" unless="${unsafeCompile}">
+        <dependset>
+            <srcfileset dir="${root}/reladomoserial/src/test/java"/>
+            <srcfileset dir="${root}/reladomoserial/target/classes"/>
+            <targetfileset dir="${root}/reladomoserial/target/test-classes"/>
+        </dependset>
+    </target>
+
+    <target name="compile-reladomo-serial-test" depends="compile-reladomo-serial, compile-reladomo-test, serial-test-dependset">
+        <javac destdir="${root}/reladomoserial/target/test-classes"
+               debug="true"
+               source="1.5"
+               target="1.5"
+               nowarn="true"
+               includeAntRuntime="false">
+            <src path="${root}/reladomoserial/src/test/java"/>
+            <compilerarg line="-Xlint:-unchecked -Xlint:-deprecation -XDignore.symbol.file"/>
+            <classpath>
+                <path refid="reladomo.serial.test.compile.classpath"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <!-- ************************** /reladomo serial ******************************* -->
+
 </project>
