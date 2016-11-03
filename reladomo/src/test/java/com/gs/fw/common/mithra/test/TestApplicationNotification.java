@@ -1083,17 +1083,17 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
 
         //add a new team to the registered list
         Team team = new Team();
-        team.setTeamId(999);
+        team.setTeamId(10999);
         team.setSourceId("B");
         team.setDivisionId(1);
-        team.setName("Team 999");
+        team.setName("Team 10999");
         team.insert();
         teamList.add(team);
         updateClassCount = TeamFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
         //server-side update the newly added team
         this.getRemoteSlaveVm().executeMethod("serverUpdateTeamName",
                 new Class[]{String.class, int.class,String.class},
-                new Object[]{"B", new Integer(999), "New Team 999"});
+                new Object[]{"B", new Integer(10999), "New Team 999"});
         waitForMessages(updateClassCount, TeamFinder.getMithraObjectPortal());
 
         waitForNotification(listener);

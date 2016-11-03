@@ -18,6 +18,7 @@ package com.gs.fw.common.mithra.test;
 
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.test.domain.FullyCachedTinyBalance;
 import com.gs.fw.common.mithra.test.domain.SpecialAccount;
 import com.gs.fw.common.mithra.test.domain.TestReplicatedObject;
 import com.gs.fw.common.mithra.test.domain.dated.TestTamsAccountIncomeFunction;
@@ -49,6 +50,7 @@ public class TestMithraReplicationNotificationMessages  extends RemoteMithraRepl
            TestTamsMithraTrial.class,
            TestTamsAccountIncomeFunction.class,
            TestReplicatedObject.class,
+           FullyCachedTinyBalance.class,
             SpecialAccount.class
         };
     }

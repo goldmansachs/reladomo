@@ -36,11 +36,11 @@ public class RemoteTestSuite extends TestSuite
 //        suite.addTest(new MultiVmNotificationsTestSuite(TestNotificationMessages.class));
 //        suite.addTest(new MultiClientVmTestSuite(TestMultiClientNotificationTestCase.class));
 //        suite.addTest(new MultiVmNotificationsTestSuite(TestPeerToPeerMithraTestCase.class));
-//        suite.addTest(new MultiVmNotificationsTestSuite(TestApplicationNotification.class));
+        suite.addTest(new MultiVmNotificationsTestSuite(TestApplicationNotification.class));
 //        suite.addTest(new MultiVmNotificationsTestSuite(TestMithraReplicationNotificationMessages.class));
-        suite.addTest(new MultiVmTestSuite(TestClientPortal.class));
+//        suite.addTest(new MultiVmTestSuite(TestClientPortal.class));
 //        suite.addTest(new MultiVmTestSuite(TestClientPortalUsingDerby.class));
-        suite.addTest(new MultiVmTestSuite(TestTransactionalClientPortal.class));
+//        suite.addTest(new MultiVmTestSuite(TestTransactionalClientPortal.class));
 //        suite.addTest(new MultiVmTestSuite(TestEmbeddedValueObjectsRemote.class));
         //suite.addTest(new MultiVmTestSuite(TestPureObjectsRemote.class));
 

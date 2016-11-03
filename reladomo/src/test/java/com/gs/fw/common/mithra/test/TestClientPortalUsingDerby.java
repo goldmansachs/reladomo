@@ -17,6 +17,7 @@
 package com.gs.fw.common.mithra.test;
 
 import com.gs.fw.common.mithra.databasetype.DerbyDatabaseType;
+import com.gs.fw.common.mithra.test.domain.FullyCachedTinyBalance;
 import com.gs.fw.common.mithra.test.domain.SpecialAccount;
 
 import java.sql.SQLException;
@@ -35,6 +36,7 @@ public class TestClientPortalUsingDerby  extends RemoteMithraServerTestCase
         Set<Class> result = new HashSet<Class>();
         addTestClassesFromOther(new TestOrderby(), result);
         result.add(SpecialAccount.class);
+        result.add(FullyCachedTinyBalance.class);
         Class[] array = new Class[result.size()];
         result.toArray(array);
         return array;
