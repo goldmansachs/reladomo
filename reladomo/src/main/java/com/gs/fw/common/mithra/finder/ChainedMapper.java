@@ -21,6 +21,7 @@ import com.gs.fw.common.mithra.cache.ConcurrentFullUniqueIndex;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.util.InternalList;
 import com.gs.fw.common.mithra.util.MithraFastList;
+import com.gs.fw.common.mithra.util.SmallSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.gs.fw.common.mithra.MithraObjectPortal;
@@ -380,16 +381,26 @@ public class ChainedMapper extends AbstractMapper
 
     public MappedOperation equalitySubstituteWithMultiEquality(MappedOperation mappedOperation, MultiEqualityOperation op)
     {
-        HashSet set = new HashSet();
-        this.addDepenedentAttributesToSet(set);
-        for(Iterator it = set.iterator();it.hasNext();)
+        SmallSet set = new SmallSet(4);
+        op.zAddAllLeftAttributes(set);
+        Operation possibleSub = NoOperation.instance();
+        for(int i=0;i<set.size();i++)
         {
-            Attribute a = (Attribute) it.next();
-            if (op.operatesOnAttribute(a))
+            Attribute attr = (Attribute) set.get(i);
+            Attribute replace = this.getDeepestEqualAttribute(attr);
+            if (replace != null && !mappedOperation.underlyingOperationDependsOnAttribute(replace))
             {
-                //todo: rezaem: multi equality substitution in chanied mapper
-                this.getLogger().warn("this operation is at best not well optimized. At worst, totally broken.");
+                Operation replacedOp = op.getSusbstitutedEquality(attr, replace);
+                if (replacedOp != null)
+                {
+                    possibleSub = possibleSub.and(replacedOp);
+                }
             }
+        }
+        if (NoOperation.instance() != possibleSub)
+        {
+            return new MappedOperation(this,
+                    mappedOperation.getUnderlyingOperation().and(possibleSub));
         }
         return null;
     }
