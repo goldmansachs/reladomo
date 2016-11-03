@@ -40,6 +40,7 @@ public class TestMultiClientNotificationTestCase extends RemoteMithraClientTestC
             Employee.class,
             Product.class,
             TinyBalance.class,
+            FullyCachedTinyBalance.class,
             Contract.class,
             SpecialAccount.class
         };

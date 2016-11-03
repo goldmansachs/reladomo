@@ -68,6 +68,7 @@ public class TestEmbeddedValueObjectsRemote extends RemoteMithraServerTestCase
         result.add(ProductSpecification.class);
         result.add(SalesLineItem.class);
         result.add(SpecialAccount.class);
+        result.add(FullyCachedTinyBalance.class);
         result.add(WallCrossImpl.class);
     }
 

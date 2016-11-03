@@ -111,6 +111,7 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
         result.add(ProductSpecification.class);
         result.add(SalesLineItem.class);
         result.add(SpecialAccount.class);
+        result.add(FullyCachedTinyBalance.class);
         result.add(WallCrossImpl.class);
         result.add(PureOrder.class);
         result.add(PureOrderItem.class);
