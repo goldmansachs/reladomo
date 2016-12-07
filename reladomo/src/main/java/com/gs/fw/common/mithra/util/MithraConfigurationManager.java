@@ -1187,13 +1187,20 @@ public class MithraConfigurationManager
     public MithraObjectPortal initializePortal(String className)
     {
         List<String> errors = new ArrayList<String>();
-        MithraObjectPortal portal = this.initializeObject(className, errors);
+        final MithraObjectPortal portal = this.initializeObject(className, errors);
         checkForErrors(errors);
         if (portal != null)
         {
             if (MithraManagerProvider.getMithraManager().isInTransaction())
             {
-                ExceptionCatchingThread.executeTask(new PortalLoadCacheRunnable(portal));
+                ExceptionCatchingThread.executeTask(new ExceptionHandlingTask()
+                {
+                    @Override
+                    public void execute()
+                    {
+                        portal.loadCache();
+                    }
+                });
             }
             else
             {
@@ -1773,7 +1780,7 @@ public class MithraConfigurationManager
         }
     }
 
-    private static class PortalLoadCacheRunnable extends ExceptionHandlingTask
+    private static class PortalLoadCacheRunnable implements Runnable
     {
         private MithraObjectPortal portal;
 
@@ -1782,7 +1789,7 @@ public class MithraConfigurationManager
             this.portal = portal;
         }
 
-        public void execute()
+        public void run()
         {
             portal.loadCache();
         }
