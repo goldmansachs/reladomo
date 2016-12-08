@@ -101,6 +101,8 @@ public class MithraTestResource
     }
 
     private boolean setUpCompleted;
+    private MithraRuntimeType runtimeType;
+    private boolean runtimeInitialized;
 
     public MithraTestResource(String configFilename)
     {
@@ -127,8 +129,7 @@ public class MithraTestResource
         this.configFileName = configFilename;
         getLogger().debug("config file " + configFilename);
 
-        MithraRuntimeType runtimeType = this.loadConfigXml(configFilename);
-        this.initializeRuntimeConfig(runtimeType);
+        this.runtimeType = this.loadConfigXml(configFilename);
     }
 
     public MithraTestResource(MithraRuntimeType mithraRuntimeType)
@@ -144,7 +145,16 @@ public class MithraTestResource
     public MithraTestResource(MithraRuntimeType mithraRuntimeType, DatabaseType databaseType, MithraConfigurationManager manager)
     {
         this.initialize(databaseType, manager);
-        this.initializeRuntimeConfig(mithraRuntimeType);
+        this.runtimeType = mithraRuntimeType;
+    }
+
+    private void initializeRuntime()
+    {
+        if (!this.runtimeInitialized)
+        {
+            this.runtimeInitialized = true;
+            initializeRuntimeConfig(this.runtimeType);
+        }
     }
 
     private void initialize(DatabaseType databaseType, MithraConfigurationManager manager)
@@ -237,6 +247,7 @@ public class MithraTestResource
 
     public void setUp()
     {
+        initializeRuntime();
         logger.debug(System.identityHashCode(this) + " MithraTestResource set up with: " + this.configFileName);
         MithraRuntimeConfig mithraRuntimeConfig;
         MithraManager mithraManager = MithraManagerProvider.getMithraManager();
@@ -357,6 +368,7 @@ public class MithraTestResource
 
     public boolean isConfigured(String className)
     {
+        initializeRuntime();
         return this.configuredObjects.contains(className) && isUsed(className);
     }
 
@@ -373,6 +385,7 @@ public class MithraTestResource
 
     public void addTestDataForPureObjects(String testDataFilename)
     {
+        initializeRuntime();
         TestDataFile testDataFile = (TestDataFile) testDataIndex.get(testDataFilename);
         if (testDataFile == null)
         {
@@ -619,6 +632,7 @@ public class MithraTestResource
 
     private void createDatabaseForStringSourceAttribute(ObjectSourceConnectionManager connectionManager, String sourceAttribute, String testDataFilename, boolean isTableSharding)
     {
+        initializeRuntime();
         MithraTestConnectionManager testConnectionManager = (MithraTestConnectionManager) connectionManager;
         TestDatabaseConfiguration testDbConfig =
                 this.createTestDbConfig(this.getConnectionManagerIdentifier(testConnectionManager, sourceAttribute, isTableSharding), sourceAttribute, String.class);
@@ -631,6 +645,7 @@ public class MithraTestResource
      */
     public void createDatabaseForStringSourceAttribute(ObjectSourceConnectionManager connectionManager, String sourceAttribute, String resourceName, String testDataFilename)
     {
+        initializeRuntime();
         TestDatabaseConfiguration testDbConfig =
                 this.createTestDbConfig(resourceName, sourceAttribute, String.class);
 
@@ -663,6 +678,7 @@ public class MithraTestResource
 
     private void createDatabaseForIntSourceAttribute(IntSourceConnectionManager connectionManager, int sourceAttribute, String testDataFilename, boolean isTableSharding)
     {
+        initializeRuntime();
         MithraTestConnectionManager testConnectionManager = (MithraTestConnectionManager) connectionManager;
         TestDatabaseConfiguration testDbConfig =
                 this.createTestDbConfig(this.getConnectionManagerIdentifier(testConnectionManager, sourceAttribute, isTableSharding), Integer.valueOf(sourceAttribute), Integer.TYPE);
@@ -689,6 +705,7 @@ public class MithraTestResource
                                                     String resourceName,
                                                     String testDataFilename)
     {
+        initializeRuntime();
         MithraTestConnectionManager testConnectionManager = (MithraTestConnectionManager) connectionManager;
         TestDatabaseConfiguration testDbConfig =
                 this.createTestDbConfig(resourceName, Integer.valueOf(sourceAttribute), Integer.TYPE);
@@ -703,6 +720,7 @@ public class MithraTestResource
 
     public void createSingleDatabase(SourcelessConnectionManager connectionManager, String testDataFilename)
     {
+        initializeRuntime();
         MithraTestConnectionManager testConnectionManager = (MithraTestConnectionManager) connectionManager;
         TestDatabaseConfiguration testDbConfig =
                 this.createTestDbConfig(testConnectionManager.getConnectionManagerIdentifier(), null, null);
@@ -712,6 +730,7 @@ public class MithraTestResource
 
     public void createSingleDatabase(SourcelessConnectionManager connectionManager, URL streamLocation, InputStream is)
     {
+        initializeRuntime();
         MithraTestConnectionManager testConnectionManager = (MithraTestConnectionManager) connectionManager;
         TestDatabaseConfiguration testDbConfig =
                 this.createTestDbConfig(testConnectionManager.getConnectionManagerIdentifier(), null, null);
@@ -724,6 +743,7 @@ public class MithraTestResource
      */
     public void createSingleDatabase(SourcelessConnectionManager connectionManager, String resourceName, String testDataFilename)
     {
+        initializeRuntime();
         TestDatabaseConfiguration testDbConfig =
                 this.createTestDbConfig(resourceName, null, null);
 
@@ -734,6 +754,7 @@ public class MithraTestResource
                                     MithraTestConnectionManager testConnectionManager,
                                     String testDataFilename)
     {
+        initializeRuntime();
         TestDatabaseConfiguration createdTestDatabaseConfiguration = registerDbConfigWithConnectionManager(testDbConfig, testConnectionManager);
         createdTestDatabaseConfiguration.createTables(testConnectionManager, this);
 
@@ -753,6 +774,7 @@ public class MithraTestResource
                                     URL streamLocation,
                                     InputStream is)
     {
+        initializeRuntime();
         TestDatabaseConfiguration createdTestDatabaseConfiguration = registerDbConfigWithConnectionManager(testDbConfig, testConnectionManager);
         createdTestDatabaseConfiguration.createTables(testConnectionManager, this);
 
@@ -872,6 +894,7 @@ public class MithraTestResource
 
     private void addTestDataToDatabase(String testDataFilename, ObjectSourceConnectionManager connectionManager, String sourceAttribute, boolean isTableSharding)
     {
+        initializeRuntime();
         MithraTestConnectionManager testConnectionManager = (MithraTestConnectionManager) connectionManager;
         TestDatabaseConfiguration testDbConfig =
                 this.createTestDbConfig(this.getConnectionManagerIdentifier(testConnectionManager, sourceAttribute, isTableSharding),
@@ -896,6 +919,7 @@ public class MithraTestResource
 
     private void addTestDataToDatabase(String testDataFilename, IntSourceConnectionManager connectionManager, int sourceAttribute, boolean isTableSharding)
     {
+        initializeRuntime();
         MithraTestConnectionManager testConnectionManager = (MithraTestConnectionManager)connectionManager;
         TestDatabaseConfiguration testDbConfig =
                 this.createTestDbConfig(this.getConnectionManagerIdentifier(testConnectionManager, sourceAttribute, isTableSharding),
@@ -909,6 +933,7 @@ public class MithraTestResource
      */
     public void addTestDataToDatabase(String testDataFilename, SourcelessConnectionManager connectionManager)
     {
+        initializeRuntime();
         MithraTestConnectionManager testConnectionManager = (MithraTestConnectionManager) connectionManager;
         TestDatabaseConfiguration testDbConfig =
                 this.createTestDbConfig(testConnectionManager.getConnectionManagerIdentifier(), null, null);
@@ -940,6 +965,7 @@ public class MithraTestResource
 
     public void addTestDataToDatabase(URL streamLocation, InputStream is, SourcelessConnectionManager connectionManager)
     {
+        initializeRuntime();
         MithraTestConnectionManager testConnectionManager = (MithraTestConnectionManager) connectionManager;
         TestDatabaseConfiguration testDbConfig =
                 this.createTestDbConfig(testConnectionManager.getConnectionManagerIdentifier(), null, null);
@@ -949,6 +975,7 @@ public class MithraTestResource
 
     private void addTestDataToDatabase(URL streamLocation, InputStream is, IntSourceConnectionManager connectionManager, int sourceAttribute, boolean isTableSharding)
     {
+        initializeRuntime();
         MithraTestConnectionManager testConnectionManager = (MithraTestConnectionManager)connectionManager;
         TestDatabaseConfiguration testDbConfig =
                 this.createTestDbConfig(this.getConnectionManagerIdentifier(testConnectionManager, sourceAttribute, isTableSharding),
@@ -958,6 +985,7 @@ public class MithraTestResource
 
     private void addTestDataToDatabase(URL streamLocation, InputStream is, ObjectSourceConnectionManager connectionManager, String sourceAttribute, boolean isTableSharding)
     {
+        initializeRuntime();
         MithraTestConnectionManager testConnectionManager = (MithraTestConnectionManager) connectionManager;
         TestDatabaseConfiguration testDbConfig =
                 this.createTestDbConfig(this.getConnectionManagerIdentifier(testConnectionManager, sourceAttribute, isTableSharding),
@@ -1104,6 +1132,10 @@ public class MithraTestResource
 
     private List<MithraRuntimeConfig> initializeRuntimeConfig(MithraRuntimeType runtimeConfig)
     {
+        if (this.isDeleteOnCreate())
+        {
+            runtimeConfig.setDestroyExistingPortal(true);
+        }
         List<MithraRuntimeConfig> runtimeList = MithraManagerProvider.getMithraManager().initDatabaseObjects(runtimeConfig);
         populateDatabaseObjectPerConnectionManagerMap(runtimeList);
         mithraRuntimeList.addAll(runtimeList);
@@ -1190,6 +1222,7 @@ public class MithraTestResource
 
     public void loadBcpFile(String bcpFilename, String delimiter, List<Attribute> attributes, SourcelessConnectionManager connectionManager, Format dateFormat)
     {
+        initializeRuntime();
         MithraTestConnectionManager testConnectionManager = (MithraTestConnectionManager) connectionManager;
         TestDatabaseConfiguration testDbConfig =
                 this.createTestDbConfig(testConnectionManager.getConnectionManagerIdentifier(), null, null);
@@ -1216,6 +1249,7 @@ public class MithraTestResource
     public void loadBcpFile(String bcpFilename, String delimiter, List<Attribute> attributes,
                             ObjectSourceConnectionManager connectionManager, Format dateFormat, String sourceAttribute)
     {
+        initializeRuntime();
         MithraTestConnectionManager testConnectionManager = (MithraTestConnectionManager) connectionManager;
         TestDatabaseConfiguration testDbConfig =
                 this.createTestDbConfig(testConnectionManager.getConnectionManagerIdentifier() + sourceAttribute, sourceAttribute, String.class);
@@ -1235,6 +1269,7 @@ public class MithraTestResource
 
     private TestDatabaseConfiguration getDatabaseConfigurationForDatabase(MithraTestConnectionManager connectionManager, Object sourceAttribute, Class sourceAttributeClass)
     {
+        initializeRuntime();
         TestDatabaseConfiguration testDbConfig;
         if (sourceAttribute == null)
         {
@@ -1268,6 +1303,7 @@ public class MithraTestResource
     public void loadBcpFile(String bcpFilename, String delimiter, List<Attribute> attributes,
                             IntSourceConnectionManager connectionManager, Format dateFormat, int sourceAttribute)
     {
+        initializeRuntime();
         MithraTestConnectionManager testConnectionManager = (MithraTestConnectionManager) connectionManager;
         TestDatabaseConfiguration testDbConfig =
                 this.createTestDbConfig(testConnectionManager.getConnectionManagerIdentifier() + sourceAttribute, Integer.valueOf(sourceAttribute), int.class);
@@ -1278,7 +1314,7 @@ public class MithraTestResource
 
     public void insertTestData(List<? extends MithraObject> testDataList)
     {
-
+        initializeRuntime();
         List<MithraDataObject> dataObjects = getDataObjectsFromDomainObjects(testDataList);
         MithraObjectPortal portal = dataObjects.get(0).zGetMithraObjectPortal();
         Attribute sourceAttribute = portal.getFinder().getSourceAttribute();
@@ -1322,6 +1358,7 @@ public class MithraTestResource
 
     public void collectTestData(MithraObject mithraObject)
     {
+        initializeRuntime();
         String clazz = mithraObject.getClass().getName();
         List<MithraObject> mithraObjectsForClazz = this.testData.get(clazz);
         if (mithraObjectsForClazz == null)
@@ -1403,6 +1440,7 @@ public class MithraTestResource
 
     public void createReplicationNotificationTables(ReplicationNotificationConnectionManager replicationNotificationConnectionManager)
     {
+        initializeRuntime();
         RunsMasterQueueDatabaseObject dbo = (RunsMasterQueueDatabaseObject) RunsMasterQueueFinder.getMithraObjectPortal().getDatabaseObject();
         List connectionManagerList = replicationNotificationConnectionManager.getConnectionManagerList();
 

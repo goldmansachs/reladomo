@@ -445,7 +445,7 @@ public class MithraConfigurationManager
                     config.threeTierExport = overrideBoolean(config.threeTierExport, localOverride.isThreeTierExportSet(), localOverride.isThreeTierExport());
                 }
                 configs.add(config);
-                addUnitialized(config);
+                addUnitialized(config, mithraRuntimeType.isDestroyExistingPortal());
             }
         }
     }
@@ -503,7 +503,7 @@ public class MithraConfigurationManager
 
                 config.threeTierExport = false;
                 configs.add(config);
-                addUnitialized(config);
+                addUnitialized(config, mithraRuntimeType.isDestroyExistingPortal());
             }
         }
     }
@@ -741,7 +741,7 @@ public class MithraConfigurationManager
                 config.threeTierExport = overrideBoolean(config.threeTierExport, pureObjectsType.isThreeTierExportSet(), pureObjectsType.isThreeTierExport());
                 config.threeTierExport = overrideBoolean(config.threeTierExport, conf.isThreeTierExportSet(), conf.isThreeTierExport());
                 configs.add(config);
-                addUnitialized(config);
+                addUnitialized(config, mithraRuntimeType.isDestroyExistingPortal());
             }
         }
     }
@@ -917,7 +917,7 @@ public class MithraConfigurationManager
             config.threeTierExport = overrideBoolean(config.threeTierExport, connectionManagerType.isThreeTierExportSet(), connectionManagerType.isThreeTierExport());
             config.threeTierExport = overrideBoolean(config.threeTierExport, mithraObjectConfigurationType.isThreeTierExportSet(), mithraObjectConfigurationType.isThreeTierExport());
             configs.add(config);
-            addUnitialized(config);
+            addUnitialized(config, mithraRuntimeType.isDestroyExistingPortal());
         }
     }
 
@@ -991,17 +991,21 @@ public class MithraConfigurationManager
             config.threeTierExport = overrideBoolean(config.threeTierExport, connectionManagerType.isThreeTierExportSet(), connectionManagerType.isThreeTierExport());
             config.threeTierExport = overrideBoolean(config.threeTierExport, mithraObjectConfigurationType.isThreeTierExportSet(), mithraObjectConfigurationType.isThreeTierExport());
             configs.add(config);
-            addUnitialized(config);
+            addUnitialized(config, mithraRuntimeType.isDestroyExistingPortal());
         }
     }
 
-    private void addUnitialized(Config config)
+    private void addUnitialized(Config config, boolean destroyExistingPortal)
     {
         boolean reset = false;
         synchronized (initializedClasses)
         {
             if (initializedClasses.contains(config.className))
             {
+                if (!destroyExistingPortal)
+                {
+                    return; // nothing to do
+                }
                 initializedClasses.remove(config.className);
                 reset = true;
             }

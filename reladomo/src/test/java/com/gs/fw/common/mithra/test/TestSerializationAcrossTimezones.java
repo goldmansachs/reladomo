@@ -18,6 +18,8 @@ package com.gs.fw.common.mithra.test;
 
 import com.gs.fw.common.mithra.AggregateData;
 import com.gs.fw.common.mithra.AggregateList;
+import com.gs.fw.common.mithra.test.domain.FullyCachedTinyBalance;
+import com.gs.fw.common.mithra.test.domain.SpecialAccount;
 import com.gs.fw.common.mithra.test.domain.TimezoneTest;
 import com.gs.fw.common.mithra.test.domain.TimezoneTestFinder;
 import com.gs.fw.common.mithra.util.MithraTimestamp;
@@ -58,6 +60,15 @@ public class TestSerializationAcrossTimezones extends RemoteMithraServerTestCase
     {
         super.tearDown();
         TimeZone.setDefault(originalDefault);
+    }
+
+    protected Class[] getRestrictedClassList()
+    {
+        Class[] result = new Class[3];
+        result[0] = TimezoneTest.class;
+        result[1] = FullyCachedTinyBalance.class;
+        result[2] = SpecialAccount.class;
+        return result;
     }
 
     public void testAggregateData()

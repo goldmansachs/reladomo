@@ -42,7 +42,7 @@ public class TestBasicRetrievalFromZippedFile
 
     protected void setUp() throws Exception
     {
-        mithraTestResource = buildMithraTestResource();
+        mithraTestResource = new MithraTestResource("MithraConfigPartialCache.xml");
         ConnectionManagerForTests connectionManager = ConnectionManagerForTests.getInstance();
         connectionManager.setDatabaseType(mithraTestResource.getDatabaseType());
         connectionManager.setConnectionManagerIdentifier("");
