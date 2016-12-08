@@ -445,7 +445,7 @@ public class MithraConfigurationManager
                     config.threeTierExport = overrideBoolean(config.threeTierExport, localOverride.isThreeTierExportSet(), localOverride.isThreeTierExport());
                 }
                 configs.add(config);
-                addUnitialized(config);
+                addUnitialized(config, mithraRuntimeType.isDestroyExistingPortal());
             }
         }
     }
@@ -503,7 +503,7 @@ public class MithraConfigurationManager
 
                 config.threeTierExport = false;
                 configs.add(config);
-                addUnitialized(config);
+                addUnitialized(config, mithraRuntimeType.isDestroyExistingPortal());
             }
         }
     }
@@ -741,7 +741,7 @@ public class MithraConfigurationManager
                 config.threeTierExport = overrideBoolean(config.threeTierExport, pureObjectsType.isThreeTierExportSet(), pureObjectsType.isThreeTierExport());
                 config.threeTierExport = overrideBoolean(config.threeTierExport, conf.isThreeTierExportSet(), conf.isThreeTierExport());
                 configs.add(config);
-                addUnitialized(config);
+                addUnitialized(config, mithraRuntimeType.isDestroyExistingPortal());
             }
         }
     }
@@ -917,7 +917,7 @@ public class MithraConfigurationManager
             config.threeTierExport = overrideBoolean(config.threeTierExport, connectionManagerType.isThreeTierExportSet(), connectionManagerType.isThreeTierExport());
             config.threeTierExport = overrideBoolean(config.threeTierExport, mithraObjectConfigurationType.isThreeTierExportSet(), mithraObjectConfigurationType.isThreeTierExport());
             configs.add(config);
-            addUnitialized(config);
+            addUnitialized(config, mithraRuntimeType.isDestroyExistingPortal());
         }
     }
 
@@ -991,17 +991,21 @@ public class MithraConfigurationManager
             config.threeTierExport = overrideBoolean(config.threeTierExport, connectionManagerType.isThreeTierExportSet(), connectionManagerType.isThreeTierExport());
             config.threeTierExport = overrideBoolean(config.threeTierExport, mithraObjectConfigurationType.isThreeTierExportSet(), mithraObjectConfigurationType.isThreeTierExport());
             configs.add(config);
-            addUnitialized(config);
+            addUnitialized(config, mithraRuntimeType.isDestroyExistingPortal());
         }
     }
 
-    private void addUnitialized(Config config)
+    private void addUnitialized(Config config, boolean destroyExistingPortal)
     {
         boolean reset = false;
         synchronized (initializedClasses)
         {
             if (initializedClasses.contains(config.className))
             {
+                if (!destroyExistingPortal)
+                {
+                    return; // nothing to do
+                }
                 initializedClasses.remove(config.className);
                 reset = true;
             }
@@ -1187,13 +1191,20 @@ public class MithraConfigurationManager
     public MithraObjectPortal initializePortal(String className)
     {
         List<String> errors = new ArrayList<String>();
-        MithraObjectPortal portal = this.initializeObject(className, errors);
+        final MithraObjectPortal portal = this.initializeObject(className, errors);
         checkForErrors(errors);
         if (portal != null)
         {
             if (MithraManagerProvider.getMithraManager().isInTransaction())
             {
-                ExceptionCatchingThread.executeTask(new PortalLoadCacheRunnable(portal));
+                ExceptionCatchingThread.executeTask(new ExceptionHandlingTask()
+                {
+                    @Override
+                    public void execute()
+                    {
+                        portal.loadCache();
+                    }
+                });
             }
             else
             {
@@ -1773,7 +1784,7 @@ public class MithraConfigurationManager
         }
     }
 
-    private static class PortalLoadCacheRunnable extends ExceptionHandlingTask
+    private static class PortalLoadCacheRunnable implements Runnable
     {
         private MithraObjectPortal portal;
 
@@ -1782,7 +1793,7 @@ public class MithraConfigurationManager
             this.portal = portal;
         }
 
-        public void execute()
+        public void run()
         {
             portal.loadCache();
         }

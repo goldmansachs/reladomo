@@ -20,4 +20,15 @@ public class MithraRuntimeType
  extends MithraRuntimeTypeAbstract
 
 {
+    private boolean destroyExistingPortal;
+
+    public boolean isDestroyExistingPortal()
+    {
+        return destroyExistingPortal;
+    }
+
+    public void setDestroyExistingPortal(boolean destroyExistingPortal)
+    {
+        this.destroyExistingPortal = destroyExistingPortal;
+    }
 }

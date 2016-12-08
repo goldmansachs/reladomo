@@ -591,12 +591,15 @@
             generateConcreteClasses="${reladomo.generateConcreteClasses}"/>
     </target>
 
-    <target name="compile-reladomo" depends="init-reladomo, jarjar-asm, libboot-reladomo, xsd2bean-reladomo-runtime, xsd2bean-reladomo-cacheloader, generate-reladomo-replication-classes">
+    <target name="main-dependset" unless="${unsafeCompile}">
         <dependset>
             <srcfileset dir="${root}/reladomo/src/main/java"/>
             <srcfileset dir="${root}/reladomo/target/generated-src"/>
             <targetfileset dir="${root}/reladomo/target/classes" excludes="com/gs/mithra/**/*"/>
         </dependset>
+    </target>
+
+    <target name="compile-reladomo" depends="init-reladomo, jarjar-asm, libboot-reladomo, xsd2bean-reladomo-runtime, xsd2bean-reladomo-cacheloader, generate-reladomo-replication-classes, main-dependset">
         <unzip src="${root}/reladomo/target/reladomo-asm-4.2.jar" dest="${root}/reladomo/target/classes"/>
         <delete dir="${root}/reladomo/target/classes/META-INF" quiet="true"/>
         <delete dir="${root}/reladomo/target/classes/org" quiet="true"/>
@@ -615,12 +618,15 @@
         </javac>
     </target>
 
-    <target name="compile-reladomo-test-util" depends="compile-reladomo">
+    <target name="test-util-dependset" unless="${unsafeCompile}">
         <dependset>
             <srcfileset dir="${root}/reladomo/src/test-util/java"/>
             <srcfileset dir="${root}/reladomo/target/classes"/>
             <targetfileset dir="${root}/reladomo/target/test-util-classes"/>
         </dependset>
+    </target>
+
+    <target name="compile-reladomo-test-util" depends="compile-reladomo, test-util-dependset">
         <javac destdir="${root}/reladomo/target/test-util-classes"
             debug="true"
             source="1.5"
@@ -736,7 +742,7 @@
         </reladomo-gen>
     </target>
 
-    <target name="compile-reladomo-test" depends="compile-reladomo-test-util, compile-reladomo-genutil, generate-reladomo-test-classes, generate-reladomo-final-test-classes">
+    <target name="test-dependset" unless="${unsafeCompile}">
         <dependset>
             <srcfileset dir="${root}/reladomo/src/test/java"/>
             <srcfileset dir="${root}/reladomo/target/test-generated-onheap-src"/>
@@ -746,6 +752,9 @@
             <targetfileset dir="${root}/reladomo/target/test-classes-onheap"/>
             <targetfileset dir="${root}/reladomo/target/test-classes-offheap"/>
         </dependset>
+    </target>
+
+    <target name="compile-reladomo-test" depends="compile-reladomo-test-util, compile-reladomo-genutil, generate-reladomo-test-classes, generate-reladomo-final-test-classes, test-dependset">
         <javac destdir="${root}/reladomo/target/test-classes-onheap"
             debug="true"
             source="1.5"
