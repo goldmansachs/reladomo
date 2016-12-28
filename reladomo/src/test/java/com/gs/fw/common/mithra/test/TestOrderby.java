@@ -17,6 +17,7 @@
 package com.gs.fw.common.mithra.test;
 
 import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.test.domain.*;
 
 import java.io.PrintWriter;
@@ -48,7 +49,9 @@ extends MithraTestAbstract
             DatedTrial.class,
             DatedAccount.class,
             Trade.class,
-            Order.class
+            Order.class,
+            Projito.class,
+            ProjitoMeasureOfSuccess.class
         };
     }
 
@@ -332,6 +335,18 @@ extends MithraTestAbstract
             }
         },
          createRunnable(),createRunnable(),createRunnable()));
+    }
+
+    public void testMultipleOrderBys()
+    {
+        Projito projito = ProjitoFinder.findOne(ProjitoFinder.id().eq(2));
+        assertNotNull(projito);
+
+        ProjitoMeasureOfSuccessList measuresOfSuccess = projito.getMeasuresOfSuccess();
+        OrderBy orderBy = measuresOfSuccess.getOrderBy();
+        assertNotNull(orderBy);
+
+        assertEquals("MoS 1",measuresOfSuccess.get(0).getName());
     }
 
     public void testWithOneThread()

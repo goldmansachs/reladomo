@@ -1475,7 +1475,7 @@ class com.gs.fw.common.mithra.test.domain.ProjitoMeasureOfSuccess
 id, projitoId, name, description, accountableKerberos, processingDateFrom, processingDateTo
 1, 2, "MoS 1", "Measure of success description 1",  "tester1", "2000-02-01 00:00:00.0", "9999-12-01 00:00:00.0"
 2, 2, "MoS 2", "Measure of success description 2",  "tester2", "2000-02-01 00:00:00.0", "2000-03-01 00:00:00.0"
-2, 2, "MoS 2", "Measure of success description 2a", "tester2", "2000-03-01 00:00:00.0", "9999-12-01 00:00:00.0"
+2, 2, "MoS 1", "Measure of success description 2a", "tester2", "2000-03-01 00:00:00.0", "9999-12-01 00:00:00.0"
 
 class com.gs.fw.common.mithra.test.domain.ProjitoEmployee
 kerberos, name, processingDateFrom, processingDateTo

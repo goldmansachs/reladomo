@@ -38,7 +38,7 @@
     <Attribute name="status" javaType="String" nullable="true" maxLength="50" columnName="STATUS"/>
 
     <Relationship name="measuresOfSuccess" reverseRelationshipName="projito" relatedObject="ProjitoMeasureOfSuccess"
-                  relatedIsDependent="true" cardinality="one-to-many" orderBy="id DESC">this.id = ProjitoMeasureOfSuccess.projitoId
+                  relatedIsDependent="true" cardinality="one-to-many" orderBy="id DESC, name asc, description">this.id = ProjitoMeasureOfSuccess.projitoId
     </Relationship>
 
     <Relationship name="memberships" reverseRelationshipName="projito" relatedObject="ProjitoMembership"

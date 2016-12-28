@@ -714,6 +714,7 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
         for (int j = 0; j < orderByAttributes.length; j++)
         {
             String orderByAttributeInput = orderByAttributes[j];
+            orderByAttributeInput = orderByAttributeInput.trim();
             String[] attrAndDirection = orderByAttributeInput.split(" ");
             String direction = ASC;
             if (attrAndDirection.length == 0)

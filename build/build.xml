@@ -19,7 +19,7 @@
     <property name="jdk.home" value="${env.JDK_HOME}"/>
     <property name="root" value="${env.RELADOMO_HOME}"/>
     <!--todo: remove-->
-    <property name="mithra.home" value="${env.RELADOMO_HOME}/Mithra"/>
+    <property name="mithra.home" value="${env.RELADOMO_HOME}/reladomo"/>
     <property name="mithra.generateGscListMethod" value="true"/>
 
     <property name="gs-collections.version" value="5.0.0"/>
@@ -1581,7 +1581,7 @@
             <arg value="--all"/>
         </exec>
         <!-- support for Mac OS X -->
-        <exec executable="sysctl" outputproperty="cores.count" os="Mac,Darwin">
+        <exec executable="sysctl" outputproperty="cores.count" osfamily="Mac">
             <arg value="-n"/>
             <arg value="hw.ncpu"/>
         </exec>
