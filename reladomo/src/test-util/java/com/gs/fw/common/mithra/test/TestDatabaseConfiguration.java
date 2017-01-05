@@ -413,7 +413,7 @@ public class TestDatabaseConfiguration
                 getLogger().error("Failed to invoke createTestTable in " + databaseObject.getClass().getName(), e);
                 throw new MithraException("Failed to invoke createTestTable in " + databaseObject.getClass().getName(), e);
             }
-            getLogger().debug("Creating a table with databaseObject: " + databaseObject.getClass().getName() + "in database " + databaseName + " with sourceAttribute " + this.sourceId);
+            getLogger().debug("Creating a table with databaseObject: " + databaseObject.getClass().getName() + " in database " + databaseName + " with sourceAttribute " + this.sourceId);
             addToReplicatedObjects(mtr, databaseObject);
         }
         this.databaseObjects.add(databaseObject);
