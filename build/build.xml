@@ -952,6 +952,7 @@
         <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/objectxmlgenerator"  output-dir="${reladomo.doc.docbook.out.dir}/objectxmlgenerator"  source="Generator"/>
         <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/userguide"           output-dir="${reladomo.doc.docbook.out.dir}/userguide"           source="ReladomoTutorial"/>
         <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/mithraTestResource"  output-dir="${reladomo.doc.docbook.out.dir}/mithraTestResource"  source="ReladomoTestResource"/>
+        <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/philosophy"          output-dir="${reladomo.doc.docbook.out.dir}/philosophy"          source="ReladomoPhilosophy"/>
         <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/visualization"       output-dir="${reladomo.doc.docbook.out.dir}/visualization"       source="ReladomoVisualization"/>
         <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/testing"             output-dir="${reladomo.doc.docbook.out.dir}/testing"             source="TestingPhilosophy"/>
         <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/mithrafaq"           output-dir="${reladomo.doc.docbook.out.dir}/mithrafaq"           source="ReladomoFaq"/>
@@ -966,6 +967,7 @@
         <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/objectxmlgenerator"   output-dir="${reladomo.doc.docbook.out.dir}/objectxmlgenerator"  source="Generator"/>
         <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/userguide"            output-dir="${reladomo.doc.docbook.out.dir}/userguide"           source="ReladomoTutorial"/>
         <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/mithraTestResource"   output-dir="${reladomo.doc.docbook.out.dir}/mithraTestResource"  source="ReladomoTestResource"/>
+        <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/philosophy"           output-dir="${reladomo.doc.docbook.out.dir}/philosophy"          source="ReladomoPhilosophy"/>
         <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/visualization"        output-dir="${reladomo.doc.docbook.out.dir}/visualization"       source="ReladomoVisualization"/>
         <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/testing"              output-dir="${reladomo.doc.docbook.out.dir}/testing"             source="TestingPhilosophy"/>
         <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/mithrafaq"            output-dir="${reladomo.doc.docbook.out.dir}/mithrafaq"           source="ReladomoFaq"/>
