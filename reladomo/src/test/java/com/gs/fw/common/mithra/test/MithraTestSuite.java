@@ -1,5 +1,5 @@
 /*
- Copyright 2016 Goldman Sachs.
+ Copyright 2017 Goldman Sachs.
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
@@ -18,6 +18,7 @@ package com.gs.fw.common.mithra.test;
 
 import com.gs.fw.common.mithra.portal.MithraAbstractObjectPortal;
 import com.gs.fw.common.mithra.test.aggregate.AggregateTestSuite;
+import com.gs.fw.common.mithra.test.database.SyslogCheckerTest;
 import com.gs.fw.common.mithra.test.domain.inherited.TestIndexCreation;
 import com.gs.fw.common.mithra.test.evo.TestEmbeddedValueObjects;
 import com.gs.fw.common.mithra.test.finalgetter.TestFinalGetters;
@@ -277,6 +278,9 @@ public class MithraTestSuite
         suite.addTestSuite(TestH2DefaultBatchSizeTestCases.class);
         suite.addTestSuite(TestH2SmallBatchSizeTestCases.class);
         suite.addTestSuite(TestH2LargeBatchSizeTestCases.class);
+
+        // SyslogChecker
+        suite.addTestSuite(SyslogCheckerTest.class);
 
         return suite;
     }
