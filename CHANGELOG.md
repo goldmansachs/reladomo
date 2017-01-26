@@ -1,5 +1,5 @@
 # Change Log
-## 16.1.2 - 2016-10-18 
+## 16.1.2 - 2017-01-26
 This release includes a new document: Reladomo Philosophy & Vision
 See the javadoc jar or [online] (https://goldmansachs.github.io/reladomo/)
 ### Enhancements:
