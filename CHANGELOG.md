@@ -1,4 +1,18 @@
 # Change Log
+## 16.1.2 - 2016-10-18 
+This release includes a new document: Reladomo Philosophy & Vision
+See the javadoc jar or [online] (https://goldmansachs.github.io/reladomo/)
+### Enhancements:
+- make sure cache load exceptions are reported at startup
+- recognize more DB2 connection dead error codes
+
+### Bug fixes:
+- Fix SyslogChecker for String SourceAttribute.
+- Fix xml parsing for orderBys.
+
+## 16.1.1 - 2016-11-03
+### Enhancements:
+- implement equality substitution in chained mapper
 
 ## 16.1.0 - 2016-10-18 
 ### Enhancements:
