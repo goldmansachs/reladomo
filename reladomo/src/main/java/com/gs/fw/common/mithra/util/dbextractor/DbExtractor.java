@@ -18,6 +18,7 @@ package com.gs.fw.common.mithra.util.dbextractor;
 
 import java.io.*;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.util.*;
 
 import com.gs.collections.api.block.function.*;
@@ -58,6 +59,8 @@ public class DbExtractor
         }
     };
     private boolean endPointsInclusive;
+    private List<MithraParsedData> mergedData = FastList.newList();
+    private boolean saveMergedDataInMemory = false;
 
     public DbExtractor(String fileName, boolean overwrite)
     {
@@ -69,10 +72,20 @@ public class DbExtractor
         this(fileName, new MithraTestDataRowFormatter(), new MithraTestDataHeaderFormatter(), ",", overwrite, fileHeader);
     }
 
+    public List<MithraParsedData> getMergedData()
+    {
+        return mergedData;
+    }
+
     public DbExtractor(String fileName, Function<Object, String> rowFormatter,
                        Function<Class, String> headerFormatter, String delimiter, boolean overwrite)
     {
         this(fileName, rowFormatter, headerFormatter, delimiter, overwrite, null);
+    }
+
+    public void saveMergedDataInMemory()
+    {
+        this.saveMergedDataInMemory = true;
     }
 
     private DbExtractor(String fileName, Function<Object, String> rowFormatter,
@@ -101,6 +114,11 @@ public class DbExtractor
         Map<RelatedFinder, List<MithraDataObject>> map = UnifiedMap.newMap();
         this.addClassAndRelatedToMap(finder, op, deepFetchAttributes, map);
         this.addDataByFinder(map);
+    }
+
+    public void addData(List<MithraParsedData> mergedData) throws IOException
+    {
+        this.addNonUniqueIndicesToOutputFile(this.loadData(mergedData));
     }
 
     public void addDataFrom(String filename) throws IOException
@@ -157,7 +175,7 @@ public class DbExtractor
                 return o1.getClass().getName().compareTo(o2.getClass().getName());
             }
         });
-        if (this.fileName.endsWith(".ccbf"))
+        if (this.fileName.endsWith(".ccbf") || this.saveMergedDataInMemory)
         {
             writeColumnarFile(allMergedData, allRelatedFinders);
         }
@@ -181,6 +199,23 @@ public class DbExtractor
             parsedData.setDataObjects(new FastList(data));
             mithraParsedData.add(parsedData);
         }
+        if (this.saveMergedDataInMemory)
+        {
+            this.mergedData = mithraParsedData;
+        }
+        else
+        {
+            writeToFile(mithraParsedData);
+        }
+    }
+
+    public void writeMergedDataToColumnarFile() throws IOException
+    {
+        this.writeToFile(this.mergedData);
+    }
+
+    public void writeToFile(List<MithraParsedData> mithraParsedData) throws IOException
+    {
         FileOutputStream fos = null;
         try
         {
@@ -278,17 +313,24 @@ public class DbExtractor
 
     private Map<RelatedFinder, NonUniqueIndex> getExistingData()
     {
-        if (!this.overwrite && new File(this.fileName).exists())
+        if (!this.overwrite)
         {
-            LOGGER.info("Loading existing data from " + this.fileName);
-            return this.loadDataFromFile(this.fileName);
+            if (this.saveMergedDataInMemory)
+            {
+                LOGGER.info("Loading merged data from memory. Size size of the list is " + this.mergedData.size());
+                return this.loadData(this.mergedData);
+            }
+            else if (new File(this.fileName).exists())
+            {
+                LOGGER.info("Loading existing data from " + this.fileName);
+                return this.loadDataFromFile(this.fileName);
+            }
         }
         return UnifiedMap.newMap();
     }
 
     private UnifiedMap<RelatedFinder, NonUniqueIndex> loadDataFromFile(String filename)
     {
-        UnifiedMap<RelatedFinder, NonUniqueIndex> indexByFinder = UnifiedMap.newMap();
         List<MithraParsedData> results;
         if (filename.endsWith(".ccbf"))
         {
@@ -299,6 +341,12 @@ public class DbExtractor
             results = new MithraTestDataParser(filename).getResults();
         }
 
+        return loadData(results);
+    }
+
+    private UnifiedMap<RelatedFinder, NonUniqueIndex> loadData(List<MithraParsedData> results)
+    {
+        UnifiedMap<RelatedFinder, NonUniqueIndex> indexByFinder = UnifiedMap.newMap();
         for (MithraParsedData result : results)
         {
             List<MithraDataObject> dataObjects = result.getDataObjects();
@@ -499,11 +547,25 @@ public class DbExtractor
             this.startLine(out);
             for (int i = 0; i < attributes.length - 1; i++)
             {
-                out.write(rowFormatter.valueOf(attributes[i].valueOf(object)) + delimiter);
+                Attribute attribute = attributes[i];
+                out.write(rowFormatter.valueOf(getValueConvertIfNeeded(attribute, object)) + delimiter);
             }
-            out.write(rowFormatter.valueOf(attributes[attributes.length -1].valueOf(object)));
+            out.write(rowFormatter.valueOf(getValueConvertIfNeeded(attributes[attributes.length - 1], object)));
             this.endLine(out);
         }
+    }
+    private Object getValueConvertIfNeeded(Attribute attribute, Object object)
+    {
+        Object value = attribute.valueOf(object);
+        if (attribute instanceof TimestampAttribute)
+        {
+            TimestampAttribute timestampAttribute = (TimestampAttribute) attribute;
+            if (timestampAttribute != null && timestampAttribute.requiresConversionFromUtc() && !timestampAttribute.getAsOfAttributeInfinity().equals(value))
+            {
+                return MithraTimestamp.zConvertTimeForReadingWithUtcCalendar(new Timestamp(((Timestamp) value).getTime()), TimeZone.getDefault());
+            }
+        }
+        return value;
     }
 
     private void closeOut(Closeable out)

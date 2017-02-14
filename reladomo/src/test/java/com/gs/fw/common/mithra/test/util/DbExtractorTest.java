@@ -84,6 +84,19 @@ public class DbExtractorTest extends TestCase
         deleteFile("DbExtractorTest_target.txt.ccbf");
     }
 
+    public void testInMemoryMithraTestDataExtractorCompressed() throws Exception
+    {
+        DbExtractor extractor = new DbExtractor(OUTPUT_PATH + "DbExtractorTest_target.txt.ccbf", false);
+        extractor.saveMergedDataInMemory();
+        deleteFile("DbExtractorTest_target.txt.ccbf");
+        extractStuff(extractor);
+        extractor.writeMergedDataToColumnarFile();
+        List<MithraParsedData> compressedData = new BinaryCompressor().decompress(OUTPUT_PATH + "DbExtractorTest_target.txt.ccbf");
+        List<MithraParsedData> uncompressedData = new MithraTestDataParser(COMPARE_PATH + "DbExtractorTest_source.txt").getResults();
+        TestMithraTestDataParser.compareData(uncompressedData, compressedData);
+        deleteFile("DbExtractorTest_target.txt.ccbf");
+    }
+
     public void deleteFile(String fname)
     {
         File extracted = new File(COMPARE_PATH + fname);
