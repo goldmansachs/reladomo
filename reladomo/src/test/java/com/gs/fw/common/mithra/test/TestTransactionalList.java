@@ -909,6 +909,16 @@ public class TestTransactionalList extends MithraTestAbstract
     public void testMultithreadedQueueLoader()
     {
         MithraMultiThreadedQueueLoader loader = new MithraMultiThreadedQueueLoader(5);
+        //try shutting down the loader's pool before adding any items
+        try
+        {
+            loader.shutdownPool();
+        }
+        catch (Exception e)
+        {
+            fail("should not get here...");
+        }
+
         final OrderList firstList = new OrderList(OrderFinder.userId().eq(1));
         final OrderList secondList = new OrderList(OrderFinder.userId().eq(2));
         loader.addQueueItem(new MithraListQueueItem() {

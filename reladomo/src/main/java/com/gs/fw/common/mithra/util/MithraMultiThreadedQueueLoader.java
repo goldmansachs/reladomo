@@ -162,8 +162,11 @@ public class MithraMultiThreadedQueueLoader
     {
         synchronized(poolLock)
         {
-            executor.shutdown();
-            executor = null;
+            if (executor != null)
+            {
+                executor.shutdown();
+                executor = null;
+            }
         }
     }
 
