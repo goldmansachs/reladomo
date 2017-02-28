@@ -117,7 +117,7 @@ public class MithraCompositeList<E>
         FastList<MithraFastList<E>> localLists = lists;
         for (int i = 0; i < localLists.size(); i++)
         {
-            if (!localLists.get(i).contains(object)) return true;
+            if (localLists.get(i).contains(object)) return true;
         }
         return false;
     }
