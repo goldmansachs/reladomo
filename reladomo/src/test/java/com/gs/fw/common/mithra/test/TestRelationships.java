@@ -1408,4 +1408,17 @@ public class TestRelationships extends MithraTestAbstract
         assertTrue(sum > 0);
         assertEquals(count, getRetrievalCount());
     }
+
+    public void testListNavigationDeepFetchToZeroOne()
+    {
+        ProfileList profiles = ProfileFinder.findMany(ProfileFinder.id().greaterThan(0).and(ProfileFinder.sourceId().eq(0)));
+        profiles.deepFetch(ProfileFinder.users().userGroupsForActive());
+        profiles.forceResolve();
+        int dbCalls = dbCalls();
+        for(Profile profile: profiles)
+        {
+            profile.getUsers().getUserGroupsForActives().forceResolve();
+        }
+        assertEquals(dbCalls, dbCalls());
+    }
 }

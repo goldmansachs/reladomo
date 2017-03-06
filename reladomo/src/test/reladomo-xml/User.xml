@@ -47,6 +47,7 @@
     <Relationship name="defaultGroupManager" relatedObject="User" cardinality="many-to-one">this.defaultGroupId = Group.id and (User.id = Group.managerId)</Relationship>
     <Relationship name="groupsWithManagers" relatedObject="Group" cardinality="many-to-many">UserGroup.ownerId = this.id and Group.id = UserGroup.dependentId and User.id = Group.managerId</Relationship>
     <Relationship name="userGroups2" relatedObject="UserGroup" cardinality="many-to-one">UserGroup.ownerId = this.id and UserGroup.dependentId = 2</Relationship>
+    <Relationship name="userGroupsForActive" relatedObject="UserGroup" cardinality="many-to-one">UserGroup.ownerId = this.id and this.active = true</Relationship>
     <Relationship name="userGroups" relatedObject="UserGroup" cardinality="many-to-one">UserGroup.ownerId = this.id</Relationship>
     <Index name="byUserId" unique="true">userId</Index>
 
