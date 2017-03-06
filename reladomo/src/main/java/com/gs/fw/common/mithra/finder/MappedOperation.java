@@ -111,6 +111,10 @@ public class MappedOperation implements Operation
         if (mapper.isRightHandPartialCacheResolvable())
         {
             List joinedList = op.getResultObjectPortal().zFindInMemoryWithoutAnalysis(getCombinedOp(), true);
+            if (joinedList == null && mapper.getRightFilters() != null)
+            {
+                joinedList = op.getResultObjectPortal().zFindInMemoryWithoutAnalysis(op, true);
+            }
             if (joinedList != null)
             {
                 return mapper.mapReturnNullIfIncompleteIndexHit(joinedList);
