@@ -17,6 +17,7 @@
 package com.gs.fw.common.mithra.finder.integer;
 
 import com.gs.collections.api.set.primitive.IntSet;
+import com.gs.collections.impl.factory.primitive.IntSets;
 import com.gs.fw.common.mithra.MithraBusinessException;
 import com.gs.fw.common.mithra.attribute.IntegerAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
@@ -42,11 +43,21 @@ public class IntegerInOperation extends InOperation implements SqlParameterSette
     private IntSet set;
     private transient volatile int[] copiedArray;
 
-
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public IntegerInOperation(IntegerAttribute attribute, IntSet intSet)
     {
         super(attribute);
         this.set = intSet.freeze();
+    }
+
+    public IntegerInOperation(IntegerAttribute attribute, org.eclipse.collections.api.set.primitive.IntSet intSet)
+    {
+        super(attribute);
+        this.set = IntSets.immutable.of(intSet.toArray());
     }
 
     @Override

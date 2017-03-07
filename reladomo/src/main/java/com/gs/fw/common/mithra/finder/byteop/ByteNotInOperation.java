@@ -17,6 +17,7 @@
 package com.gs.fw.common.mithra.finder.byteop;
 
 import com.gs.collections.api.set.primitive.ByteSet;
+import com.gs.collections.impl.factory.primitive.ByteSets;
 import com.gs.fw.common.mithra.attribute.ByteAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.finder.NotInOperation;
@@ -32,11 +33,21 @@ public class ByteNotInOperation extends NotInOperation implements SqlParameterSe
     private ByteSet set;
     private transient volatile byte[] copiedArray;
 
-
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public ByteNotInOperation(ByteAttribute attribute, ByteSet byteSet)
     {
         super(attribute);
         this.set = byteSet.freeze();
+    }
+
+    public ByteNotInOperation(ByteAttribute attribute, org.eclipse.collections.api.set.primitive.ByteSet byteSet)
+    {
+        super(attribute);
+        this.set = ByteSets.immutable.of(byteSet.toArray());
     }
 
     @Override

@@ -16,7 +16,7 @@
 
 package com.gs.fw.common.mithra.tempobject;
 
-import com.gs.collections.api.block.function.Function;
+import com.gs.fw.common.mithra.util.Function;
 
 import java.util.AbstractList;
 import java.util.List;

@@ -16,12 +16,12 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.collections.api.set.primitive.LongSet;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.*;
 import com.gs.fw.common.mithra.extractor.ChainedAttributeValueSelector;
 import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.util.Function;
 
 
 public class MappedLongAttribute<T> extends LongAttribute<T> implements MappedAttribute
@@ -159,6 +159,11 @@ public class MappedLongAttribute<T> extends LongAttribute<T> implements MappedAt
         return new MappedOperation(this.mapper, this.wrappedAttribute.notEq(other));
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public Operation in(LongSet longSet)
     {
@@ -166,7 +171,24 @@ public class MappedLongAttribute<T> extends LongAttribute<T> implements MappedAt
     }
 
     @Override
+    public Operation in(org.eclipse.collections.api.set.primitive.LongSet longSet)
+    {
+        return new MappedOperation(this.mapper, this.wrappedAttribute.in(longSet));
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public Operation notIn(LongSet longSet)
+    {
+        return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(longSet));
+    }
+
+    @Override
+    public Operation notIn(org.eclipse.collections.api.set.primitive.LongSet longSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(longSet));
     }

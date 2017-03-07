@@ -16,13 +16,13 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.extractor.ChainedAttributeValueSelector;
 import com.gs.fw.common.mithra.finder.ChainedMapper;
 import com.gs.fw.common.mithra.finder.MappedOperation;
 import com.gs.fw.common.mithra.finder.Mapper;
 import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.util.Function;
 
 import java.sql.Timestamp;
 import java.util.Date;

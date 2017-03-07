@@ -16,7 +16,7 @@
 
 package com.gs.fw.common.mithra.util.dbextractor;
 
-import com.gs.collections.api.block.function.Function;
+import com.gs.fw.common.mithra.util.Function;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 

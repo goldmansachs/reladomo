@@ -16,7 +16,6 @@
 
 package com.gs.fw.common.mithra.tempobject;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.gs.fw.common.mithra.MithraList;

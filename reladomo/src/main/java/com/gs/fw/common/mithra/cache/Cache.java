@@ -95,19 +95,35 @@ public interface Cache
 
     public List get(int indexRef, IntSet intSetIndexValues);
 
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.IntSet intSetIndexValues);
+
     public List get(int indexRef, DoubleSet doubleSetIndexValues);
+
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.DoubleSet doubleSetIndexValues);
 
     public List get(int indexRef, BooleanSet booleanSetIndexValues);
 
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.BooleanSet booleanSetIndexValues);
+
     public List get(int indexRef, LongSet longSetIndexValues);
+
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.LongSet longSetIndexValues);
 
     public List get(int indexRef, ByteSet byteSetIndexValues);
 
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.ByteSet byteSetIndexValues);
+
     public List get(int indexRef, CharSet charSetIndexValues);
+
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.CharSet charSetIndexValues);
 
     public List get(int indexRef, FloatSet floatSetIndexValues);
 
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.FloatSet floatSetIndexValues);
+
     public List get(int indexRef, ShortSet shortSetIndexValues);
+
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.ShortSet shortSetIndexValues);
 
     public List get(int indexRef, Object indexValue);
 

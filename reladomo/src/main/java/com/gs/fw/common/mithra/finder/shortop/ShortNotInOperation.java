@@ -17,6 +17,7 @@
 package com.gs.fw.common.mithra.finder.shortop;
 
 import com.gs.collections.api.set.primitive.ShortSet;
+import com.gs.collections.impl.factory.primitive.ShortSets;
 import com.gs.fw.common.mithra.attribute.ShortAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.finder.NotInOperation;
@@ -33,11 +34,22 @@ public class ShortNotInOperation extends NotInOperation implements SqlParameterS
     private ShortSet set;
     private transient volatile short[] copiedArray;
 
-
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public ShortNotInOperation(ShortAttribute attribute, ShortSet shortSet)
     {
         super(attribute);
         this.set = shortSet.freeze();
+    }
+
+    @Deprecated
+    public ShortNotInOperation(ShortAttribute attribute, org.eclipse.collections.api.set.primitive.ShortSet shortSet)
+    {
+        super(attribute);
+        this.set = ShortSets.immutable.of(shortSet.toArray());
     }
 
     @Override

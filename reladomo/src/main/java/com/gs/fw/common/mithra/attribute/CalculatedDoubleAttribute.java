@@ -224,6 +224,11 @@ public class CalculatedDoubleAttribute<T> extends DoubleAttribute<T> implements 
         return new DoubleNotEqOperation(this, other);
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public Operation in(DoubleSet doubleSet)
     {
@@ -245,7 +250,52 @@ public class CalculatedDoubleAttribute<T> extends DoubleAttribute<T> implements 
     }
 
     @Override
+    public Operation in(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet)
+    {
+        Operation op;
+        switch (doubleSet.size())
+        {
+            case 0:
+                op = new None(this);
+                break;
+            case 1:
+                op = this.eq(doubleSet.doubleIterator().next());
+                break;
+            default:
+                op = new DoubleInOperation(this, doubleSet);
+                break;
+        }
+
+        return op;
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public Operation notIn(DoubleSet doubleSet)
+    {
+        Operation op;
+        switch (doubleSet.size())
+        {
+            case 0:
+                op = new All(this);
+                break;
+            case 1:
+                op = this.notEq(doubleSet.doubleIterator().next());
+                break;
+            default:
+                op = new DoubleNotInOperation(this, doubleSet);
+                break;
+        }
+
+        return op;
+    }
+
+    @Override
+    public Operation notIn(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet)
     {
         Operation op;
         switch (doubleSet.size())

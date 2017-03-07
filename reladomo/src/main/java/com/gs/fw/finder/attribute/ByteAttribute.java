@@ -34,9 +34,23 @@ public interface ByteAttribute<Owner> extends NumericAttribute<Owner>
 
     public Operation<Owner> lessThanEquals(byte value);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public Operation<Owner> in(ByteSet byteSet);
 
+    public Operation<Owner> in(org.eclipse.collections.api.set.primitive.ByteSet byteSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public Operation<Owner> notIn(ByteSet byteSet);
+
+    public Operation<Owner> notIn(org.eclipse.collections.api.set.primitive.ByteSet byteSet);
 
     public IntegerAttribute<Owner> plus(ByteAttribute addend);
     public IntegerAttribute<Owner> plus(ShortAttribute addend);

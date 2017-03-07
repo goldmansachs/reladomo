@@ -16,7 +16,6 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.collections.api.set.primitive.DoubleSet;
 import com.gs.fw.common.mithra.aggregate.attribute.DoubleAggregateAttribute;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.StandardDeviationCalculatorNumeric;
@@ -161,9 +160,23 @@ public abstract class BigDecimalAttribute<T> extends NonPrimitiveAttribute<T, Bi
 
     public abstract Operation notEq(double other);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public abstract Operation in(DoubleSet doubleSet);
 
+    public abstract Operation in(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public abstract Operation notIn(DoubleSet doubleSet);
+
+    public abstract Operation notIn(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet);
 
     public abstract Operation greaterThan(double target);
 
@@ -350,6 +363,11 @@ public abstract class BigDecimalAttribute<T> extends NonPrimitiveAttribute<T, Bi
     }
 
     protected Set<BigDecimal> createBigDecimalSetFromDoubleSet(DoubleSet doubleSet)
+    {
+        return BigDecimalUtil.createBigDecimalSetFromDoubleSet(doubleSet, this.getPrecision(), this.getScale());
+    }
+
+    protected Set<BigDecimal> createBigDecimalSetFromDoubleSet(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet)
     {
         return BigDecimalUtil.createBigDecimalSetFromDoubleSet(doubleSet, this.getPrecision(), this.getScale());
     }

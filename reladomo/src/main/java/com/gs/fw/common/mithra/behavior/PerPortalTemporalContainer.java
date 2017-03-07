@@ -20,7 +20,6 @@ import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.behavior.state.DatedPersistenceState;
 import com.gs.fw.common.mithra.util.InternalList;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
 
 
 public class PerPortalTemporalContainer

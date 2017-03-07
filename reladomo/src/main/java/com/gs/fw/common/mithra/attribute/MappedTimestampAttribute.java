@@ -16,12 +16,12 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.ObjectProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.TimestampProcedure;
 import com.gs.fw.common.mithra.extractor.ChainedAttributeValueSelector;
 import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.util.Function;
 import com.gs.fw.common.mithra.util.TimestampPool;
 
 import java.sql.Timestamp;

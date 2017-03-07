@@ -16,10 +16,10 @@
 
 package com.gs.fw.common.mithra.finder;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.Attribute;
 
+import com.gs.fw.common.mithra.util.Function;
 import com.gs.fw.common.mithra.util.InternalList;
 import com.gs.fw.common.mithra.util.ListFactory;
 

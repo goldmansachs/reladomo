@@ -16,7 +16,7 @@
 
 package com.gs.fw.common.mithra.extractor;
 
-import com.gs.collections.api.block.function.Function;
+import com.gs.fw.common.mithra.util.Function;
 
 public class ChainedAttributeValueSelector implements Function, org.eclipse.collections.api.block.function.Function
 {

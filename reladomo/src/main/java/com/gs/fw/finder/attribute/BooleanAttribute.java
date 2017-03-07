@@ -27,7 +27,21 @@ public interface BooleanAttribute<Owner> extends Attribute<Owner>
 
     public Operation<Owner> notEq(boolean value);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public Operation<Owner> in(BooleanSet booleanSet);
 
+    public Operation<Owner> in(org.eclipse.collections.api.set.primitive.BooleanSet booleanSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public Operation<Owner> notIn(BooleanSet booleanSet);
+
+    public Operation<Owner> notIn(org.eclipse.collections.api.set.primitive.BooleanSet booleanSet);
 }

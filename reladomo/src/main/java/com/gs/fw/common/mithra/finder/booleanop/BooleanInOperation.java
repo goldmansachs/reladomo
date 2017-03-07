@@ -17,6 +17,7 @@
 package com.gs.fw.common.mithra.finder.booleanop;
 
 import com.gs.collections.api.set.primitive.BooleanSet;
+import com.gs.collections.impl.factory.primitive.BooleanSets;
 import com.gs.fw.common.mithra.attribute.BooleanAttribute;
 import com.gs.fw.common.mithra.extractor.BooleanExtractor;
 import com.gs.fw.common.mithra.extractor.Extractor;
@@ -36,11 +37,21 @@ public class BooleanInOperation extends InOperation implements SqlParameterSette
     private BooleanSet set;
     private transient volatile boolean[] copiedArray;
 
-
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public BooleanInOperation(BooleanAttribute attribute, BooleanSet booleanSet)
     {
         super(attribute);
         this.set = booleanSet.freeze();
+    }
+
+    public BooleanInOperation(BooleanAttribute attribute, org.eclipse.collections.api.set.primitive.BooleanSet booleanSet)
+    {
+        super(attribute);
+        this.set = BooleanSets.immutable.of(booleanSet.toArray());
     }
 
     @Override

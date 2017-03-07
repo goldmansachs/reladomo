@@ -42,6 +42,7 @@ import java.util.Set;
 public class AggregateDataConfig implements Serializable
 {
     private ObjectIntHashMap<String> nameToPositionMap;
+    private ObjectIntHashMap<String> nameToPositionMapEc;
     private List<MithraGroupByAttribute> groupByAttributes;
     private List<MithraAggregateAttribute> aggregateAttributes;
     private static final byte NULL_VALUE = 100;
@@ -80,10 +81,28 @@ public class AggregateDataConfig implements Serializable
         return nameToPositionMap.size();
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public void setNameToPositionMap(ObjectIntHashMap<String> map)
     {
         this.nameToPositionMap = new ObjectIntHashMap(map.size());
         map.forEachKeyValue(new ObjectIntProcedure<String>()
+        {
+            @Override
+            public void value(String each, int parameter)
+            {
+                nameToPositionMap.put(each, parameter);
+            }
+        });
+    }
+
+    public void setNameToPositionMap(org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap<String> map)
+    {
+        this.nameToPositionMap = new ObjectIntHashMap(map.size());
+        map.forEachKeyValue(new org.eclipse.collections.api.block.procedure.primitive.ObjectIntProcedure<String>()
         {
             @Override
             public void value(String each, int parameter)

@@ -16,8 +16,8 @@
 
 package com.gs.fw.common.mithra.tempobject;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.extractor.*;
+import com.gs.fw.common.mithra.util.Function;
 import com.gs.fw.common.mithra.util.Time;
 
 import java.io.IOException;

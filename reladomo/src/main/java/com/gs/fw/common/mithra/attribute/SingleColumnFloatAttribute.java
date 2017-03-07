@@ -105,6 +105,11 @@ public abstract class SingleColumnFloatAttribute<T> extends FloatAttribute<T> im
         return new FloatNotEqOperation(this, other);
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public Operation in(FloatSet floatSet)
     {
@@ -125,7 +130,50 @@ public abstract class SingleColumnFloatAttribute<T> extends FloatAttribute<T> im
     }
 
     @Override
+    public Operation in(org.eclipse.collections.api.set.primitive.FloatSet floatSet)
+    {
+        Operation op;
+        switch (floatSet.size())
+        {
+            case 0:
+                op = new None(this);
+                break;
+            case 1:
+                op = this.eq(floatSet.floatIterator().next());
+                break;
+            default:
+                op = new FloatInOperation(this, floatSet);
+                break;
+        }
+        return op;
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public Operation notIn(FloatSet floatSet)
+    {
+        Operation op;
+        switch (floatSet.size())
+        {
+            case 0:
+                op = new All(this);
+                break;
+            case 1:
+                op = this.notEq(floatSet.floatIterator().next());
+                break;
+            default:
+                op = new FloatNotInOperation(this, floatSet);
+                break;
+        }
+        return op;
+    }
+
+    @Override
+    public Operation notIn(org.eclipse.collections.api.set.primitive.FloatSet floatSet)
     {
         Operation op;
         switch (floatSet.size())

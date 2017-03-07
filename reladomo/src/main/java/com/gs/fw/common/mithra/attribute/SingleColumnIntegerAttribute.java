@@ -114,6 +114,11 @@ public abstract class SingleColumnIntegerAttribute<T> extends IntegerAttribute<T
         return new IntegerNotEqOperation(this, other);
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public Operation in(IntSet intSet)
     {
@@ -135,7 +140,52 @@ public abstract class SingleColumnIntegerAttribute<T> extends IntegerAttribute<T
     }
 
     @Override
+    public Operation in(org.eclipse.collections.api.set.primitive.IntSet intSet)
+    {
+        Operation op;
+        switch (intSet.size())
+        {
+            case 0:
+                op = new None(this);
+                break;
+            case 1:
+                op = this.eq(intSet.intIterator().next());
+                break;
+            default:
+                op = new IntegerInOperation(this, intSet);
+                break;
+        }
+
+        return op;
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public Operation notIn(IntSet intSet)
+    {
+        Operation op;
+        switch (intSet.size())
+        {
+            case 0:
+                op = new All(this);
+                break;
+            case 1:
+                op = this.notEq(intSet.intIterator().next());
+                break;
+            default:
+                op = new IntegerNotInOperation(this, intSet);
+                break;
+        }
+
+        return op;
+    }
+
+    @Override
+    public Operation notIn(org.eclipse.collections.api.set.primitive.IntSet intSet)
     {
         Operation op;
         switch (intSet.size())

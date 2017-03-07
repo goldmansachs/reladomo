@@ -103,6 +103,11 @@ public abstract class SingleColumnByteAttribute<T> extends ByteAttribute<T> impl
         return new ByteNotEqOperation(this, other);
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public Operation in(ByteSet byteSet)
     {
@@ -123,7 +128,51 @@ public abstract class SingleColumnByteAttribute<T> extends ByteAttribute<T> impl
     }
 
     @Override
+    public Operation in(org.eclipse.collections.api.set.primitive.ByteSet byteSet)
+    {
+        Operation op;
+        switch (byteSet.size())
+        {
+            case 0:
+                op = new None(this);
+                break;
+            case 1:
+                op = this.eq(byteSet.byteIterator().next());
+                break;
+            default:
+                op = new ByteInOperation(this, byteSet);
+        }
+
+        return op;
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public Operation notIn(ByteSet byteSet)
+    {
+        Operation op;
+        switch (byteSet.size())
+        {
+            case 0:
+                op = new All(this);
+                break;
+            case 1:
+                op = this.notEq(byteSet.byteIterator().next());
+                break;
+            default:
+                op = new ByteNotInOperation(this, byteSet);
+                break;
+        }
+
+        return op;
+    }
+
+    @Override
+    public Operation notIn(org.eclipse.collections.api.set.primitive.ByteSet byteSet)
     {
         Operation op;
         switch (byteSet.size())

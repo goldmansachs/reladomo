@@ -26,7 +26,7 @@ import com.gs.fw.common.mithra.attribute.*;
 import com.gs.fw.common.mithra.util.*;
 
 <%
-    String valueSelectorClassName = "com.gs.collections.api.block.function.Function";
+    String valueSelectorClassName = "com.gs.fw.common.mithra.util.Function";
     String valueSelectorSimpleClassName = "Function";
 %>
 import com.gs.fw.common.mithra.notification.*;

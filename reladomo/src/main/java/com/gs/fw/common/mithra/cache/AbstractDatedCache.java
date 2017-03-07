@@ -1843,7 +1843,19 @@ public abstract class AbstractDatedCache extends AbstractCache implements Refere
     }
 
     @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.IntSet intSetIndexValues)
+    {
+        throw new RuntimeException("not supported");
+    }
+
+    @Override
     public List get(int indexRef, DoubleSet doubleSetIndexValues)
+    {
+        throw new RuntimeException("not supported");
+    }
+
+    @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.DoubleSet doubleSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }
@@ -1855,7 +1867,19 @@ public abstract class AbstractDatedCache extends AbstractCache implements Refere
     }
 
     @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.BooleanSet booleanSetIndexValues)
+    {
+        throw new RuntimeException("not supported");
+    }
+
+    @Override
     public List get(int indexRef, LongSet longSetIndexValues)
+    {
+        throw new RuntimeException("not supported");
+    }
+
+    @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.LongSet longSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }
@@ -1867,7 +1891,19 @@ public abstract class AbstractDatedCache extends AbstractCache implements Refere
     }
 
     @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.ByteSet byteSetIndexValues)
+    {
+        throw new RuntimeException("not supported");
+    }
+
+    @Override
     public List get(int indexRef, CharSet charSetIndexValues)
+    {
+        throw new RuntimeException("not supported");
+    }
+
+    @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.CharSet charSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }
@@ -1879,7 +1915,19 @@ public abstract class AbstractDatedCache extends AbstractCache implements Refere
     }
 
     @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.FloatSet floatSetIndexValues)
+    {
+        throw new RuntimeException("not supported");
+    }
+
+    @Override
     public List get(int indexRef, ShortSet shortSetIndexValues)
+    {
+        throw new RuntimeException("not supported");
+    }
+
+    @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.ShortSet shortSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }

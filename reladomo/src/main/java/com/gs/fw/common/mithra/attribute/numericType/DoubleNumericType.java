@@ -16,7 +16,6 @@
 
 package com.gs.fw.common.mithra.attribute.numericType;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.attribute.CalculatedDoubleAttribute;
 import com.gs.fw.common.mithra.attribute.DoubleAttribute;
 import com.gs.fw.common.mithra.attribute.MappedDoubleAttribute;
@@ -26,6 +25,7 @@ import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.AggregateA
 import com.gs.fw.common.mithra.attribute.calculator.arithmeticCalculator.*;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
 import com.gs.fw.common.mithra.finder.Mapper;
+import com.gs.fw.common.mithra.util.Function;
 import com.gs.fw.common.mithra.util.MutableAverage;
 import com.gs.fw.common.mithra.util.MutableDouble;
 import com.gs.fw.common.mithra.util.MutableNumber;

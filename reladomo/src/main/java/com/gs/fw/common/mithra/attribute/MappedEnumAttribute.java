@@ -17,10 +17,10 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.extractor.ChainedAttributeValueSelector;
 import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.util.Function;
 
 import java.util.Set;
 
