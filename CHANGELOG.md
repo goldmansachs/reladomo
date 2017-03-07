@@ -1,4 +1,14 @@
 # Change Log
+## 16.1.3 - 2017-03-07
+### Enhancements:
+- Enabled in-memory db extractor merge and Timestamp Attribute time zone conversion
+- Reduce db hit with filtered relationship list navigation with deep fetch
+- Try harder to resolve mixed partial/full cache queries
+
+### Bug Fixes:
+- Allow calls MithraMultithreadedQueueLoader.shutdownPool() to before start
+- fix MithraCompositeList.contains
+
 ## 16.1.2 - 2017-01-26
 This release includes a new document: Reladomo Philosophy & Vision
 See the javadoc jar or [online] (https://goldmansachs.github.io/reladomo/)
