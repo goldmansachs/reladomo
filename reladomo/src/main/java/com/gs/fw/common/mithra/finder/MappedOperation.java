@@ -144,9 +144,13 @@ public class MappedOperation implements Operation
                     if (defaults == NoOperation.instance()) return null;
                 }
             }
-            if (forceOneByOne || mapper.getFromPortal().isPartiallyCached())
+            if (forceOneByOne)
             {
                 return applyOneByOne(list, reverseMapper, defaults);
+            }
+            if (mapper.getFromPortal().isPartiallyCached())
+            {
+                return applyForPartiallyCachedMapper(list, reverseMapper, defaults);
             }
             Operation toApply = this.op;
             if (defaults != null) toApply = defaults.and(this.op);
@@ -161,6 +165,20 @@ public class MappedOperation implements Operation
             }
         }
         return null;
+    }
+
+    private List applyForPartiallyCachedMapper(List list, Mapper reverseMapper, Operation defaults)
+    {
+        List result = applyOneByOne(list, reverseMapper, defaults);
+        if (result == null)
+        {
+            List intersect = this.applyOperationToPartialCache();
+            if (intersect != null)
+            {
+                result = intersectLists(intersect, list);
+            }
+        }
+        return result;
     }
 
     private List matchLeftToRight(List list, ConcurrentFullUniqueIndex rightIndex)
