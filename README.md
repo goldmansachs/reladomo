@@ -1,5 +1,8 @@
 # Reladomo
-[![Build Status](https://travis-ci.org/goldmansachs/reladomo.svg?branch=master)](https://travis-ci.org/goldmansachs/reladomo)
+[![][travis img]][travis]
+[![][maven img]][maven]
+[![][release img]][release]
+[![][license-apache img]][license-apache]
 
 ## What is it? 
 Reladomo is an object-relational mapping framework with the following enterprise features:
@@ -84,3 +87,15 @@ Extract the jar file and refer to the docs below.
 
 * [Versions] (https://github.com/goldmansachs/reladomo/releases)
 * [Maven Central] (http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.goldmansachs.reladomo%22)
+
+[travis]:https://travis-ci.org/goldmansachs/reladomo
+[travis img]:https://travis-ci.org/goldmansachs/reladomo.svg?branch=master
+
+[license-apache]:LICENSE.txt
+[license-apache img]:https://img.shields.io/badge/License-Apache%202-blue.svg
+
+[maven]:http://search.maven.org/#search|gav|1|g:"com.goldmansachs.reladomo"%20AND%20a:"reladomo"
+[maven img]:https://maven-badges.herokuapp.com/maven-central/com.goldmansachs.reladomo/reladomo/badge.svg
+
+[release]:https://github.com/goldmansachs/reladomo/releases
+[release img]:https://img.shields.io/github/release/goldmansachs/reladomo.svg
