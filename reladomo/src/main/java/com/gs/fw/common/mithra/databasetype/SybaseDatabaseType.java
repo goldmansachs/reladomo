@@ -764,6 +764,7 @@ public class SybaseDatabaseType extends AbstractDatabaseType
     public int getMultiInsertBatchSize(int columnsToInsert)
     {
         int result = (int) Math.round(OPTIMAL_INSERT_PARAMETERS / (double) columnsToInsert);
+        if (result == 0) result = 1;
         if (result > MAX_UNIONS_IN_INSERT)
         {
             result = MAX_UNIONS_IN_INSERT;
