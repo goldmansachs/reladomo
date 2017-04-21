@@ -1,42 +1,219 @@
 <html>
+    <head>
+        <style>
+body {
+  background-color: #fff;
+  font-family: "Roboto", helvetica, arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+}
+
+div.table-title {
+   display: block;
+  margin: auto;
+  max-width: 600px;
+  padding:5px;
+  width: 100%;
+}
+
+.table-title h3 {
+   color: #000;
+   font-size: 30px;
+   font-weight: 400;
+   font-style:normal;
+   font-family: "Roboto", helvetica, arial, sans-serif;
+   text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+   text-transform:uppercase;
+}
+
+
+/*** Table Styles **/
+
+.table-fill {
+  background: white;
+  border-radius:3px;
+  border-collapse: collapse;
+  height: 100px;
+  margin: auto;
+  max-width: 600px;
+  padding:5px;
+  width: 100%;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  animation: float 5s infinite;
+}
+ 
+th {
+  color:#D5DDE5;;
+  background:#1b1e24;
+  border-bottom:4px solid #9ea7af;
+  border-right: 1px solid #343a45;
+  font-size:23px;
+  font-weight: 100;
+  padding:24px;
+  text-align:left;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  vertical-align:middle;
+}
+
+th:first-child {
+  border-top-left-radius:3px;
+}
+ 
+th:last-child {
+  border-top-right-radius:3px;
+  border-right:none;
+}
+  
+tr {
+  border-top: 1px solid #C1C3D1;
+  border-bottom-: 1px solid #C1C3D1;
+  color:#666B85;
+  font-size:14px;
+  font-weight:normal;
+  text-shadow: 0 1px 1px rgba(256, 256, 256, 0.1);
+}
+            
+tr:first-child {
+  border-top:none;
+}
+
+tr:last-child {
+  border-bottom:none;
+}
+ 
+tr:nth-child(odd) td {
+  background:#EBEBEB;
+}
+ 
+tr:last-child td:first-child {
+  border-bottom-left-radius:3px;
+}
+ 
+tr:last-child td:last-child {
+  border-bottom-right-radius:3px;
+}
+ 
+td {
+  background:#FFFFFF;
+  padding:10px;
+  text-align:left;
+  vertical-align:middle;
+  font-weight:300;
+  font-size:14px;
+  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.1);
+  border-right: 1px solid #C1C3D1;
+}
+
+td:last-child {
+  border-right: 0px;
+}
+
+th.text-left {
+  text-align: left;
+}
+
+th.text-center {
+  text-align: center;
+}
+
+th.text-right {
+  text-align: right;
+}
+
+td.text-left {
+  text-align: left;
+}
+
+td.text-center {
+  text-align: center;
+}
+
+td.text-right {
+  text-align: right;
+}
+        </style>
+             
+    </head>
+    
 <body>
-    <h1>
-<img src="logo/reladomo-200.png" alt="Reladomo" > Documentation
-    </h1>
-<ul>
-<li>
-<a href="userguide/ReladomoTutorial.html">Tutorial</a> <a href="userguide/ReladomoTutorial.pdf">[PDF]</a>
-</li><br/><li>
-<a href="https://goldmansachs.github.io/reladomo-kata/reladomo-tour-docs/tour-guide.html">Guided Tour</a> <a href="https://goldmansachs.github.io/reladomo-kata/reladomo-tour-docs/tour-guide.pdf">[PDF]</a>
-</li><br/><li>
-<a href="mithrafaq/ReladomoFaq.html">FAQ</a> <a href="mithrafaq/ReladomoFaq.pdf">[PDF]</a>
-</li><br/><li>
-<a href="presentations/mithraFeatures/ReladomoFeatures.xhtml">Slides - Reladomo Features</a> <a href="presentations/mithraFeatures/ReladomoFeatures.pdf">[PDF]</a>
-</li><br/><li>
-<a href="presentations/mithraAdvancedUseCases/ReladomoAdvancedUseCases.xhtml">Slides - Reladomo Advanced Use Cases</a> <a href="presentations/mithraAdvancedUseCases/ReladomoAdvancedUseCases.pdf">[PDF]</a>
-</li><br/><li>
-<a href="mithraTestResource/ReladomoTestResource.html">Reladomo Test Resource</a> <a href="mithraTestResource/ReladomoTestResource.pdf">[PDF]</a>
-</li><br/><li>
-<a href="xsddoc/index.html">Object definition reference</a>
-</li><br/><li>
-<a href="notification/Notification.html">Reladomo Notification</a> <a href="notification/Notification.pdf">[PDF]</a>
-</li><br/><li>
-<a href="primaryKeyGenerator/PrimaryKeyGenerator.html">Reladomo Primary Key Generator</a> <a href="primaryKeyGenerator/PrimaryKeyGenerator.pdf">[PDF]</a>
-</li><br/><li>
-<a href="mithraddl/ReladomoDdlGenerator.html">Reladomo Database Definition Generators</a> <a href="mithraddl/ReladomoDdlGenerator.pdf">[PDF]</a>
-</li><br/><li>
-<a href="objectxmlgenerator/Generator.html">Reladomo Object XML Generator</a> <a href="objectxmlgenerator/Generator.pdf">[PDF]</a>
-</li><br/><li>
-<a href="visualization/ReladomoVisualization.html">Visualize Domain Model Using Reladomo Metadata</a> <a href="visualization/ReladomoVisualization.pdf">[PDF]</a>
-</li><br/><li>
-<a href="architecture/ReladomoInternalArchitecture.html">Reladomo Architecture</a> <a href="architecture/ReladomoInternalArchitecture.pdf">[PDF]</a>
-</li><br/><li>
-<a href="philosophy/ReladomoPhilosophy.html">Reladomo Philosophy and Vision</a> <a href="philosophy/ReladomoPhilosophy.pdf">[PDF]</a>
-</li><br/><li>
-<a href="presentations/reladomoInternalCacheStructure/ReladomoInternalCacheStructure.xhtml">Slides - Reladomo Internal Cache Structure</a> <a href="presentations/reladomoInternalCacheStructure/ReladomoInternalCacheStructure.pdf">[PDF]</a>
-</li><br/><li>
-<a href="presentations/javaBigMemory/JavaBigMemory.xhtml">Slides - Java Big Memory</a> <a href="presentations/javaBigMemory/JavaBigMemory.pdf">[PDF]</a>
-</li><br/>
-</ul>
+<div class="table-title">
+<h3><img src="logo/reladomo-200.png" alt="Reladomo" > Documentation
+</h3>
+</div>
+<table class="table-fill">
+    <thead>
+        <tr>
+            <th>HTML version</th>
+            <th>PDF version</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href="userguide/ReladomoTutorial.html">Tutorial</a></td>
+            <td><a href="userguide/ReladomoTutorial.pdf">[PDF]</a></td>
+        </tr>
+        <tr>
+            <td><a href="https://goldmansachs.github.io/reladomo-kata/reladomo-tour-docs/tour-guide.html">Guided Tour</a></td>
+            <td><a href="https://goldmansachs.github.io/reladomo-kata/reladomo-tour-docs/tour-guide.pdf">[PDF]</a></td>
+        </tr>
+        <tr>
+            <td><a href="mithrafaq/ReladomoFaq.html">FAQ</a></td>
+            <td><a href="mithrafaq/ReladomoFaq.pdf">[PDF]</a></td>
+        </tr>
+        <tr>
+            <td><a href="presentations/mithraFeatures/ReladomoFeatures.xhtml">Slides - Reladomo Features</a></td>
+            <td><a href="presentations/mithraFeatures/ReladomoFeatures.pdf">[PDF]</a></td>
+        </tr>
+        <tr>
+            <td><a href="presentations/mithraAdvancedUseCases/ReladomoAdvancedUseCases.xhtml">Slides - Reladomo Advanced Use Cases</a></td>
+            <td><a href="presentations/mithraAdvancedUseCases/ReladomoAdvancedUseCases.pdf">[PDF]</a></td>
+        </tr>
+        <tr>
+            <td><a href="mithraTestResource/ReladomoTestResource.html">Reladomo Test Resource</a></td>
+            <td><a href="mithraTestResource/ReladomoTestResource.pdf">[PDF]</a></td>
+        </tr>
+        <tr>
+            <td><a href="xsddoc/index.html">Object definition reference</a></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><a href="notification/Notification.html">Reladomo Notification</a></td>
+            <td><a href="notification/Notification.pdf">[PDF]</a></td>
+        </tr>
+        <tr>
+            <td><a href="primaryKeyGenerator/PrimaryKeyGenerator.html">Reladomo Primary Key Generator</a></td>
+            <td><a href="primaryKeyGenerator/PrimaryKeyGenerator.pdf">[PDF]</a></td>
+        </tr>
+        <tr>
+            <td><a href="mithraddl/ReladomoDdlGenerator.html">Reladomo Database Definition Generators</a></td>
+            <td><a href="mithraddl/ReladomoDdlGenerator.pdf">[PDF]</a></td>
+        </tr>
+        <tr>
+            <td><a href="objectxmlgenerator/Generator.html">Reladomo Object XML Generator</a></td>
+            <td><a href="objectxmlgenerator/Generator.pdf">[PDF]</a></td>
+        </tr>
+        <tr>
+            <td><a href="visualization/ReladomoVisualization.html">Visualize Domain Model Using Reladomo Metadata</a></td>
+            <td><a href="visualization/ReladomoVisualization.pdf">[PDF]</a></td>
+        </tr>
+        <tr>
+            <td><a href="architecture/ReladomoInternalArchitecture.html">Reladomo Architecture</a></td>
+            <td><a href="architecture/ReladomoInternalArchitecture.pdf">[PDF]</a></td>
+        </tr>
+        <tr>
+            <td><a href="philosophy/ReladomoPhilosophy.html">Reladomo Philosophy and Vision</a></td>
+            <td><a href="philosophy/ReladomoPhilosophy.pdf">[PDF]</a></td>
+        </tr>
+        <tr>
+            <td><a href="presentations/reladomoInternalCacheStructure/ReladomoInternalCacheStructure.xhtml">Slides - Reladomo Internal Cache Structure</a></td>
+            <td><a href="presentations/reladomoInternalCacheStructure/ReladomoInternalCacheStructure.pdf">[PDF]</a></td>
+        </tr>
+        <tr>
+            <td><a href="presentations/javaBigMemory/JavaBigMemory.xhtml">Slides - Java Big Memory</a></td>
+            <td><a href="presentations/javaBigMemory/JavaBigMemory.pdf">[PDF]</a></td>
+        </tr>
+    </tbody> 
+</table>
 </body>
 </html>
