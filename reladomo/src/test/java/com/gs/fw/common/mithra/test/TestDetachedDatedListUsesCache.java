@@ -396,7 +396,7 @@ public class TestDetachedDatedListUsesCache extends MithraTestAbstract
                 }
             });
 
-            assertEquals(3, this.getRetrievalCount() - dbCount);
+            assertEquals(0, this.getRetrievalCount() - dbCount);
         }
     }
 }

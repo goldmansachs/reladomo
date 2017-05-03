@@ -1707,4 +1707,10 @@ public abstract class AbstractNonDatedCache extends AbstractCache
             index.destroy();
         }
     }
+
+    @Override
+    public boolean isDated()
+    {
+        return false;
+    }
 }

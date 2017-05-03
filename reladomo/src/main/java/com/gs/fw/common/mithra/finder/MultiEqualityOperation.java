@@ -504,6 +504,7 @@ public class MultiEqualityOperation implements Operation, EqualityOperation
         }
         else
         {
+            if (cache.isDated()) return null;
             return this.applyOperation(cache.getAll());
         }
     }

@@ -625,6 +625,12 @@ public class TypedCache implements Cache
     }
 
     @Override
+    public boolean isDated()
+    {
+        return cache.isDated();
+    }
+
+    @Override
     public boolean syncWithMasterCache(MasterCacheUplink uplink)
     {
         throw new RuntimeException("not implemented");
