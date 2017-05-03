@@ -158,6 +158,7 @@ public class SybaseDatabaseType extends AbstractDatabaseType
         registerSybaseType(38, "time", Types.TIME);          // time
         registerSybaseType(39, "date", Types.DATE);          // daten
         registerSybaseType(40, "time", Types.TIME);          // timen
+        registerSybaseType(43, "bigint", Types.BIGINT);      // bigint
         registerSybaseType(80, "timestamp", Types.TIMESTAMP);     // timestamp
     }
 
@@ -180,6 +181,7 @@ public class SybaseDatabaseType extends AbstractDatabaseType
         numericSybaseTypes.add("varbinary");
         numericSybaseTypes.add("decimal");
         numericSybaseTypes.add("real");
+        numericSybaseTypes.add("bigint");
     }
 
     static
@@ -207,6 +209,7 @@ public class SybaseDatabaseType extends AbstractDatabaseType
         sqlToJavaTypes.put("real", "float");
         sqlToJavaTypes.put("date", "Timestamp");
         sqlToJavaTypes.put("time", "Time");
+        sqlToJavaTypes.put("bigint", "long");
     }
 
     static
@@ -535,7 +538,7 @@ public class SybaseDatabaseType extends AbstractDatabaseType
 
     public String getSqlDataTypeForLong()
     {
-        return "numeric(19,0)";
+        return "bigint";
     }
 
     public String getSqlDataTypeForShortJava()
