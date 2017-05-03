@@ -65,7 +65,7 @@ Once build is successful, run `src/main/java/sample/HelloReladomoApp` to see how
 
 ## Documentation
 
-Documentation is available [online] (https://goldmansachs.github.io/reladomo/)
+Documentation is available [online](https://goldmansachs.github.io/reladomo/)
 and also included within the [Reladomo Javadoc jar file](http://search.maven.org/remotecontent?filepath=com/goldmansachs/reladomo/reladomo/16.0.0/reladomo-16.0.0-javadoc.jar).
 Extract the jar file and refer to the docs below.
 
@@ -85,8 +85,8 @@ Extract the jar file and refer to the docs below.
 
 ## Acquiring Reladomo
 
-* [Versions] (https://github.com/goldmansachs/reladomo/releases)
-* [Maven Central] (http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.goldmansachs.reladomo%22)
+* [Versions](https://github.com/goldmansachs/reladomo/releases)
+* [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.goldmansachs.reladomo%22)
 
 [travis]:https://travis-ci.org/goldmansachs/reladomo
 [travis img]:https://travis-ci.org/goldmansachs/reladomo.svg?branch=master

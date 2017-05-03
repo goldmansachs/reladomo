@@ -1,4 +1,13 @@
 # Change Log
+## 16.1.4 - 2017-05-03
+### Enhancements:
+- Improve using full cache in a transaction when transaction participation is not required
+- Tweak bulk loader connection pooling to reduce connection open/close.
+- Add support for bigint for Sybase ASE
+
+### Bug Fixes:
+- Fix Sybase inserts with more than 160 columns.
+
 ## 16.1.3 - 2017-03-07
 ### Enhancements:
 - Enabled in-memory db extractor merge and Timestamp Attribute time zone conversion
