@@ -171,7 +171,7 @@ public abstract class AbstractDatedTransactionalCache extends AbstractDatedCache
                 data = updateExistingDataIfAny(data, asOfDates, null);
                 container = ((MithraDatedTransactionalObjectFactory) this.getFactory()).createContainer(tx);
                 boolean added = false;
-                if (this.getMithraObjectPortal().getTxParticipationMode(tx).isOptimisticLocking())
+                if (!this.getMithraObjectPortal().getTxParticipationMode(tx).mustParticipateInTxOnRead())
                 {
                     SemiUniqueDatedIndex semiUniqueDatedIndex = this.getSemiUniqueDatedIndex();
                     added = semiUniqueDatedIndex.addSemiUniqueToContainer(data, container);
@@ -362,7 +362,7 @@ public abstract class AbstractDatedTransactionalCache extends AbstractDatedCache
         }
         boolean containerWasNull = false;
         boolean isPureHome = this.getMithraObjectPortal().isPureHome();
-        if (data.zGetDataVersion() >= 0 && container == null && (this.getMithraObjectPortal().getTxParticipationMode(tx).isOptimisticLocking() || isPureHome))
+        if (data.zGetDataVersion() >= 0 && container == null && (!this.getMithraObjectPortal().getTxParticipationMode(tx).mustParticipateInTxOnRead() || isPureHome))
         {
             containerWasNull = true;
             container = ((MithraDatedTransactionalObjectFactory) this.getFactory()).createContainer(tx);
@@ -384,7 +384,7 @@ public abstract class AbstractDatedTransactionalCache extends AbstractDatedCache
             MithraDataObject committedData = container.getCommittedDataFromDates(asOfDates);
             MithraDataObject transactionalData = container.getActiveDataFromData(data);
             boolean good = committedData == data  || transactionalData == data;
-            if (!good && (this.getMithraObjectPortal().getTxParticipationMode(tx).isOptimisticLocking() || isPureHome))
+            if (!good && (!this.getMithraObjectPortal().getTxParticipationMode(tx).mustParticipateInTxOnRead() || isPureHome))
             {
                 good = true;
                 container.addCommittedData(data);
@@ -571,7 +571,7 @@ public abstract class AbstractDatedTransactionalCache extends AbstractDatedCache
             SemiUniqueDatedIndex semiUniqueDatedIndex = this.getSemiUniqueDatedIndex();
             boolean foundCachedValue = false;
             TxParticipationMode participationMode = data.zGetMithraObjectPortal().getTxParticipationMode(tx);
-            if (participationMode.isOptimisticLocking())
+            if (!participationMode.mustParticipateInTxOnRead())
             {
                 foundCachedValue = semiUniqueDatedIndex.addSemiUniqueToContainer(data, container);
             }

@@ -258,4 +258,6 @@ public interface Cache
     public boolean syncWithMasterCache(MasterCacheUplink uplink);
 
     public MasterSyncResult sendSyncResult(long maxReplicatedPageVersion);
+
+    public boolean isDated();
 }

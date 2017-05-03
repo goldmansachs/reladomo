@@ -2463,6 +2463,12 @@ public abstract class AbstractDatedCache extends AbstractCache implements Refere
         MithraReferenceThread.getInstance().removeListener(this);
     }
 
+    @Override
+    public boolean isDated()
+    {
+        return true;
+    }
+
     // for test purposes only
     private OffHeapDataStorage zGetDataStorage()
     {

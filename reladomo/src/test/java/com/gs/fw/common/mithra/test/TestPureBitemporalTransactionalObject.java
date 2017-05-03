@@ -157,13 +157,24 @@ public class TestPureBitemporalTransactionalObject extends MithraTestAbstract
     {
         try
         {
-            PureBitemporalOrderItem item = PureBitemporalOrderItemFinder.findOne(PureBitemporalOrderItemFinder.id().eq(1));
-            assertNotNull(item);
-            item.setNullablePrimitiveAttributesToNull();
-            fail("Should not get here");
+            MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand<Object>()
+            {
+                @Override
+                public Object executeTransaction(MithraTransaction tx) throws Throwable
+                {
+                    Operation op = PureBitemporalOrderItemFinder.id().eq(1);
+                    op = op.and(PureBitemporalOrderItemFinder.businessDate().eq(businessDate));
+                    PureBitemporalOrderItem item = PureBitemporalOrderItemFinder.findOne(op);
+                    assertNotNull(item);
+                    item.setNullablePrimitiveAttributesToNull();
+                    fail("Should not get here");
+                    return null;
+                }
+            });
         }
         catch(MithraBusinessException e)
         {
+            assertTrue(e.getMessage().contains("readonly"));
             getLogger().info("Expected Exception. OrderItem has a readOnly attribute and cannot be updated when is already persisted");
         }
     }

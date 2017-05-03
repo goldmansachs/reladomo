@@ -255,16 +255,16 @@ public class MithraTransactionalPortal extends MithraAbstractObjectPortal
         try
         {
             tx.zSetOperationEvaluationMode(true);
-            if (this.isPureHome())
+            if (this.isPureHome() || (!this.isOperationPartiallyCached(op) && !this.txParticipationRequired(tx, op)))
             {
-                resultList = op.applyOperationToFullCache();
+                resultList = this.resolveOperationOnCache(op);
             }
             else
             {
                 resultList = op.applyOperationToPartialCache();
-                //todo: remove the .getAsOfAttributes() check when full caching of dated is solid?
-                if (resultList == null && this.getFinder().getAsOfAttributes() == null && !this.isOperationPartiallyCached(op))
+                if (resultList == null && !this.isOperationPartiallyCached(op) && this.getTxParticipationMode(tx).mustParticipateInTxOnRead())
                 {
+                    // attempt to find what we have in cache to trigger waiting for potential other transactions
                     List untrustworthyResult = op.applyOperationToFullCache();
                     checkTransactionParticipationAndWaitForOtherTransactions(untrustworthyResult, tx);
                 }
@@ -280,6 +280,26 @@ public class MithraTransactionalPortal extends MithraAbstractObjectPortal
             checkTransactionParticipationForPureObject(resultList, tx);
         }
         return resultList;
+    }
+
+    private boolean txParticipationRequired(MithraTransaction tx, Operation op)
+    {
+        boolean participate = this.getTxParticipationMode(tx).mustParticipateInTxOnRead();
+        if (!participate)
+        {
+            UnifiedSet dependentPortals = new UnifiedSet(3);
+            op.addDependentPortalsToSet(dependentPortals);
+            if (dependentPortals.size() > 1)
+            {
+                Iterator it = dependentPortals.iterator();
+                while (it.hasNext() && !participate)
+                {
+                    MithraObjectPortal depPortal = (MithraObjectPortal) it.next();
+                    participate = depPortal.getTxParticipationMode(tx).mustParticipateInTxOnRead();
+                }
+            }
+        }
+        return participate;
     }
 
     private void checkTransactionParticipationForPureObject(List list, MithraTransaction tx)

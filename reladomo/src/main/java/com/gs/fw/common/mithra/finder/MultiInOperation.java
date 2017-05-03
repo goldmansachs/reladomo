@@ -316,6 +316,7 @@ public class MultiInOperation implements Operation, SqlParameterSetter
         }
         else
         {
+            if (cache.isDated()) return null;
             return this.applyOperation(cache.getAll());
         }
     }

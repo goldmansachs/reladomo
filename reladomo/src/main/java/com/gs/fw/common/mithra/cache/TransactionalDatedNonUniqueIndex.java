@@ -101,8 +101,7 @@ public class TransactionalDatedNonUniqueIndex implements IterableNonUniqueIndex,
                 {
                     if (deletedPerThread.getFromData(fromMainList.get(i)) == null)
                     {
-                        result = new FastList(1);
-                        result.add(fromMain);
+                        result.add(fromMainList.get(i));
                     }
                 }
             }

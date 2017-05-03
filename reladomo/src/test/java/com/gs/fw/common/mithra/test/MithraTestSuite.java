@@ -50,6 +50,9 @@ public class MithraTestSuite
 
     public static Test suite()
     {
+        String xmlFile = System.getProperty("mithra.xml.config");
+        boolean isFullCache = xmlFile.contains("FullCache");
+
         MithraCpuBoundThreadPool.setParallelThreshold(2);
         MithraAbstractObjectPortal.setTransitiveThreshold(2);
         TestSuite suite = new TestSuite();
@@ -218,11 +221,14 @@ public class MithraTestSuite
         // temp objects
         suite.addTestSuite(TestTempObject.class);
 
-        //test file extraction of mithra objects
-        suite.addTestSuite(DbExtractorTest.class);
-        suite.addTestSuite(DbExtractorMergeTest.class);
-        suite.addTestSuite(DbExtractorTransformTest.class);
-        suite.addTestSuite(MithraObjectGraphExtractorTest.class);
+        if (!isFullCache)
+        {
+            //test file extraction of mithra objects
+            suite.addTestSuite(DbExtractorTest.class);
+            suite.addTestSuite(DbExtractorMergeTest.class);
+            suite.addTestSuite(DbExtractorTransformTest.class);
+            suite.addTestSuite(MithraObjectGraphExtractorTest.class);
+        }
 
         // test SingleQueueExecutor with Non Dated mithra objects
         suite.addTestSuite(NonDatedSingleQueueExecutorTest.class);

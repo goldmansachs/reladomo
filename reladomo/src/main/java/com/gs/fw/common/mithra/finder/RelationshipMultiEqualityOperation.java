@@ -335,6 +335,7 @@ public class RelationshipMultiEqualityOperation implements Operation, EqualityOp
         }
         else
         {
+            if (cache.isDated()) return null;
             return this.applyOperation(cache.getAll());
         }
     }
