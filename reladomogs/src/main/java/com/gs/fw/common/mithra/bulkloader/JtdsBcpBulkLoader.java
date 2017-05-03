@@ -47,7 +47,7 @@ public class JtdsBcpBulkLoader implements BulkLoader, ConnectionFactory
     private final static ConcurrentHashMap<TableKey, String> createTableMap = new ConcurrentHashMap<TableKey, String>();
     private final static ConcurrentHashMap<JtdsBcpBulkLoader, ObjectPoolWithThreadAffinity<PooledConnection>> JTDS_BULK_LOADER_MAP = new ConcurrentHashMap<JtdsBcpBulkLoader, ObjectPoolWithThreadAffinity<PooledConnection>>();
     private static int maxActiveConnectionsOnPool = 10000;
-    private static int maxNumberOfIdleConnectionsToKeep = 1;
+    private static int maxNumberOfIdleConnectionsToKeep = 20;
     private static int minNumberOfIdleConnectionsToKeep = 1;
     private static long timeBetweenEvictionRunsMillis = 1000L * 60L;
     private static long minEvictableIdleTimeMillis = 1000L * 60L * 10L;
@@ -120,7 +120,7 @@ public class JtdsBcpBulkLoader implements BulkLoader, ConnectionFactory
         catch (Exception e)
         {
             zCloseBcpConnection();
-            logger.error("Could not load bcp driver. Please make sure jtdsjbcp-1.2.0.10.jar or later is in the classpath", e);
+            logger.error("Could not load bcp driver. Please make sure jtdsjbcp-1.2.0.16.jar or later is in the classpath", e);
             throw new BulkLoaderException("Could not load bcp driver. Please make sure jtdsjbcp-1.2.0.10.jar or later is in the classpath", e);
         }
 
