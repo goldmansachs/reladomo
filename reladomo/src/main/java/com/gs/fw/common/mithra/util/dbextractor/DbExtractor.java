@@ -554,13 +554,15 @@ public class DbExtractor
             this.endLine(out);
         }
     }
+
     private Object getValueConvertIfNeeded(Attribute attribute, Object object)
     {
         Object value = attribute.valueOf(object);
         if (attribute instanceof TimestampAttribute)
         {
             TimestampAttribute timestampAttribute = (TimestampAttribute) attribute;
-            if (timestampAttribute != null && timestampAttribute.requiresConversionFromUtc() && !timestampAttribute.getAsOfAttributeInfinity().equals(value))
+            if (timestampAttribute.requiresConversionFromUtc() &&
+                    (timestampAttribute.getAsOfAttributeInfinity() == null || !timestampAttribute.getAsOfAttributeInfinity().equals(value)))
             {
                 return MithraTimestamp.zConvertTimeForReadingWithUtcCalendar(new Timestamp(((Timestamp) value).getTime()), TimeZone.getDefault());
             }
