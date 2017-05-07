@@ -23,6 +23,7 @@ import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.domain.*;
 import com.gs.fw.common.mithra.test.domain.dated.AuditedOrderStatusTwo;
+import com.gs.fw.common.mithra.util.MithraPerformanceData;
 
 import java.sql.*;
 import java.text.ParseException;
@@ -1134,6 +1135,34 @@ public class TestDatedAuditOnly extends MithraTestAbstract implements TestDatedA
         {
             this.checker.checkDatedAuditOnlyInfinityRow(2000+i, 12.5+i, 22.1+i);
         }
+    }
+
+    public void testRefresh() throws SQLException
+    {
+        int balanceId = 1;
+        AuditOnlyBalance tb = getInfinityBalance(balanceId);
+        assertNotNull(tb);
+        int retrievalCount = getRetrievalCount();
+        MithraPerformanceData data = AuditOnlyBalanceFinder.getMithraObjectPortal().getPerformanceData();
+        int refreshBefore = data.getDataForRefresh().getTotalObjects();
+
+
+        MithraTransaction tx = MithraManagerProvider.getMithraManager().startOrContinueTransaction();
+        try
+        {
+            assertEquals(balanceId, tb.getBalanceId());
+            tx.commit();
+        }
+        catch(Throwable t)
+        {
+            getLogger().error("transaction failed", t);
+            tx.rollback();
+            fail("transaction failed see exception");
+        }
+
+        assertEquals(retrievalCount + 1, getRetrievalCount());
+        data = AuditOnlyBalanceFinder.getMithraObjectPortal().getPerformanceData();
+        assertEquals(refreshBefore + 1, data.getDataForRefresh().getTotalObjects());
     }
 
     public void testTransactionalRefresh() throws SQLException

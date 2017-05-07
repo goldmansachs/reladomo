@@ -109,7 +109,9 @@ public abstract class MithraAbstractDatedTransactionalDatabaseObject
 
     public MithraDataObject enrollDatedObject(MithraDatedTransactionalObject mithraObject)
     {
-        return this.refreshDatedObject(mithraObject, mithraObject.zGetPortal().getTxParticipationMode().mustLockOnRead());
+        // delegate to the portal to keep the retrieval count consistent
+        MithraObjectPortal portal = mithraObject.zGetPortal();
+        return portal.refreshDatedObject(mithraObject, portal.getTxParticipationMode().mustLockOnRead());
     }
 
     public List getForDateRange(MithraDataObject obj, Timestamp start, Timestamp end, AsOfAttribute businessDate,
