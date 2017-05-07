@@ -781,7 +781,9 @@ public class TestTransactionalObject extends MithraTestAbstract
     {
         Order order = OrderFinder.findOne(OrderFinder.orderId().eq(1));
         assertNotNull(order);
-
+        int retrievalCount = getRetrievalCount();
+        MithraPerformanceData data = OrderFinder.getMithraObjectPortal().getPerformanceData();
+        int refreshBefore = data.getDataForRefresh().getTotalObjects();
         int newUserId = jdbcUpdateUserId(order);
 
         MithraTransaction tx = MithraManagerProvider.getMithraManager().startOrContinueTransaction();
@@ -789,9 +791,11 @@ public class TestTransactionalObject extends MithraTestAbstract
         order.setUserId(newUserId+1000);
         tx.commit();
 
+        assertEquals(retrievalCount + 1, getRetrievalCount());
+        data = OrderFinder.getMithraObjectPortal().getPerformanceData();
+        assertEquals(refreshBefore + 1, data.getDataForRefresh().getTotalObjects());
+
         this.checkUserId(newUserId+1000, 1);
-        MithraPerformanceData data = OrderFinder.getMithraObjectPortal().getPerformanceData();
-        assertTrue(data.getDataForRefresh().getTotalObjects() > 0);
     }
 
     public void testDeleteJdbcInsertRefresh() throws SQLException

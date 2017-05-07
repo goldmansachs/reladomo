@@ -261,6 +261,7 @@ public abstract class MithraAbstractDatedDatabaseObject
 
     public MithraDataObject refreshDatedObject(MithraDatedObject mithraObject, boolean lockInDatabase) throws MithraDatabaseException
     {
+        long startTime = System.currentTimeMillis();
         MithraDataObject data = mithraObject.zGetCurrentData();
         Attribute sourceAttribute = this.getFinder().getSourceAttribute();
 
@@ -348,6 +349,7 @@ public abstract class MithraAbstractDatedDatabaseObject
         {
             closeDatabaseObjects(con, stm, rs);
         }
+        this.getPerformanceData().recordTimeForRefresh(startTime);
         return refreshData;
     }
 }

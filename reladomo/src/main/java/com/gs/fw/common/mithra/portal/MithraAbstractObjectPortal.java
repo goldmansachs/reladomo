@@ -1381,7 +1381,9 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
     public MithraDataObject refreshDatedObject(MithraDatedObject mithraDatedObject, boolean lockInDatabase)
             throws MithraDatabaseException
     {
-        return this.getMithraObjectReader().refreshDatedObject(mithraDatedObject, lockInDatabase);
+        MithraDataObject newData = this.getMithraObjectReader().refreshDatedObject(mithraDatedObject, lockInDatabase);
+        MithraManagerProvider.getMithraManager().incrementDatabaseRetrieveCount();
+        return newData;
     }
 
     public boolean useMultiUpdate()
