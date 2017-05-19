@@ -1,18 +1,25 @@
 setlocal
+
+set VER=16.2.0
+
 cd ../target
-gpg -ab reladomo-16.0.0-javadoc.jar
-gpg -ab reladomo-16.0.0-sources.jar
-gpg -ab reladomo-16.0.0.jar
-gpg -ab reladomo-16.0.0.pom
-gpg -ab reladomo-gen-util-16.0.0-javadoc.jar
-gpg -ab reladomo-gen-util-16.0.0-sources.jar
-gpg -ab reladomo-gen-util-16.0.0.jar
-gpg -ab reladomo-gen-util-16.0.0.pom
-gpg -ab reladomo-test-util-16.0.0-javadoc.jar
-gpg -ab reladomo-test-util-16.0.0-sources.jar
-gpg -ab reladomo-test-util-16.0.0.jar
-gpg -ab reladomo-test-util-16.0.0.pom
-gpg -ab reladomogen-16.0.0-javadoc.jar
-gpg -ab reladomogen-16.0.0-sources.jar
-gpg -ab reladomogen-16.0.0.jar
-gpg -ab reladomogen-16.0.0.pom
+gpg -ab reladomo-%VER%-javadoc.jar
+gpg -ab reladomo-%VER%-sources.jar
+gpg -ab reladomo-%VER%.jar
+gpg -ab reladomo-%VER%.pom
+gpg -ab reladomo-gen-util-%VER%-javadoc.jar
+gpg -ab reladomo-gen-util-%VER%-sources.jar
+gpg -ab reladomo-gen-util-%VER%.jar
+gpg -ab reladomo-gen-util-%VER%.pom
+gpg -ab reladomo-test-util-%VER%-javadoc.jar
+gpg -ab reladomo-test-util-%VER%-sources.jar
+gpg -ab reladomo-test-util-%VER%.jar
+gpg -ab reladomo-test-util-%VER%.pom
+gpg -ab reladomo-serial-%VER%-javadoc.jar
+gpg -ab reladomo-serial-%VER%-sources.jar
+gpg -ab reladomo-serial-%VER%.jar
+gpg -ab reladomo-serial-%VER%.pom
+gpg -ab reladomogen-%VER%-javadoc.jar
+gpg -ab reladomogen-%VER%-sources.jar
+gpg -ab reladomogen-%VER%.jar
+gpg -ab reladomogen-%VER%.pom

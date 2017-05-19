@@ -54,6 +54,10 @@ public class JacksonReladomoWrappedListDeserializer extends StdDeserializer<Seri
         }
         if (wrapperType == null)
         {
+            wrapperType = ctxt.getContextualType();
+        }
+        if (wrapperType == null)
+        {
             return this;
         }
         JavaType valueType = wrapperType.getContentType();

@@ -31,6 +31,7 @@ import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.util.*;
 import com.gs.fw.common.mithra.cache.HashStrategy;
 import com.gs.fw.finder.Navigation;
+import com.gs.reladomo.metadata.ReladomoClassMetaData;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -84,16 +85,9 @@ public class ReladomoDeserializer<T extends MithraObject>
 
     public ReladomoDeserializer(Class aClass)
     {
-        try
-        {
-            this.data = new StackableData();
-            this.data.metaData = findDeserializationMetaData(new MithraRuntimeCacheController(Class.forName(aClass.getName() + "Finder")).getFinderInstance());
-            this.data.currentState = StartStateHaveMeta.INSTANCE;
-        }
-        catch (ClassNotFoundException e)
-        {
-            throw new RuntimeException("Could not finder for class "+aClass.getName());
-        }
+        this.data = new StackableData();
+        this.data.metaData = findDeserializationMetaData(ReladomoClassMetaData.fromBusinessClass(aClass).getFinderInstance());
+        this.data.currentState = StartStateHaveMeta.INSTANCE;
     }
 
     public ReladomoDeserializer(RelatedFinder<T> rootFinder)
@@ -1200,20 +1194,7 @@ public class ReladomoDeserializer<T extends MithraObject>
     protected static RelatedFinder getFinderInstance(ReladomoDeserializer deserializer, String className) throws DeserializationException
     {
         //todo: polymorphic case; need to search up until we find a finder. Also store the classname
-        String finderClassName = className + "Finder";
-        try
-        {
-            Class<?> finderClass = Class.forName(finderClassName);
-            return (RelatedFinder) deserializer.invokeStaticMethod(finderClass, "getFinderInstance");
-        }
-        catch (ClassNotFoundException e)
-        {
-            if (className.endsWith("Impl"))
-            {
-                return getFinderInstance(deserializer, className.substring(0, className.length() - "Impl".length()));
-            }
-            throw new DeserializationException("Could not find class "+finderClassName, e);
-        }
+        return ReladomoClassMetaData.fromBusinessClassName(className).getFinderInstance();
     }
 
     protected static void checkClassNameConsistency(ReladomoDeserializer deserializer, String className) throws DeserializationException

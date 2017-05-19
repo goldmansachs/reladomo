@@ -25,21 +25,20 @@ import com.gs.fw.common.mithra.util.serializer.SerializationConfig;
 
 import java.io.IOException;
 
-public class ExampleJacksonReladomoSerializer<T extends MithraObject> extends StdSerializer<T>
+public class JacksonReladomoSerializer<T extends MithraObject> extends StdSerializer<T>
 {
     private String serialConfigName;
 
-    public ExampleJacksonReladomoSerializer(Class<T> t)
+    public JacksonReladomoSerializer(Class<T> t)
     {
         super(t);
     }
 
-    public ExampleJacksonReladomoSerializer(Class<T> t, String serialConfigName)
+    public JacksonReladomoSerializer(Class<T> t, String serialConfigName)
     {
         super(t);
         this.serialConfigName = serialConfigName;
     }
-
 
     @Override
     public void serialize(T t, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException

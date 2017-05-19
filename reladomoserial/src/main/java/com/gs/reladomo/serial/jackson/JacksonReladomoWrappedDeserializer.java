@@ -21,6 +21,9 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.gs.fw.common.mithra.MithraDatedTransactionalObject;
+import com.gs.fw.common.mithra.MithraObject;
+import com.gs.fw.common.mithra.MithraTransactionalObject;
 import com.gs.fw.common.mithra.util.serializer.ReladomoDeserializer;
 import com.gs.fw.common.mithra.util.serializer.Serialized;
 import com.gs.reladomo.serial.json.IntDateParser;
@@ -52,6 +55,10 @@ public class JacksonReladomoWrappedDeserializer extends StdDeserializer<Serializ
         }
         if (wrapperType == null)
         {
+            wrapperType = ctxt.getContextualType();
+        }
+        if (wrapperType == null)
+        {
             return this;
         }
         JavaType valueType = wrapperType.containedType(0);
@@ -75,7 +82,15 @@ public class JacksonReladomoWrappedDeserializer extends StdDeserializer<Serializ
         else
         {
             Class<?> rawClass = this.valueType.getRawClass();
-            deserializer = new ReladomoDeserializer(rawClass);
+            if (MithraObject.class == rawClass || MithraTransactionalObject.class == rawClass ||
+                    MithraDatedTransactionalObject.class == rawClass)
+            {
+                deserializer = new ReladomoDeserializer();
+            }
+            else
+            {
+                deserializer = new ReladomoDeserializer(rawClass);
+            }
         }
 
         deserializer.setIgnoreUnknown();

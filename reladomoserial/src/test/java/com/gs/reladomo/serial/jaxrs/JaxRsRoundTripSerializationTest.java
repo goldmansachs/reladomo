@@ -3,6 +3,7 @@ package com.gs.reladomo.serial.jaxrs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.CollectionLikeType;
+import com.gs.fw.common.mithra.test.MithraTestAbstract;
 import com.gs.fw.common.mithra.test.domain.Account;
 import com.gs.fw.common.mithra.test.domain.AccountFinder;
 import com.gs.fw.common.mithra.test.domain.Order;
@@ -20,28 +21,43 @@ import org.junit.Test;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 
-public class JaxRsRoundTripSerializationTest
+public class JaxRsRoundTripSerializationTest extends MithraTestAbstract
 {
     public static EchoServer echoServer;
 
     @BeforeClass
-    public static void setup() throws IOException
+    public static void setupClass() throws IOException
     {
         echoServer = new EchoServer();
         echoServer.start();
     }
 
     @AfterClass
-    public static void tearDown() throws IOException
+    public static void tearDownClass() throws IOException
     {
         if (echoServer != null)
         {
             echoServer.stop();
         }
+    }
+
+    @Override
+    protected void setUp() throws Exception
+    {
+        super.setUp();
+        setupClass();
+    }
+
+    @Override
+    protected void tearDown() throws Exception
+    {
+        super.tearDown();
+        tearDownClass();
     }
 
     @Test
@@ -95,6 +111,112 @@ public class JaxRsRoundTripSerializationTest
                 .post(Entity.entity(serialized, MediaType.APPLICATION_JSON_TYPE));
 
         System.out.println(response.readEntity(String.class));
+    }
+
+    @Test
+    public void testRoundTripOrder() throws Exception
+    {
+        Order order = OrderFinder.findOneBypassCache(OrderFinder.orderId().eq(1));
+        SerializationConfig config = SerializationConfig.shallowWithDefaultAttributes(OrderFinder.getFinderInstance());
+        config.withDeepDependents();
+
+        Serialized<Order> toEcho = new Serialized<Order>(order, config);
+
+        Response response = clientFor(echoServer.getBaseUrl())
+                .path("echo/order")
+                .request()
+                .post(Entity.entity(toEcho, MediaType.APPLICATION_JSON_TYPE));
+
+        assertEquals(200, response.getStatus());
+
+
+        Serialized<Order> orderSerialized = response.readEntity(new GenericType<Serialized<Order>>()
+        {
+        });
+
+        assertEquals(1, orderSerialized.getWrapped().getOrderId());
+        assertTrue(orderSerialized.getWrapped().zIsDetached());
+
+    }
+
+    @Test
+    public void testGetOrder() throws Exception
+    {
+        Response response = clientFor(echoServer.getBaseUrl())
+                .path("echo/orderOne")
+                .request().get();
+
+        System.out.println(response.readEntity(String.class));
+    }
+
+    @Test
+    public void testWriteOrder() throws Exception
+    {
+        String json = "{\n" +
+//                "  \"_rdoClassName\" : \"com.gs.fw.common.mithra.test.domain.Order\",\n" +
+                "  \"_rdoState\" : 20,\n" +
+                "  \"orderId\" : 1,\n" +
+                "  \"orderDate\" : 1073883600000,\n" +
+                "  \"userId\" : 1,\n" +
+                "  \"description\" : \"First order modified\",\n" +
+                "  \"trackingId\" : \"123\",\n" +
+                "  \"items\" : {\n" +
+                "    \"_rdoMetaData\" : {\n" +
+                "      \"_rdoClassName\" : \"com.gs.fw.common.mithra.test.domain.OrderItem\",\n" +
+                "      \"_rdoListSize\" : 0\n" +
+                "    },\n" +
+                "    \"elements\" : []\n" +
+                "  }\n" +
+                "}";
+
+        Response response = clientFor(echoServer.getBaseUrl())
+                .path("echo/writeOrder")
+                .request()
+                .post(Entity.entity(json, MediaType.APPLICATION_JSON_TYPE));
+
+        assertEquals(204, response.getStatus());
+
+        Order order = OrderFinder.findOneBypassCache(OrderFinder.orderId().eq(1));
+        assertEquals(1, order.getOrderId());
+        assertEquals("First order modified", order.getDescription()); //modified attribute
+        assertEquals("In-Progress", order.getState()); // missing in json, should stay as it was
+        assertEquals(0, order.getItems().size());
+
+    }
+
+    @Test
+    public void testAnything() throws Exception
+    {
+        String json = "{\n" +
+                "  \"_rdoClassName\" : \"com.gs.fw.common.mithra.test.domain.Order\",\n" +
+                "  \"_rdoState\" : 20,\n" +
+                "  \"orderId\" : 1,\n" +
+                "  \"orderDate\" : 1073883600000,\n" +
+                "  \"userId\" : 1,\n" +
+                "  \"description\" : \"First order modified\",\n" +
+                "  \"trackingId\" : \"123\",\n" +
+                "  \"items\" : {\n" +
+                "    \"_rdoMetaData\" : {\n" +
+                "      \"_rdoClassName\" : \"com.gs.fw.common.mithra.test.domain.OrderItem\",\n" +
+                "      \"_rdoListSize\" : 0\n" +
+                "    },\n" +
+                "    \"elements\" : []\n" +
+                "  }\n" +
+                "}";
+
+        Response response = clientFor(echoServer.getBaseUrl())
+                .path("echo/writeAnything")
+                .request()
+                .post(Entity.entity(json, MediaType.APPLICATION_JSON_TYPE));
+
+        assertEquals(204, response.getStatus());
+
+        Order order = OrderFinder.findOneBypassCache(OrderFinder.orderId().eq(1));
+        assertEquals(1, order.getOrderId());
+        assertEquals("First order modified", order.getDescription()); //modified attribute
+        assertEquals("In-Progress", order.getState()); // missing in json, should stay as it was
+        assertEquals(0, order.getItems().size());
+
     }
 
     protected Serialized fromSerializedString(String json) throws Exception {

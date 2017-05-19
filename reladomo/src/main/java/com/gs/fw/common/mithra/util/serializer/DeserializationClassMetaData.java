@@ -28,6 +28,8 @@ import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.finder.AbstractRelatedFinder;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
+import com.gs.reladomo.metadata.ReladomoClassMetaData;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -42,13 +44,8 @@ public class DeserializationClassMetaData
     private final Function<? super String, ? extends Method> RELATIONSHIP_SETTER_LOOKUP = new RelationshipSetterLookup();
 
     private final RelatedFinder relatedFinder;
-    private final boolean isTemporal;
-    private final int numTempralArgs;
-    private final Class businessClass;
-    private final Class dataClass;
+    private final PrivateReladomoClassMetaData metaData;
     private final ObjectIntHashMap<Attribute> attributePosition = new ObjectIntHashMap<Attribute>();
-    private final AsOfAttribute businessDateAttribute;
-    private final AsOfAttribute processingDateAttribute;
     private final Attribute sourceAttribute;
     private final Attribute[] pkAttributesNoSource;
     private Constructor businessClassConstructor;
@@ -68,23 +65,8 @@ public class DeserializationClassMetaData
 
     public DeserializationClassMetaData(RelatedFinder relatedFinder)
     {
-        this.relatedFinder = ((AbstractRelatedFinder) relatedFinder).zWithoutParent();
-        String className = getBusinessClassName();
-        this.businessClass = findBusinessClass(className);
-        String dataClassName = className+"Data";
-        try
-        {
-            Class dataClassTmp = Class.forName(dataClassName);
-            if (dataClassTmp.isInterface())
-            {
-                dataClassTmp = Class.forName(dataClassTmp.getName()+"$"+dataClassTmp.getSimpleName()+"OnHeap");
-            }
-            this.dataClass = dataClassTmp;
-        }
-        catch (ClassNotFoundException e)
-        {
-            throw new RuntimeException("Could not get class "+className, e);
-        }
+        this.metaData = (PrivateReladomoClassMetaData) ReladomoClassMetaData.fromFinder(relatedFinder);
+        this.relatedFinder = this.metaData.getFinderInstance();
         int count = 0;
         for(Attribute attr: this.relatedFinder.getPersistentAttributes())
         {
@@ -92,25 +74,13 @@ public class DeserializationClassMetaData
             settableAttributes.add(attr);
             count++;
         }
-        AsOfAttribute[] asOfAttributes = this.relatedFinder.getAsOfAttributes();
-        AsOfAttribute localProc = null;
-        AsOfAttribute localBiz = null;
-        this.isTemporal = asOfAttributes != null;
-        this.numTempralArgs = asOfAttributes != null ? asOfAttributes.length : 0;
-        if (this.isTemporal)
+        AsOfAttribute[] asOfAttributes = this.metaData.getCachedAsOfAttributes();
+        if (this.metaData.isDated())
         {
             for(AsOfAttribute attr: asOfAttributes)
             {
                 attributePosition.put(attr, count);
                 count++;
-                if (attr.isProcessingDate())
-                {
-                    localProc = attr;
-                }
-                else
-                {
-                    localBiz = attr;
-                }
             }
         }
         Attribute[] pks = this.relatedFinder.getPrimaryKeyAttributes();
@@ -132,8 +102,6 @@ public class DeserializationClassMetaData
             localPks.toArray(pks);
         }
         pkAttributesNoSource = pks;
-        businessDateAttribute = localBiz;
-        processingDateAttribute = localProc;
         initBusinessObjectConstructor();
         List<RelatedFinder> dependentRelationshipFinders = this.relatedFinder.getDependentRelationshipFinders();
         for(int i=0;i<dependentRelationshipFinders.size();i++)
@@ -173,18 +141,18 @@ public class DeserializationClassMetaData
     {
         try
         {
-            if (isTemporal)
+            if (this.metaData.isDated())
             {
-                this.businessClassConstructor = this.businessClass.getConstructor(CONSTRUCTOR_ARGS[this.numTempralArgs]);
+                this.businessClassConstructor = this.metaData.getBusinessImplClass().getConstructor(CONSTRUCTOR_ARGS[this.metaData.getNumberOfDatedDimensions()]);
             }
             else
             {
-                this.businessClassConstructor = this.businessClass.getConstructor(null);
+                this.businessClassConstructor = this.metaData.getBusinessImplClass().getConstructor(null);
             }
         }
         catch (NoSuchMethodException e)
         {
-            throw new RuntimeException("Could not find constructor for "+businessClass.getName());
+            throw new RuntimeException("Could not find constructor for "+this.metaData.getBusinessImplClass().getName());
         }
     }
 
@@ -195,8 +163,7 @@ public class DeserializationClassMetaData
 
     private String getBusinessClassName()
     {
-        String finderClassName = relatedFinder.getFinderClassName();
-        return finderClassName.substring(0, finderClassName.length() - "Finder".length());
+        return this.metaData.getBusinessOrInterfaceClassName();
     }
 
     public RelatedFinder getRelatedFinder()
@@ -206,14 +173,7 @@ public class DeserializationClassMetaData
 
     public MithraDataObject constructData() throws DeserializationException
     {
-        try
-        {
-            return (MithraDataObject) dataClass.newInstance();
-        }
-        catch (Exception e)
-        {
-            throw new DeserializationException("Could not instantiate object for class "+dataClass.getName(), e);
-        }
+        return this.metaData.getMetaFunction().constructOnHeapData();
     }
 
     public Attribute getAttributeByName(String attributeName)
@@ -228,7 +188,7 @@ public class DeserializationClassMetaData
 
     public Method getAnnotatedMethodByName(String name)
     {
-        return DeserializableMethodCache.getInstance().get(businessClass, name);
+        return DeserializableMethodCache.getInstance().get(metaData.getBusinessImplClass(), name);
     }
 
     public int getTotalAttributes()
@@ -264,12 +224,12 @@ public class DeserializationClassMetaData
 
     public AsOfAttribute getBusinessDateAttribute()
     {
-        return businessDateAttribute;
+        return metaData.getBusinessDateAttribute();
     }
 
     public AsOfAttribute getProcessingDateAttribute()
     {
-        return processingDateAttribute;
+        return metaData.getProcessingDateAttribute();
     }
 
     public Attribute getSourceAttribute()
@@ -284,22 +244,22 @@ public class DeserializationClassMetaData
 
     public MithraObject constructObject(Timestamp businessDate, Timestamp processingDate) throws DeserializationException
     {
-        if (processingDateAttribute != null && processingDate == null)
+        if (getProcessingDateAttribute() != null && processingDate == null)
         {
-            processingDate = processingDateAttribute.getDefaultDate();
+            processingDate = getProcessingDateAttribute().getDefaultDate();
         }
-        if (businessDateAttribute != null && businessDate == null)
+        if (getBusinessDateAttribute() != null && businessDate == null)
         {
-            businessDate = businessDateAttribute.getDefaultDate();
+            businessDate = getBusinessDateAttribute().getDefaultDate();
         }
         try
         {
-            switch (numTempralArgs)
+            switch (metaData.getNumberOfDatedDimensions())
             {
                 case 0:
                     return (MithraObject) businessClassConstructor.newInstance(NO_ARGS);
                 case 1:
-                    if (processingDateAttribute != null)
+                    if (getProcessingDateAttribute() != null)
                     {
                         return (MithraObject) businessClassConstructor.newInstance(processingDate);
                     }
@@ -310,7 +270,7 @@ public class DeserializationClassMetaData
         }
         catch (Exception e)
         {
-            throw new DeserializationException("Could not construct "+businessClass.getName(), e);
+            throw new DeserializationException("Could not construct "+metaData.getBusinessImplClass().getName(), e);
         }
         return null; // never gets here.
     }

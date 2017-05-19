@@ -73,7 +73,8 @@ public class EchoServer
 
     private static int findFreePort() throws IOException
     {
-        ServerSocket serverSocket = new ServerSocket(0);
-        return serverSocket.getLocalPort();
+        return 49440;
+//        ServerSocket serverSocket = new ServerSocket(0);
+//        return serverSocket.getLocalPort();
     }
 }

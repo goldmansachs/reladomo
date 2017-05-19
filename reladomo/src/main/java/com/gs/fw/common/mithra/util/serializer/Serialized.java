@@ -33,12 +33,22 @@ public class Serialized<T extends MithraObject>
     {
         this.wrapped = wrapped;
         this.config = config;
+        checkConfig();
+    }
+
+    private void checkConfig()
+    {
+        if (config == null)
+        {
+            throw new IllegalStateException("config must not be null");
+        }
     }
 
     public Serialized(T wrapped, String configName)
     {
         this.wrapped = wrapped;
         this.config = SerializationConfig.byName(configName);
+        checkConfig();
     }
 
     protected Serialized(ReladomoDeserializer<T> deserializer) throws DeserializationException
@@ -80,6 +90,10 @@ public class Serialized<T extends MithraObject>
 
     public SerializationConfig getConfig()
     {
+        if (this.config == null)
+        {
+            throw new IllegalStateException("No config found. Was this the result of a deserialization?");
+        }
         return config;
     }
 

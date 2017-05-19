@@ -957,6 +957,7 @@
         <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/testing"             output-dir="${reladomo.doc.docbook.out.dir}/testing"             source="TestingPhilosophy"/>
         <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/mithrafaq"           output-dir="${reladomo.doc.docbook.out.dir}/mithrafaq"           source="ReladomoFaq"/>
         <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/primaryKeyGenerator" output-dir="${reladomo.doc.docbook.out.dir}/primaryKeyGenerator" source="PrimaryKeyGenerator"/>
+        <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/serialization" output-dir="${reladomo.doc.docbook.out.dir}/serialization" source="Serialization"/>
         <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/middletier"          output-dir="${reladomo.doc.docbook.out.dir}/middleTier"          source="ReladomoMiddleTier"/>
         <docbook-to-html docbook-dir="${reladomo.doc.docbook.dir}/notification"        output-dir="${reladomo.doc.docbook.out.dir}/notification"        source="Notification"/>
     </target>
@@ -972,6 +973,7 @@
         <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/testing"              output-dir="${reladomo.doc.docbook.out.dir}/testing"             source="TestingPhilosophy"/>
         <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/mithrafaq"            output-dir="${reladomo.doc.docbook.out.dir}/mithrafaq"           source="ReladomoFaq"/>
         <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/primaryKeyGenerator"  output-dir="${reladomo.doc.docbook.out.dir}/primaryKeyGenerator" source="PrimaryKeyGenerator"/>
+        <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/serialization"           output-dir="${reladomo.doc.docbook.out.dir}/serialization"          source="Serialization"/>
         <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/middletier"           output-dir="${reladomo.doc.docbook.out.dir}/middleTier"          source="ReladomoMiddleTier"/>
         <docbook-to-pdf docbook-dir="${reladomo.doc.docbook.dir}/notification"         output-dir="${reladomo.doc.docbook.out.dir}/notification"        source="Notification"/>
     </target>
@@ -1372,7 +1374,7 @@
 
     <target name="prep-reladomo-gen-util" depends="gen-reladomo-gen-util-pom, jar-reladomo-gen-util, jar-reladomo-gen-util-src, jar-reladomo-gen-util-javadoc"/>
 
-    <target name="prep-release" depends="prep-reladomo, prep-reladomogen, prep-reladomo-gen-util, prep-reladomo-test-util"/>
+    <target name="prep-release" depends="prep-reladomo, prep-reladomogen, prep-reladomo-gen-util, prep-reladomo-test-util, prep-reladomo-serial"/>
 
     <target name="bundle-release" >
         <delete quiet="true" file="${root}/target/bundle-${reladomo.version}.jar"/>
@@ -1394,13 +1396,17 @@
                 <include name="reladomo-test-util-${reladomo.version}.jar"/>
                 <include name="reladomo-test-util-${reladomo.version}-sources.jar"/>
                 <include name="reladomo-test-util-${reladomo.version}-javadoc.jar"/>
+                <include name="reladomo-serial-${reladomo.version}.pom"/>
+                <include name="reladomo-serial-${reladomo.version}.jar"/>
+                <include name="reladomo-serial-${reladomo.version}-sources.jar"/>
+                <include name="reladomo-serial-${reladomo.version}-javadoc.jar"/>
             </srcfileset>
             <targetfileset dir="${root}/target" includes="*.asc"/>
         </dependset>
         <fail message="Release files are missing.">
             <condition>
                 <not>
-                    <resourcecount count="32">
+                    <resourcecount count="40">
                         <fileset dir="${root}/target">
                             <include name="reladomo-${reladomo.version}.pom"/>
                             <include name="reladomo-${reladomo.version}.jar"/>
@@ -1418,6 +1424,10 @@
                             <include name="reladomo-test-util-${reladomo.version}.jar"/>
                             <include name="reladomo-test-util-${reladomo.version}-sources.jar"/>
                             <include name="reladomo-test-util-${reladomo.version}-javadoc.jar"/>
+                            <include name="reladomo-serial-${reladomo.version}.pom"/>
+                            <include name="reladomo-serial-${reladomo.version}.jar"/>
+                            <include name="reladomo-serial-${reladomo.version}-sources.jar"/>
+                            <include name="reladomo-serial-${reladomo.version}-javadoc.jar"/>
 
                             <include name="reladomo-${reladomo.version}.pom.asc"/>
                             <include name="reladomo-${reladomo.version}.jar.asc"/>
@@ -1435,6 +1445,10 @@
                             <include name="reladomo-test-util-${reladomo.version}.jar.asc"/>
                             <include name="reladomo-test-util-${reladomo.version}-sources.jar.asc"/>
                             <include name="reladomo-test-util-${reladomo.version}-javadoc.jar.asc"/>
+                            <include name="reladomo-serial-${reladomo.version}.pom.asc"/>
+                            <include name="reladomo-serial-${reladomo.version}.jar.asc"/>
+                            <include name="reladomo-serial-${reladomo.version}-sources.jar.asc"/>
+                            <include name="reladomo-serial-${reladomo.version}-javadoc.jar.asc"/>
                         </fileset>
                     </resourcecount>
                 </not>
@@ -1490,6 +1504,19 @@
                 <include name="reladomo-test-util-${reladomo.version}.jar.asc"/>
                 <include name="reladomo-test-util-${reladomo.version}-sources.jar.asc"/>
                 <include name="reladomo-test-util-${reladomo.version}-javadoc.jar.asc"/>
+            </fileset>
+        </jar>
+        <jar jarfile="${root}/target/bundle-reladomo-serial-${reladomo.version}.jar" index="false">
+            <fileset dir="${root}/target">
+                <include name="reladomo-serial-${reladomo.version}.pom"/>
+                <include name="reladomo-serial-${reladomo.version}.jar"/>
+                <include name="reladomo-serial-${reladomo.version}-sources.jar"/>
+                <include name="reladomo-serial-${reladomo.version}-javadoc.jar"/>
+
+                <include name="reladomo-serial-${reladomo.version}.pom.asc"/>
+                <include name="reladomo-serial-${reladomo.version}.jar.asc"/>
+                <include name="reladomo-serial-${reladomo.version}-sources.jar.asc"/>
+                <include name="reladomo-serial-${reladomo.version}-javadoc.jar.asc"/>
             </fileset>
         </jar>
     </target>
@@ -1684,9 +1711,10 @@
         <pathelement location="${root}/reladomo/target/test-util-classes"/>
     </path>
 
-    <target name="serial-init">
+    <target name="init-reladomo-serial">
         <mkdir dir="${root}/reladomoserial/target"/>
         <mkdir dir="${root}/reladomoserial/target/classes"/>
+        <mkdir dir="${root}/reladomoserial/target/javadoc"/>
         <mkdir dir="${root}/reladomoserial/target/test-classes"/>
     </target>
 
@@ -1697,7 +1725,7 @@
         </dependset>
     </target>
 
-    <target name="compile-reladomo-serial" depends="serial-init, compile-reladomo, serial-dependset">
+    <target name="compile-reladomo-serial" depends="init-reladomo-serial, compile-reladomo, serial-dependset">
         <javac destdir="${root}/reladomoserial/target/classes"
                debug="true"
                source="1.5"
@@ -1735,6 +1763,62 @@
         </javac>
     </target>
 
+    <target name="gen-reladomo-serial-pom" depends="init-reladomo-serial">
+        <generate-pom module="reladomo-serial"/>
+    </target>
+
+    <target name="reladomo-serial-javadoc">
+        <javadoc packagenames="com.gs.reladomo.*"
+                 sourcepath="${root}/reladomoserial/src/main/java"
+                 defaultexcludes="yes"
+                 access="public"
+                 destdir="${root}/reladomoserial/target/javadoc"
+                 use="true"
+                 windowtitle="Reladomo serial API"
+                 version="yes"
+                 Verbose="true">
+            <classpath>
+                <path refid="reladomogen.classpath"/>
+                <path refid="reladomo.compile.classpath"/>
+                <pathelement location="${root}/reladomo/target/classes"/>
+                <pathelement location="${root}/reladomoserial/target/classes"/>
+            </classpath>
+        </javadoc>
+    </target>
+
+    <target name="jar-reladomo-serial" depends="compile-reladomo-serial">
+
+        <jar jarfile="${root}/target/reladomo-serial-${reladomo.version}.jar" index="true">
+            <manifest>
+                <attribute name="Reladomo-Version" value="${reladomo.version}"/>
+            </manifest>
+            <fileset dir="${root}/reladomoserial/target/classes">
+                <include name="**/*"/>
+            </fileset>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
+    </target>
+
+    <target name="jar-reladomo-serial-src" depends="compile-reladomo-serial">
+        <jar jarfile="${root}/target/reladomo-serial-${reladomo.version}-sources.jar" index="true">
+            <fileset dir="${root}/reladomoserial/src/main/java">
+                <include name="**/*.java"/>
+            </fileset>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
+    </target>
+
+    <target name="jar-reladomo-serial-javadoc" depends="reladomo-serial-javadoc">
+        <jar jarfile="${root}/target/reladomo-serial-${reladomo.version}-javadoc.jar" index="true">
+            <fileset dir="${root}/reladomoserial/target/javadoc"/>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
+    </target>
+
+    <target name="prep-reladomo-serial" depends="gen-reladomo-serial-pom, jar-reladomo-serial, jar-reladomo-serial-src, jar-reladomo-serial-javadoc"/>
     <!-- ************************** /reladomo serial ******************************* -->
 
 </project>

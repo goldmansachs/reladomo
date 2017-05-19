@@ -28,6 +28,7 @@ import com.gs.fw.common.mithra.finder.DeepRelationshipAttribute;
 import com.gs.fw.common.mithra.finder.Mapper;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.util.ListFactory;
+import com.gs.reladomo.metadata.ReladomoClassMetaData;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -433,16 +434,8 @@ public class SerializationNode
         Class result = relatedClass;
         if (result == null)
         {
-            String name = relatedFinder.getFinderClassName().substring(0, relatedFinder.getFinderClassName().length() - "Finder".length());
-            try
-            {
-                result = Class.forName(name);
-                relatedClass = result;
-            }
-            catch (ClassNotFoundException e)
-            {
-                throw new RuntimeException("Could not find class "+name, e);
-            }
+            result = ReladomoClassMetaData.fromFinder(relatedFinder).getBusinessOrInterfaceClass();
+            relatedClass = result;
         }
         return result;
     }
