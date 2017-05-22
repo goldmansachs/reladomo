@@ -48,6 +48,8 @@ import com.gs.fw.common.mithra.querycache.QueryCache;
 import com.gs.fw.common.mithra.tempobject.MithraTuplePersister;
 import com.gs.fw.common.mithra.transaction.MithraObjectPersister;
 import com.gs.fw.common.mithra.util.*;
+import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
+import com.gs.reladomo.metadata.ReladomoClassMetaData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -95,6 +97,7 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
     private transient UpdateDataChooser updateDataChooser;
     private transient Attribute[] optimisticAddressingAttributes;
     private transient Attribute[] addressingAttributes;
+    private transient final ReladomoClassMetaData metaData;
 
     private static final int MAX_POOL_ARRAY_SIZE = 8;
     private static final int MAX_POOLED = 6;
@@ -124,11 +127,13 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
             updateCountHolderPool[i] = new UpdateCountHolder[MAX_POOLED][];
             updateCountOriginalValues[i] = new int[MAX_POOLED][];
         }
+        this.metaData = ReladomoClassMetaData.fromFinder(finder);
     }
 
     protected MithraAbstractObjectPortal(RelatedFinder finder)
     {
         this.finder = finder;
+        this.metaData = new PrivateReladomoClassMetaData(finder);
     }
 
     public static void setTransitiveThreshold(int transitiveThreshold)
@@ -1453,7 +1458,7 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
     {
         RelatedFinder superFinder = superClassFinders[0];
         Attribute[] superPkAttributes = superFinder.getPrimaryKeyAttributes();
-        Attribute[] pkAttributes = this.getFinder().getPrimaryKeyAttributes();
+        Attribute[] pkAttributes = ((PrivateReladomoClassMetaData)this.getClassMetaData()).getCachedPrimaryKeyAttributes();
         MithraObjectPortal[] superPortals = getSuperClassPortals();
         String superAlias = superPortals[0].getUniqueAlias();
         if (superAlias == null) superAlias = "";
@@ -1627,37 +1632,20 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
         if (this.optimisticAddressingAttributes == null)
         {
             MithraFastList<Attribute> addressingAttributes = createFirstAddressingAttributes();
-            AsOfAttribute[] asOfAttributes = finder.getAsOfAttributes();
             VersionAttribute versionAttribute = this.getFinder().getVersionAttribute();
             if (versionAttribute != null)
             {
                 addressingAttributes.add(((Attribute)versionAttribute));
             }
-            if (asOfAttributes != null)
-            {
-                Attribute optimisticAttribute = getOptimisticKey(asOfAttributes);
-                if (optimisticAttribute != null) addressingAttributes.add(optimisticAttribute);
-            }
+            Attribute optimisticAttribute = getClassMetaData().getOptimisticKeyFromAsOfAttributes();
+            if (optimisticAttribute != null) addressingAttributes.add(optimisticAttribute);
             this.optimisticAddressingAttributes = addressingAttributes.toArray(new Attribute[addressingAttributes.size()]);
         }
     }
 
-    private Attribute getOptimisticKey(AsOfAttribute[] asOfAttributes)
+    @Override
+    public ReladomoClassMetaData getClassMetaData()
     {
-        AsOfAttribute processingDate = null;
-        if (asOfAttributes.length == 2)
-        {
-            processingDate = asOfAttributes[1];
-        }
-        else
-            if (asOfAttributes[0].isProcessingDate())
-            {
-                processingDate = asOfAttributes[0];
-            }
-        if (processingDate != null)
-        {
-            return processingDate.getFromAttribute();
-        }
-        return null;
+        return this.metaData;
     }
 }

@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gs.reladomo.metadata.ReladomoClassMetaData;
 import org.slf4j.LoggerFactory;
 
 import com.gs.fw.common.mithra.MithraDataObject;
@@ -59,33 +60,17 @@ public class MithraParsedData
     public void setFinder(RelatedFinder finder)
     {
         this.finder = finder;
-        String finderClassName = finder.getFinderClassName();
-        this.parsedClassName = finderClassName.substring(0, finderClassName.length() - "Finder".length());
-        try
-        {
-            dataClass = Class.forName(parsedClassName+"Data");
-            if (dataClass.isInterface())
-            {
-                dataClass = Class.forName(dataClass.getName()+"$"+dataClass.getSimpleName()+"OnHeap");
-            }
-        }
-        catch (ClassNotFoundException e)
-        {
-            throw new RuntimeException("Could not find data class for object "+this.parsedClassName, e);
-        }
+        ReladomoClassMetaData metaData = ReladomoClassMetaData.fromFinder(finder);
+        this.parsedClassName = metaData.getBusinessOrInterfaceClassName();
+        this.dataClass = metaData.getOnHeapDataClass();
     }
 
     public void setParsedClassName(String parsedClassName) throws ClassNotFoundException, IllegalAccessException, InvocationTargetException, NoSuchMethodException
     {
         this.parsedClassName = parsedClassName;
-        Class finderClass = Class.forName(parsedClassName+"Finder");
-        dataClass = Class.forName(parsedClassName+"Data");
-        if (dataClass.isInterface())
-        {
-            dataClass = Class.forName(dataClass.getName()+"$"+dataClass.getSimpleName()+"OnHeap");
-        }
-        Method getInstanceMethod = finderClass.getMethod("getFinderInstance", (Class[]) null);
-        finder = (RelatedFinder) getInstanceMethod.invoke(null, (Object[]) null);
+        ReladomoClassMetaData metaData = ReladomoClassMetaData.fromBusinessClassName(parsedClassName);
+        dataClass = metaData.getOnHeapDataClass();
+        finder = metaData.getFinderInstance();
     }
 
     public List<MithraDataObject> getDataObjects()

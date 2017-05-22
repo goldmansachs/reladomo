@@ -44,6 +44,8 @@ public interface MithraObject extends Serializable
 
     public void zSetNonTxPersistenceState(int state);
 
+    public MithraObjectPortal zGetPortal();
+
     /**
      * This method is used to check if the Mithra object has been
      * deleted (or mark for deletion for detached objects).

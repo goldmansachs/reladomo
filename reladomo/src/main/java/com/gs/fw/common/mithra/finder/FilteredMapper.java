@@ -27,6 +27,7 @@ import com.gs.fw.common.mithra.util.HashUtil;
 import com.gs.fw.common.mithra.util.InternalList;
 import com.gs.fw.common.mithra.util.ListFactory;
 import com.gs.fw.common.mithra.util.SmallSet;
+import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
 
 import java.util.Collection;
 import java.util.List;
@@ -738,7 +739,7 @@ public class FilteredMapper extends AbstractMapper
     public AsOfEqOperation[] getDefaultAsOfOperation(List<AsOfAttribute> ignore)
     {
         if (this.rightFilters == null) return this.mapper.getDefaultAsOfOperation(ignore);
-        AsOfAttribute[] asOfAttributes = getFromPortal().getFinder().getAsOfAttributes();
+        AsOfAttribute[] asOfAttributes = ((PrivateReladomoClassMetaData)getFromPortal().getClassMetaData()).getCachedAsOfAttributes();
         if (asOfAttributes != null)
         {
             SmallSet smallSet = new SmallSet(2);

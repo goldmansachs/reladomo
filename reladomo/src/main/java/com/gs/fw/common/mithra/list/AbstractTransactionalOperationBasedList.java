@@ -182,7 +182,7 @@ public class AbstractTransactionalOperationBasedList<E> extends AbstractOperatio
 
     private void verifyNonDatedList(Operation op)
     {
-        if(op.getResultObjectPortal().getFinder().getAsOfAttributes() != null)
+        if (op.getResultObjectPortal().getClassMetaData().isDated())
         {
             throw new MithraBusinessException("Must not call deleteAll() on a Mithra list containing Dated objects. The terminate method will chain out an existing object.");
         }

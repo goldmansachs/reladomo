@@ -21,6 +21,7 @@ import com.gs.fw.common.mithra.MithraObject;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.*;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.reladomo.metadata.ReladomoClassMetaData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,18 +99,7 @@ public class VerboseSerializer
     public VerboseSerializer(RelatedFinder finder, Class dataClass)
     {
         this.finder = finder;
-        this.dataClass = dataClass;
-        if (dataClass.isInterface())
-        {
-            try
-            {
-                this.dataClass = Class.forName(dataClass.getName()+"$"+dataClass.getSimpleName()+"OnHeap");
-            }
-            catch (ClassNotFoundException e)
-            {
-                throw new RuntimeException("Could not find on heap version of "+dataClass.getClass().getName(), e);
-            }
-        }
+        this.dataClass = ReladomoClassMetaData.fromFinder(finder).getOnHeapDataClass();
     }
 
     protected void writeHeader(ObjectOutput out) throws IOException

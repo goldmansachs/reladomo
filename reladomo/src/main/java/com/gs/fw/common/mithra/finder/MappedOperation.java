@@ -36,6 +36,7 @@ import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.querycache.CachedQuery;
 import com.gs.fw.common.mithra.util.*;
+import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
 
 public class MappedOperation implements Operation
 {
@@ -128,8 +129,8 @@ public class MappedOperation implements Operation
         Mapper reverseMapper = mapper.getReverseMapper();
         if (reverseMapper != null)
         {
-            AsOfAttribute[] rightAsOfAttributes = mapper.getFromPortal().getFinder().getAsOfAttributes();
-            AsOfAttribute[] leftAsOfAttributes = mapper.getResultPortal().getFinder().getAsOfAttributes();
+            AsOfAttribute[] rightAsOfAttributes = ((PrivateReladomoClassMetaData)mapper.getFromPortal().getClassMetaData()).getCachedAsOfAttributes();
+            AsOfAttribute[] leftAsOfAttributes = ((PrivateReladomoClassMetaData)mapper.getResultPortal().getClassMetaData()).getCachedAsOfAttributes();
             boolean forceOneByOne = false;
             Operation defaults = null;
             if (leftAsOfAttributes != null)
@@ -740,8 +741,8 @@ public class MappedOperation implements Operation
 
     public boolean zHasAsOfOperation()
     {
-        AsOfAttribute[] asOfAttributes = this.getResultObjectPortal().getFinder().getAsOfAttributes();
-        return op.zHasAsOfOperation() && (asOfAttributes == null || this.mapper.hasLeftOrDefaultMappingsFor(asOfAttributes));
+        AsOfAttribute[] asOfAttributes = ((PrivateReladomoClassMetaData)this.getResultObjectPortal().getClassMetaData()).getCachedAsOfAttributes();
+        return op.zHasAsOfOperation() && (!this.getResultObjectPortal().getClassMetaData().isDated() || this.mapper.hasLeftOrDefaultMappingsFor(asOfAttributes));
     }
 
     public Operation zFlipToOneMapper(Mapper mapper)

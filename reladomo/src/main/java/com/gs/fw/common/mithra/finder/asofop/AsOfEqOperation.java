@@ -39,7 +39,7 @@ import com.gs.fw.common.mithra.finder.timestamp.TimestampEqOperation;
 import com.gs.fw.common.mithra.util.ImmutableTimestamp;
 import com.gs.fw.common.mithra.util.ListFactory;
 import com.gs.fw.common.mithra.util.TimestampPool;
-
+import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
 
 
 public class AsOfEqOperation extends AtomicEqualityOperation implements SqlParameterSetter, AsOfOperation, Externalizable
@@ -264,7 +264,7 @@ public class AsOfEqOperation extends AtomicEqualityOperation implements SqlParam
 
     public boolean zHasAsOfOperation()
     {
-        AsOfAttribute[] asOfAttributes = this.getResultObjectPortal().getFinder().getAsOfAttributes();
+        AsOfAttribute[] asOfAttributes = ((PrivateReladomoClassMetaData)this.getResultObjectPortal().getClassMetaData()).getCachedAsOfAttributes();
         return asOfAttributes != null && asOfAttributes[0].equals(this.getAttribute());
     }
 

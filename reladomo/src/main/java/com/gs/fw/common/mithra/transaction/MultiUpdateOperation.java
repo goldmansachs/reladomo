@@ -349,7 +349,7 @@ public class MultiUpdateOperation extends TransactionOperation
         {
             if (asOfAttributes != null)
             {
-                Attribute optimisticAttribute = getOptimisticKey(asOfAttributes, data);
+                Attribute optimisticAttribute = getOptimisticKey(data);
                 if (optimisticAttribute != null) singleValuedPrimaryKeys.add(optimisticAttribute);
             }
         }
@@ -363,19 +363,10 @@ public class MultiUpdateOperation extends TransactionOperation
         }
     }
 
-    private Attribute getOptimisticKey(AsOfAttribute[] asOfAttributes, MithraDataObject[] data)
+    private Attribute getOptimisticKey(MithraDataObject[] data)
     {
-        AsOfAttribute businessDate = null;
-        AsOfAttribute processingDate = null;
-        if (asOfAttributes.length == 2)
-        {
-            businessDate = asOfAttributes[0];
-            processingDate = asOfAttributes[1];
-        }
-        else if (asOfAttributes[0].isProcessingDate())
-        {
-            processingDate = asOfAttributes[0];
-        }
+        AsOfAttribute businessDate = getPortal().getClassMetaData().getBusinessDateAttribute();
+        AsOfAttribute processingDate = getPortal().getClassMetaData().getProcessingDateAttribute();
         if (processingDate != null)
         {
             boolean mustAddProcessingDate = true;

@@ -37,7 +37,7 @@ import com.gs.fw.common.mithra.finder.*;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.util.ListFactory;
 import com.gs.fw.common.mithra.util.MithraTimestamp;
-
+import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
 
 
 public class AsOfEdgePointOperation extends AtomicEqualityOperation implements AsOfOperation
@@ -313,7 +313,7 @@ public class AsOfEdgePointOperation extends AtomicEqualityOperation implements A
 
     public boolean zHasAsOfOperation()
     {
-        AsOfAttribute[] asOfAttributes = this.getResultObjectPortal().getFinder().getAsOfAttributes();
+        AsOfAttribute[] asOfAttributes = ((PrivateReladomoClassMetaData)this.getResultObjectPortal().getClassMetaData()).getCachedAsOfAttributes();
         return asOfAttributes != null && asOfAttributes[0].equals(this.getAsOfAttribute());
     }
 

@@ -35,6 +35,7 @@ import com.gs.fw.common.mithra.util.Filter;
 import com.gs.fw.common.mithra.util.MithraPerformanceData;
 import com.gs.fw.common.mithra.util.PersisterId;
 import com.gs.fw.common.mithra.util.RenewedCacheStats;
+import com.gs.reladomo.metadata.ReladomoClassMetaData;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -227,5 +228,7 @@ public interface MithraObjectPortal
     public Attribute[] zGetAddressingAttributes();
 
     public MithraDataObject zChooseDataForMultiupdate(MithraTransactionalObject obj);
+
+    public ReladomoClassMetaData getClassMetaData();
 
 }

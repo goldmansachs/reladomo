@@ -158,6 +158,11 @@ implements MithraObject, Serializable
         this.persistenceState = (byte) state;
     }
 
+    public MithraObjectPortal zGetPortal()
+    {
+        return <%= wrapper.getClassName()%>Finder.getMithraObjectPortal();
+    }
+
     public boolean isDeletedOrMarkForDeletion()
     {
         return this.persistenceState == PersistenceState.DELETED;

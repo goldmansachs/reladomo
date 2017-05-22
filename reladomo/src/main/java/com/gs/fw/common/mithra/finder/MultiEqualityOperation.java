@@ -34,6 +34,7 @@ import com.gs.fw.common.mithra.extractor.PositionBasedOperationParameterExtracto
 import com.gs.fw.common.mithra.finder.asofop.AsOfEdgePointOperation;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.util.*;
+import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
 
 public class MultiEqualityOperation implements Operation, EqualityOperation
 {
@@ -217,7 +218,7 @@ public class MultiEqualityOperation implements Operation, EqualityOperation
 
     public boolean zHasAsOfOperation()
     {
-        AsOfAttribute[] asOfAttributes = this.getResultObjectPortal().getFinder().getAsOfAttributes();
+        AsOfAttribute[] asOfAttributes = ((PrivateReladomoClassMetaData)this.getResultObjectPortal().getClassMetaData()).getCachedAsOfAttributes();
         if (asOfAttributes == null)
         {
             return true;

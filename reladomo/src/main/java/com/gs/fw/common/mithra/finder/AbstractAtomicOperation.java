@@ -115,7 +115,7 @@ public abstract class AbstractAtomicOperation implements AtomicOperation, SqlPar
         }
         else
         {
-            if (this.getResultObjectPortal().getFinder().getAsOfAttributes() != null)
+            if (this.getResultObjectPortal().getClassMetaData().isDated())
             {
                 return null;
             }
@@ -396,7 +396,7 @@ public abstract class AbstractAtomicOperation implements AtomicOperation, SqlPar
 
     public boolean zHasAsOfOperation()
     {
-        return this.getResultObjectPortal().getFinder().getAsOfAttributes() == null;
+        return !this.getResultObjectPortal().getClassMetaData().isDated();
     }
 
     public Operation zFlipToOneMapper(Mapper mapper)

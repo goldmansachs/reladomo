@@ -277,7 +277,7 @@ public class All implements Operation, Serializable
 
     public boolean zHasAsOfOperation()
     {
-        return this.getResultObjectPortal().getFinder().getAsOfAttributes() == null;
+        return !this.getResultObjectPortal().getClassMetaData().isDated();
     }
 
     public Operation zFlipToOneMapper(Mapper mapper)

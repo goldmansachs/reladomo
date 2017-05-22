@@ -689,5 +689,10 @@ implements MithraDatedObject, Serializable
         <% } %>
     }
 <% } %>
+
+    public MithraObjectPortal zGetPortal()
+    {
+        return <%= wrapper.getClassName()%>Finder.getMithraObjectPortal();
+    }
 }
 

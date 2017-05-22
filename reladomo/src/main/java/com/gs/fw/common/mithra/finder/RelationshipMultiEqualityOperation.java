@@ -33,6 +33,7 @@ import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.querycache.CompactUpdateCountOperation;
 import com.gs.fw.common.mithra.util.*;
+import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
 
 public class RelationshipMultiEqualityOperation implements Operation, EqualityOperation, CompactUpdateCountOperation
 {
@@ -114,7 +115,7 @@ public class RelationshipMultiEqualityOperation implements Operation, EqualityOp
 
     public boolean zHasAsOfOperation()
     {
-        AsOfAttribute[] asOfAttributes = this.getResultObjectPortal().getFinder().getAsOfAttributes();
+        AsOfAttribute[] asOfAttributes = ((PrivateReladomoClassMetaData)this.getResultObjectPortal().getClassMetaData()).getCachedAsOfAttributes();
         if (asOfAttributes == null)
         {
             return true;
