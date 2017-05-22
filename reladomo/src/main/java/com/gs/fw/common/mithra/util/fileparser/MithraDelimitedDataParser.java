@@ -185,10 +185,7 @@ public class MithraDelimitedDataParser
 
     private String getFullyQualifiedClassname()
     {
-        String classname =  attributes.get(0).getOwnerPortal().getFinder().getFinderClassName();
-        int index = classname.lastIndexOf("Finder");
-        classname = classname.substring(0, index);
-        return classname;
+        return attributes.get(0).getOwnerPortal().getClassMetaData().getBusinessOrInterfaceClassName();
     }
 
     public List<MithraParsedData> getResults()

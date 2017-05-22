@@ -197,7 +197,7 @@ public class BatchUpdateOperation extends TransactionOperation
             }
             if (asOfAttributes != null)
             {
-                Attribute optimisticProcessing = this.getOptimisticKey(asOfAttributes);
+                Attribute optimisticProcessing = getPortal().getClassMetaData().getOptimisticKeyFromAsOfAttributes();
                 if (optimisticProcessing != null)
                 {
                     allAttribute.add(optimisticProcessing);
@@ -205,26 +205,6 @@ public class BatchUpdateOperation extends TransactionOperation
             }
         }
         return allAttribute;
-    }
-
-    private Attribute getOptimisticKey(AsOfAttribute[] asOfAttributes)
-    {
-        AsOfAttribute businessDate = null;
-        AsOfAttribute processingDate = null;
-        if (asOfAttributes.length == 2)
-        {
-            businessDate = asOfAttributes[0];
-            processingDate = asOfAttributes[1];
-        }
-        else if (asOfAttributes[0].isProcessingDate())
-        {
-            processingDate = asOfAttributes[0];
-        }
-        if (processingDate != null)
-        {
-            return processingDate.getFromAttribute();
-        }
-        return null;
     }
 
     @Override

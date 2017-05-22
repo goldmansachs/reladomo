@@ -34,7 +34,7 @@ import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.util.InternalList;
 import com.gs.fw.common.mithra.util.ListFactory;
 import com.gs.fw.common.mithra.util.MithraFastList;
-
+import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
 
 
 public class MultiEqualityMapper extends AbstractMapper
@@ -1016,7 +1016,7 @@ public class MultiEqualityMapper extends AbstractMapper
 
     public AsOfEqOperation[] getDefaultAsOfOperation(List<AsOfAttribute> ignore)
     {
-        AsOfAttribute[] asOfAttributes = getFromPortal().getFinder().getAsOfAttributes();
+        AsOfAttribute[] asOfAttributes = ((PrivateReladomoClassMetaData)this.getFromPortal().getClassMetaData()).getCachedAsOfAttributes();
         InternalList results = null;
         if (asOfAttributes != null)
         {

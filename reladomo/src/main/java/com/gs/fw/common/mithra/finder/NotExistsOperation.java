@@ -32,6 +32,7 @@ import com.gs.fw.common.mithra.cache.FullUniqueIndex;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.util.*;
+import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
 
 public class NotExistsOperation implements Operation
 {
@@ -162,8 +163,8 @@ public class NotExistsOperation implements Operation
         Mapper reverseMapper = mapper.getReverseMapper();
         if (reverseMapper != null)
         {
-            AsOfAttribute[] rightAsOfAttributes = mapper.getFromPortal().getFinder().getAsOfAttributes();
-            AsOfAttribute[] leftAsOfAttributes = mapper.getResultPortal().getFinder().getAsOfAttributes();
+            AsOfAttribute[] rightAsOfAttributes = ((PrivateReladomoClassMetaData)mapper.getFromPortal().getClassMetaData()).getCachedAsOfAttributes();
+            AsOfAttribute[] leftAsOfAttributes = ((PrivateReladomoClassMetaData)mapper.getResultPortal().getClassMetaData()).getCachedAsOfAttributes();
             boolean forceOneByOne = false;
             Operation defaults = null;
             if (leftAsOfAttributes != null)

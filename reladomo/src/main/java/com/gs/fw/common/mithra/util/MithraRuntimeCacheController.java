@@ -26,6 +26,7 @@ import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.util.lz4.LZ4BlockInputStream;
 import com.gs.fw.common.mithra.util.lz4.LZ4BlockOutputStream;
+import com.gs.reladomo.metadata.ReladomoClassMetaData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,14 +47,16 @@ public class MithraRuntimeCacheController
     public static final int POST_COMPRESS_BUFFER_SIZE = 8092;
     public static final int PRE_COMPRESS_BUFFER_SIZE = POST_COMPRESS_BUFFER_SIZE * 4;
 
+    private ReladomoClassMetaData metaData;
     private Class finderClass;
     private RelatedFinder relatedFinder;
     private static final Object[] NULL_ARGS = (Object[]) null;
 
     public MithraRuntimeCacheController(Class finderClass)
     {
+        this.metaData = ReladomoClassMetaData.fromFinderClass(finderClass);
         this.finderClass = finderClass;
-        this.relatedFinder = this.getFinderInstanceFromFinderClass();
+        this.relatedFinder = this.metaData.getFinderInstance();
     }
 
     protected Object invokeStaticMethod(Class classToInvoke, String methodName)
@@ -72,13 +75,12 @@ public class MithraRuntimeCacheController
 
     public Class getFinderClass()
     {
-        return this.finderClass;
+        return this.metaData.getFinderClass();
     }
 
     public String getClassName()
     {
-        String name = this.finderClass.getName();
-        return name.substring(0, name.length() - "Finder".length());
+        return metaData.getBusinessOrInterfaceClassName();
     }
 
     public void clearQueryCache()
@@ -125,7 +127,7 @@ public class MithraRuntimeCacheController
 
     public RelatedFinder getFinderInstanceFromFinderClass()
     {
-        return (RelatedFinder) invokeStaticMethod(finderClass, "getFinderInstance");
+        return this.metaData.getFinderInstance();
     }
 
     public RelatedFinder getFinderInstance()

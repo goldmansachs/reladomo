@@ -14,6 +14,6 @@
   under the License.
   -->
 <project name="mithra-config" default="determine-jdk">
-    <property name="reladomo.version" value="16.1.4"/>
+    <property name="reladomo.version" value="16.2.0"/>
     <property name="snapshot" value=""/>
 </project>

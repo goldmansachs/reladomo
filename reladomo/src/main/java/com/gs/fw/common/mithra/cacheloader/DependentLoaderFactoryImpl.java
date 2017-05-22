@@ -397,9 +397,7 @@ public class DependentLoaderFactoryImpl implements DependentLoaderFactory
 
     private void setClassToLoadFromMapper(AbstractRelatedFinder relatedFinder)
     {
-        String className = relatedFinder.getMithraObjectPortal().getFinder().getFinderClassName();
-        className = className.substring(0, className.length() - "Finder".length());
-        this.helperFactory.setClassToLoad(className);
+        this.helperFactory.setClassToLoad(relatedFinder.getMithraObjectPortal().getClassMetaData().getBusinessOrInterfaceClassName());
     }
 
     private void addRelationshipAttribute(List<Pair<Extractor, Attribute>> list, Mapper mapper)
