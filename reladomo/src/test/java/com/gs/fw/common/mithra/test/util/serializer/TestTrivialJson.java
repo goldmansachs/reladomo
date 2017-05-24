@@ -55,7 +55,8 @@ public class TestTrivialJson extends MithraTestAbstract
         SerializationConfig config = SerializationConfig.shallowWithDefaultAttributes(OrderFinder.getFinderInstance());
         String sb = toJson(new Serialized((OrderFinder.findOne(OrderFinder.orderId().eq(1))), config));
 
-        System.out.println(sb);
+        assertTrue(sb.contains("\"orderDate\": \"2004-01-12T05:00:00.000Z\""));
+        assertFalse(sb.contains("\"items\""));
     }
 
     @Test
@@ -65,7 +66,9 @@ public class TestTrivialJson extends MithraTestAbstract
         config = config.withDeepFetches(OrderFinder.items());
         String sb = toJson(new Serialized((OrderFinder.findOne(OrderFinder.orderId().eq(2))), config));
 
-        System.out.println(sb);
+        assertTrue(sb.contains("\"orderDate\": \"2004-02-12T05:00:00.000Z\""));
+        assertTrue(sb.contains("\"items\""));
+        assertTrue(sb.contains("\"quantity\": 20.0"));
     }
 
     @Test
@@ -77,7 +80,10 @@ public class TestTrivialJson extends MithraTestAbstract
 
         String sb = toJson(new Serialized((OrderFinder.findOne(OrderFinder.orderId().eq(1))), config));
 
-        System.out.println(sb);
+        assertTrue(sb.contains("\"orderDate\": \"2004-01-12T05:00:00.000Z\""));
+        assertTrue(sb.contains("\"items\""));
+        assertTrue(sb.contains("\"lastUser\": \"Fred\""));
+        assertTrue(sb.contains("\"quantity\": 20.0"));
     }
 
     @Test
@@ -87,7 +93,11 @@ public class TestTrivialJson extends MithraTestAbstract
         config = config.withDeepFetches(OrderFinder.orderStatus(), OrderFinder.items().orderItemStatus());
         String sb = toJson(new Serialized((OrderFinder.findOne(OrderFinder.orderId().eq(1))), config));
 
-        System.out.println(sb);
+        assertTrue(sb.contains("\"orderDate\": \"2004-01-12T05:00:00.000Z\""));
+        assertTrue(sb.contains("\"items\""));
+        assertTrue(sb.contains("\"quantity\": 20.0"));
+        assertTrue(sb.contains("\"orderItemStatus\""));
+        assertTrue(sb.contains("\"lastUser\": \"Fred\""));
     }
 
     @Test
@@ -97,7 +107,10 @@ public class TestTrivialJson extends MithraTestAbstract
         config = config.withDeepDependents();
         String sb = toJson(new Serialized((OrderFinder.findOne(OrderFinder.orderId().eq(2))), config));
 
-        System.out.println(sb);
+        assertTrue(sb.contains("\"orderDate\": \"2004-02-12T05:00:00.000Z\""));
+        assertTrue(sb.contains("\"items\""));
+        assertTrue(sb.contains("\"quantity\": 20.0"));
+        assertTrue(sb.contains("\"parentToChildAsChild\": null"));
     }
 
     @Test
@@ -109,7 +122,12 @@ public class TestTrivialJson extends MithraTestAbstract
 
         String sb = toJson(new Serialized((OrderFinder.findOne(OrderFinder.orderId().eq(2))), config));
 
-        System.out.println(sb);
+        assertTrue(sb.contains("\"orderDate\": \"2004-02-12T05:00:00.000Z\""));
+        assertTrue(sb.contains("\"items\""));
+        assertTrue(sb.contains("\"quantity\": 20.0"));
+        assertTrue(sb.contains("\"parentToChildAsChild\": null"));
+        assertTrue(sb.contains("\"trackedDescription\": \"Second order 124\""));
+
     }
 
     @Test
@@ -120,7 +138,7 @@ public class TestTrivialJson extends MithraTestAbstract
         config = config.withoutMetaData();
         String sb = toJson(new Serialized((OrderFinder.findOne(OrderFinder.orderId().eq(1))), config));
 
-        System.out.println(sb);
+        assertFalse(sb.contains("_rdoClassName"));
     }
     
     protected String toJson(Serialized serialized) throws Exception

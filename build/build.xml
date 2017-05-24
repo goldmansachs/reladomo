@@ -175,7 +175,7 @@
         </available>
         <fail message="Could not find the JDK! Check ${jdk.home}." unless="jdk.sanity.check"/>
         <available property="reladomo.sanity.check" file="${root}/reladomo/src/main/java/com/gs/fw/common/mithra/MithraManager.java"/>
-        <fail message="Could not find mithra sources. Project root is ${root}, but there is nothing in ${root}/reladomo/src/main/java/com/gs/fw/common/mithra/MithraManager.java." unless="reladomo.sanity.check"/>
+        <fail message="Could not find Reladomo sources. Project root is ${root}, but there is nothing in ${root}/reladomo/src/main/java/com/gs/fw/common/mithra/MithraManager.java." unless="reladomo.sanity.check"/>
     </target>
 
     <target name="determine-jdk">
@@ -254,7 +254,7 @@
     </target>
 
     <target name="mithra-vendor-test-suite" depends="reladomo-vendor-junitreport, generate-reladomo-xml-test" description="Run JUnit Vendor test cases">
-        <fail if="failed.mithra.unit.tests" message="Mithra unit tests failed"/>
+        <fail if="failed.mithra.unit.tests" message="Reladomo unit tests failed"/>
     </target>
 
 
@@ -785,7 +785,7 @@
             </classpath>
         </javac>
     </target>
-    <target name="run-reladomo-test-suite" depends="compile-reladomo-test, compile-reladomo-genutil-test, get-cores" description="Run JUnit test cases for Mithra code">
+    <target name="run-reladomo-test-suite" depends="compile-reladomo-test, compile-reladomo-genutil-test, get-cores" description="Run JUnit test cases for Reladomo code">
         <property name="jacocovmarg" value="-Dcoverage=none"/>
         <delete quiet="true" dir="${root}/reladomo/target/testresult"/>
         <mkdir dir="${root}/reladomo/target/testresult"/>
@@ -823,7 +823,7 @@
         </junitreport>
     </target>
 
-    <target name="reladomo-test-suite" depends="generate-reladomo-test-graph, reladomo-junitreport" description="Run JUnit test cases for Mithra code">
+    <target name="reladomo-test-suite" depends="generate-reladomo-test-graph, reladomo-junitreport" description="Run JUnit test cases for Reladomo code">
         <condition property="unitTestFailedAndIsNotSonar">
             <and>
                 <isset property="failed.mithra.unit.tests"/>
@@ -832,7 +832,7 @@
                 </not>
             </and>
         </condition>
-        <fail if="unitTestFailedAndIsNotSonar" message="Mithra unit tests failed"/>
+        <fail if="unitTestFailedAndIsNotSonar" message="Reladomo unit tests failed"/>
     </target>
 
     <!-- ************************** /reladomo test **********************************-->
@@ -987,8 +987,8 @@
     <property name="docbook.slides.fo.stylesheet" value="${docbook.slides.customization.dir}/fo.xsl"/>
 
     <target name="reladomo-slide-generate-html" depends="reladomo-unzip-docbook">
-        <slides-to-html docbook-dir="${reladomo.doc.docbook.dir}/presentations/mithraAdvancedUseCases" output-dir="${reladomo.doc.docbook.out.dir}/presentations/mithraAdvancedUseCases" source="ReladomoAdvancedUseCases" presentation-title="Mithra Advanced Use Cases"/>
-        <slides-to-html docbook-dir="${reladomo.doc.docbook.dir}/presentations/mithraFeatures" output-dir="${reladomo.doc.docbook.out.dir}/presentations/mithraFeatures" source="ReladomoFeatures" presentation-title="Mithra Features"/>
+        <slides-to-html docbook-dir="${reladomo.doc.docbook.dir}/presentations/mithraAdvancedUseCases" output-dir="${reladomo.doc.docbook.out.dir}/presentations/mithraAdvancedUseCases" source="ReladomoAdvancedUseCases" presentation-title="Reladomo Advanced Use Cases"/>
+        <slides-to-html docbook-dir="${reladomo.doc.docbook.dir}/presentations/mithraFeatures" output-dir="${reladomo.doc.docbook.out.dir}/presentations/mithraFeatures" source="ReladomoFeatures" presentation-title="Reladomo Features"/>
         <slides-to-html docbook-dir="${reladomo.doc.docbook.dir}/presentations/javaBigMemory" output-dir="${reladomo.doc.docbook.out.dir}/presentations/javaBigMemory" source="JavaBigMemory" presentation-title="Java Big Memory"/>
         <slides-to-html docbook-dir="${reladomo.doc.docbook.dir}/presentations/reladomoInternalCacheStructure" output-dir="${reladomo.doc.docbook.out.dir}/presentations/reladomoInternalCacheStructure" source="ReladomoInternalCacheStructure" presentation-title="Reladomo InternalCache Structure"/>
     </target>
@@ -1585,7 +1585,7 @@
         </war>
     </target>
 
-    <target name="run-reladomo-gs-test-suite" depends="compile-reladomo-test" description="Run JUnit test cases for Mithra code">
+    <target name="run-reladomo-gs-test-suite" depends="compile-reladomo-test" description="Run JUnit test cases for Reladomo code">
         <property name="jacocovmarg" value="-Dcoverage=none"/>
         <delete quiet="true" dir="${root}/reladomo/target/testresult"/>
         <mkdir dir="${root}/reladomo/target/testresult"/>
@@ -1716,6 +1716,7 @@
         <mkdir dir="${root}/reladomoserial/target/classes"/>
         <mkdir dir="${root}/reladomoserial/target/javadoc"/>
         <mkdir dir="${root}/reladomoserial/target/test-classes"/>
+        <mkdir dir="${root}/reladomoserial/target/testresult"/>
     </target>
 
     <target name="serial-dependset" unless="${unsafeCompile}">
@@ -1761,6 +1762,71 @@
                 <path refid="reladomo.serial.test.compile.classpath"/>
             </classpath>
         </javac>
+    </target>
+
+    <macrodef name="exec-serial-test-suite">
+        <attribute name="mithraxmlconfig" description="mithra.xml.config"/>
+        <attribute name="testclass" description="test class"/>
+        <attribute name="qualifier" description="added to the end of the test name" default=""/>
+        <attribute name="heap" description="either 'onheap' or 'offheap"/>
+        <sequential>
+            <delete dir="${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
+            <mkdir dir="${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
+            <mkdir dir="${root}/reladomoserial/target/testresult"/>
+            <junit printsummary="off" dir="${root}" timeout="3600000" fork="yes" failureproperty="failed.mithra.unit.tests"
+                   includeantruntime="true" showoutput="false" jvm="${env.RELADOMO_JDK_18_HOME}/bin/java">
+                <!--<formatter type="plain" usefile="false"/>-->
+                <formatter type="xml" extension="@{mithraxmlconfig}"/>
+                <formatter classname="com.gs.fw.common.mithra.test.JunitFormatter" extension="@{mithraxmlconfig}.txt"/>
+                <classpath>
+                    <path refid="reladomo.run.test.classpath"/>
+                    <path refid="reladomo.serial.test.compile.classpath"/>
+                    <pathelement location="${root}/reladomo/target/test-classes-@{heap}"/>
+                    <pathelement location="${root}/reladomoserial/target/test-classes"/>
+                </classpath>
+                <jvmarg value="-server"/>
+                <jvmarg value="${jacocovmarg}${mithra.coverage.dir}/jacoco/@{mithraxmlconfig}@{testclass}@{heap}.exec"/>
+                <jvmarg value="-XX:MaxPermSize=320m"/>
+                <jvmarg value="-Xmx3048m"/>
+                <jvmarg value="-ea"/>
+                <jvmarg value="-Dlog4j.configuration=file:${root}/reladomo/src/test/resources/log4jWarn.config"/>
+                <jvmarg value="-Dmithra.xml.root=${root}/reladomo/src/test/resources/"/>
+                <jvmarg value="-Dmithra.xml.config=@{mithraxmlconfig}"/>
+                <jvmarg value="-Djacoco.args=${jacocovmarg}${mithra.coverage.dir}/jacoco/@{mithraxmlconfig}@{testclass}@{heap}.exec"/>
+                <jvmarg value="-Dderby.storage.tempDirectory=${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
+                <jvmarg value="-Dderby.system.home=${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
+                <jvmarg value="-Dderby.system.durability=test"/>
+                <test name="@{testclass}" todir="${root}/reladomoserial/target/testresult"/>
+            </junit>
+            <replace casesensitive="true" dir="${root}/reladomoserial/target/testresult" includes="TEST-@{testclass}@{mithraxmlconfig}">
+                <replacefilter token="&quot; tests=" value="@{qualifier}&quot; tests="/>
+            </replace>
+            <replaceregexp file="${root}/reladomoserial/target/testresult/TEST-@{testclass}@{mithraxmlconfig}"
+                           match="classname=&quot;(.*)\.([abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$1234567890]*)&quot; name=&quot;(.*)&quot; time"
+                           replace="classname=&quot;\1.\2&quot; name=&quot;\2.\3@{qualifier}&quot; time"
+                           byline="true"/>
+        </sequential>
+    </macrodef>
+
+    <target name="jdk18-sanity-check">
+        <available property="reladomo.jdk18.sanity.check" file="${env.RELADOMO_JDK_18_HOME}/bin/java"/>
+        <fail message="Could not find JDK 1.8 for running serial tests in ${env.RELADOMO_JDK_18_HOME}/bin/java. Set the RELADOMO_JDK_18_HOME environment variable!"
+              unless="reladomo.jdk18.sanity.check"/>
+    </target>
+
+    <target name="run-reladomo-serial-test-suite" depends="jdk18-sanity-check, compile-reladomo-serial-test, get-cores" description="Run JUnit test cases for Reladomo Serial code">
+        <property name="jacocovmarg" value="-Dcoverage=none"/>
+        <delete quiet="true" dir="${root}/reladomoserial/target/testresult"/>
+        <mkdir dir="${root}/reladomoserial/target/testresult"/>
+        <tstamp>
+            <format property="TIME_NOW" pattern="hh:mm:ss a z"/>
+        </tstamp>
+        <echo message="JUnit serial suite for Reladomo starting at ${TIME_NOW} on ${TODAY} with ${test.threads} jvms."/>
+        <echo message="Log4j file: ${root}/reladomo/src/test/resources/log4jWarn.config"/>
+        <parallel threadcount="${test.threads}" >
+            <exec-serial-test-suite mithraxmlconfig="MithraConfigFullCache.xml" qualifier="/full" testclass="com.gs.reladomo.serial.ReladomoSerialTestSuite" heap="onheap"/>
+            <exec-serial-test-suite mithraxmlconfig="MithraConfigPartialCache.xml" qualifier="/partial" testclass="com.gs.reladomo.serial.ReladomoSerialTestSuite" heap="onheap"/>
+        </parallel>
     </target>
 
     <target name="gen-reladomo-serial-pom" depends="init-reladomo-serial">
