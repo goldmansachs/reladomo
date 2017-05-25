@@ -17,7 +17,6 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.AggregateData;
 import com.gs.fw.common.mithra.MithraAggregateAttribute;
 import com.gs.fw.common.mithra.MithraDataObject;
@@ -32,6 +31,7 @@ import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.extractor.OffHeapableExtractor;
 import com.gs.fw.common.mithra.finder.*;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
+import com.gs.fw.common.mithra.util.Function;
 import com.gs.fw.common.mithra.util.InternalList;
 import com.gs.fw.common.mithra.util.Nullable;
 

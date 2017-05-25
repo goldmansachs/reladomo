@@ -74,9 +74,24 @@ public class AggregateList implements List<AggregateData>
         return result;
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public MutableIntSet getAttributeAsGscIntSet(String attributeName)
     {
         MutableIntSet result = new IntHashSet(this.size());
+        for (int i = 0; i < this.size(); i++)
+        {
+            result.add(this.get(i).getAttributeAsInt(attributeName));
+        }
+        return result;
+    }
+
+    public org.eclipse.collections.api.set.primitive.MutableIntSet getAttributeAsEcIntSet(String attributeName)
+    {
+        org.eclipse.collections.api.set.primitive.MutableIntSet result = new org.eclipse.collections.impl.set.mutable.primitive.IntHashSet(this.size());
         for (int i = 0; i < this.size(); i++)
         {
             result.add(this.get(i).getAttributeAsInt(attributeName));

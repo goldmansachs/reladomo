@@ -241,6 +241,11 @@ public class CalculatedIntegerAttribute<T> extends IntegerAttribute<T> implement
          return new IntegerNotEqOperation(this, other);
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public Operation in(IntSet set)
     {
@@ -262,7 +267,52 @@ public class CalculatedIntegerAttribute<T> extends IntegerAttribute<T> implement
     }
 
     @Override
+    public Operation in(org.eclipse.collections.api.set.primitive.IntSet set)
+    {
+        Operation op;
+        switch (set.size())
+        {
+            case 0:
+                op = new None(this);
+                break;
+            case 1:
+                op = this.eq(set.intIterator().next());
+                break;
+            default:
+                op = new IntegerInOperation(this, set);
+                break;
+        }
+
+        return op;
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public Operation notIn(IntSet set)
+    {
+        Operation op;
+        switch (set.size())
+        {
+            case 0:
+                op = new All(this);
+                break;
+            case 1:
+                op = this.notEq(set.intIterator().next());
+                break;
+            default:
+                op = new IntegerNotInOperation(this, set);
+                break;
+        }
+
+        return op;
+    }
+
+    @Override
+    public Operation notIn(org.eclipse.collections.api.set.primitive.IntSet set)
     {
         Operation op;
         switch (set.size())

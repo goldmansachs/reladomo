@@ -27,7 +27,6 @@ import java.util.*;
 import com.gs.collections.api.block.*;
 import com.gs.collections.api.block.function.*;
 import com.gs.collections.impl.list.mutable.*;
-import com.gs.collections.impl.map.mutable.*;
 import com.gs.collections.impl.map.strategy.mutable.*;
 import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.attribute.*;

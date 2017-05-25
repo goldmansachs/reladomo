@@ -126,11 +126,27 @@ public abstract class BooleanAttribute<T> extends Attribute<T, Boolean> implemen
 
     public abstract Operation notEq(boolean other);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public abstract Operation in(BooleanSet booleanSet);
 
     @Override
+    public abstract Operation in(org.eclipse.collections.api.set.primitive.BooleanSet booleanSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public abstract Operation notIn(BooleanSet booleanSet);
+
+    @Override
+    public abstract Operation notIn(org.eclipse.collections.api.set.primitive.BooleanSet booleanSet);
 
     // join operation:
     /**

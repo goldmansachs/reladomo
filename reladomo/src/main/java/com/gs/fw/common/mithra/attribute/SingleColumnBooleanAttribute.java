@@ -104,6 +104,11 @@ public abstract class SingleColumnBooleanAttribute<T> extends BooleanAttribute<T
         return new BooleanNotEqOperation(this, other);
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public Operation in(BooleanSet booleanSet)
     {
@@ -119,7 +124,40 @@ public abstract class SingleColumnBooleanAttribute<T> extends BooleanAttribute<T
     }
 
     @Override
+    public Operation in(org.eclipse.collections.api.set.primitive.BooleanSet booleanSet)
+    {
+        if (booleanSet.isEmpty())
+        {
+            return new None(this);
+        }
+        if (booleanSet.size() == 1)
+        {
+            return this.eq(booleanSet.booleanIterator().next());
+        }
+        return new BooleanInOperation(this, booleanSet);
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public Operation notIn(BooleanSet booleanSet)
+    {
+       if (booleanSet.isEmpty())
+        {
+            return new All(this);
+        }
+        if (booleanSet.size() == 1)
+        {
+            return this.notEq(booleanSet.booleanIterator().next());
+        }
+        return new BooleanNotInOperation(this, booleanSet);
+    }
+
+    @Override
+    public Operation notIn(org.eclipse.collections.api.set.primitive.BooleanSet booleanSet)
     {
        if (booleanSet.isEmpty())
         {

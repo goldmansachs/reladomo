@@ -34,9 +34,23 @@ public interface LongAttribute<Owner> extends NumericAttribute<Owner>
 
     public Operation<Owner> lessThanEquals(long value);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public Operation<Owner> in(LongSet longSet);
 
+    public Operation<Owner> in(org.eclipse.collections.api.set.primitive.LongSet longSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public Operation<Owner> notIn(LongSet longSet);
+
+    public Operation<Owner> notIn(org.eclipse.collections.api.set.primitive.LongSet longSet);
 
     public LongAttribute<Owner> plus(ByteAttribute addend);
     public LongAttribute<Owner> plus(ShortAttribute addend);

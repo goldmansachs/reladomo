@@ -17,6 +17,7 @@
 package com.gs.fw.common.mithra.finder.shortop;
 
 import com.gs.collections.api.set.primitive.ShortSet;
+import com.gs.collections.impl.factory.primitive.ShortSets;
 import com.gs.fw.common.mithra.attribute.ShortAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
@@ -38,11 +39,21 @@ public class ShortInOperation extends InOperation implements SqlParameterSetter
     private ShortSet set;
     private transient volatile short[] copiedArray;
 
-
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public ShortInOperation(ShortAttribute attribute, ShortSet set)
     {
         super(attribute);
         this.set = set.freeze();
+    }
+
+    public ShortInOperation(ShortAttribute attribute, org.eclipse.collections.api.set.primitive.ShortSet set)
+    {
+        super(attribute);
+        this.set = ShortSets.immutable.of(set.toArray());
     }
 
     @Override

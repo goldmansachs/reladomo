@@ -17,6 +17,7 @@
 package com.gs.fw.common.mithra.finder.floatop;
 
 import com.gs.collections.api.set.primitive.FloatSet;
+import com.gs.collections.impl.factory.primitive.FloatSets;
 import com.gs.fw.common.mithra.attribute.FloatAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
@@ -38,11 +39,21 @@ public class FloatInOperation extends InOperation implements SqlParameterSetter
     private FloatSet set;
     private transient volatile float[] copiedArray;
 
-
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public FloatInOperation(FloatAttribute attribute, FloatSet floatSet)
     {
         super(attribute);
         this.set = floatSet.freeze();
+    }
+
+    public FloatInOperation(FloatAttribute attribute, org.eclipse.collections.api.set.primitive.FloatSet floatSet)
+    {
+        super(attribute);
+        this.set = FloatSets.immutable.of(floatSet.toArray());
     }
 
     @Override

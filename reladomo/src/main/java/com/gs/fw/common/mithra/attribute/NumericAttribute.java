@@ -17,7 +17,6 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.AggregateData;
 import com.gs.fw.common.mithra.MithraAggregateAttribute;
 import com.gs.fw.common.mithra.MithraObjectPortal;
@@ -26,6 +25,7 @@ import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.*;
 import com.gs.fw.common.mithra.attribute.numericType.NumericType;
 import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.util.Function;
 import com.gs.fw.finder.attribute.ByteAttribute;
 import com.gs.fw.finder.attribute.DoubleAttribute;
 import com.gs.fw.finder.attribute.FloatAttribute;

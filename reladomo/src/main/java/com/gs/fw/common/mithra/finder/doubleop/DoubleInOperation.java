@@ -17,6 +17,7 @@
 package com.gs.fw.common.mithra.finder.doubleop;
 
 import com.gs.collections.api.set.primitive.DoubleSet;
+import com.gs.collections.impl.factory.primitive.DoubleSets;
 import com.gs.fw.common.mithra.attribute.DoubleAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.DoubleExtractor;
@@ -38,11 +39,21 @@ public class DoubleInOperation extends InOperation implements SqlParameterSetter
     private DoubleSet set;
     private transient volatile double[] copiedArray;
 
-
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public DoubleInOperation(DoubleAttribute attribute, DoubleSet doubleSet)
     {
         super(attribute);
         this.set = doubleSet.freeze();
+    }
+
+    public DoubleInOperation(DoubleAttribute attribute, org.eclipse.collections.api.set.primitive.DoubleSet doubleSet)
+    {
+        super(attribute);
+        this.set = DoubleSets.immutable.of(doubleSet.toArray());
     }
 
     @Override

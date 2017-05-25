@@ -17,7 +17,6 @@
 
 package com.gs.fw.common.mithra.attribute.numericType;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.attribute.CalculatedFloatAttribute;
 import com.gs.fw.common.mithra.attribute.FloatAttribute;
 import com.gs.fw.common.mithra.attribute.MappedFloatAttribute;
@@ -27,6 +26,7 @@ import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.AggregateA
 import com.gs.fw.common.mithra.attribute.calculator.arithmeticCalculator.*;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.FloatProcedure;
 import com.gs.fw.common.mithra.finder.Mapper;
+import com.gs.fw.common.mithra.util.Function;
 import com.gs.fw.common.mithra.util.MutableAverage;
 import com.gs.fw.common.mithra.util.MutableFloat;
 import com.gs.fw.common.mithra.util.MutableNumber;

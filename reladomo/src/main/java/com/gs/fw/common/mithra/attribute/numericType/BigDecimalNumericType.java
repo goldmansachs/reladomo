@@ -16,7 +16,6 @@
 
 package com.gs.fw.common.mithra.attribute.numericType;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.attribute.NumericAttribute;
 import com.gs.fw.common.mithra.attribute.CalculatedBigDecimalAttribute;
 import com.gs.fw.common.mithra.attribute.BigDecimalAttribute;

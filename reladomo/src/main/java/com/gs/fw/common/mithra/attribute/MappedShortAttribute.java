@@ -16,12 +16,12 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.collections.api.set.primitive.ShortSet;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.*;
 import com.gs.fw.common.mithra.extractor.ChainedAttributeValueSelector;
 import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.util.Function;
 
 
 public class MappedShortAttribute<T> extends ShortAttribute<T> implements MappedAttribute
@@ -159,6 +159,11 @@ public class MappedShortAttribute<T> extends ShortAttribute<T> implements Mapped
         return this;
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public Operation in(ShortSet set)
     {
@@ -166,7 +171,24 @@ public class MappedShortAttribute<T> extends ShortAttribute<T> implements Mapped
     }
 
     @Override
+    public Operation in(org.eclipse.collections.api.set.primitive.ShortSet set)
+    {
+        return new MappedOperation(this.mapper, this.wrappedAttribute.in(set));
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public Operation notIn(ShortSet set)
+    {
+        return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(set));
+    }
+
+    @Override
+    public Operation notIn(org.eclipse.collections.api.set.primitive.ShortSet set)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(set));
     }

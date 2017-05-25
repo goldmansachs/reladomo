@@ -23,7 +23,6 @@ import java.util.concurrent.*;
 
 import com.gs.collections.impl.block.factory.*;
 import com.gs.collections.impl.list.mutable.*;
-import com.gs.collections.impl.map.mutable.*;
 import com.gs.collections.impl.map.strategy.mutable.*;
 import com.gs.collections.impl.set.strategy.mutable.*;
 import com.gs.fw.common.mithra.*;

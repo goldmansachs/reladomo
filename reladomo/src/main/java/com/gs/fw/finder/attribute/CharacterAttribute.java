@@ -35,7 +35,21 @@ public interface CharacterAttribute<Owner> extends Attribute<Owner>
 
     public Operation<Owner> lessThanEquals(char value);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public Operation<Owner> in(CharSet charSet);
 
+    public Operation<Owner> in(org.eclipse.collections.api.set.primitive.CharSet charSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public Operation<Owner> notIn(CharSet charSet);
+
+    public Operation<Owner> notIn(org.eclipse.collections.api.set.primitive.CharSet charSet);
 }

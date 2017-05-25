@@ -16,8 +16,7 @@
 
 package com.gs.fw.common.mithra.extractor;
 
-import com.gs.collections.api.block.function.Function;
-
+import com.gs.fw.common.mithra.util.Function;
 
 public interface HashableValueSelector<T, V> extends Function<T, V>
 {

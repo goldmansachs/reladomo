@@ -17,6 +17,7 @@
 package com.gs.fw.common.mithra.finder.longop;
 
 import com.gs.collections.api.set.primitive.LongSet;
+import com.gs.collections.impl.factory.primitive.LongSets;
 import com.gs.fw.common.mithra.attribute.LongAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
@@ -38,11 +39,21 @@ public class LongInOperation extends InOperation implements SqlParameterSetter
     private LongSet set;
     private transient volatile long[] copiedArray;
 
-
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public LongInOperation(LongAttribute attribute, LongSet longSet)
     {
         super(attribute);
         this.set = longSet.freeze();
+    }
+
+    public LongInOperation(LongAttribute attribute, org.eclipse.collections.api.set.primitive.LongSet longSet)
+    {
+        super(attribute);
+        this.set = LongSets.immutable.of(longSet.toArray());
     }
 
     @Override

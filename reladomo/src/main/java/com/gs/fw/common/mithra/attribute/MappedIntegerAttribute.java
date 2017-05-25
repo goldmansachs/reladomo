@@ -16,12 +16,12 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.collections.api.set.primitive.IntSet;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.*;
 import com.gs.fw.common.mithra.extractor.ChainedAttributeValueSelector;
 import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.util.Function;
 
 import java.math.BigDecimal;
 
@@ -237,6 +237,11 @@ public class MappedIntegerAttribute<T> extends IntegerAttribute<T> implements Ma
         return this;
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public Operation in(IntSet intSet)
     {
@@ -244,7 +249,24 @@ public class MappedIntegerAttribute<T> extends IntegerAttribute<T> implements Ma
     }
 
     @Override
+    public Operation in(org.eclipse.collections.api.set.primitive.IntSet intSet)
+    {
+        return new MappedOperation(this.mapper, this.wrappedAttribute.in(intSet));
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public Operation notIn(IntSet intSet)
+    {
+        return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(intSet));
+    }
+
+    @Override
+    public Operation notIn(org.eclipse.collections.api.set.primitive.IntSet intSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(intSet));
     }

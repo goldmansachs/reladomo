@@ -108,11 +108,27 @@ public abstract class ShortAttribute<T> extends PrimitiveNumericAttribute<T, Sho
 
     public abstract Operation notEq(short other);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public abstract Operation in(ShortSet shortSet);
 
     @Override
+    public abstract Operation in(org.eclipse.collections.api.set.primitive.ShortSet shortSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public abstract Operation notIn(ShortSet shortSet);
+
+    @Override
+    public abstract Operation notIn(org.eclipse.collections.api.set.primitive.ShortSet shortSet);
 
     public abstract Operation greaterThan(short target);
 

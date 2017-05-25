@@ -16,8 +16,8 @@
 
 package com.gs.fw.common.mithra.util.dbextractor;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.util.Function;
 
 
 public class FitnesseHeaderFormatter implements Function<Class, String>

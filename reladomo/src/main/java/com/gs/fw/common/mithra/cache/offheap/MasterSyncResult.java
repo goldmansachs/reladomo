@@ -50,6 +50,11 @@ public class MasterSyncResult implements Externalizable
         return buffers;
     }
 
+    public org.eclipse.collections.impl.list.mutable.FastList<FastUnsafeOffHeapPageBuffer> getEcBuffers()
+    {
+        return org.eclipse.collections.impl.list.mutable.FastList.newList(buffers);
+    }
+
     public IntLongHashMap getPageLocationMap()
     {
         return pageLocationMap;

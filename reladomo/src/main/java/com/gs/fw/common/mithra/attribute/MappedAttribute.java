@@ -16,9 +16,8 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.finder.Mapper;
-
+import com.gs.fw.common.mithra.util.Function;
 
 
 public interface MappedAttribute

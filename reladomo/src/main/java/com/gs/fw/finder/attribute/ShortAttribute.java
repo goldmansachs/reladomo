@@ -34,9 +34,23 @@ public interface ShortAttribute<Owner> extends NumericAttribute<Owner>
 
     public Operation<Owner> lessThanEquals(short value);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public Operation<Owner> in(ShortSet shortSet);
 
+    public Operation<Owner> in(org.eclipse.collections.api.set.primitive.ShortSet shortSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public Operation<Owner> notIn(ShortSet shortSet);
+
+    public Operation<Owner> notIn(org.eclipse.collections.api.set.primitive.ShortSet shortSet);
 
     public IntegerAttribute<Owner> plus(ByteAttribute addend);
     public IntegerAttribute<Owner> plus(ShortAttribute addend);

@@ -103,6 +103,11 @@ public abstract class SingleColumnShortAttribute<T> extends ShortAttribute<T> im
         return new ShortNotEqOperation(this, other);
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public Operation in(ShortSet set)
     {
@@ -124,7 +129,52 @@ public abstract class SingleColumnShortAttribute<T> extends ShortAttribute<T> im
     }
 
     @Override
+    public Operation in(org.eclipse.collections.api.set.primitive.ShortSet set)
+    {
+        Operation op;
+        switch (set.size())
+        {
+            case 0:
+                op = new None(this);
+                break;
+            case 1:
+                op = this.eq(set.shortIterator().next());
+                break;
+            default:
+                op = new ShortInOperation(this, set);
+                break;
+        }
+
+        return op;
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public Operation notIn(ShortSet set)
+    {
+        Operation op;
+        switch (set.size())
+        {
+            case 0:
+                op = new All(this);
+                break;
+            case 1:
+                op = this.notEq(set.shortIterator().next());
+                break;
+            default:
+                op = new ShortNotInOperation(this, set);
+                break;
+        }
+
+        return op;
+    }
+
+    @Override
+    public Operation notIn(org.eclipse.collections.api.set.primitive.ShortSet set)
     {
         Operation op;
         switch (set.size())

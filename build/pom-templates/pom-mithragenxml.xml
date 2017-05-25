@@ -54,6 +54,20 @@
         </dependency>
 
         <dependency>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections-api</artifactId>
+            <version>@eclipse-collections.version@</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.collections</groupId>
+            <artifactId>eclipse-collections</artifactId>
+            <version>@eclipse-collections.version@</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
             <groupId>com.gs.fw.aig.jdbc</groupId>
             <artifactId>jndijdbc</artifactId>
             <version>@jndijdbc.version@</version>

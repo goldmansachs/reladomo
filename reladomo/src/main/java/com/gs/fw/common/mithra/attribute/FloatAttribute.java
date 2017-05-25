@@ -92,11 +92,27 @@ public abstract class FloatAttribute<T> extends PrimitiveNumericAttribute<T, Flo
 
     public abstract Operation notEq(float other);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public abstract Operation in(FloatSet floatSet);
 
     @Override
+    public abstract Operation in(org.eclipse.collections.api.set.primitive.FloatSet floatSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2018.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public abstract Operation notIn(FloatSet floatSet);
+
+    @Override
+    public abstract Operation notIn(org.eclipse.collections.api.set.primitive.FloatSet floatSet);
 
     public abstract Operation greaterThan(float target);
 

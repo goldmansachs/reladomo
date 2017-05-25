@@ -216,7 +216,19 @@ public class TypedCache implements Cache
     }
 
     @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.IntSet intSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, intSetIndexValues));
+    }
+
+    @Override
     public List get(int indexRef, DoubleSet doubleSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, doubleSetIndexValues));
+    }
+
+    @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.DoubleSet doubleSetIndexValues)
     {
         return this.filterByType(this.cache.get(indexRef, doubleSetIndexValues));
     }
@@ -228,7 +240,19 @@ public class TypedCache implements Cache
     }
 
     @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.BooleanSet booleanSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, booleanSetIndexValues));
+    }
+
+    @Override
     public List get(int indexRef, LongSet longSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, longSetIndexValues));
+    }
+
+    @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.LongSet longSetIndexValues)
     {
         return this.filterByType(this.cache.get(indexRef, longSetIndexValues));
     }
@@ -240,7 +264,19 @@ public class TypedCache implements Cache
     }
 
     @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.ByteSet byteSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, byteSetIndexValues));
+    }
+
+    @Override
     public List get(int indexRef, CharSet indexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, indexValues));
+    }
+
+    @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.CharSet indexValues)
     {
         return this.filterByType(this.cache.get(indexRef, indexValues));
     }
@@ -252,7 +288,19 @@ public class TypedCache implements Cache
     }
 
     @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.FloatSet floatSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, floatSetIndexValues));
+    }
+
+    @Override
     public List get(int indexRef, ShortSet shortSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, shortSetIndexValues));
+    }
+
+    @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.ShortSet shortSetIndexValues)
     {
         return this.filterByType(this.cache.get(indexRef, shortSetIndexValues));
     }

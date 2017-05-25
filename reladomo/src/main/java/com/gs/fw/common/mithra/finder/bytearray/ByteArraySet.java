@@ -17,13 +17,14 @@
 
 package com.gs.fw.common.mithra.finder.bytearray;
 
-import com.gs.collections.api.block.HashingStrategy;
-import com.gs.collections.api.block.procedure.Procedure;
-import com.gs.collections.impl.set.strategy.mutable.UnifiedSetWithHashingStrategy;
+import org.eclipse.collections.api.block.HashingStrategy;
+import org.eclipse.collections.api.block.procedure.Procedure;
+import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.impl.set.strategy.mutable.UnifiedSetWithHashingStrategy;
 
 import java.util.Arrays;
 
-public class ByteArraySet extends UnifiedSetWithHashingStrategy<byte[]>
+public class ByteArraySet extends UnifiedSetWithHashingStrategy<byte[]> implements MutableSet<byte[]>
 {
 
     private static final HashingStrategy hasher = new ByteArrayHasher();
