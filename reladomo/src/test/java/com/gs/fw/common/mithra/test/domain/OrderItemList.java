@@ -18,6 +18,7 @@
 package com.gs.fw.common.mithra.test.domain;
 
 import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.util.serializer.ReladomoSerialize;
 
 import java.util.Collection;
 
@@ -38,5 +39,16 @@ public class OrderItemList extends OrderItemListAbstract
     public OrderItemList(Collection c)
     {
         super(c);
+    }
+
+    @ReladomoSerialize(serialViews =  {SerialView.Shorter.class})
+    public double sum()
+    {
+        double sum = 0;
+        for(int i=0;i<this.size();i++)
+        {
+            sum += this.get(i).getDiscountPrice() * this.get(i).getQuantity();
+        }
+        return sum;
     }
 }

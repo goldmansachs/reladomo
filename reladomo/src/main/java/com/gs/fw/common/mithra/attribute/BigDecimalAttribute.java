@@ -41,6 +41,8 @@ import com.gs.fw.common.mithra.attribute.calculator.procedure.*;
 import com.gs.fw.common.mithra.attribute.calculator.AbsoluteValueCalculatorBigDecimal;
 import com.gs.fw.common.mithra.attribute.calculator.arithmeticCalculator.*;
 import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
+import com.gs.fw.common.mithra.util.serializer.SerialWriter;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -678,5 +680,11 @@ public abstract class BigDecimalAttribute<T> extends NonPrimitiveAttribute<T, Bi
     public Operation zGetPrototypeOperation(Map<Attribute, Object> tempOperationPool)
     {
         return this.eq(BigDecimal.ZERO);
+    }
+
+    @Override
+    protected void zWriteNonNullSerial(ReladomoSerializationContext context, SerialWriter writer, T reladomoObject) throws IOException
+    {
+        writer.writeBigDecimal(context, this.getAttributeName(), this.bigDecimalValueOf(reladomoObject));
     }
 }

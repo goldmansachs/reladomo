@@ -59,6 +59,11 @@ public class MithraRuntimeCacheController
         this.relatedFinder = this.metaData.getFinderInstance();
     }
 
+    public ReladomoClassMetaData getMetaData()
+    {
+        return metaData;
+    }
+
     protected Object invokeStaticMethod(Class classToInvoke, String methodName)
     {
         try

@@ -24,6 +24,39 @@ central,org.apache.activemq,activemq-core,5.3.0,jar,lib/test,4C0581D16E94837938C
 central,org.apache.geronimo.specs,geronimo-j2ee-management_1.0_spec,1.1,jar,lib/test,057E32617E47E84FC7A26C7C9D3470B2D253AC34
 #central,com.h2database,h2,1.3.169,jar,lib/test,
 
+#serial libs:
+central,com.google.code.gson,gson,2.8.0,jar,lib/serial,C4BA5371A29AC9B2AD6129B1D39EA38750043EFF
+
+central,com.fasterxml.jackson.core,jackson-core,2.8.6,jar,lib/serial,2EF7B1CC34DE149600F5E75BC2D5BF40DE894E60
+central,com.fasterxml.jackson.core,jackson-annotations,2.8.6,jar,lib/serial,9577018F9CE3636A2E1CB0A0C7FE915E5098DED5
+central,com.fasterxml.jackson.core,jackson-databind,2.8.6,jar,lib/serial,C43DE61F74ECC61322EF8F402837BA65B0AA2BF4
+
+central,com.fasterxml.jackson.jaxrs,jackson-jaxrs-json-provider,2.8.8,jar,lib/serial,E70BE1CD2AD47615A527F7475F63ACADBF3BE730
+central,com.fasterxml.jackson.jaxrs,jackson-jaxrs-base,2.8.8,jar,lib/serial,345A87F3C145912163964DED45803EBF0A9C775E
+
+central,org.glassfish.jersey.core,jersey-common,2.25,jar,lib/serial,B38E1A1AF6AD75DD9037A767764B0D41801F1C9F
+central,org.glassfish.jersey.core,jersey-server,2.25,jar,lib/serial,0874CA16134872781B8C6A2ADFE3BB2AF80BC378
+central,org.glassfish.jersey.core,jersey-client,2.25,jar,lib/serial,416A00562F25D7EFDBA015E5C21876D19163EDD0
+central,org.glassfish.jersey.ext,jersey-entity-filtering,2.25,jar,lib/serial,52B5A204A79D22041F4B30C2670E95C2456CBCBD
+central,org.glassfish.jersey.media,jersey-media-json-jackson,2.25,jar,lib/serial,2C99D40047A50FC43C5886545F7F2148C7E4A384
+central,org.glassfish.jersey.media,jersey-media-jaxb,2.25,jar,lib/serial,09AA3EEBA90DCE24F04BF27CD1A4E0D378EC697F
+central,org.glassfish.jersey.bundles.repackaged,jersey-guava,2.25,jar,lib/serial,4439BDDB870B210E40CA2E953813930BE424DC0C
+
+central,org.glassfish.hk2,hk2-api,2.5.0-b30,jar,lib/serial,5C6688A6BAFCD2098BEF4CA45226D5355B816647
+central,org.glassfish.hk2,hk2-utils,2.5.0-b30,jar,lib/serial,B17FC7D8082AC00E59CD96FDA9CFF21F24CC367C
+central,org.glassfish.hk2,hk2-locator,2.5.0-b30,jar,lib/serial,82056CBBD258647BBC6B80DEBE4E6B7121C61BE9
+central,org.glassfish.hk2.external,javax.inject,2.5.0-b30,jar,lib/serial,054B36144FD2FB684F9CEE73D96060BB82E4D363
+central,org.glassfish.jersey.containers,jersey-container-grizzly2-http,2.25,jar,lib/serial,ACA5D2802C7D81E4350829696C96AEE2F01FE6A9
+central,org.glassfish.grizzly,grizzly-http-server,2.3.28,jar,lib/serial,13BC9A63DAE3A0A623B52FE71753D5413D134540
+central,org.glassfish.grizzly,grizzly-http,2.3.28,jar,lib/serial,BB34B4E7FBB66B53AC6D428DCC99F5925C9FF7BD
+central,org.glassfish.grizzly,grizzly-framework,2.3.28,jar,lib/serial,23A90F6316B3776699B173CCF9394C69D15B7E9C
+
+central,javax.ws.rs,javax.ws.rs-api,2.0,jar,lib/serial,61F0983EB190954CCDEDE31E786A9E0BD9767C4A
+central,javax.validation,validation-api,1.1.0.Final,jar,lib/serial,8613AE82954779D518631E05DAA73A6A954817D5
+central,javax.annotation,javax.annotation-api,1.2,jar,lib/serial,479C1E06DB31C432330183F5CAE684163F186146
+
+central,org.javassist,javassist,3.20.0-GA,jar,lib/serial,A9CBCDFB7E9F86FBC74D3AFAE65F2248BFBF82A0
+
 # Copyright 2016 Goldman Sachs.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

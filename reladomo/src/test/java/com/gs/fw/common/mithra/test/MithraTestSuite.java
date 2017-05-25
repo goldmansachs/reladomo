@@ -39,6 +39,7 @@ import com.gs.fw.common.mithra.test.overlap.OverlapFixerFullyMilestonedTest;
 import com.gs.fw.common.mithra.test.overlap.OverlapFixerProcessingDateMilestonedTest;
 import com.gs.fw.common.mithra.test.pure.TestPureObjects;
 import com.gs.fw.common.mithra.test.util.*;
+import com.gs.fw.common.mithra.test.util.serializer.TestTrivialJson;
 import com.gs.fw.common.mithra.util.MithraCpuBoundThreadPool;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -287,6 +288,9 @@ public class MithraTestSuite
 
         // SyslogChecker
         suite.addTestSuite(SyslogCheckerTest.class);
+
+        //Serialization
+        suite.addTestSuite(TestTrivialJson.class);
 
         return suite;
     }
