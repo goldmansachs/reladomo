@@ -50,7 +50,7 @@ public abstract class MithraBaseObjectTypeWrapper implements CommonWrapper
     private boolean ignoreNonGeneratedAbstractClasses = false;
     private boolean generateInterfaces = false;
     private boolean readOnlyInterfaces = false;
-    private boolean generateFileHeaders = true;
+    private boolean generateFileHeaders = false;
 
 
     public MithraBaseObjectTypeWrapper(MithraBaseObjectType wrapped, String sourceFileName, String importedSource)

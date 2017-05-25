@@ -29,7 +29,6 @@ public class CoreMithraGenerator extends BaseMithraGenerator
     private static final String TEMPLATE_PACKAGE_PREFIX = "com.gs.fw.common.mithra.templates";
     private static final Map<String, String> TEMPLATE_PACKAGES = new HashMap<String, String>();
     private static final Map<String, List<String>> TEMPLATE_LISTS = new HashMap<String, List<String>>();
-    private boolean generateFileHeaders = false;
 
     private static final String GENERATED_COMMON_TEMPLATE = "CommonSuper";
 
@@ -241,7 +240,6 @@ public class CoreMithraGenerator extends BaseMithraGenerator
         {
             generateSuperType(mithraObject.getSubstituteSuperType(), count);
         }
-        mithraObject.setGenerateFileHeaders(this.generateFileHeaders);
     }
 
     private void generateSuperType(MithraSuperTypeWrapper superType, AtomicInteger count)
@@ -453,11 +451,6 @@ public class CoreMithraGenerator extends BaseMithraGenerator
                 }
             }
         });
-    }
-
-    public void setGenerateFileHeaders(boolean generateFileHeaders)
-    {
-        this.generateFileHeaders = generateFileHeaders;
     }
 
     public int processMithraInterfaces(Collection<? extends MithraInterfaceType> wrappers)
