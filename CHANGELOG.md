@@ -1,4 +1,17 @@
 # Change Log
+## 16.2.0 - 2017-05-25
+### Enhancements:
+- Serialization/Deserialization utilities with example implementations in Jackson & Gson
+    - See the [documentation](https://goldmansachs.github.io/reladomo/serialization/Serialization.html)
+- Consolidated class level metadata API
+    - See the ReladomoClassMetaData class
+
+### Bug Fixes:
+- Honor setting of generated CVS header. Off by default.
+- Increment refresh and database retrieval counts for temporal objects correctly.
+- Fix NPE in DbExtractor for UTC converted attributes
+
+# Change Log
 ## 16.1.4 - 2017-05-03
 ### Enhancements:
 - Improve using full cache in a transaction when transaction participation is not required
