@@ -1,0 +1,206 @@
+<html><head><META http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Serializing Reladomo Object Graphs</title><link href="mithradoc.css" type="text/css" rel="stylesheet"><meta content="DocBook XSL Stylesheets V1.79.1" name="generator"><!-- (c) 2016 Copyright Goldman Sachs, Inc. --></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="article"><div class="titlepage"><div><div><h2 class="title"><a name="N40003"></a>Serializing Reladomo Object Graphs</h2></div><div><div class="author"><h3 class="author"></h3></div></div><div><p class="pubdate">May 2017</p></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="sect1"><a href="#N40014">1. Introduction</a></span></dt><dt><span class="sect1"><a href="#N4001D">2. Usage Guidelines</a></span></dt><dt><span class="sect1"><a href="#N40039">3. Serialization</a></span></dt><dt><span class="sect1"><a href="#N4008C">4. Deserialization</a></span></dt><dt><span class="sect1"><a href="#N400AA">5. Example Jackson/JAX-RS Serialization</a></span></dt><dt><span class="sect1"><a href="#N400DA">6. Implementing Your Own Serialization/Deserialization</a></span></dt><dd><dl><dt><span class="sect2"><a href="#N400DF">6.1. Serialization</a></span></dt><dt><span class="sect2"><a href="#N40109">6.2. Deserialization</a></span></dt></dl></dd></dl></div>
+
+    
+
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N40014"></a>1.&nbsp;Introduction</h2></div></div></div>
+        
+        <p>Serializing object graphs of any kind has some challenges including, the depth of the serialization
+            and dealing with loops. Serializing a persistent object graph creates additional challenges, including
+            efficient IO when reading/writing, proper designation of unit of work and so on. Reladomo's serialization
+            utilities consist of a set of API that simplify and standardize the solutions to these issues.
+        </p>
+    </div>
+
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N4001D"></a>2.&nbsp;Usage Guidelines</h2></div></div></div>
+        
+        <p>
+            Remote API's can have a detrimental effect on the agility of a codebase if not designed appropriately.
+            Avoid exposing your domain as a public API. Doing so will make changing your domain significantly harder
+            and in some sense is no different than letting random callers read access to your database.
+            Making a code change will require agreement for a large number of potentially unknown users. Instead of
+            exposing your domain publicly, expose a well defined, narrow API that satisfies your requirements.
+            Private API, that is, API that is used within a single codebase, does not have the same issue,
+            so it may expose the domain.
+        </p>
+        <p>
+            The method signatures of your API should include the wrapper objects <code class="code">Serialized</code> and
+            <code class="code">SerializedList</code>. For example:
+            </p><pre class="programlisting">
+@Path("/orderOne")
+@GET
+@Produces(MediaType.APPLICATION_JSON)
+public Serialized&lt;Order&gt; firstOrder()
+{
+    SerializationConfig config =
+      SerializationConfig.shallowWithDefaultAttributes(
+        OrderFinder.getFinderInstance());
+    return
+      new Serialized((OrderFinder.findOne(OrderFinder.orderId().eq(1))),
+      config);
+}</pre><p>
+            This is important for serialization because it allows you to fully specify (via <code class="code">SerializationConfig</code>)
+            how you want the graph to be serialized. It's also important for deserialization in method parameters to avoid
+            doing unnecessary IO, potentially outside the unit of work that will start in the method body.
+        </p>
+        <p>
+            The core serialization framework is not tied to any particular implementation. It can be used to
+            serialize to various formats, e.g. binary, xml, json, etc. There are Jackson and Gson example implementations
+            that can used as is, or as a starting point for your own format. We recommend using the Jackson implementation for
+            json/rest.
+        </p>
+    </div>
+
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N40039"></a>3.&nbsp;Serialization</h2></div></div></div>
+        
+        <p>
+            When an object is serialized, it's the equivalent of detaching (in the Reladomo definition of detach)
+            the object and serializing the result. The <code class="code">Serialized</code> wrapper class allows the injection
+            of a particular set of configurations for a response. For example, if you have three API methods and
+            they each need to serialize the same type of result differently, the <code class="code">Serialized</code> wrapper class
+            enables that via <code class="code">SerializationConfig</code>.
+        </p>
+        <p>
+            <code class="code">SerializationConfig</code> is an immutable class with factory (builder) methods. You typically start with:
+            </p><pre class="programlisting">
+SerializationConfig config =
+  SerializtionConfig.shallowWithDefaultAttributes(
+    OrderFinder.getFinderInstance());
+</pre><p>
+            and then use the <code class="code">with</code> and <code class="code">without</code> methods to create new instances of <code class="code">SerializationConfig</code>.
+            For example:
+            </p><pre class="programlisting">
+config = config.withDeepFetches(OrderFinder.orderStatus(),
+  OrderFinder.items());
+config = config.withAnnotatedMethods(SerialView.Shorter.class);
+</pre><p>
+
+            It's safe to store the instance for later use because it's immutable. The storage and reuse of <code class="code">SerializationConfig</code>
+            You can assign a name to a configuration and save it for later use with
+            </p><pre class="programlisting">
+public void saveOrOverwriteWithName(String name)
+</pre><p>
+            and <code class="code">SerializationConfig.byName(String name)</code>.
+        </p>
+        <p>
+            You may annotate your domain methods (those implemented in your concrete classes) using the
+            <code class="code">@ReladomoSerialize</code> annotation. The annotation takes a list of classes that correspond to a
+            the particular view. For example, you can define a set of views like this:
+            </p><pre class="programlisting">
+public class SerialView
+{
+    public static class Shorter {}
+    public static class Longer extends Shorter {}
+    public static class HandPicked {}
+}
+</pre><p>
+            and then reference that on a method:
+            </p><pre class="programlisting">
+@ReladomoSerialize(serialViews = {SerialView.Shorter.class, SerialView.HandPicked.class})
+public String getTrackedDescription()
+{
+    return this.getDescription()+" "+this.getTrackingId();
+}
+</pre><p>
+            This method will only be serialized if the <code class="code">SerializationConfig</code> has either
+            <code class="code">.withAnnotatedMethods(SerialView.Shorter.class</code> or
+            <code class="code">.withAnnotatedMethods(SerialView.HandPicked.class</code>.
+        </p>
+
+        <p>
+            The object tree is handled very similarly to the way deep fetching works in Reladomo. You can specify
+            the navigation paths through the tree using the <code class="code">.withDeepFetches</code> method on <code class="code">SerializationConfig</code>.
+        </p>
+    </div>
+
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N4008C"></a>4.&nbsp;Deserialization</h2></div></div></div>
+        
+        <p>
+            Deserialization happens when method parameters are Reladomo objects, or one of the wrapper classes
+            <code class="code">Serialized</code> and <code class="code">SerializedList</code>. The wrappers are again recommended, but for a different
+            reason. A unit of work (transaction) does not encompass the deserialization, which often requires database lookups.
+            For proper transactional enrollment, those lookup will likely be repeated in the method body if a wrapper class
+            is not used. In contrast, a <code class="code">Serialized</code> object will delay the lookups until the <code class="code">getWrapped()</code>
+            method is called.
+        </p>
+        <p>
+            The deserializaton protocol requires either a specifically typed object (e.g. <code class="code">Serialized&lt;Order&gt;</code>)
+            or meta data in the stream to specify the object class. We recommend having the meta data in the stream for simplicity.
+            The meta data can also include a state, which specifies if the incoming object is to be considered in-memory (new),
+            detached or deleted. Without state metadata, the state is considered to be detached or new and further determined by
+            looking up the object in the database. The deleted state is particularly useful for sending inserts/updates/deletes in a
+            single call for a list of objects.
+        </p>
+        <p>
+            Attributes that are not in the stream at all are considered to be unchanged (or default if the object is new). This
+            allows for the more common "patch" implementation when persisting.
+        </p>
+    </div>
+
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N400AA"></a>5.&nbsp;Example Jackson/JAX-RS Serialization</h2></div></div></div>
+        
+        <p>
+            The example Jackson implementation in the <code class="code">com.gs.reladomo.serial.jackson</code> package can be used
+            to serialize and deserialize json. You'll need reladomo-serial.jar in your classpath.
+            The implementation can be use with JAX-RS by following these steps:
+            </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem">
+                    <p>Use <code class="code">com.gs.reladomo.serial.jaxrs.server.JacksonObjectMapperProvider</code> or write
+                    a similar class.</p>
+                </li><li class="listitem">
+                    <p>In your server's resource config, register the mapper provider.</p>
+                </li><li class="listitem">
+                    <p>In your resource (remote API), use <code class="code">@Produces</code> and/or <code class="code">@Consumes</code>
+                    <code class="code">MediaType.APPLICATION_JSON</code></p> For example:
+                    <pre class="programlisting">
+@Path("/orderOne")
+@GET
+@Produces(MediaType.APPLICATION_JSON)
+public Serialized&lt;Order&gt; firstOrder()
+{
+    SerializationConfig config =
+      SerializationConfig.shallowWithDefaultAttributes(
+        OrderFinder.getFinderInstance());
+    return
+      new Serialized((OrderFinder.findOne(OrderFinder.orderId().eq(1))),
+        config);
+}
+</pre>
+                </li></ul></div><p>
+
+        </p>
+    </div>
+
+    <div class="sect1"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="N400DA"></a>6.&nbsp;Implementing Your Own Serialization/Deserialization</h2></div></div></div>
+        
+        <div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="N400DF"></a>6.1.&nbsp;Serialization</h3></div></div></div>
+            <p>
+                The Jackson and Gson implementations are good examples to follow.
+            </p>
+            
+            <p>
+                Every serialization implementation requires a <code class="code">ReladomoSerializationContext</code> and a
+                <code class="code">SerialWriter</code>. Typically, <code class="code">ReladomoSerializationContext</code> is subclassed
+                and the implementation's local context is added to the subclass. <code class="code">ReladomoSerializationContext</code>
+                has to be instantiated for every tree being serialized. It usually contains some sort of output
+                stream, which is passed to the <code class="code">SerialWriter</code>. The <code class="code">SerialWriter</code> is usually
+                stateless and can be reused for all the work.
+            </p>
+            <p>
+                When serializing, you have to decide how to implement meta data serialization, which usually
+                has to be the first thing in the stream as well as other features, such as link serialization.
+                Look at <code class="code">ReladomoSerializationContext</code>'s <code class="code">serializeReladomoObject</code> and
+                <code class="code">serializeReladomoList</code> methods to understand the sequence of calls to the writer.
+            </p>
+        </div>
+        <div class="sect2"><div class="titlepage"><div><div><h3 class="title"><a name="N40109"></a>6.2.&nbsp;Deserialization</h3></div></div></div>
+            
+            <p>
+                Your custom deserializer has to instantiate a <code class="code">ReladomoDeserializer</code>. If the
+                target class is known, you can construct the deserializer with it. If the class is in the stream,
+                it has to be first and reading it should cause the <code class="code">storeReladomoClassName</code> method to
+                be called on the deserializer. When the deserialization is finished, you can get either a
+                <code class="code">Serialzied</code> or <code class="code">SerializedList</code> object back, depending on what you deserialized,
+                or rather if you called <code class="code">startObject</code> or <code class="code">startList</code> initially.
+            </p>
+        </div>
+    </div>
+</div></body></html>
