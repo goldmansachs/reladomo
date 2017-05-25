@@ -61,6 +61,7 @@ public class BaseMithraGenerator
     private boolean defaultFinalGetters = false;
     private boolean forceOffHeap = false;
     private ThreadLocal<FullFileBuffer> fullFileBufferThreadLocal = new ThreadLocal<FullFileBuffer>();
+    private boolean generateFileHeaders = false;
 
     private ChopAndStickResource chopAndStickResource = new ChopAndStickResource(new Semaphore(Runtime.getRuntime().availableProcessors()),
             new Semaphore(IO_THREADS), new SerialResource());
@@ -162,6 +163,11 @@ public class BaseMithraGenerator
             result = "0" + result;
         }
         return result;
+    }
+
+    public void setGenerateFileHeaders(boolean generateFileHeaders)
+    {
+        this.generateFileHeaders = generateFileHeaders;
     }
 
     public List<MithraGeneratorImport> getImports()
@@ -364,6 +370,7 @@ public class BaseMithraGenerator
                         boolean isGenerateInterfaces = !mithraObjectResourceType.isGenerateInterfacesSet() ? mithraType.isGenerateInterfaces() : mithraObjectResourceType.isGenerateInterfaces();
                         boolean enableOffHeap = !mithraObjectResourceType.isEnableOffHeapSet() ? mithraType.isEnableOffHeap() || forceOffHeap : mithraObjectResourceType.isEnableOffHeap();
                         MithraObjectTypeWrapper wrapper = new MithraObjectTypeWrapper(mithraObject, objectFileName, importSource, isGenerateInterfaces, ignorePackageNamingConvention, BaseMithraGenerator.this.logger);
+                        wrapper.setGenerateFileHeaders(generateFileHeaders);
                         wrapper.setReplicated(mithraObjectResourceType.isReplicated());
                         wrapper.setIgnoreNonGeneratedAbstractClasses(ignoreNonGeneratedAbstractClasses);
                         wrapper.setIgnoreTransactionalMethods(ignoreTransactionalMethods);
@@ -405,6 +412,7 @@ public class BaseMithraGenerator
                             String objectFileName = objectName + ".xml";
                             boolean enableOffHeap = !mithraPureObjectResourceType.isEnableOffHeapSet() ? mithraType.isEnableOffHeap() || forceOffHeap : mithraPureObjectResourceType.isEnableOffHeap();
                             MithraObjectTypeWrapper wrapper = new MithraObjectTypeWrapper(mithraObject, objectFileName, importSource, false, ignorePackageNamingConvention, BaseMithraGenerator.this.logger);
+                            wrapper.setGenerateFileHeaders(generateFileHeaders);
                             wrapper.setIgnoreNonGeneratedAbstractClasses(ignoreNonGeneratedAbstractClasses);
                             wrapper.setIgnoreTransactionalMethods(ignoreTransactionalMethods);
                             wrapper.setPure(true);
@@ -448,6 +456,7 @@ public class BaseMithraGenerator
                         {
                             String objectFileName = objectName + ".xml";
                             MithraObjectTypeWrapper wrapper = new MithraObjectTypeWrapper(mithraObject, objectFileName, importSource, false, ignorePackageNamingConvention, BaseMithraGenerator.this.logger);
+                            wrapper.setGenerateFileHeaders(generateFileHeaders);
                             wrapper.setIgnoreNonGeneratedAbstractClasses(ignoreNonGeneratedAbstractClasses);
                             wrapper.setIgnoreTransactionalMethods(ignoreTransactionalMethods);
                             wrapper.setTemporary(true);
