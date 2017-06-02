@@ -1,4 +1,9 @@
 # Change Log
+## 16.3.0 - 2017-06-02
+### Enhancements:
+- Better heuristics for camel casing when generating xml from existing schema
+- Support nullable boolean in ddl generation and insert/update
+
 ## 16.2.0 - 2017-05-25
 ### Enhancements:
 - Serialization/Deserialization utilities with example implementations in Jackson & Gson
