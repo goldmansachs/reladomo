@@ -73,8 +73,12 @@ public class BooleanJavaType extends PrimitiveWrapperJavaType
         return "bit";
     }
 
-    public String getSqlDataType(CommonDatabaseType databaseType)
+    public String getSqlDataType(CommonDatabaseType databaseType, boolean nullable)
     {
+        if (nullable)
+        {
+            return databaseType.getSqlDataTypeForNullableBoolean();
+        }
         return databaseType.getSqlDataTypeForBoolean();
     }
 
@@ -130,5 +134,11 @@ public class BooleanJavaType extends PrimitiveWrapperJavaType
     public int getOffHeapSize()
     {
         return 1;
+    }
+
+    @Override
+    public String getSqlTypeAsStringForNull()
+    {
+        return "dt.getNullableBooleanJavaSqlType()";
     }
 }

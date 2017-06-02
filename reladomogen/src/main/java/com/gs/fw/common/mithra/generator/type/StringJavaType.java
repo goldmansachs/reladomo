@@ -91,7 +91,7 @@ public class StringJavaType extends JavaType
         return "varchar";
     }
 
-    public String getSqlDataType(CommonDatabaseType databaseType)
+    public String getSqlDataType(CommonDatabaseType databaseType, boolean nullable)
     {
         return databaseType.getSqlDataTypeForString();
     }

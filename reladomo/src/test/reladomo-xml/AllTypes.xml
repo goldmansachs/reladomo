@@ -47,7 +47,7 @@
     <Attribute name="stringValue"    javaType="String"    columnName="STRING_COL"     nullable="false" maxLength="50" truncate="true"/>
     <Attribute name="byteArrayValue" javaType="byte[]"    columnName="BYTE_ARRAY_COL" nullable="false"/>
 
-    <!--<Attribute name="nullableBooleanValue"   javaType="boolean"   columnName="NULL_BOOL_COL"       nullable="true"/>-->
+    <Attribute name="nullableBooleanValue"   javaType="boolean"   columnName="NULL_BOOL_COL"       nullable="true"/>
     <Attribute name="nullableByteValue"      javaType="byte"      columnName="NULL_BYTE_COL"       nullable="true"/>
     <Attribute name="nullableShortValue"     javaType="short"     columnName="NULL_SHORT_COL"      nullable="true"/>
     <Attribute name="nullableCharValue"      javaType="char"      columnName="NULL_CHAR_COL"       nullable="true"/>

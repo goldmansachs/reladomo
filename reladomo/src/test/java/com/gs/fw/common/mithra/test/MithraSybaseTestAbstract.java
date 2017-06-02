@@ -173,6 +173,7 @@ public class MithraSybaseTestAbstract extends MithraTestAbstract
         }
         else
         {
+            allTypesObj.setNullableBooleanValue(true);
             allTypesObj.setNullableByteValue((byte)100);
             allTypesObj.setNullableShortValue((short) 30000);
             allTypesObj.setNullableCharValue('a');

@@ -517,4 +517,10 @@ public class OracleDatabaseType extends AbstractDatabaseType
     {
         return "EXTRACT(DAY FROM " + columnName + ")";
     }
+
+    @Override
+    public int getNullableBooleanJavaSqlType()
+    {
+        return Types.NUMERIC;
+    }
 }

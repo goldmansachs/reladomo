@@ -43,7 +43,7 @@ public class AllTypesOracleResultSetComparator extends AllTypesResultSetComparat
         Time time = null;
         try
         {
-            String string = rs.getString(23);
+            String string = rs.getString(24);
             if (string != null)
                 time = OracleDatabaseType.parseStringAndSet(string.substring(1).trim());
         }

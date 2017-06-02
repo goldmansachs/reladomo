@@ -76,7 +76,7 @@ public class TimeJavaType extends JavaType
         return "time";
     }
 
-    public String getSqlDataType(CommonDatabaseType databaseType)
+    public String getSqlDataType(CommonDatabaseType databaseType, boolean nullable)
     {
         return databaseType.getSqlDataTypeForTime();
     }

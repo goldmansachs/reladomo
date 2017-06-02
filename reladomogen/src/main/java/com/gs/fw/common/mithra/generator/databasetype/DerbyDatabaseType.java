@@ -25,6 +25,12 @@ public class DerbyDatabaseType implements CommonDatabaseType
         return instance;
     }
 
+    @Override
+    public String getSqlDataTypeForNullableBoolean()
+    {
+        return "smallint";
+    }
+
     public String getSqlDataTypeForBoolean()
     {
         return "smallint";

@@ -105,34 +105,7 @@ public class TestMariaGeneralTestCases extends MithraMariaTestAbstract
 
     public void testRollback()
     {
-        final List<Exception> exceptionsList = FastList.newList();
-        MithraManager.getInstance().executeTransactionalCommand(new TransactionalCommand<Object>()
-        {
-            public Object executeTransaction(MithraTransaction tx) throws Throwable
-            {
-                TemporaryContext temporaryContext = OrderDriverFinder.createTemporaryContext();
-
-                try
-                {
-                    Order order = new Order();
-                    order.setOrderId(1000);
-                    order.insert();
-                    if (exceptionsList.isEmpty())
-                    {
-                        MithraBusinessException exception = new MithraBusinessException("Exception");
-                        exception.setRetriable(true);
-                        exceptionsList.add(exception);
-                        throw exception;
-                    }
-                    return null;
-                }
-                finally
-                {
-                    temporaryContext.destroy();
-                }
-            }
-        }, 5);
-        assertNotNull(OrderFinder.findOne(OrderFinder.orderId().eq(1000)));
+        new CommonVendorTestCases().testRollback();
     }
 
     public void testSimpleOrder()
@@ -387,7 +360,7 @@ public class TestMariaGeneralTestCases extends MithraMariaTestAbstract
 
     private String getAllTypesColumns()
     {
-        return "ID,BOOL_COL,BYTE_COL,SHORT_COL,CHAR_COL,INT_COL,LONG_COL,FLOAT_COL,DOUBLE_COL,DATE_COL,TIME_COL,TIMESTAMP_COL,STRING_COL,BYTE_ARRAY_COL,NULL_BYTE_COL,NULL_SHORT_COL,NULL_CHAR_COL,NULL_INT_COL,NULL_LONG_COL,NULL_FLOAT_COL,NULL_DOUBLE_COL,NULL_DATE_COL,NULL_TIME_COL,NULL_TIMESTAMP_COL,NULL_STRING_COL,NULL_BYTE_ARRAY_COL";
+        return "ID,BOOL_COL,BYTE_COL,SHORT_COL,CHAR_COL,INT_COL,LONG_COL,FLOAT_COL,DOUBLE_COL,DATE_COL,TIME_COL,TIMESTAMP_COL,STRING_COL,BYTE_ARRAY_COL,NULL_BOOL_COL,NULL_BYTE_COL,NULL_SHORT_COL,NULL_CHAR_COL,NULL_INT_COL,NULL_LONG_COL,NULL_FLOAT_COL,NULL_DOUBLE_COL,NULL_DATE_COL,NULL_TIME_COL,NULL_TIMESTAMP_COL,NULL_STRING_COL,NULL_BYTE_ARRAY_COL";
     }
 
     public void testRetrieveOneRow()
@@ -1300,6 +1273,7 @@ public class TestMariaGeneralTestCases extends MithraMariaTestAbstract
         Operation op = AllTypesFinder.id().eq(id);
         AllTypes allTypes = AllTypesFinder.findOne(op);
         allTypes.setIntValue(100);
+        allTypes.setNullableBooleanValue(true);
         allTypes.setNullableByteValue((byte) 10);
         allTypes.setNullableCharValue('a');
         allTypes.setNullableShortValue((short) 1000);
@@ -1320,6 +1294,7 @@ public class TestMariaGeneralTestCases extends MithraMariaTestAbstract
                     {
                         AllTypes allTypes = AllTypesFinder.findOne(op);
                         allTypes.setIntValue(100);
+                        allTypes.setNullableBooleanValue(true);
                         allTypes.setNullableByteValue((byte) 10);
                         allTypes.setNullableCharValue('a');
                         allTypes.setNullableShortValue((short) 1000);

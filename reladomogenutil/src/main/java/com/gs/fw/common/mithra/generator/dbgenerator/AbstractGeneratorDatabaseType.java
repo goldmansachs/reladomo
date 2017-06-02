@@ -26,6 +26,7 @@ import com.gs.fw.common.mithra.generator.RelationshipAttribute;
 import com.gs.fw.common.mithra.generator.databasetype.CommonDatabaseType;
 import com.gs.fw.common.mithra.generator.mapper.Join;
 import com.gs.fw.common.mithra.generator.mapper.RelationshipConversionVisitor;
+import com.gs.fw.common.mithra.generator.type.JavaType;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -75,7 +76,7 @@ public abstract class AbstractGeneratorDatabaseType
     {
         for (int i = 0; i < attributes.length; i++)
         {
-            String attributeSqlType = attributes[i].getType().getSqlDataType(this.getGeneratorDatabaseType());
+            String attributeSqlType = attributes[i].getType().getSqlDataType(this.getGeneratorDatabaseType(), attributes[i].isNullable());
 
             if (attributes[i].isIdentity())
             {

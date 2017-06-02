@@ -991,6 +991,11 @@ public abstract class AbstractAttribute implements CommonAttribute, Comparable
         return getType().getSqlTypeAsString();
     }
 
+    public String getSqlTypeAsStringForNull()
+    {
+        return getType().getSqlTypeAsStringForNull();
+    }
+
     public boolean isDoubleAttribute()
     {
         return getType() instanceof DoubleJavaType;

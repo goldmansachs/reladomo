@@ -64,7 +64,7 @@ extends PrimitiveWrapperJavaType
         return "smallint";
     }
 
-    public String getSqlDataType(CommonDatabaseType databaseType)
+    public String getSqlDataType(CommonDatabaseType databaseType, boolean nullable)
     {
         return databaseType.getSqlDataTypeForShortJava();
     }

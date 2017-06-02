@@ -21,7 +21,6 @@ package com.gs.fw.common.mithra.generator.type;
 
 import com.gs.fw.common.mithra.generator.BeanState;
 import com.gs.fw.common.mithra.generator.queryparser.ASTLiteral;
-import com.gs.fw.common.mithra.generator.util.StringUtility;
 import com.gs.fw.common.mithra.generator.databasetype.CommonDatabaseType;
 
 /**
@@ -67,7 +66,7 @@ public class LongJavaType extends PrimitiveWrapperJavaType
         return "bigint";
     }
 
-    public String getSqlDataType(CommonDatabaseType databaseType)
+    public String getSqlDataType(CommonDatabaseType databaseType, boolean nullable)
     {
         return databaseType.getSqlDataTypeForLong();
     }

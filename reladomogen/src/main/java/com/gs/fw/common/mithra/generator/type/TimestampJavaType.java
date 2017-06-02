@@ -82,7 +82,7 @@ public class TimestampJavaType extends JavaType{
         return "datetime";
     }
 
-    public String getSqlDataType(CommonDatabaseType databaseType)
+    public String getSqlDataType(CommonDatabaseType databaseType, boolean nullable)
     {
         return databaseType.getSqlDataTypeForTimestamp();
     }

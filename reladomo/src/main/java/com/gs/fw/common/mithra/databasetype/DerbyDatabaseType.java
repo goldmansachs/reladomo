@@ -18,6 +18,7 @@
 package com.gs.fw.common.mithra.databasetype;
 
 import java.sql.SQLException;
+import java.sql.Types;
 
 
 public class DerbyDatabaseType extends AbstractDatabaseType
@@ -188,5 +189,11 @@ public class DerbyDatabaseType extends AbstractDatabaseType
     public String getSqlExpressionForDateDayOfMonth(String columnName)
     {
         return "DAY("+columnName+")";
+    }
+
+    @Override
+    public int getNullableBooleanJavaSqlType()
+    {
+        return Types.SMALLINT;
     }
 }

@@ -19,8 +19,6 @@ package com.gs.fw.common.mithra.generator.type;
 import com.gs.fw.common.mithra.generator.databasetype.CommonDatabaseType;
 import com.gs.fw.common.mithra.generator.queryparser.ASTLiteral;
 
-import java.math.BigDecimal;
-
 
 public class BigDecimalJavaType extends JavaType
 {
@@ -85,7 +83,7 @@ public class BigDecimalJavaType extends JavaType
         return "decimal";
     }
 
-    public String getSqlDataType(CommonDatabaseType databaseType)
+    public String getSqlDataType(CommonDatabaseType databaseType, boolean nullable)
     {
         return databaseType.getSqlDataTypeForBigDecimal();
     }

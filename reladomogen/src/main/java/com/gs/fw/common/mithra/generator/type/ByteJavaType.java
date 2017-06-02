@@ -63,7 +63,7 @@ extends PrimitiveWrapperJavaType
         return "tinyint";
     }
 
-    public String getSqlDataType(CommonDatabaseType databaseType)
+    public String getSqlDataType(CommonDatabaseType databaseType, boolean nullable)
     {
         return databaseType.getSqlDataTypeForByte();
     }

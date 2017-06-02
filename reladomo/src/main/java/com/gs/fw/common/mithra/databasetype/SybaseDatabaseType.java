@@ -1464,4 +1464,10 @@ public class SybaseDatabaseType extends AbstractDatabaseType
 
         this.appendTempTableJoin(source, prototypeArray, nullAttributes, pkAttributeCount, tempContext, mithraObjectPortal, fullyQualifiedTableNameGenericSource, builder);
     }
+
+    @Override
+    public int getNullableBooleanJavaSqlType()
+    {
+        return Types.TINYINT;
+    }
 }

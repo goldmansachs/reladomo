@@ -517,34 +517,7 @@ public class TestOracleGeneralTestCases extends MithraOracleTestAbstract
 
     public void testRollback()
     {
-        final List<Exception> exceptionsList = FastList.newList();
-        MithraManager.getInstance().executeTransactionalCommand(new TransactionalCommand<Object>()
-        {
-            public Object executeTransaction(MithraTransaction tx) throws Throwable
-            {
-                TemporaryContext temporaryContext = OrderDriverFinder.createTemporaryContext();
-
-                try
-                {
-                    Order order = new Order();
-                    order.setOrderId(1000);
-                    order.insert();
-                    if (exceptionsList.isEmpty())
-                    {
-                        MithraBusinessException exception = new MithraBusinessException("Exception");
-                        exception.setRetriable(true);
-                        exceptionsList.add(exception);
-                        throw exception;
-                    }
-                    return null;
-                }
-                finally
-                {
-                    temporaryContext.destroy();
-                }
-            }
-        }, 5);
-        assertNotNull(OrderFinder.findOne(OrderFinder.orderId().eq(1000)));
+        new CommonVendorTestCases().testRollback();
     }
 
     public void testSimpleOrder()
@@ -1527,6 +1500,7 @@ public class TestOracleGeneralTestCases extends MithraOracleTestAbstract
         Operation op = AllTypesFinder.id().eq(id);
         AllTypes allTypes = AllTypesFinder.findOne(op);
         allTypes.setIntValue(100);
+        allTypes.setNullableBooleanValue(true);
         allTypes.setNullableByteValue((byte)10);
         allTypes.setNullableCharValue('a');
         allTypes.setNullableShortValue((short)1000);
@@ -1547,6 +1521,7 @@ public class TestOracleGeneralTestCases extends MithraOracleTestAbstract
                  {
                     AllTypes allTypes = AllTypesFinder.findOne(op);
                     allTypes.setIntValue(100);
+                    allTypes.setNullableBooleanValue(true);
                     allTypes.setNullableByteValue((byte)10);
                     allTypes.setNullableCharValue('a');
                     allTypes.setNullableShortValue((short)1000);

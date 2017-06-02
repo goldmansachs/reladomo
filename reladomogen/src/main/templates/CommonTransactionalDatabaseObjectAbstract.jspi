@@ -33,7 +33,7 @@ under the License.
                         <% } else { %>
                             if (data.<%=attributes[i].getNullGetter()%>)
                             {
-                                stm.setNull(pos++, <%= attributes[i].getSqlTypeAsString() %>);
+                                stm.setNull(pos++, <%= attributes[i].getSqlTypeAsStringForNull() %>);
                             }
                         <% } %>
                         else
