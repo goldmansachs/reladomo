@@ -18,6 +18,8 @@ package com.gs.fw.common.mithra.generator.databasetype;
 
 public interface CommonDatabaseType
 {
+    String getSqlDataTypeForNullableBoolean();
+
     String getSqlDataTypeForBoolean();
 
     String getSqlDataTypeForTimestamp();

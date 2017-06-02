@@ -29,6 +29,12 @@ public class OracleDatabaseType implements CommonDatabaseType
         return instance;
     }
 
+    @Override
+    public String getSqlDataTypeForNullableBoolean()
+    {
+        return "number(1)";
+    }
+
     public String getSqlDataTypeForBoolean()
     {
         return "number(1)";

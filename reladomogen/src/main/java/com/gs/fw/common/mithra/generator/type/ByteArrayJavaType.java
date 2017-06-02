@@ -92,7 +92,7 @@ public class ByteArrayJavaType extends JavaType
     }
 
     @Override
-    public String getSqlDataType(CommonDatabaseType databaseType)
+    public String getSqlDataType(CommonDatabaseType databaseType, boolean nullable)
     {
         return databaseType.getSqlDataTypeForVarBinary(); 
     }

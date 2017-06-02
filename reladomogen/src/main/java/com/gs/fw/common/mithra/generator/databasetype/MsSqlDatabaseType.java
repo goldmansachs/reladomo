@@ -58,6 +58,12 @@ public class MsSqlDatabaseType implements CommonDatabaseType
         return instance;
     }
 
+    @Override
+    public String getSqlDataTypeForNullableBoolean()
+    {
+        return "tinyint";
+    }
+
     public String getSqlDataTypeForBoolean()
     {
         return "bit";

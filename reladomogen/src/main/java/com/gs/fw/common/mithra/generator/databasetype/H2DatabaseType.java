@@ -65,6 +65,12 @@ public class H2DatabaseType implements CommonDatabaseType
         return instance;
     }
 
+    @Override
+    public String getSqlDataTypeForNullableBoolean()
+    {
+        return "boolean";
+    }
+
     public String getSqlDataTypeForBoolean()
     {
         return "boolean";

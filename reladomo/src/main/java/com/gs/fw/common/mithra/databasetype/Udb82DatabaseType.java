@@ -574,4 +574,10 @@ public class Udb82DatabaseType extends AbstractDatabaseType
             sb.append(" IN ").append(this.tableSpace);
         }
     }
+
+    @Override
+    public int getNullableBooleanJavaSqlType()
+    {
+        return Types.SMALLINT;
+    }
 }

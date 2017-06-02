@@ -89,7 +89,7 @@ public abstract class JavaType
 
     public abstract String getSqlDataType();
 
-    public abstract String getSqlDataType(CommonDatabaseType databaseType);
+    public abstract String getSqlDataType(CommonDatabaseType databaseType, boolean nullable);
 
     public abstract String getDefaultInitialValue();
 
@@ -283,5 +283,10 @@ public abstract class JavaType
     public boolean isTime()
     {
         return false;
+    }
+
+    public String getSqlTypeAsStringForNull()
+    {
+        return getSqlTypeAsString();
     }
 }

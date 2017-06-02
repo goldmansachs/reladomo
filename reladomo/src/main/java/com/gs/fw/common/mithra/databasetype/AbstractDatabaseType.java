@@ -630,6 +630,11 @@ public abstract class AbstractDatabaseType implements DatabaseType
         ps.setNull(index, Types.TIME);
     }
 
+    public int getNullableBooleanJavaSqlType()
+    {
+        return Types.BOOLEAN;
+    }
+
     public Time getTime(ResultSet resultSet, int position) throws SQLException
     {
        return Time.withSqlTime(resultSet.getTime(position));

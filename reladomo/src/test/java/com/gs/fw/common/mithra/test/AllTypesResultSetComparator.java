@@ -57,7 +57,17 @@ public class AllTypesResultSetComparator implements MithraTestObjectToResultSetC
         data.setStringValue(rs.getString(13));
         data.setByteArrayValue(rs.getBytes(14));
 
-        byte b = rs.getByte(15);
+        boolean bool = rs.getBoolean(15);
+        if (rs.wasNull())
+        {
+            data.setNullableBooleanValueNull();
+        }
+        else
+        {
+            data.setNullableBooleanValue(bool);
+        }
+
+        byte b = rs.getByte(16);
         if(rs.wasNull())
         {
             data.setNullableByteValueNull();
@@ -67,7 +77,7 @@ public class AllTypesResultSetComparator implements MithraTestObjectToResultSetC
             data.setNullableByteValue(b);
         }
 
-        short st = rs.getShort(16);
+        short st = rs.getShort(17);
         if(rs.wasNull())
         {
             data.setNullableShortValueNull();
@@ -77,7 +87,7 @@ public class AllTypesResultSetComparator implements MithraTestObjectToResultSetC
             data.setNullableShortValue(st);
         }
 
-        String cs = rs.getString(17);
+        String cs = rs.getString(18);
         if(rs.wasNull())
         {
             data.setNullableCharValueNull();
@@ -87,7 +97,7 @@ public class AllTypesResultSetComparator implements MithraTestObjectToResultSetC
             data.setNullableCharValue(cs.charAt(0));
         }
 
-        int i = rs.getInt(18);
+        int i = rs.getInt(19);
         if(rs.wasNull())
         {
             data.setNullableIntValueNull();
@@ -97,7 +107,7 @@ public class AllTypesResultSetComparator implements MithraTestObjectToResultSetC
             data.setNullableIntValue(i);
         }
 
-        long l = rs.getLong(19);
+        long l = rs.getLong(20);
         if(rs.wasNull())
         {
             data.setNullableLongValueNull();
@@ -107,7 +117,7 @@ public class AllTypesResultSetComparator implements MithraTestObjectToResultSetC
             data.setNullableLongValue(l);
         }
 
-        float f = rs.getFloat(20);
+        float f = rs.getFloat(21);
         if(rs.wasNull())
         {
             data.setNullableFloatValueNull();
@@ -117,7 +127,7 @@ public class AllTypesResultSetComparator implements MithraTestObjectToResultSetC
             data.setNullableFloatValue(f);
         }
 
-        double d = rs.getDouble(21);
+        double d = rs.getDouble(22);
         if(rs.wasNull())
         {
             data.setNullableDoubleValueNull();
@@ -127,7 +137,7 @@ public class AllTypesResultSetComparator implements MithraTestObjectToResultSetC
             data.setNullableDoubleValue(d);
         }
 
-        Date date = rs.getDate(22);
+        Date date = rs.getDate(23);
         if(rs.wasNull())
         {
             data.setNullableDateValueNull();
@@ -147,7 +157,7 @@ public class AllTypesResultSetComparator implements MithraTestObjectToResultSetC
             data.setNullableTimeValue(time);
         }
 
-        Timestamp timestamp = rs.getTimestamp(24);
+        Timestamp timestamp = rs.getTimestamp(25);
         if(rs.wasNull())
         {
             data.setNullableTimestampValueNull();
@@ -157,7 +167,7 @@ public class AllTypesResultSetComparator implements MithraTestObjectToResultSetC
             data.setNullableTimestampValue(timestamp);
         }
 
-        String s = rs.getString(25);
+        String s = rs.getString(26);
         if(rs.wasNull())
         {
             data.setNullableStringValueNull();
@@ -167,7 +177,7 @@ public class AllTypesResultSetComparator implements MithraTestObjectToResultSetC
             data.setNullableStringValue(s);
         }
 
-        byte[] ba = rs.getBytes(26);
+        byte[] ba = rs.getBytes(27);
         if(rs.wasNull())
         {
             data.setNullableByteArrayValueNull();
@@ -184,7 +194,7 @@ public class AllTypesResultSetComparator implements MithraTestObjectToResultSetC
 
     protected Time getTime(ResultSet rs) throws SQLException
     {
-        return Time.withSqlTime(rs.getTime(23));
+        return Time.withSqlTime(rs.getTime(24));
     }
 
     protected void readTime(ResultSet rs, AllTypesData data) throws SQLException

@@ -60,7 +60,7 @@ public class DoubleJavaType extends PrimitiveWrapperJavaType
         return "DOUBLE";
     }
 
-    public String getSqlDataType(CommonDatabaseType databaseType)
+    public String getSqlDataType(CommonDatabaseType databaseType, boolean nullable)
     {
         return databaseType.getSqlDataTypeForDouble();
     }

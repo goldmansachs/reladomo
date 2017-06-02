@@ -56,6 +56,12 @@ public class SybaseDatabaseType implements CommonDatabaseType
         sqlToJavaTypes.put("time", "Time");
     }
 
+    @Override
+    public String getSqlDataTypeForNullableBoolean()
+    {
+        return "tinyint";
+    }
+
     public String getSqlDataTypeForBoolean()
     {
         return "bit";
@@ -113,7 +119,7 @@ public class SybaseDatabaseType implements CommonDatabaseType
 
     public String getSqlDataTypeForLong()
     {
-        return "numeric(19,0)";
+        return "bigint";
     }
 
     public String getSqlDataTypeForShortJava()

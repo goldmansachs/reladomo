@@ -55,7 +55,7 @@ public class FloatJavaType extends PrimitiveWrapperJavaType
         return "float";
     }
 
-    public String getSqlDataType(CommonDatabaseType databaseType)
+    public String getSqlDataType(CommonDatabaseType databaseType, boolean nullable)
     {
         return databaseType.getSqlDataTypeForFloat();
     }

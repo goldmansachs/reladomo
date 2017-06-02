@@ -164,9 +164,9 @@ public class EnumerationJavaType extends JavaType
         return this.delegate.getSqlDataType();
     }
 
-    public String getSqlDataType(CommonDatabaseType databaseType)
+    public String getSqlDataType(CommonDatabaseType databaseType, boolean nullable)
     {
-        return this.delegate.getSqlDataType(databaseType);
+        return this.delegate.getSqlDataType(databaseType, true);
     }
 
     public String getResultSetName()

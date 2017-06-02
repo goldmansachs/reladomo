@@ -178,6 +178,8 @@ public interface DatabaseType extends CommonDatabaseType
 
     public void setTimeNull(PreparedStatement ps, int index) throws SQLException;
 
+    public int getNullableBooleanJavaSqlType();
+
     public Time getTime(ResultSet rs, int position) throws SQLException;
 
     public String convertDateToString(java.util.Date date);

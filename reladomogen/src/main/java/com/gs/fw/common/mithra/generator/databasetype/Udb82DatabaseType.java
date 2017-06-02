@@ -57,6 +57,12 @@ public class Udb82DatabaseType implements CommonDatabaseType
         return instance;
     }
 
+    @Override
+    public String getSqlDataTypeForNullableBoolean()
+    {
+        return "smallint";
+    }
+
     public String getSqlDataTypeForBoolean()
     {
         return "smallint";

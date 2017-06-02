@@ -64,7 +64,7 @@ public class IntJavaType extends PrimitiveWrapperJavaType{
         return "integer";
     }
 
-    public String getSqlDataType(CommonDatabaseType databaseType)
+    public String getSqlDataType(CommonDatabaseType databaseType, boolean nullable)
     {
         return databaseType.getSqlDataTypeForInt();
     }

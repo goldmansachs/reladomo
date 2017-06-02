@@ -71,7 +71,7 @@ public abstract class SingleColumnBooleanAttribute<T> extends BooleanAttribute<T
     {
         if (this.isAttributeNull((T) mithraDataObject))
         {
-            pps.setNull(pos, java.sql.Types.BOOLEAN);
+            pps.setNull(pos, databaseType.getNullableBooleanJavaSqlType());
         }
         else
         {
