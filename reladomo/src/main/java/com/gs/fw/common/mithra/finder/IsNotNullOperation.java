@@ -18,6 +18,10 @@ package com.gs.fw.common.mithra.finder;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.SingleColumnAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -49,9 +53,9 @@ public class IsNotNullOperation  extends AbstractAtomicOperation
         return null;
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
     {
-        return !this.getAttribute().isAttributeNull(o);
+        return !extractor.isAttributeNull(o);
     }
 
     public SingleColumnAttribute getSingleColumnAttribute()
@@ -143,22 +147,8 @@ public class IsNotNullOperation  extends AbstractAtomicOperation
         return null;
     }
 
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        return this.zCombinedAndWithAtomic(op);
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        return this.zCombinedAndWithAtomic(op);
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        return this.zCombinedAndWithAtomic(op);
-    }
-
-    public Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op)
+    @Override
+    public Operation zCombinedAndWithRange(RangeOperation op)
     {
         return this.zCombinedAndWithAtomic(op);
     }
@@ -172,5 +162,21 @@ public class IsNotNullOperation  extends AbstractAtomicOperation
     {
         this.getAttribute().zAppendToString(toStringContext);
         toStringContext.append("is not null");
+    }
+
+    @Override
+    public ShapeMatchResult zShapeMatch(Operation existingOperation)
+    {
+        if (existingOperation.equals(this))
+        {
+            return ExactMatchSmr.INSTANCE;
+        }
+        return NoMatchSmr.INSTANCE;
+    }
+
+    @Override
+    public int zShapeHash()
+    {
+        return this.hashCode();
     }
 }

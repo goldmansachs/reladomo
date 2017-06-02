@@ -17,6 +17,11 @@
 package com.gs.fw.common.mithra.finder;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 
 import java.util.List;
 
@@ -83,27 +88,13 @@ public abstract class AtomicNotEqualityOperation extends AbstractAtomicOperation
         return null;
     }
 
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
+    @Override
+    public Operation zCombinedAndWithRange(RangeOperation op)
     {
-        // todo: rezaem: implement combine
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        // todo: rezaem: implement combine
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        // todo: rezaem: implement combine
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op)
-    {
-        // todo: rezaem: implement combine
+        if (op.getAttribute().equals(this.getAttribute()) && !op.matchesWithoutDeleteCheck(this, this.getStaticExtractor()))
+        {
+            return op;
+        }
         return null;
     }
 
@@ -131,5 +122,25 @@ public abstract class AtomicNotEqualityOperation extends AbstractAtomicOperation
         this.getAttribute().zAppendToString(toStringContext);
         toStringContext.append("!=");
         toStringContext.append(this.getParameterAsObject().toString());
+    }
+
+    @Override
+    public ShapeMatchResult zShapeMatch(Operation existingOperation)
+    {
+        // not-equality is almost the entire set (it's just missing a single point)
+        // that makes it almost impossible for not-equality to be a subset of anything
+        if (existingOperation.equals(this))
+        {
+            return ExactMatchSmr.INSTANCE;
+        }
+        return NoMatchSmr.INSTANCE;
+    }
+
+    protected abstract Extractor getStaticExtractor();
+
+    @Override
+    public int zShapeHash()
+    {
+        return this.getAttribute().hashCode() ^ 0x78f57132;
     }
 }

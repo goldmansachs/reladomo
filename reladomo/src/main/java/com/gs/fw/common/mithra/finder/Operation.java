@@ -26,6 +26,7 @@ import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.TimestampAttribute;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.util.InternalList;
 
@@ -75,17 +76,11 @@ public interface Operation extends com.gs.fw.finder.Operation, Serializable
 
     public abstract Operation zCombinedAndWithAtomicEquality(AtomicEqualityOperation op);
 
+    public abstract Operation zCombinedAndWithRange(RangeOperation op);
+
     public abstract Operation zCombinedAndWithMapped(MappedOperation op);
 
     public abstract Operation zCombinedAndWithMultiEquality(MultiEqualityOperation op);
-
-    public abstract Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op);
-
-    public abstract Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op);
-
-    public abstract Operation zCombinedAndWithAtomicLessThan(LessThanOperation op);
-
-    public abstract Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op);
 
     public abstract Operation zCombinedAndWithIn(InOperation op);
 
@@ -110,8 +105,6 @@ public interface Operation extends com.gs.fw.finder.Operation, Serializable
     public boolean zHasAsOfOperation();
 
     public Operation zFlipToOneMapper(Mapper mapper);
-
-    public Operation zFindEquality(TimestampAttribute attr);
 
     public String zGetResultClassName();
 
@@ -148,4 +141,12 @@ public interface Operation extends com.gs.fw.finder.Operation, Serializable
     public boolean zContainsMappedOperation();
 
     public boolean zHasParallelApply();
+
+    public boolean zCanFilterInMemory();
+
+    public boolean zIsShapeCachable();
+
+    public ShapeMatchResult zShapeMatch(Operation existingOperation);
+
+    public int zShapeHash();
 }

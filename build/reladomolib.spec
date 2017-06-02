@@ -24,6 +24,13 @@ central,org.apache.activemq,activemq-core,5.3.0,jar,lib/test,4C0581D16E94837938C
 central,org.apache.geronimo.specs,geronimo-j2ee-management_1.0_spec,1.1,jar,lib/test,057E32617E47E84FC7A26C7C9D3470B2D253AC34
 #central,com.h2database,h2,1.3.169,jar,lib/test,
 
+# test coverage libs:
+central,org.jacoco,org.jacoco.core,0.7.9,jar,lib/coverage,66215826A684EB6866D4C14A5A4F9C344F1D1EEF
+central,org.jacoco,org.jacoco.report,0.7.9,jar,lib/coverage,8A7F78FDF2A4E58762890D8E896A9298C2980C10
+central,org.jacoco,org.jacoco.agent,0.7.9,jar,lib/coverage,4A936CAAB50B117A14D9CA3A725FC9B54D0CC3D1
+central,org.jacoco,org.jacoco.ant,0.7.9,jar,lib/coverage,7CB39A4B38A32FFC8D0B5055B9B6C961ECFFA1B0
+central,org.ow2.asm,asm-debug-all,5.2,jar,lib/coverage,3354E11E2B34215F06DAB629AB88E06ACA477C19
+
 #serial libs:
 central,com.google.code.gson,gson,2.8.0,jar,lib/serial,C4BA5371A29AC9B2AD6129B1D39EA38750043EFF
 

@@ -20,7 +20,6 @@ import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.SingleColumnAttribute;
 import com.gs.fw.common.mithra.extractor.*;
 import com.gs.fw.common.mithra.util.HashUtil;
-import com.gs.fw.common.mithra.util.StringPool;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -38,6 +37,12 @@ public class IsNullOperation  extends AtomicEqualityOperation
     public IsNullOperation(Attribute attribute)
     {
         super(attribute);
+    }
+
+    @Override
+    protected Extractor getStaticExtractor()
+    {
+        throw new RuntimeException("should not get here");
     }
 
     @Override
@@ -74,9 +79,9 @@ public class IsNullOperation  extends AtomicEqualityOperation
         return null;
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
     {
-        return this.getAttribute().isAttributeNull(o);
+        return extractor.isAttributeNull(o);
     }
 
     public SingleColumnAttribute getSingleColumnAttribute()
@@ -268,4 +273,9 @@ public class IsNullOperation  extends AtomicEqualityOperation
         }
     }
 
+    @Override
+    public int zShapeHash()
+    {
+        return this.getAttribute().hashCode() ^ 0xcc1885b6;
+    }
 }

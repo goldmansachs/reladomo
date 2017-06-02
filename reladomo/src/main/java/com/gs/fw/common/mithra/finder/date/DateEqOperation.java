@@ -18,7 +18,9 @@ package com.gs.fw.common.mithra.finder.date;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.DateAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.NonPrimitiveEqOperation;
+import com.gs.fw.common.mithra.finder.paramop.OpWithDateParamExtractor;
 import com.gs.fw.common.mithra.util.MithraTimestamp;
 
 import java.io.Externalizable;
@@ -40,6 +42,12 @@ public class DateEqOperation extends NonPrimitiveEqOperation implements External
     public DateEqOperation()
     {
         // for externalizable
+    }
+
+    @Override
+    protected Extractor getStaticExtractor()
+    {
+        return OpWithDateParamExtractor.INSTANCE;
     }
 
     public void writeExternal(ObjectOutput out) throws IOException

@@ -23,6 +23,11 @@ import java.util.*;
 
 import com.gs.fw.common.mithra.attribute.*;
 import com.gs.fw.common.mithra.databasetype.*;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.tempobject.*;
 import com.gs.fw.common.mithra.util.*;
 import com.gs.fw.common.mithra.util.Time;
@@ -34,6 +39,7 @@ public abstract class AtomicSetBasedOperation extends AbstractAtomicOperation im
 
     public static final int IN_CLAUSE_BULK_INSERT_THRESHOLD = 1000;
     private static final int POSSIBLE_SPLIT_THRESHOLD = 10;
+    protected static final int MAX_SHAPE_MATCH_SIZE = 100;
 
     protected AtomicSetBasedOperation(Attribute attribute)
     {
@@ -224,4 +230,12 @@ public abstract class AtomicSetBasedOperation extends AbstractAtomicOperation im
     }
 
     protected abstract void appendSetToString(ToStringContext toStringContext);
+
+    public abstract boolean setContains(Object holder, Extractor extractor);
+
+    @Override
+    public int zShapeHash()
+    {
+        return this.getAttribute().hashCode() ^ this.getClass().hashCode();
+    }
 }

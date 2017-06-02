@@ -22,13 +22,12 @@ import java.util.Map;
 import java.util.Set;
 
 import com.gs.fw.common.mithra.MithraDeletedException;
-import com.gs.fw.common.mithra.MithraObject;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
-import com.gs.fw.common.mithra.attribute.TimestampAttribute;
 import com.gs.fw.common.mithra.cache.Cache;
 import com.gs.fw.common.mithra.cache.IndexReference;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.util.DoUntilProcedure;
 import com.gs.fw.common.mithra.util.InternalList;
@@ -91,7 +90,7 @@ public abstract class AbstractAtomicOperation implements AtomicOperation, SqlPar
     {
         try
         {
-            return this.matchesWithoutDeleteCheck(o);
+            return matchesWithoutDeleteCheck(o, this.getAttribute());
         }
         catch (MithraDeletedException e)
         {
@@ -100,11 +99,24 @@ public abstract class AbstractAtomicOperation implements AtomicOperation, SqlPar
         }
     }
 
-    protected abstract Boolean matchesWithoutDeleteCheck(Object o);
+    protected abstract boolean matchesWithoutDeleteCheck(Object o, Extractor extractor);
 
     public boolean zPrefersBulkMatching()
     {
         return false;
+    }
+
+    protected boolean nullAwareEquals(Object left, Object right)
+    {
+        if (left == right)
+        {
+            return true; // covers both null
+        }
+        if (left == null)
+        {
+            return false;
+        }
+        return left.equals(right);
     }
 
     public List applyOperationToFullCache()
@@ -404,11 +416,6 @@ public abstract class AbstractAtomicOperation implements AtomicOperation, SqlPar
         return null;
     }
 
-    public Operation zFindEquality(TimestampAttribute attr)
-    {
-        return null;
-    }
-
     public EqualityOperation zExtractEqualityOperations()
     {
         return null;
@@ -428,5 +435,17 @@ public abstract class AbstractAtomicOperation implements AtomicOperation, SqlPar
     public String toString()
     {
         return ToStringContext.createAndToString(this);
+    }
+
+    @Override
+    public boolean zCanFilterInMemory()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean zIsShapeCachable()
+    {
+        return true;
     }
 }

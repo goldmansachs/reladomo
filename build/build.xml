@@ -30,13 +30,12 @@
     <property name="gsintegrator-api.version" value="1.8.0"/>
     <property name="antjar.version" value="1.7.1"/>
     <property name="docbook-xsl.version" value="1.79.1"/>
-    <property name="jacoco.version" value="0.5.7"/>
+    <property name="jacoco.version" value="0.7.9"/>
     <property name="gwt.version" value="2.6.1"/>
 
     <property name="mithra.pom-template.dir" location="${mithra.home}/build/mithra/pom-templates"/>
     <property name="mithra.jars.dir" location="${mithra.home}/build/jars/mithra"/>
     <property name="mithra.classes.dir" location="${mithra.home}/classes"/>
-    <property name="mithra.coverage.dir" location="${mithra.home}/build/mithra/coverage"/>
     <property name="reladomo.generateConcreteClasses" value="${env.GENERATE_MITHRA_CONCRETE_CLASSES}"/>
     <property name="gwt.compile.output.dir" value="${root}/reladomoui/target/gwtcache"/>
 
@@ -277,14 +276,14 @@
                     <pathelement location="${root}/reladomo/target/test-classes-@{heap}"/>
                 </classpath>
                 <jvmarg value="-server"/>
-                <jvmarg value="${jacocovmarg}${mithra.coverage.dir}/jacoco/@{mithraxmlconfig}@{testclass}@{heap}.exec"/>
+                <jvmarg value="${jacocovmarg}${root}/reladomo/target/coverage/@{mithraxmlconfig}@{testclass}@{heap}.exec"/>
                 <jvmarg value="-XX:MaxPermSize=320m"/>
                 <jvmarg value="-Xmx3048m"/>
                 <jvmarg value="-ea"/>
                 <jvmarg value="-Dlog4j.configuration=file:${root}/reladomo/src/test/resources/log4jWarn.config"/>
                 <jvmarg value="-Dmithra.xml.root=${root}/reladomo/src/test/resources/"/>
                 <jvmarg value="-Dmithra.xml.config=@{mithraxmlconfig}"/>
-                <jvmarg value="-Djacoco.args=${jacocovmarg}${mithra.coverage.dir}/jacoco/@{mithraxmlconfig}@{testclass}@{heap}.exec"/>
+                <jvmarg value="-Djacoco.args=${jacocovmarg}${root}/reladomo/target/coverage/jacoco/@{mithraxmlconfig}@{testclass}@{heap}.exec"/>
                 <jvmarg value="-Dderby.storage.tempDirectory=${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
                 <jvmarg value="-Dderby.system.home=${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
                 <jvmarg value="-Dderby.system.durability=test"/>
@@ -305,18 +304,19 @@
         <include name="**/*.java"/>
     </fileset>
 
-    <fileset dir="${mithra.classes.dir}" id="class">
+    <fileset dir="${root}/reladomo/target/classes" id="class">
+        <exclude name="com/gs/mithra/asm/**/*.class"/>
         <exclude name="**/test/**/*.class"/>
         <exclude name="**/generator/**/*.class"/>
         <exclude name="**/ui/**/*.class"/>
         <exclude name="**/templates/**/*.class"/>
         <exclude name="**/xmlbinding/**/*.class"/>
         <exclude name="**/notification/RunsMasterQueue*.class"/>
-        <exclude name="**/gsintegrator/IntegratorDataSequence*.class"/>
     </fileset>
 
     <target name="-jacoco-init">
-        <property name="jacocovmarg" value="-javaagent:${mithra.home}/jacoco/jacocoagent-${jacoco.version}.jar=excludes=com.gs.fw.common.mithra.generator.*:
+        <unzip src="${root}/lib/coverage/org.jacoco.agent-${jacoco.version}.jar" dest="${root}/lib/coverage"/>
+        <property name="jacocovmarg" value="-javaagent:${root}/lib/coverage/jacocoagent.jar=excludes=com.gs.fw.common.mithra.generator.*:
                                   com.gs.fw.common.mithra.test.*:
                                   com.gs.mithra.asm.*:
                                   com.gs.fw.common.mithra.ui.*:
@@ -326,38 +326,12 @@
                                   com.gs.fw.common.mithra.gsintegrator.IntegratorDataSequence*:
                                   com.gs.fw.common.mithra.xmlbinding.*,destfile="/>
         <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
-            <classpath path="${mithra.home}/jacoco/jacocoant.jar"/>
+            <classpath path="${root}/lib/coverage/org.jacoco.ant-${jacoco.version}.jar"/>
+            <classpath path="${root}/lib/coverage/org.jacoco.core-${jacoco.version}.jar"/>
+            <classpath path="${root}/lib/coverage/org.jacoco.report-${jacoco.version}.jar"/>
+            <classpath path="${root}/lib/coverage/asm-debug-all-5.2.jar"/>
         </taskdef>
     </target>
-
-    <target name="mithra-test-coverage" depends="-jacoco-init,compile-reladomo, reladomo-test-suite, mithra-vendor-test-suite">  <!-- -->
-        <mkdir dir="${mithra.coverage.dir}/report"/>
-        <jacoco:merge destfile="${mithra.coverage.dir}/jacoco/mergedData.exec">
-            <fileset dir="${mithra.coverage.dir}/jacoco" includes="*.exec, *.execslave"/>
-        </jacoco:merge>
-        <jacoco:report>
-            <!-- This task needs the collected execution data  -->
-            <executiondata>
-                <file file="${mithra.coverage.dir}/jacoco/mergedData.exec"/>
-            </executiondata>
-
-            <!-- the class files and optional source files  -->
-            <structure name="Mithra">
-                <classfiles>
-                    <fileset refid="class"/>
-                </classfiles>
-                <sourcefiles encoding="UTF-8">
-                    <fileset refid="coverage-src"/>
-                </sourcefiles>
-            </structure>
-
-            <!-- to produce reports in html format -->
-            <html destdir="${mithra.coverage.dir}/jacoco/report"/>
-        </jacoco:report>
-    </target>
-
-
-
 
     <!-- ************************** reladomogen **********************************-->
     <target name="xsd2bean-reladomo-generator">
@@ -472,8 +446,8 @@
             source="1.5"
             target="1.5"
             includeAntRuntime="true">
-            <src path="${root}/reladomogen/target/generated-src/com/gs/fw/common/mithra/generator"/>
-            <include name="MithraVersion.java"/>
+            <src path="${root}/reladomogen/target/generated-src"/>
+            <include name="com/gs/fw/common/mithra/generator/MithraVersion.java"/>
         </javac>
         <javac destdir="${root}/reladomogen/target/classes"
             debug="true"
@@ -835,6 +809,33 @@
         <fail if="unitTestFailedAndIsNotSonar" message="Reladomo unit tests failed"/>
     </target>
 
+    <target name="reladomo-test-coverage" depends="-jacoco-init,compile-reladomo, reladomo-test-suite, reladomo-coverage-report"/>
+
+    <target name="reladomo-coverage-report" depends="-jacoco-init">
+        <mkdir dir="${root}/reladomo/target/coverage/report"/>
+        <jacoco:merge destfile="${root}/reladomo/target/coverage/mergedData.exec">
+            <fileset dir="${root}/reladomo/target/coverage" includes="*.exec, *.execslave"/>
+        </jacoco:merge>
+        <jacoco:report>
+            <!-- This task needs the collected execution data  -->
+            <executiondata>
+                <file file="${root}/reladomo/target/coverage/mergedData.exec"/>
+            </executiondata>
+
+            <!-- the class files and optional source files  -->
+            <structure name="Reladomo">
+                <classfiles>
+                    <fileset refid="class"/>
+                </classfiles>
+                <sourcefiles encoding="UTF-8">
+                    <fileset refid="coverage-src"/>
+                </sourcefiles>
+            </structure>
+
+            <!-- to produce reports in html format -->
+            <html destdir="${root}/reladomo/target/coverage/report"/>
+        </jacoco:report>
+    </target>
     <!-- ************************** /reladomo test **********************************-->
     <!-- ************************** reladomo docs **************************** -->
     <target name="reladomo-xsddoc" depends="init-reladomo">
@@ -1111,7 +1112,9 @@
     <target name="compile-reladomo-genutil" depends="compile-reladomo">
         <dependset>
             <srcfileset dir="${root}/reladomogenutil/src/main/java"/>
-            <srcfileset dir="${root}/reladomogen/target/classes"/>
+            <srcfileset dir="${root}/reladomogen/target/classes">
+                <exclude name="com/gs/fw/common/mithra/generator/mithragen.md5"/>
+            </srcfileset>
             <srcfileset dir="${root}/reladomo/target/classes"/>
             <targetfileset dir="${root}/reladomogenutil/target/classes"/>
         </dependset>
@@ -1785,14 +1788,14 @@
                     <pathelement location="${root}/reladomoserial/target/test-classes"/>
                 </classpath>
                 <jvmarg value="-server"/>
-                <jvmarg value="${jacocovmarg}${mithra.coverage.dir}/jacoco/@{mithraxmlconfig}@{testclass}@{heap}.exec"/>
+                <jvmarg value="${jacocovmarg}${root}/reladomo/target/coverage/@{mithraxmlconfig}@{testclass}@{heap}.exec"/>
                 <jvmarg value="-XX:MaxPermSize=320m"/>
                 <jvmarg value="-Xmx3048m"/>
                 <jvmarg value="-ea"/>
                 <jvmarg value="-Dlog4j.configuration=file:${root}/reladomo/src/test/resources/log4jWarn.config"/>
                 <jvmarg value="-Dmithra.xml.root=${root}/reladomo/src/test/resources/"/>
                 <jvmarg value="-Dmithra.xml.config=@{mithraxmlconfig}"/>
-                <jvmarg value="-Djacoco.args=${jacocovmarg}${mithra.coverage.dir}/jacoco/@{mithraxmlconfig}@{testclass}@{heap}.exec"/>
+                <jvmarg value="-Djacoco.args=${jacocovmarg}${root}/reladomo/target/coverage/@{mithraxmlconfig}@{testclass}@{heap}.exec"/>
                 <jvmarg value="-Dderby.storage.tempDirectory=${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
                 <jvmarg value="-Dderby.system.home=${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
                 <jvmarg value="-Dderby.system.durability=test"/>

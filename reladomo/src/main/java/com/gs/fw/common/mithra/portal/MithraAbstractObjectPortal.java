@@ -678,6 +678,14 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
             this.getPerformanceData().incrementQueryCacheHits();
             result = result.getCloneIfDifferentOrderBy(orderby);
         }
+        if (result == null)
+        {
+            result = queryCache.findBySubQuery(op, analyzedOperation, orderby, forRelationship);
+            if (result != null)
+            {
+                this.getPerformanceData().incrementSubQueryCacheHits();
+            }
+        }
         return result;
     }
 
@@ -735,14 +743,15 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
             if (orderby != null && resultList.size() > 1) Collections.sort(resultList, orderby);
             result = new CachedQuery(op, orderby);
             result.setResult(resultList);
-            result.cacheQuery(forRelationship);
-            if (analyzedOperation != null && analyzedOperation.isAnalyzedOperationDifferent())
+            boolean needsDefaulting = analyzedOperation != null && analyzedOperation.isAnalyzedOperationDifferent();
+            if (needsDefaulting)
             {
                 result.setWasDefaulted();
                 CachedQuery cachedQuery2 = new CachedQuery(analyzedOperation.getAnalyzedOperation(), orderby);
                 cachedQuery2.setResult(resultList);
                 cachedQuery2.cacheQuery(forRelationship);
             }
+            result.cacheQuery(forRelationship);
             this.getPerformanceData().incrementObjectCacheHits();
         }
         return result;

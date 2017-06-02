@@ -40,19 +40,9 @@ public abstract class LessThanEqualsOperation extends RangeOperation
         query.addSqlParameterSetter(this);
     }
 
-    /*
-    returns the combined and operation. Many operations must be combined to correctly resolve a query.
-    Many operations are more efficient when combined.
-    This method is internal to Mithra's operation processing.
-    */
-    public Operation zCombinedAnd(Operation op)
+    @Override
+    public int getDirection()
     {
-        return op.zCombinedAndWithAtomicLessThanEquals(this);
+        return LESS_DIR;
     }
-
-    public Operation zCombinedAndWithMultiEquality(MultiEqualityOperation op)
-    {
-        return op.zCombinedAndWithAtomicLessThanEquals(this);
-    }
-
 }

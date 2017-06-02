@@ -35,6 +35,9 @@ import com.gs.fw.common.mithra.cache.*;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.extractor.TimestampExtractor;
 import com.gs.fw.common.mithra.finder.asofop.AsOfTimestampEqualityMapper;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchRequiresExactSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
 import com.gs.fw.common.mithra.util.*;
@@ -534,22 +537,8 @@ public class MultiInOperation implements Operation, SqlParameterSetter
         return null;
     }
 
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op)
+    @Override
+    public Operation zCombinedAndWithRange(RangeOperation op)
     {
         return null;
     }
@@ -815,15 +804,6 @@ public class MultiInOperation implements Operation, SqlParameterSetter
         return null;
     }
 
-    public Operation zFindEquality(TimestampAttribute attr)
-    {
-        if (this.equalityOperation != null)
-        {
-            return this.equalityOperation.zFindEquality(attr);
-        }
-        return null;
-    }
-
     public int hashCode()
     {
         if (hashCode == 0)
@@ -885,5 +865,36 @@ public class MultiInOperation implements Operation, SqlParameterSetter
     public boolean zHasParallelApply()
     {
         return false;
+    }
+
+    @Override
+    public boolean zCanFilterInMemory()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean zIsShapeCachable()
+    {
+        return true;
+    }
+
+    @Override
+    public ShapeMatchResult zShapeMatch(Operation existingOperation)
+    {
+        //todo: MultiIn can be a subset of another multi-in
+        return this.equals(existingOperation) ? ExactMatchSmr.INSTANCE : NoMatchRequiresExactSmr.INSTANCE;
+    }
+
+    @Override
+    public int zShapeHash()
+    {
+        int hash = 0x062a084c;
+
+        for(Attribute a: attributes)
+        {
+            hash ^= a.hashCode();
+        }
+        return hash;
     }
 }

@@ -18,7 +18,11 @@ package com.gs.fw.common.mithra.finder.date;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.DateAttribute;
+import com.gs.fw.common.mithra.cache.bean.BeanDateExtractor;
+import com.gs.fw.common.mithra.extractor.DateExtractor;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.NonPrimitiveNotEqOperation;
+import com.gs.fw.common.mithra.finder.paramop.OpWithDateParamExtractor;
 import com.gs.fw.common.mithra.util.MithraTimestamp;
 
 import java.io.Externalizable;
@@ -27,11 +31,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Date;
 
-
-
 public class DateNotEqOperation extends NonPrimitiveNotEqOperation implements Externalizable
 {
-
     public DateNotEqOperation(DateAttribute attribute, Date parameter)
     {
         super(attribute, parameter);
@@ -40,6 +41,12 @@ public class DateNotEqOperation extends NonPrimitiveNotEqOperation implements Ex
     public DateNotEqOperation()
     {
         // for Externalizable
+    }
+
+    @Override
+    protected Extractor getStaticExtractor()
+    {
+        return OpWithDateParamExtractor.INSTANCE;
     }
 
     public void writeExternal(ObjectOutput out) throws IOException

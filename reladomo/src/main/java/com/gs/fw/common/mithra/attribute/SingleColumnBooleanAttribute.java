@@ -23,9 +23,7 @@ import com.gs.fw.common.mithra.cache.offheap.OffHeapExtractor;
 import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
 import com.gs.fw.common.mithra.finder.*;
 import com.gs.fw.common.mithra.finder.booleanop.BooleanEqOperation;
-import com.gs.fw.common.mithra.finder.booleanop.BooleanInOperation;
 import com.gs.fw.common.mithra.finder.booleanop.BooleanNotEqOperation;
-import com.gs.fw.common.mithra.finder.booleanop.BooleanNotInOperation;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.util.ColumnInfo;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
@@ -115,7 +113,11 @@ public abstract class SingleColumnBooleanAttribute<T> extends BooleanAttribute<T
         {
             return this.eq(booleanSet.booleanIterator().next());
         }
-        return new BooleanInOperation(this, booleanSet);
+        if (this.isNullable())
+        {
+            return new IsNotNullOperation(this);
+        }
+        return new All(this);
     }
 
     @Override
@@ -129,7 +131,7 @@ public abstract class SingleColumnBooleanAttribute<T> extends BooleanAttribute<T
         {
             return this.notEq(booleanSet.booleanIterator().next());
         }
-        return new BooleanNotInOperation(this, booleanSet);
+        return new None(this); // notIn implies notNull, so notIn(true, false) means no match at all.
     }
 
     // join operation:

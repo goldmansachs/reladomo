@@ -18,13 +18,19 @@
 package com.gs.fw.common.mithra.finder.enumeration;
 
 import com.gs.fw.common.mithra.attribute.EnumAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.NonPrimitiveNotEqOperation;
 
 public class EnumNotEqOperation<E extends Enum<E>> extends NonPrimitiveNotEqOperation
 {
-
     public EnumNotEqOperation(EnumAttribute attribute, E parameter)
     {
         super(attribute, parameter);
+    }
+
+    @Override
+    protected Extractor getStaticExtractor()
+    {
+        throw new RuntimeException("Not implemented");
     }
 }

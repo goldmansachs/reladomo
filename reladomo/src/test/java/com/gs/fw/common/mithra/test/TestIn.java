@@ -59,9 +59,18 @@ extends TestSqlDatatypes
         this.genericRetrievalTest(sql, desks);
         assertTrue(desks.size() > 0);
 
-        boolSet.clear();
+        boolSet = new BooleanHashSet();
         boolSet.add(false);
         sql = "select * from PARA_DESK where ACTIVE_BOOLEAN in ( 0 ) ";
+        desks = new ParaDeskList(ParaDeskFinder.activeBoolean().in(boolSet));
+        this.genericRetrievalTest(sql, desks);
+        assertTrue(desks.size() > 0);
+
+        //Boolean
+        boolSet = new BooleanHashSet();
+        boolSet.add(true);
+        boolSet.add(false);
+        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN in ( 0, 1 ) ";
         desks = new ParaDeskList(ParaDeskFinder.activeBoolean().in(boolSet));
         this.genericRetrievalTest(sql, desks);
         assertTrue(desks.size() > 0);

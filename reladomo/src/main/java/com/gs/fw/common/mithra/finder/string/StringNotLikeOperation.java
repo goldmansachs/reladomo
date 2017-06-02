@@ -18,6 +18,9 @@ package com.gs.fw.common.mithra.finder.string;
 
 import com.gs.fw.common.mithra.attribute.StringAttribute;
 import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.util.WildcardParser;
 
 import java.sql.PreparedStatement;
@@ -96,22 +99,8 @@ public abstract class StringNotLikeOperation extends AbstractAtomicOperation
         return null;
     }
 
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op)
+    @Override
+    public Operation zCombinedAndWithRange(RangeOperation op)
     {
         return null;
     }
@@ -139,4 +128,20 @@ public abstract class StringNotLikeOperation extends AbstractAtomicOperation
     }
 
     protected abstract String getLikeParameter(SqlQuery sqlQuery);
+
+    @Override
+    public ShapeMatchResult zShapeMatch(Operation existingOperation)
+    {
+        if (existingOperation.equals(this))
+        {
+            return ExactMatchSmr.INSTANCE;
+        }
+        return NoMatchSmr.INSTANCE;
+    }
+
+    @Override
+    public int zShapeHash()
+    {
+        return this.hashCode();
+    }
 }

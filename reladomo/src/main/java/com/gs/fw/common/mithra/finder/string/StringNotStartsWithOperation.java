@@ -17,10 +17,10 @@
 package com.gs.fw.common.mithra.finder.string;
 
 import com.gs.fw.common.mithra.attribute.StringAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.extractor.StringExtractor;
 import com.gs.fw.common.mithra.finder.SqlQuery;
 import com.gs.fw.common.mithra.finder.ToStringContext;
-import com.gs.fw.common.mithra.util.WildcardParser;
-
 
 
 public class StringNotStartsWithOperation extends StringNotLikeOperation
@@ -43,9 +43,9 @@ public class StringNotStartsWithOperation extends StringNotLikeOperation
     }
 
     // null must not match anything, exactly as in SQL
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
     {
-        String s = ((StringAttribute) this.getAttribute()).stringValueOf(o);
+        String s = ((StringExtractor) extractor).stringValueOf(o);
         return s != null && !s.startsWith(this.getParameter());
     }
 }

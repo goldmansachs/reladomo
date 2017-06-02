@@ -20,13 +20,16 @@ import com.gs.fw.common.mithra.cache.LruQueryIndex;
 import com.gs.fw.common.mithra.cache.CacheClock;
 import com.gs.fw.common.mithra.cache.NonLruQueryIndex;
 import com.gs.fw.common.mithra.cache.QueryIndex;
+import com.gs.fw.common.mithra.finder.AnalyzedOperation;
 import com.gs.fw.common.mithra.finder.Operation;
-
+import com.gs.fw.common.mithra.finder.orderby.OrderBy;
+import com.gs.fw.common.mithra.finder.sqcache.SubQueryCache;
 
 
 public class QueryCache
 {
     private QueryIndex cache;
+    private SubQueryCache subQueryCache;
 
     public QueryCache(int relationshipCacheSize, int minQueriesToKeep)
     {
@@ -45,16 +48,30 @@ public class QueryCache
             if (timeToLive > 0) CacheClock.register(timeToLive);
             if (relationshipTimeToLive > 0) CacheClock.register(relationshipTimeToLive);
         }
+        if (!fullCache)
+        {
+            subQueryCache = new SubQueryCache();
+        }
     }
 
     public void cacheQueryForRelationship(CachedQuery query)
     {
         this.cache.put(query, true);
+        cacheSubquery(query);
     }
 
     public void cacheQuery(CachedQuery query)
     {
         this.cache.put(query, false);
+        cacheSubquery(query);
+    }
+
+    private void cacheSubquery(CachedQuery query)
+    {
+        if (this.subQueryCache != null && !query.wasDefaulted())
+        {
+            this.subQueryCache.cacheQuery(query);
+        }
     }
 
     public CachedQuery findByEquality(Operation op)
@@ -70,6 +87,10 @@ public class QueryCache
     public void clearCache()
     {
         this.cache.clear();
+        if (this.subQueryCache != null)
+        {
+            this.subQueryCache.clear();
+        }
     }
 
     public int roughSize()
@@ -81,5 +102,22 @@ public class QueryCache
     {
         this.cache.destroy();
         this.cache = null;
+    }
+
+    public void cacheQueryForSubQuery(CachedQuery query, boolean forRelationship)
+    {
+        if (query.prepareToCacheQuery(forRelationship, this))
+        {
+            this.cache.put(query, forRelationship);
+        }
+    }
+
+    public CachedQuery findBySubQuery(Operation op, AnalyzedOperation analyzedOperation, OrderBy orderby, boolean forRelationship)
+    {
+        if (this.subQueryCache != null)
+        {
+            return this.subQueryCache.resolveAndCacheSubQuery(op, analyzedOperation, orderby, this, forRelationship);
+        }
+        return null;
     }
 }

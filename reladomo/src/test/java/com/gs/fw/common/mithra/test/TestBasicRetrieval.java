@@ -364,14 +364,14 @@ public class TestBasicRetrieval
 
         TrialList trialList = new TrialList(TrialFinder.trialId().in(trialSet));
 
-        this.genericRetrievalTest(directSql, trialList);
+        this.genericRetrievalTest(directSql, trialList, false);
 
         TrialList trialList2 = new TrialList(TrialFinder.trialId().in(trialSet));
         trialList2.setBypassCache(true);
         int count = MithraManagerProvider.getMithraManager().getDatabaseRetrieveCount();
         trialList2.forceResolve();
         assertEquals(count+1, MithraManagerProvider.getMithraManager().getDatabaseRetrieveCount());
-        this.genericRetrievalTest(directSql, trialList2);
+        this.genericRetrievalTest(directSql, trialList2, false);
 
         TrialList trialList3 = new TrialList(TrialFinder.trialId().in(trialSet));
         count = MithraManagerProvider.getMithraManager().getDatabaseRetrieveCount();
@@ -420,7 +420,7 @@ public class TestBasicRetrieval
 
         TrialList trialList = new TrialList(TrialFinder.trialId().in(trialSet));
         trialList.deepFetch(TrialFinder.accountsFromA());
-        this.genericRetrievalTest(directSql, trialList);
+        this.genericRetrievalTest(directSql, trialList, false);
 
         TrialList trialList2 = new TrialList(TrialFinder.trialId().in(trialSet));
         trialList2.setBypassCache(true);
@@ -428,7 +428,7 @@ public class TestBasicRetrieval
         int count = MithraManagerProvider.getMithraManager().getDatabaseRetrieveCount();
         trialList2.forceResolve();
         assertEquals(count+2, MithraManagerProvider.getMithraManager().getDatabaseRetrieveCount());
-        this.genericRetrievalTest(directSql, trialList2);
+        this.genericRetrievalTest(directSql, trialList2, false);
 
         TrialList trialList3 = new TrialList(TrialFinder.trialId().in(trialSet));
         trialList3.deepFetch(TrialFinder.accountsFromA());

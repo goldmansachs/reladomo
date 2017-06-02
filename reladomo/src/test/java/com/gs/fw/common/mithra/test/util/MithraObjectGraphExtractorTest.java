@@ -381,7 +381,7 @@ public class MithraObjectGraphExtractorTest extends TestCase implements Extracto
         DbExtractorTest.diffFiles(sourceFile(".txt"), this.extractFile);
         if (BitemporalOrderFinder.getMithraObjectPortal().isPartiallyCached())
         {
-            assertEquals(expectedDbRetrieveCount, dbRetrieveCount);
+            assertTrue(expectedDbRetrieveCount >= dbRetrieveCount);
         }
     }
 

@@ -19,6 +19,11 @@ package com.gs.fw.common.mithra.finder;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.finder.asofop.AsOfEdgePointOperation;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 
 import java.util.List;
@@ -117,22 +122,8 @@ public abstract class AtomicEqualityOperation extends AbstractAtomicOperation im
         return op.zCombinedAndWithAtomicEquality(this);
     }
 
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        return op.zCombinedAndWithAtomicEquality(this);
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        return op.zCombinedAndWithAtomicEquality(this);
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        return op.zCombinedAndWithAtomicEquality(this);
-    }
-
-    public Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op)
+    @Override
+    public Operation zCombinedAndWithRange(RangeOperation op)
     {
         return op.zCombinedAndWithAtomicEquality(this);
     }
@@ -203,4 +194,52 @@ public abstract class AtomicEqualityOperation extends AbstractAtomicOperation im
         toStringContext.append("=");
         toStringContext.append(this.getParameterAsObject().toString());
     }
+
+    @Override
+    public ShapeMatchResult zShapeMatch(Operation existingOperation)
+    {
+        if (existingOperation instanceof AbstractAtomicOperation)
+        {
+            AbstractAtomicOperation existingAtomic = (AbstractAtomicOperation) existingOperation;
+            if (existingAtomic.getAttribute().equals(this.getAttribute()))
+            {
+                if (existingOperation.getClass() == this.getClass())
+                {
+                    // this case only matters when this io is not the top level op being evaluated,
+                    // but it's part of a bigger op, like and/or.
+                    return ExactMatchSmr.INSTANCE;
+                }
+                else if (this instanceof IsNullOperation)
+                {
+                    return NoMatchSmr.INSTANCE;// not-in and not-eq imply not-null
+                }
+                else if (this instanceof AsOfEdgePointOperation)
+                {
+                    return NoMatchSmr.INSTANCE;
+                }
+                else if (existingAtomic.matchesWithoutDeleteCheck(this, this.getStaticExtractor()))
+                {
+                    return new SuperMatchSmr(existingOperation, this);
+                }
+            }
+        }
+        else if (existingOperation instanceof AndOperation)
+        {
+            return ((AndOperation) existingOperation).reverseShapeMatch(this);
+        }
+        else if (existingOperation instanceof OrOperation)
+        {
+            return ((OrOperation)existingOperation).oneAtATimeReverseShapeMatch(this);
+        }
+        // there are complex cases we're ignoring here.
+        return NoMatchSmr.INSTANCE;
+    }
+
+    @Override
+    public int zShapeHash()
+    {
+        return this.getAttribute().hashCode();
+    }
+
+    protected abstract Extractor getStaticExtractor();
 }

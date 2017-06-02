@@ -57,7 +57,7 @@ public class TemplateFromJavaTask extends Task
         {
             throw new BuildException("the input "+this.input +" does not exist");
         }
-        FileOutputStream outStream = null;
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream((int) inputFile.length());
         LineNumberReader reader = null;
         try
         {
@@ -85,10 +85,12 @@ public class TemplateFromJavaTask extends Task
                     String templateSection = line.substring(startDelimeter.length()+1).trim();
                     writing = true;
                     out = new File(output+"."+templateSection);
-                    outStream = new FileOutputStream(out);
                 }
                 line = reader.readLine();
             }
+            outStream.close();
+            copyIfChanged(outStream.toByteArray(), out);
+            outStream = null;
         }
         catch(IOException e)
         {
@@ -106,5 +108,51 @@ public class TemplateFromJavaTask extends Task
                 // ignore
             }
         }
+    }
+
+    public void copyIfChanged(byte[] src, File outFile) throws IOException
+    {
+        boolean copyFile = false;
+        if ((!outFile.exists()) || (outFile.length() != src.length))
+        {
+            copyFile = true;
+        }
+        else
+        {
+            byte[] outContent = readFile(outFile);
+            for(int i=0;i<src.length;i++)
+            {
+                if (src[i] != outContent[i])
+                {
+                    copyFile = true;
+                    break;
+                }
+            }
+        }
+        if (copyFile && outFile.exists() && !outFile.canWrite())
+        {
+            throw new IOException(outFile+" must be updated, but it is readonly.");
+        }
+
+        if (copyFile)
+        {
+            FileOutputStream fout = new FileOutputStream(outFile);
+            fout.write(src);
+            fout.close();
+        }
+    }
+
+    private byte[] readFile(File file) throws IOException
+    {
+        int length = (int)file.length();
+        FileInputStream fis = new FileInputStream(file);
+        byte[] result = new byte[length];
+        int pos = 0;
+        while(pos < length)
+        {
+            pos += fis.read(result, pos, length - pos);
+        }
+        fis.close();
+        return result;
     }
 }

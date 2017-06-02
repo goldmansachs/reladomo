@@ -362,15 +362,6 @@ public class TestAtomicOperationsToString extends MithraTestAbstract
 
     public void testInOperation()
     {
-        BooleanHashSet gscBooleanSet = new BooleanHashSet();
-        gscBooleanSet.add(false);
-        gscBooleanSet.add(true);
-        Operation booleanValueIn = DatedAllTypesFinder.booleanValue().in(gscBooleanSet);
-        assertEqualsEither(
-                "DatedAllTypes.booleanValue in [false, true]",
-                "DatedAllTypes.booleanValue in [true, false]",
-                booleanValueIn.toString());
-
         ByteHashSet gscByteSet = ByteHashSet.newSetWith(new byte[] { (byte) 2, (byte) 3 });
         Operation byteValueIn = DatedAllTypesFinder.byteValue().in(gscByteSet);
         assertEqualsEither(
@@ -442,15 +433,6 @@ public class TestAtomicOperationsToString extends MithraTestAbstract
 
     public void testNotInOperation()
     {
-        BooleanHashSet gscBooleanSet = new BooleanHashSet();
-        gscBooleanSet.add(false);
-        gscBooleanSet.add(true);
-        Operation booleanValueNotIn = DatedAllTypesFinder.booleanValue().notIn(gscBooleanSet);
-        assertEqualsEither(
-                "DatedAllTypes.booleanValue not in [false, true]",
-                "DatedAllTypes.booleanValue not in [true, false]",
-                booleanValueNotIn.toString());
-
         ByteHashSet gscByteSet = ByteHashSet.newSetWith(new byte[] { 2, 3 });
         Operation byteValueNotIn = DatedAllTypesFinder.byteValue().notIn(gscByteSet);
         assertEqualsEither(

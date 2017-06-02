@@ -16,6 +16,7 @@
 
 package com.gs.fw.common.mithra.finder.doubleop;
 
+import com.gs.collections.api.iterator.DoubleIterator;
 import com.gs.collections.api.set.primitive.DoubleSet;
 import com.gs.fw.common.mithra.attribute.DoubleAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
@@ -25,6 +26,10 @@ import com.gs.fw.common.mithra.extractor.PositionBasedOperationParameterExtracto
 import com.gs.fw.common.mithra.finder.InOperation;
 import com.gs.fw.common.mithra.finder.SqlParameterSetter;
 import com.gs.fw.common.mithra.finder.ToStringContext;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.util.HashUtil;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -43,14 +48,6 @@ public class DoubleInOperation extends InOperation implements SqlParameterSetter
     {
         super(attribute);
         this.set = doubleSet.freeze();
-    }
-
-    @Override
-    protected Boolean matchesWithoutDeleteCheck(Object o)
-    {
-        DoubleAttribute attribute = (DoubleAttribute)this.getAttribute();
-        if (attribute.isAttributeNull(o)) return false;
-        return Boolean.valueOf(this.set.contains(attribute.doubleValueOf(o)));
     }
 
     public List getByIndex()
@@ -154,5 +151,25 @@ public class DoubleInOperation extends InOperation implements SqlParameterSetter
         {
             return new Double(this.doubleValueOf(anObject));
         }
+    }
+
+    @Override
+    public boolean setContains(Object holder, Extractor extractor)
+    {
+        return this.set.contains(((DoubleExtractor)extractor).doubleValueOf(holder));
+    }
+
+    @Override
+    protected ShapeMatchResult shapeMatchSet(InOperation existingOperation)
+    {
+        DoubleIterator doubleIterator = this.set.doubleIterator();
+        while(doubleIterator.hasNext())
+        {
+            if (!((DoubleInOperation) existingOperation).set.contains(doubleIterator.next()))
+            {
+                return NoMatchSmr.INSTANCE;
+            }
+        }
+        return this.set.size() == existingOperation.getSetSize() ? ExactMatchSmr.INSTANCE : new SuperMatchSmr(existingOperation, this);
     }
 }

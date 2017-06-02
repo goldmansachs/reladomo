@@ -17,8 +17,11 @@
 package com.gs.fw.common.mithra.finder.floatop;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
-import com.gs.fw.common.mithra.attribute.FloatAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.extractor.FloatExtractor;
 import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.paramop.OpWithFloatParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithFloatParamExtractor;
 import com.gs.fw.common.mithra.util.HashUtil;
 
 import java.sql.PreparedStatement;
@@ -26,7 +29,7 @@ import java.sql.SQLException;
 
 
 
-public class FloatGreaterThanOperation extends GreaterThanOperation
+public class FloatGreaterThanOperation extends GreaterThanOperation implements OpWithFloatParam
 {
 
     private float parameter;
@@ -42,47 +45,22 @@ public class FloatGreaterThanOperation extends GreaterThanOperation
         return parameter;
     }
 
+    @Override
+    public Extractor getStaticExtractor()
+    {
+        return OpWithFloatParamExtractor.INSTANCE;
+    }
+
     public void zToString(ToStringContext toStringContext)
     {
         this.getAttribute().zAppendToString(toStringContext);
         toStringContext.append(">").append(this.parameter);
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
-    {
-        FloatAttribute FloatAttribute = (FloatAttribute)this.getAttribute();
-        if (FloatAttribute.isAttributeNull(o)) return false;
-        return FloatAttribute.floatValueOf(o) > parameter;
-    }
-
     public int setSqlParameters(PreparedStatement pstmt, int startIndex, SqlQuery query) throws SQLException
     {
         pstmt.setFloat(startIndex, parameter);
         return 1;
-    }
-
-    public Operation zCombinedAndWithAtomicEquality(AtomicEqualityOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            if (!op.zIsNullOperation() && ((FloatEqOperation) op).getParameter() > this.parameter)
-            {
-                return op;
-            }
-            return new None(this.getAttribute());
-        }
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            float target = ((FloatGreaterThanOperation) op).getParameter();
-            if (target > this.parameter) return op;
-            return this;
-        }
-        return null;
     }
 
     public int hashCode()
@@ -101,4 +79,9 @@ public class FloatGreaterThanOperation extends GreaterThanOperation
         return false;
     }
 
+    @Override
+    protected boolean matchesWithoutDeleteCheck(Object holder, Extractor extractor)
+    {
+        return !extractor.isAttributeNull(holder) && ((FloatExtractor)extractor).floatValueOf(holder) > this.getParameter();
+    }
 }

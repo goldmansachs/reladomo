@@ -235,27 +235,55 @@ public abstract class MithraTestAbstract
         assertTrue("must have " + exactSize + " results!", objectList.size() == exactSize);
     }
 
-    protected void genericRetrievalTest(PreparedStatement statement, List objectList, Connection connection)
+    protected void genericRetrievalTest(PreparedStatement statement, List objectList, Connection connection, boolean clearAfter)
             throws SQLException
     {
-        this.genericRetrievalTest(statement, objectList, connection, 1);
+        this.genericRetrievalTest(statement, objectList, connection, 1, clearAfter);
     }
 
-    protected void genericRetrievalTest(PreparedStatement statement, List objectList, Connection connection, int minSize)
+    protected void genericRetrievalTest(PreparedStatement statement, List objectList, Connection connection, int minSize, boolean clearAfter)
             throws SQLException
     {
         ResultSet rs = statement.executeQuery();
         this.mapRetrievedObjects(connection, statement, rs, objectList);
         assertTrue("must have at least " + minSize + " results!", objectList.size() >= minSize);
+        if (clearAfter)
+        {
+            MithraManagerProvider.getMithraManager().clearAllQueryCaches();
+        }
+    }
+
+    protected void genericRetrievalTest(String directSql, List objectList, boolean clearAfter)
+            throws SQLException
+    {
+        this.genericRetrievalTest(directSql, objectList, 1, clearAfter);
+    }
+
+    protected void genericRetrievalTest(PreparedStatement statement, List objectList, Connection connection)
+            throws SQLException
+    {
+        this.genericRetrievalTest(statement, objectList, connection, 1, true);
+    }
+
+    protected void genericRetrievalTest(PreparedStatement statement, List objectList, Connection connection, int minSize)
+            throws SQLException
+    {
+        genericRetrievalTest(statement, objectList, connection, minSize, true);
     }
 
     protected void genericRetrievalTest(String directSql, List objectList)
             throws SQLException
     {
-        this.genericRetrievalTest(directSql, objectList, 1);
+        this.genericRetrievalTest(directSql, objectList, 1, true);
     }
 
     protected void genericRetrievalTest(String directSql, List objectList, int minSize)
+            throws SQLException
+    {
+        genericRetrievalTest(directSql, objectList, minSize, true);
+    }
+
+    protected void genericRetrievalTest(String directSql, List objectList, int minSize, boolean clearAfter)
             throws SQLException
     {
         forceInit(objectList);
@@ -267,6 +295,10 @@ public abstract class MithraTestAbstract
 
         this.mapRetrievedObjects(connection, statement, rs, objectList);
         assertTrue("must have at least " + minSize + " results!", objectList.size() >= minSize);
+        if (clearAfter)
+        {
+            MithraManagerProvider.getMithraManager().clearAllQueryCaches();
+        }
     }
 
     public void genericRetrievalTest(final List directSqlList, List mithraObjectList)

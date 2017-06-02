@@ -16,6 +16,7 @@
 
 package com.gs.fw.common.mithra.finder.shortop;
 
+import com.gs.collections.api.iterator.ShortIterator;
 import com.gs.collections.api.set.primitive.ShortSet;
 import com.gs.fw.common.mithra.attribute.ShortAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
@@ -25,6 +26,10 @@ import com.gs.fw.common.mithra.extractor.ShortExtractor;
 import com.gs.fw.common.mithra.finder.InOperation;
 import com.gs.fw.common.mithra.finder.SqlParameterSetter;
 import com.gs.fw.common.mithra.finder.ToStringContext;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.util.HashUtil;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -43,14 +48,6 @@ public class ShortInOperation extends InOperation implements SqlParameterSetter
     {
         super(attribute);
         this.set = set.freeze();
-    }
-
-    @Override
-    protected Boolean matchesWithoutDeleteCheck(Object o)
-    {
-        ShortAttribute attribute = (ShortAttribute)this.getAttribute();
-        if (attribute.isAttributeNull(o)) return false;
-        return Boolean.valueOf(this.set.contains(attribute.shortValueOf(o)));
     }
 
     @Override
@@ -164,5 +161,26 @@ public class ShortInOperation extends InOperation implements SqlParameterSetter
         {
             return Short.valueOf(this.shortValueOf(anObject));
         }
+    }
+
+    @Override
+    public boolean setContains(Object holder, Extractor extractor)
+    {
+        return this.set.contains(((ShortExtractor)extractor).shortValueOf(holder));
+    }
+
+
+    @Override
+    protected ShapeMatchResult shapeMatchSet(InOperation existingOperation)
+    {
+        ShortIterator shortIterator = this.set.shortIterator();
+        while(shortIterator.hasNext())
+        {
+            if (!((ShortInOperation) existingOperation).set.contains(shortIterator.next()))
+            {
+                return NoMatchSmr.INSTANCE;
+            }
+        }
+        return this.set.size() == existingOperation.getSetSize() ? ExactMatchSmr.INSTANCE : new SuperMatchSmr(existingOperation, this);
     }
 }

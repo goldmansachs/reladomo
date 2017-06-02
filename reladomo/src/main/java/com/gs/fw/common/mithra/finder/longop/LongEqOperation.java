@@ -17,13 +17,14 @@
 package com.gs.fw.common.mithra.finder.longop;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
-import com.gs.fw.common.mithra.attribute.LongAttribute;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.extractor.LongExtractor;
 import com.gs.fw.common.mithra.extractor.OperationParameterExtractor;
 import com.gs.fw.common.mithra.finder.AtomicEqualityOperation;
 import com.gs.fw.common.mithra.finder.SqlParameterSetter;
 import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.paramop.OpWithLongParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithLongParamExtractor;
 import com.gs.fw.common.mithra.util.HashUtil;
 
 import java.sql.PreparedStatement;
@@ -32,7 +33,7 @@ import java.util.List;
 
 
 
-public class LongEqOperation extends AtomicEqualityOperation implements SqlParameterSetter
+public class LongEqOperation extends AtomicEqualityOperation implements SqlParameterSetter, OpWithLongParam
 {
 
     private long parameter;
@@ -44,9 +45,15 @@ public class LongEqOperation extends AtomicEqualityOperation implements SqlParam
     }
 
     @Override
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    protected Extractor getStaticExtractor()
     {
-        LongAttribute longAttribute = (LongAttribute)this.getAttribute();
+        return OpWithLongParamExtractor.INSTANCE;
+    }
+
+    @Override
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
+    {
+        LongExtractor longAttribute = (LongExtractor) extractor;
         return !longAttribute.isAttributeNull(o) && longAttribute.longValueOf(o) == parameter;
     }
 

@@ -16,6 +16,7 @@
 
 package com.gs.fw.common.mithra.finder.byteop;
 
+import com.gs.collections.api.iterator.ByteIterator;
 import com.gs.collections.api.set.primitive.ByteSet;
 import com.gs.fw.common.mithra.attribute.ByteAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
@@ -25,6 +26,10 @@ import com.gs.fw.common.mithra.extractor.PositionBasedOperationParameterExtracto
 import com.gs.fw.common.mithra.finder.InOperation;
 import com.gs.fw.common.mithra.finder.SqlParameterSetter;
 import com.gs.fw.common.mithra.finder.ToStringContext;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.util.HashUtil;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -43,14 +48,6 @@ public class ByteInOperation extends InOperation implements SqlParameterSetter
     {
         super(attribute);
         this.set = byteSet.freeze();
-    }
-
-    @Override
-    protected Boolean matchesWithoutDeleteCheck(Object o)
-    {
-        ByteAttribute attribute = (ByteAttribute)this.getAttribute();
-        if (attribute.isAttributeNull(o)) return false;
-        return Boolean.valueOf(this.set.contains(attribute.byteValueOf(o)));
     }
 
     @Override
@@ -164,5 +161,25 @@ public class ByteInOperation extends InOperation implements SqlParameterSetter
         {
             return Byte.valueOf(this.byteValueOf(anObject));
         }
+    }
+
+    @Override
+    public boolean setContains(Object holder, Extractor extractor)
+    {
+        return this.set.contains(((ByteExtractor)extractor).byteValueOf(holder));
+    }
+
+    @Override
+    protected ShapeMatchResult shapeMatchSet(InOperation existingOperation)
+    {
+        ByteIterator byteIterator = this.set.byteIterator();
+        while(byteIterator.hasNext())
+        {
+            if (!((ByteInOperation) existingOperation).set.contains(byteIterator.next()))
+            {
+                return NoMatchSmr.INSTANCE;
+            }
+        }
+        return this.set.size() == existingOperation.getSetSize() ? ExactMatchSmr.INSTANCE : new SuperMatchSmr(existingOperation, this);
     }
 }

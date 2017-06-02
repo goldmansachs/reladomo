@@ -24,7 +24,7 @@ import java.util.Set;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
-import com.gs.fw.common.mithra.attribute.TimestampAttribute;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.util.InternalList;
 
@@ -158,22 +158,8 @@ public class NoOperation implements Operation
         throw new UnsupportedOperationException("this method call is not allowed for NoOperation");
     }
 
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        throw new UnsupportedOperationException("this method call is not allowed for NoOperation");
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        throw new UnsupportedOperationException("this method call is not allowed for NoOperation");
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        throw new UnsupportedOperationException("this method call is not allowed for NoOperation");
-    }
-
-    public Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op)
+    @Override
+    public Operation zCombinedAndWithRange(RangeOperation op)
     {
         throw new UnsupportedOperationException("this method call is not allowed for NoOperation");
     }
@@ -258,11 +244,6 @@ public class NoOperation implements Operation
         throw new UnsupportedOperationException("this method call is not allowed for NoOperation");
     }
 
-    public Operation zFindEquality(TimestampAttribute attr)
-    {
-        throw new UnsupportedOperationException("this method call is not allowed for NoOperation");
-    }
-
     public void generateSqlForAggregation(SqlQuery sqlQuery, Operation listOperationForAggregation)
     {
         throw new UnsupportedOperationException("this method call is not allowed for NoOperation");
@@ -294,5 +275,29 @@ public class NoOperation implements Operation
     {
         return false;
 
+    }
+
+    @Override
+    public boolean zCanFilterInMemory()
+    {
+        throw new UnsupportedOperationException("this method call is not allowed for NoOperation");
+    }
+
+    @Override
+    public boolean zIsShapeCachable()
+    {
+        throw new UnsupportedOperationException("this method call is not allowed for NoOperation");
+    }
+
+    @Override
+    public ShapeMatchResult zShapeMatch(Operation existingOperation)
+    {
+        throw new UnsupportedOperationException("this method call is not allowed for NoOperation");
+    }
+
+    @Override
+    public int zShapeHash()
+    {
+        return 0;
     }
 }

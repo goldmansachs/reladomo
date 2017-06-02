@@ -31,6 +31,7 @@ public class MithraPerformanceData
 
     private boolean isRemote;
     private int queryCacheHits;
+    private int subQueryCacheHits;
     private int objectCacheHits;
 
     public MithraPerformanceData(MithraObjectPortal performanceDataOwner)
@@ -64,6 +65,15 @@ public class MithraPerformanceData
         if(MithraManagerProvider.getMithraManager().canCaptureTransactionLevelPerformanceData())
         {
             MithraManagerProvider.getMithraManager().getCurrentTransaction().getTransactionPerformanceDataFor(this.performanceDataOwner).queryCacheHits++;
+        }
+    }
+
+    public void incrementSubQueryCacheHits()
+    {
+        subQueryCacheHits++;
+        if(MithraManagerProvider.getMithraManager().canCaptureTransactionLevelPerformanceData())
+        {
+            MithraManagerProvider.getMithraManager().getCurrentTransaction().getTransactionPerformanceDataFor(this.performanceDataOwner).subQueryCacheHits++;
         }
     }
 

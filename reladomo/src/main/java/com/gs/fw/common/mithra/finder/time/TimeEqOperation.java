@@ -17,7 +17,9 @@
 package com.gs.fw.common.mithra.finder.time;
 
 import com.gs.fw.common.mithra.attribute.TimeAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.NonPrimitiveEqOperation;
+import com.gs.fw.common.mithra.finder.paramop.OpWithTimeParamExtractor;
 import com.gs.fw.common.mithra.util.Time;
 
 import java.io.Externalizable;
@@ -35,6 +37,12 @@ public class TimeEqOperation extends NonPrimitiveEqOperation implements External
     public TimeEqOperation()
     {
         // for externalizable
+    }
+
+    @Override
+    protected Extractor getStaticExtractor()
+    {
+        return OpWithTimeParamExtractor.INSTANCE;
     }
 
     public void writeExternal(ObjectOutput out) throws IOException

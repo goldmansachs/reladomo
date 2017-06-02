@@ -18,7 +18,9 @@ package com.gs.fw.common.mithra.finder.time;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.TimeAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.NonPrimitiveLessThanOperation;
+import com.gs.fw.common.mithra.finder.paramop.OpWithTimeParamExtractor;
 import com.gs.fw.common.mithra.util.Time;
 
 import java.io.Externalizable;
@@ -28,12 +30,9 @@ import java.io.ObjectOutput;
 
 public class TimeLessThanOperation extends NonPrimitiveLessThanOperation implements Externalizable
 {
-    private transient long time;
-
     public TimeLessThanOperation(Attribute attribute, Time parameter)
     {
         super(attribute, parameter);
-        this.time = parameter.getTime();
     }
 
     public TimeLessThanOperation()
@@ -41,11 +40,10 @@ public class TimeLessThanOperation extends NonPrimitiveLessThanOperation impleme
         // for externalizable
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    @Override
+    public Extractor getStaticExtractor()
     {
-        Time incoming = ((TimeAttribute)this.getAttribute()).timeValueOf(o);
-        if (incoming == null) return false;
-        return incoming.getTime() < this.time;
+        return OpWithTimeParamExtractor.INSTANCE;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
@@ -53,7 +51,6 @@ public class TimeLessThanOperation extends NonPrimitiveLessThanOperation impleme
         TimeAttribute attribute = (TimeAttribute) in.readObject();
         this.setAttribute(attribute);
         final Time parameter = Time.readFromStream(in);
-        this.time = parameter.getTime();
         this.setParameter(parameter);
     }
 

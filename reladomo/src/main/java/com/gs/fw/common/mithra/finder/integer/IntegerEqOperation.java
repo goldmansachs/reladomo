@@ -23,6 +23,8 @@ import com.gs.fw.common.mithra.extractor.OperationParameterExtractor;
 import com.gs.fw.common.mithra.finder.AtomicEqualityOperation;
 import com.gs.fw.common.mithra.finder.SqlParameterSetter;
 import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.paramop.OpWithIntParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithIntParamExtractor;
 import com.gs.fw.common.mithra.util.HashUtil;
 
 import java.sql.PreparedStatement;
@@ -31,7 +33,7 @@ import java.util.List;
 
 
 
-public class IntegerEqOperation extends AtomicEqualityOperation implements SqlParameterSetter
+public class IntegerEqOperation extends AtomicEqualityOperation implements SqlParameterSetter, OpWithIntParam
 {
 
     private int parameter;
@@ -43,11 +45,17 @@ public class IntegerEqOperation extends AtomicEqualityOperation implements SqlPa
     }
 
     @Override
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
     {
-        IntegerAttribute integerAttribute = (IntegerAttribute)this.getAttribute();
+        IntExtractor integerAttribute = (IntExtractor) extractor;
         if (integerAttribute.isAttributeNull(o)) return false;
         return integerAttribute.intValueOf(o) == parameter;
+    }
+
+    @Override
+    protected Extractor getStaticExtractor()
+    {
+        return OpWithIntParamExtractor.INSTANCE;
     }
 
     @Override

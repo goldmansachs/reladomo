@@ -36,10 +36,7 @@ public class CachedQuery
     private List result;
     private UpdateCountHolder[] updateCountHolders;
     private int[] originalValues;
-    private boolean reachedMaxRetrieveCount = false;
-    private boolean oneQueryForMany = false;
-    private boolean wasDefaulted = false;
-    private boolean isModifiable = false;
+    private byte compactBools = 0;
 
     private static final int MAX_FULL_CACHE_RELATIONSHIPS_TO_KEEP = 100000;
 
@@ -74,31 +71,100 @@ public class CachedQuery
         this.originalValues = originalValues;
     }
 
-    public boolean wasDefaulted()
+    public void setReachedMaxRetrieveCount(boolean reachedMaxRetrieveCount)
     {
-        return wasDefaulted;
+        if (reachedMaxRetrieveCount)
+        {
+            compactBools = (byte) ((int) compactBools | 1);
+        }
+        else
+        {
+            compactBools = (byte) ((int) compactBools & ~( 1));
+        }
+    }
+
+    public void setOneQueryForMany(boolean oneQueryForMany)
+    {
+        if (oneQueryForMany)
+        {
+            compactBools = (byte) ((int) compactBools | 1 << 1);
+        }
+        else
+        {
+            compactBools = (byte) ((int) compactBools & ~( 1 << 1));
+        }
     }
 
     public void setWasDefaulted()
     {
-        this.wasDefaulted = true;
+        compactBools = (byte)((int)compactBools | 1 << 2);
     }
+
+    public void setIsModifiable()
+    {
+        compactBools = (byte)((int)compactBools | 1 << 3);
+    }
+
+    public void setIsSubquery()
+    {
+        compactBools = (byte)((int)compactBools | 1 << 4);
+    }
+
+//    public void setNullableFloatValueNull()
+//    {
+//        compactBools = (byte)((int)compactBools | 1 << 5);
+//    }
+//
+//    public void setNullableDoubleValueNull()
+//    {
+//        compactBools = (byte)((int)compactBools | 1 << 6);
+//    }
+//
+    public boolean reachedMaxRetrieveCount()
+    {
+        return (compactBools & 1) != 0 ;
+    }
+
+    public boolean isOneQueryForMany()
+    {
+        return (compactBools & 1 << 1) != 0 ;
+    }
+
+    public boolean wasDefaulted()
+    {
+        return (compactBools & 1 << 2) != 0 ;
+    }
+
+    public boolean isModifiable()
+    {
+        return (compactBools & 1 << 3) != 0 ;
+    }
+
+    public boolean isSubQuery()
+    {
+        return (compactBools & 1 << 4) != 0 ;
+    }
+
+//    public boolean isNullableFloatValueNull()
+//    {
+//        return (compactBools & 1 << 5) != 0 ;
+//    }
+//
+//    public boolean isNullableDoubleValueNull()
+//    {
+//        return (compactBools & 1 << 6) != 0 ;
+//    }
+//
+//    public boolean wasDefaulted()
+//    {
+//        return wasDefaulted;
+//    }
 
     public List getPortalList()
     {
         SmallSet portalList = new SmallSet(3);
         this.operation.addDependentPortalsToSet(portalList);
         return portalList;
-    }
-
-    public boolean isOneQueryForMany()
-    {
-        return oneQueryForMany;
-    }
-
-    public void setOneQueryForMany(boolean oneQueryForMany)
-    {
-        this.oneQueryForMany = oneQueryForMany;
     }
 
     private void populateUpdateCounters()
@@ -147,16 +213,6 @@ public class CachedQuery
         this.originalValues = portal.getPooledIntegerArray(this.originalValues);
     }
 
-    public boolean reachedMaxRetrieveCount()
-    {
-        return reachedMaxRetrieveCount;
-    }
-
-    public void setReachedMaxRetrieveCount(boolean reachedMaxRetrieveCount)
-    {
-        this.reachedMaxRetrieveCount = reachedMaxRetrieveCount;
-    }
-
     public boolean isExpired()
     {
         for(int i=0;i<updateCountHolders.length;i++)
@@ -192,10 +248,9 @@ public class CachedQuery
         }
     }
 
-    public void cacheQuery(boolean forRelationship)
+    public boolean prepareToCacheQuery(boolean forRelationship, QueryCache queryCache)
     {
-        if (updateCountHolders == null) return;
-        QueryCache queryCache = operation.getResultObjectPortal().getQueryCache();
+        if (updateCountHolders == null) return false;
         if (this.operation instanceof CompactUpdateCountOperation)
         {
             CompactUpdateCountOperation compactOperation = (CompactUpdateCountOperation) this.operation;
@@ -208,18 +263,28 @@ public class CachedQuery
                 }
                 else
                 {
-                    return;
+                    return false;
                 }
             }
             this.operation = substitute;
         }
-        if (forRelationship)
+        return true;
+    }
+
+    public void cacheQuery(boolean forRelationship)
+    {
+        QueryCache queryCache = operation.getResultObjectPortal().getQueryCache();
+        if (prepareToCacheQuery(forRelationship, queryCache))
         {
-            this.cacheQueryForRelationship();
-        }
-        else if (!reachedMaxRetrieveCount)
-        {
-            queryCache.cacheQuery(this);
+            if (forRelationship)
+            {
+                this.cacheQueryForRelationship();
+            }
+            else
+                if (!reachedMaxRetrieveCount())
+                {
+                    queryCache.cacheQuery(this);
+                }
         }
     }
 
@@ -234,7 +299,7 @@ public class CachedQuery
     {
         CachedQuery clone = new CachedQuery(op, orderBy, this);
         clone.result = this.result;
-        clone.wasDefaulted = true;
+        clone.setWasDefaulted();
         if (!this.hasSameOrderBy(orderBy) && this.result.size() > 1)
         {
             FastList newOrderedList = new FastList(this.result);
@@ -260,13 +325,8 @@ public class CachedQuery
     {
         List newOrderedList = new FastList(this.result);
         CachedQuery result = new CachedQuery(this.operation, orderBy, newOrderedList, this.updateCountHolders, this.originalValues);
-        result.isModifiable = true;
+        result.setIsModifiable();
         return result;
-    }
-
-    public boolean isModifiable()
-    {
-        return isModifiable;
     }
 
     public boolean hasSameOrderBy(OrderBy orderBy)

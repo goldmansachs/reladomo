@@ -17,19 +17,20 @@
 package com.gs.fw.common.mithra.finder.booleanop;
 
 import com.gs.fw.common.mithra.attribute.BooleanAttribute;
+import com.gs.fw.common.mithra.extractor.BooleanExtractor;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.AtomicNotEqualityOperation;
 import com.gs.fw.common.mithra.finder.SqlParameterSetter;
 import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.paramop.OpWithBooleanParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithBooleanParamExtractor;
 import com.gs.fw.common.mithra.util.HashUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-
-
-public class BooleanNotEqOperation extends AtomicNotEqualityOperation implements SqlParameterSetter
+public class BooleanNotEqOperation extends AtomicNotEqualityOperation implements SqlParameterSetter, OpWithBooleanParam
 {
-
     private boolean parameter;
 
     public BooleanNotEqOperation(BooleanAttribute attribute, boolean parameter)
@@ -38,9 +39,15 @@ public class BooleanNotEqOperation extends AtomicNotEqualityOperation implements
         this.parameter = parameter;
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    @Override
+    protected Extractor getStaticExtractor()
     {
-        BooleanAttribute attribute = (BooleanAttribute)this.getAttribute();
+        return OpWithBooleanParamExtractor.INSTANCE;
+    }
+
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
+    {
+        BooleanExtractor attribute = (BooleanExtractor)extractor;
         if (attribute.isAttributeNull(o)) return false;
         return attribute.booleanValueOf(o) != parameter;
     }

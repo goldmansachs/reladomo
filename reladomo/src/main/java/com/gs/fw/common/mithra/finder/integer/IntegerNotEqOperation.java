@@ -17,16 +17,17 @@
 package com.gs.fw.common.mithra.finder.integer;
 
 import com.gs.fw.common.mithra.attribute.IntegerAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.extractor.IntExtractor;
 import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.paramop.OpWithIntParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithIntParamExtractor;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-
-
-public class IntegerNotEqOperation extends AtomicNotEqualityOperation implements SqlParameterSetter, NegatableOperation
+public class IntegerNotEqOperation extends AtomicNotEqualityOperation implements SqlParameterSetter, NegatableOperation, OpWithIntParam
 {
-
     private int parameter;
 
     public IntegerNotEqOperation(IntegerAttribute attribute, int parameter)
@@ -36,15 +37,21 @@ public class IntegerNotEqOperation extends AtomicNotEqualityOperation implements
     }
 
     @Override
+    protected Extractor getStaticExtractor()
+    {
+        return OpWithIntParamExtractor.INSTANCE;
+    }
+
+    @Override
     public Operation zNegate()
     {
         return new IntegerEqOperation((IntegerAttribute) this.getAttribute(), this.parameter);
     }
 
     @Override
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
     {
-        IntegerAttribute integerAttribute = (IntegerAttribute)this.getAttribute();
+        IntExtractor integerAttribute = (IntExtractor) extractor;
         if (integerAttribute.isAttributeNull(o)) return false;
         return integerAttribute.intValueOf(o) != parameter;
     }

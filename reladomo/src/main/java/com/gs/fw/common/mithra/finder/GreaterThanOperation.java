@@ -40,33 +40,9 @@ public abstract class GreaterThanOperation extends RangeOperation
         query.addSqlParameterSetter(this);
     }
 
-    /*
-    returns the combined and operation. Many operations must be combined to correctly resolve a query.
-    Many operations are more efficient when combined.
-    This method is internal to Mithra's operation processing.
-    */
-    public Operation zCombinedAnd(Operation op)
+    @Override
+    public int getDirection()
     {
-        return op.zCombinedAndWithAtomicGreaterThan(this);
-    }
-
-    public Operation zCombinedAndWithMultiEquality(MultiEqualityOperation op)
-    {
-        return op.zCombinedAndWithAtomicGreaterThan(this);
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        return op.zCombinedAndWithAtomicGreaterThan(this);
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        return op.zCombinedAndWithAtomicGreaterThan(this);
-    }
-
-    public Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op)
-    {
-        return op.zCombinedAndWithAtomicGreaterThan(this);
+        return GREATER_DIR;
     }
 }

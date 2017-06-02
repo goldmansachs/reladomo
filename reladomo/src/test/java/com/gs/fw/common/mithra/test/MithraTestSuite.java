@@ -292,6 +292,9 @@ public class MithraTestSuite
         //Serialization
         suite.addTestSuite(TestTrivialJson.class);
 
+        //SubQuery
+        suite.addTestSuite(TestSubQueryCache.class);
+
         return suite;
     }
 }

@@ -16,12 +16,20 @@
 
 package com.gs.fw.common.mithra.finder.byteop;
 
+import com.gs.collections.api.iterator.ByteIterator;
 import com.gs.collections.api.set.primitive.ByteSet;
 import com.gs.fw.common.mithra.attribute.ByteAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
+import com.gs.fw.common.mithra.extractor.ByteExtractor;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.NotInOperation;
 import com.gs.fw.common.mithra.finder.SqlParameterSetter;
 import com.gs.fw.common.mithra.finder.ToStringContext;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.TimeZone;
@@ -37,14 +45,6 @@ public class ByteNotInOperation extends NotInOperation implements SqlParameterSe
     {
         super(attribute);
         this.set = byteSet.freeze();
-    }
-
-    @Override
-    protected Boolean matchesWithoutDeleteCheck(Object o)
-    {
-        ByteAttribute attribute = (ByteAttribute)this.getAttribute();
-        if (attribute.isAttributeNull(o)) return false;
-        return Boolean.valueOf(!this.set.contains(attribute.byteValueOf(o)));
     }
 
     protected int setSqlParameters(PreparedStatement pstmt, int startIndex, TimeZone timeZone, int setStart, int numberToSet, DatabaseType databaseType) throws SQLException
@@ -99,5 +99,30 @@ public class ByteNotInOperation extends NotInOperation implements SqlParameterSe
     public int getSetSize()
     {
         return this.set.size();
+    }
+
+    @Override
+    public boolean setContains(Object holder, Extractor extractor)
+    {
+        return this.set.contains(((ByteExtractor)extractor).byteValueOf(holder));
+    }
+
+    @Override
+    protected ShapeMatchResult shapeMatchSet(NotInOperation existingOperation)
+    {
+        if (existingOperation.getSetSize() < MAX_SHAPE_MATCH_SIZE)
+        {
+            ByteNotInOperation loopOp = (ByteNotInOperation) existingOperation;
+            ByteIterator byteIterator = loopOp.set.byteIterator();
+            while(byteIterator.hasNext())
+            {
+                if (!this.set.contains(byteIterator.next()))
+                {
+                    return NoMatchSmr.INSTANCE;
+                }
+            }
+            return (this.getSetSize() == loopOp.getSetSize()) ? ExactMatchSmr.INSTANCE : new SuperMatchSmr(existingOperation, this);
+        }
+        return NoMatchSmr.INSTANCE;
     }
 }

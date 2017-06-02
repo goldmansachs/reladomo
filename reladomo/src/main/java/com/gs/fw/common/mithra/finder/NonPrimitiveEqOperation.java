@@ -20,6 +20,9 @@ import com.gs.fw.common.mithra.attribute.NonPrimitiveAttribute;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.extractor.OperationParameterExtractor;
 import com.gs.fw.common.mithra.extractor.StringExtractor;
+import com.gs.fw.common.mithra.finder.paramop.OpWithBigDecimalParamExtractor;
+import com.gs.fw.common.mithra.finder.paramop.OpWithObjectParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithStringParamExtractor;
 import com.gs.fw.common.mithra.util.HashUtil;
 import com.gs.fw.common.mithra.util.StringPool;
 
@@ -29,7 +32,7 @@ import java.util.List;
 
 
 
-public class NonPrimitiveEqOperation extends AtomicEqualityOperation implements SqlParameterSetter
+public class NonPrimitiveEqOperation extends AtomicEqualityOperation implements SqlParameterSetter, OpWithObjectParam
 {
 
     private Object parameter;
@@ -46,14 +49,30 @@ public class NonPrimitiveEqOperation extends AtomicEqualityOperation implements 
         super();
     }
 
+    @Override
+    protected Extractor getStaticExtractor()
+    {
+        if (this.parameter instanceof String)
+        {
+            return OpWithStringParamExtractor.INSTANCE;
+        }
+        return OpWithBigDecimalParamExtractor.INSTANCE;
+    }
+
+    @Override
+    public Object getParameter()
+    {
+        return this.parameter;
+    }
+
     protected void setParameter(Object parameter)
     {
         this.parameter = parameter;
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
     {
-        Object incoming = this.getAttribute().valueOf(o);
+        Object incoming = extractor.valueOf(o);
         return incoming == null ? parameter == null : incoming.equals(parameter);
     }
 

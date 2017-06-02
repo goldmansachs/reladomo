@@ -17,15 +17,18 @@
 package com.gs.fw.common.mithra.finder.byteop;
 
 import com.gs.fw.common.mithra.attribute.ByteAttribute;
+import com.gs.fw.common.mithra.extractor.ByteExtractor;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.AtomicNotEqualityOperation;
 import com.gs.fw.common.mithra.finder.SqlParameterSetter;
 import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.paramop.OpWithByteParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithByteParamExtractor;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-
-public class ByteNotEqOperation  extends AtomicNotEqualityOperation implements SqlParameterSetter
+public class ByteNotEqOperation  extends AtomicNotEqualityOperation implements SqlParameterSetter, OpWithByteParam
 {
     private byte parameter;
 
@@ -36,9 +39,15 @@ public class ByteNotEqOperation  extends AtomicNotEqualityOperation implements S
     }
 
     @Override
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    protected Extractor getStaticExtractor()
     {
-        ByteAttribute byteAttribute = (ByteAttribute)this.getAttribute();
+        return OpWithByteParamExtractor.INSTANCE;
+    }
+
+    @Override
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
+    {
+        ByteExtractor byteAttribute = (ByteExtractor) extractor;
         if (byteAttribute.isAttributeNull(o)) return false;
         return byteAttribute.byteValueOf(o) != parameter;
     }

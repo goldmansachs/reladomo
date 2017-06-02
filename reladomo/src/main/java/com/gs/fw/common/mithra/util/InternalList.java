@@ -200,6 +200,16 @@ public class InternalList implements Externalizable
         return false;
     }
 
+    public int indexOf(Object o)
+    {
+        int size = this.size;
+        for(int i=0;i<size;i++)
+        {
+            if (this.list[i].equals(o)) return i;
+        }
+        return -1;
+    }
+
     public void writeExternal(ObjectOutput out) throws IOException
     {
         out.writeInt(this.size);
