@@ -125,7 +125,7 @@ public class StringUtility
 
     public static String toCamelCaseIgnoringLastChar(String string, String delimiter, boolean upperFirst)
     {
-        String trimmed = string.trim();
+        String trimmed = string.trim().replaceAll("(_)+", "$1");
         String[] delimited;
 
         if (delimiter.length() > 0)
@@ -155,7 +155,8 @@ public class StringUtility
                 delimited[i] = firstLetterToUpper(delimited[i]);
             }
 
-            if ((i == delimited.length - 1) && (delimited[i].length() == 1))
+            // Convert object/attribute names like Id_I to Id but Id_1 to Id1
+            if (delimited[i].length() == 1 &&(i == delimited.length - 1) && !Character.isDigit(delimited[i].charAt(0)))
             {
                 break;
             }
@@ -165,7 +166,7 @@ public class StringUtility
 
         return result;
     }
-
+    
     public static String toCamelCasePresevingExisting(String s)
     {
         char[] result = new char[s.length()];
