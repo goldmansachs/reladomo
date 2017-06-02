@@ -113,7 +113,7 @@ public class SybaseDatabaseType implements CommonDatabaseType
 
     public String getSqlDataTypeForLong()
     {
-        return "numeric(19,0)";
+        return "bigint";
     }
 
     public String getSqlDataTypeForShortJava()
