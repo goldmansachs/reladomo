@@ -3,6 +3,7 @@
 ### Enhancements:
 - Better heuristics for camel casing when generating xml from existing schema
 - Support nullable boolean in ddl generation and insert/update
+- Change generated type for long to bigint for Sybase ASE
 
 ## 16.2.0 - 2017-05-25
 ### Enhancements:
