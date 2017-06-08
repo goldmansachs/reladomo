@@ -5,7 +5,7 @@
 [![][license-apache img]][license-apache]
 
 ## What is it? 
-Reladomo is an object-relational mapping framework with the following enterprise features:
+Reladomo is an object-relational mapping (ORM) framework for Java with the following enterprise features:
 
 * Strongly typed compile-time checked query language 
 * Bi-temporal chaining 
