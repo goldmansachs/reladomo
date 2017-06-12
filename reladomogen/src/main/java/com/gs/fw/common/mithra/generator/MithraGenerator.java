@@ -19,7 +19,6 @@ package com.gs.fw.common.mithra.generator;
 
 import org.apache.tools.ant.BuildException;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 
 public class MithraGenerator extends AbstractMithraGenerator
@@ -83,10 +82,14 @@ public class MithraGenerator extends AbstractMithraGenerator
         this.coreGenerator.setGenerateFileHeaders(generateFileHeaders);
     }
 
-    public File parseAndValidate()
-            throws FileNotFoundException
+    public void setMithraObjectTypeParser(MithraObjectTypeParser mithraObjectTypeParser)
     {
-        return this.coreGenerator.parseAndValidate();
+        this.coreGenerator.setMithraObjectTypeParser(mithraObjectTypeParser);
+    }
+
+    public void parseAndValidate() throws FileNotFoundException
+    {
+        this.coreGenerator.parseAndValidate();
     }
 
     public static void main(String[] args)
@@ -102,12 +105,17 @@ public class MithraGenerator extends AbstractMithraGenerator
                 System.out.println(s);
             }
         };
-        long startTime = System.currentTimeMillis();
+
+        MithraObjectTypeParser parser = new MithraXMLObjectTypeParser("H:/projects/Mithra/Mithra/xml/mithra/test/MithraClassList.xml");
+
+        gen.setMithraObjectTypeParser(parser);
         gen.setGeneratedDir("H:/temp/Mithra/src");
-        gen.setXml("H:/projects/Mithra/Mithra/xml/mithra/test/MithraClassList.xml");
         gen.setNonGeneratedDir("H:/temp/Mithra/src");
         gen.setGenerateGscListMethod(true);
         gen.setCodeFormat(CoreMithraGenerator.FORMAT_FAST);
+        gen.setDefaultFinalGetters(true);
+
+        long startTime = System.currentTimeMillis();
 
         MithraGeneratorImport generatorImport = new MithraGeneratorImport();
         generatorImport.setDir("H:/projects/Mithra/Mithra/xml/mithra/test/");

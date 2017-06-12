@@ -177,11 +177,7 @@ public class CoreMithraDbDefinitionGenerator extends BaseMithraGenerator
         {
             try
             {
-                File file = new File(this.getXml());
-                parseMithraXml(file.getName(), null, new MithraGeneratorImport.DirectoryFileProvider(file.getParent()));
-                parseImportedMithraXml();
-                validateXml();
-
+                parseAndValidate();
                 for (Iterator iterator = getMithraObjects().values().iterator(); iterator.hasNext();)
                 {
                     MithraObjectTypeWrapper mithraObjectTypeWrapper = (MithraObjectTypeWrapper) iterator.next();
