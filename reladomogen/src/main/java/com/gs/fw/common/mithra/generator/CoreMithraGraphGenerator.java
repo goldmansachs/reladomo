@@ -19,7 +19,6 @@ package com.gs.fw.common.mithra.generator;
 import com.gs.fw.common.mithra.generator.mapper.Join;
 import com.gs.fw.common.mithra.generator.metamodel.MithraInterfaceType;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.util.*;
@@ -991,10 +990,7 @@ public class CoreMithraGraphGenerator extends BaseMithraGenerator
                 {
                     throw new MithraGeneratorException("you must provide an outputFile");
                 }
-                File file = new File(this.getXml());
-                parseMithraXml(file.getName(), null, new MithraGeneratorImport.DirectoryFileProvider(file.getParent()));
-                parseImportedMithraXml();
-                validateXml();
+                parseAndValidate();
                 this.createFullIncludeList();
                 this.processRelationships();
                 this.processNonMithraSuperClasses();

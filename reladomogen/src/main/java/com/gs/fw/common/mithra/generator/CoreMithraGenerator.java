@@ -18,6 +18,8 @@ package com.gs.fw.common.mithra.generator;
 
 import com.gs.fw.common.mithra.generator.metamodel.MithraInterfaceType;
 import com.gs.fw.common.mithra.generator.util.AwaitingThreadExecutor;
+import com.gs.fw.common.mithra.generator.writer.GeneratedFileManager;
+import com.gs.fw.common.mithra.generator.writer.StandardGeneratedFileManager;
 
 import java.io.*;
 import java.util.*;
@@ -84,6 +86,8 @@ public class CoreMithraGenerator extends BaseMithraGenerator
     private ThreadLocal<ByteArrayOutputStream> byteArrayOutputStreamThreadLocal = new ThreadLocal<ByteArrayOutputStream>();
     private ThreadLocal<SourceFormatter> sourceFormatterThreadLocal = new ThreadLocal<SourceFormatter>();
 
+    private GeneratedFileManager generatedFileManager;
+
     static
     {
         TEMPLATE_PACKAGES.put(READ_ONLY, TEMPLATE_PACKAGE_PREFIX + ".readonly");
@@ -101,6 +105,12 @@ public class CoreMithraGenerator extends BaseMithraGenerator
         TEMPLATE_LISTS.put(EMBEDDED_VALUE, EMBEDDED_VALUE_TEMPLATES);
         TEMPLATE_LISTS.put(ENUMERATION, ENUMERATION_TEMPLATES);
         TEMPLATE_LISTS.put(MITHRA_INTERFACE, MITHRA_INTERFACE_TEMPLATES);
+    }
+
+    public CoreMithraGenerator()
+    {
+        super();
+        initGeneratedFileManager(new StandardGeneratedFileManager());
     }
 
     private ByteArrayOutputStream getByteArrayOutputStream()
@@ -167,6 +177,34 @@ public class CoreMithraGenerator extends BaseMithraGenerator
         {
             System.out.println("Code format option '"+format+"' not recognized. Using '"+this.format+"' instead. Valid values are 'none', 'fast', and 'pretty");
         }
+    }
+
+    public void setGeneratedFileManager(GeneratedFileManager generatedFileManager)
+    {
+        this.initGeneratedFileManager(generatedFileManager);
+    }
+
+    private void initGeneratedFileManager(GeneratedFileManager generatedFileManager)
+    {
+        // safety check : all files should be generated with the same manager
+        if (this.generatedFileManager != null)
+        {
+            throw new MithraGeneratorException("Attempt to reset file manager. An instance of " + generatedFileManager.getClass().getCanonicalName() + " has already been set");
+        }
+        this.generatedFileManager = generatedFileManager;
+    }
+
+    private void setFileGenerationOptions()
+    {
+        GeneratedFileManager.Options fileGenerationOptions = new GeneratedFileManager.Options(
+                this.getGeneratedDir(),
+                this.getNonGeneratedDir(),
+                this.warnAboutConcreteClasses,
+                this.generateConcreteClasses,
+                this.getGenerationLogger(),
+                this.logger
+        );
+        this.generatedFileManager.setOptions(fileGenerationOptions);
     }
 
     private void applyMithraInterfaceTemplates(MithraInterfaceType mithraObject, AtomicInteger count)
@@ -324,7 +362,7 @@ public class CoreMithraGenerator extends BaseMithraGenerator
         }
     }
 
-    private byte[] prettyFormatCode(byte[] originalBytes, File outFile) throws IOException
+    private byte[] prettyFormatCode(byte[] originalBytes) throws IOException
     {
         throw new RuntimeException("extreme pretty printing is no longer supported");
     }
@@ -354,7 +392,7 @@ public class CoreMithraGenerator extends BaseMithraGenerator
         return byteArrayOutputStream.toByteArray();
     }
 
-    private byte[] formatCode(byte[] originalBytes, File outFile) throws IOException
+    private byte[] formatCode(byte[] originalBytes) throws IOException
     {
         if (format.equalsIgnoreCase(FORMAT_FAST))
         {
@@ -362,42 +400,26 @@ public class CoreMithraGenerator extends BaseMithraGenerator
         }
         if (format.equalsIgnoreCase(FORMAT_PRETTY))
         {
-            return this.prettyFormatCode(originalBytes, outFile);
+            return this.prettyFormatCode(originalBytes);
         }
         return originalBytes;
     }
 
-    private void generateJavaFileFromTemplate(CommonWrapper wrapper, String outputFileSuffix, MithraTemplate servlet, boolean replaceIfExists, AtomicInteger count)
+     private void generateJavaFileFromTemplate(CommonWrapper wrapper, String outputFileSuffix, MithraTemplate servlet, boolean replaceIfExists, AtomicInteger count)
     {
-        String targetDir = replaceIfExists ? this.getGeneratedDir() : this.getNonGeneratedDir();
-        File outDir = new File(targetDir, wrapper.getPackageName().replace('.','/'));
-        File outFile = new File(outDir, wrapper.getClassName() + outputFileSuffix + ".java");
-        if (outFile.exists() && !replaceIfExists)
-        {
-            return;
-        }
-        if (!outFile.exists() && !replaceIfExists && !this.generateConcreteClasses)
-        {
-            if (warnAboutConcreteClasses)
-            {
-                this.logger.info("concrete class file '" + outFile + "' does not exist and generateConcreteClasses flag is turned off. This might lead to compilation errors");
-            }
-            return;
-        }
-        if (outFile.exists())
-        {
-            if (this.getGenerationLogger().getNewGenerationLog().isSame(this.getGenerationLogger().getOldGenerationLog()))
-            {
-                this.logger.info("skipping " + outFile.getName() + " because it's new and no changes to generator have been made");
-                return;
-            }
-        }
+        String packageName = wrapper.getPackageName().replace('.', '/');
+        boolean shouldCreateFile = generatedFileManager
+                .shouldCreateFile(replaceIfExists, packageName, wrapper.getClassName(), outputFileSuffix);
 
-        generateJavaFile(wrapper, outputFileSuffix, servlet, outDir, outFile, count);
+        if (!shouldCreateFile)
+        {
+            return;
+        }
+        generateJavaFile(wrapper, replaceIfExists, packageName, wrapper.getClassName(), outputFileSuffix, servlet, count);
     }
 
-    private void generateJavaFile(final CommonWrapper wrapper, final String outputFileSuffix, final MithraTemplate servlet,
-                                  final File outDir, final File outFile, final AtomicInteger count)
+    private void generateJavaFile(final CommonWrapper wrapper, final boolean relaceIfExists, final String packageName, final String className, final String outputFileSuffix, final MithraTemplate servlet,
+                                  final AtomicInteger count)
     {
         this.getExecutor().submit(new BaseMithraGenerator.GeneratorTask(0) {
             public void run()
@@ -420,7 +442,7 @@ public class CoreMithraGenerator extends BaseMithraGenerator
                         writer.close();
                         writer = null;
                         byte[] originalBytes = byteArrayOutputStream.toByteArray();
-                        result = formatCode(originalBytes, outFile);
+                        result = formatCode(originalBytes);
                     }
                     finally
                     {
@@ -429,8 +451,7 @@ public class CoreMithraGenerator extends BaseMithraGenerator
                     getChopAndStickResource().acquireIoResource();
                     try
                     {
-                        outDir.mkdirs();
-                        copyIfChanged(result, outFile, count);
+                        generatedFileManager.writeFile(relaceIfExists, packageName, className, outputFileSuffix, result, count);
                     }
                     finally
                     {
@@ -500,18 +521,9 @@ public class CoreMithraGenerator extends BaseMithraGenerator
         }
     }
 
-    public File parseAndValidate()
-            throws FileNotFoundException
-    {
-        File file = new File(this.getXml());
-        parseMithraXml(file.getName(), null, new MithraGeneratorImport.DirectoryFileProvider(file.getParent()));
-        parseImportedMithraXml();
-        validateXml();
-        return file;
-    }
-
     public void execute()
     {
+        setFileGenerationOptions();
         if (!executed)
         {
             try
@@ -558,11 +570,14 @@ public class CoreMithraGenerator extends BaseMithraGenerator
 
     public static void main(String[] args)
     {
+        MithraXMLObjectTypeParser parser = new MithraXMLObjectTypeParser("H:/projects/Mithra/xml/mithra/test/MithraClassList.xml");
+        parser.setLogger(new StdOutLogger());
+
         CoreMithraGenerator gen = new CoreMithraGenerator();
+        gen.setMithraObjectTypeParser(parser);
         gen.setLogger(new StdOutLogger());
 
         gen.setGeneratedDir("H:/temp/Mithra/src");
-        gen.setXml("H:/projects/Mithra/xml/mithra/test/MithraClassList.xml");
         gen.setNonGeneratedDir("H:/temp/Mithra/src");
         gen.setGenerateGscListMethod(true);
 

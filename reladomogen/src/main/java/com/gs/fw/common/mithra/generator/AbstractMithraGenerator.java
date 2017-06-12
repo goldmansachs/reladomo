@@ -25,7 +25,6 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -188,21 +187,6 @@ public abstract class AbstractMithraGenerator extends Task implements Logger, Ge
     public Map<String, MithraInterfaceType> getMithraInterfaces()
     {
         return this.baseGenerator.getMithraInterfaces();
-    }
-
-    public void parseImportedMithraXml() throws FileNotFoundException
-    {
-        for (MithraGeneratorImport mithraGeneratorImport : this.getImports())
-        {
-            this.log("using files imported from: " + mithraGeneratorImport.getFilename());
-            MithraGeneratorImport.FileProvider fileProvider = mithraGeneratorImport.getFileProvider();
-            parseMithraXml(mithraGeneratorImport.getFilename(), fileProvider.getSourceName(), fileProvider);
-        }
-    }
-
-    protected void parseMithraXml(String fileName, String importSource, MithraGeneratorImport.FileProvider fileProvider) throws FileNotFoundException
-	{
-		this.baseGenerator.parseMithraXml(fileName, importSource, fileProvider);
     }
 
     protected boolean extractMithraInterfaceRelationshipsAndSuperInterfaces()

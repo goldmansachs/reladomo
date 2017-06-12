@@ -37,10 +37,7 @@ public class CoreMithraUmlGenerator extends CoreMithraGenerator
     {
         try
         {
-            File file = new File(this.getXml());
-            parseMithraXml(file.getName(), null, new MithraGeneratorImport.DirectoryFileProvider(file.getParent()));
-            parseImportedMithraXml();
-            validateXml();
+            parseAndValidate();
             File out = new File(this.getOutputFile());
             FileOutputStream fos = new FileOutputStream(out);
             PrintWriter writer = new PrintWriter(fos);
