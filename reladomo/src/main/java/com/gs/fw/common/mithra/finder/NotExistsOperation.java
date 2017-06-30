@@ -68,8 +68,11 @@ public class NotExistsOperation implements Operation
 
     public List applyOperationToFullCache()
     {
-        if (this.mapper.getResultPortal().getCache().isDated()) return null;
-        List everything = this.mapper.getResultPortal().getCache().getAll();
+        List everything = this.mapper.getAllPossibleResultObjectsForFullCache();
+        if (everything == null)
+        {
+            return null;
+        }
         return applyOperation(everything);
     }
 

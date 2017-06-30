@@ -85,6 +85,16 @@ public class FilteredMapper extends AbstractMapper
         return this.mapper.mapUsesNonUniqueIndex();
     }
 
+    @Override
+    public List getAllPossibleResultObjectsForFullCache()
+    {
+        if (this.leftFilters != null)
+        {
+            return this.leftFilters.applyOperationToFullCache();
+        }
+        return super.getAllPossibleResultObjectsForFullCache();
+    }
+
     public List map(List joinedList)
     {
         if (rightFilters != null) joinedList = rightFilters.applyOperation(joinedList);

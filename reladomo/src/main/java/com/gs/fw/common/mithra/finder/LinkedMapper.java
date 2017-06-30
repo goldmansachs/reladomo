@@ -420,6 +420,12 @@ public class LinkedMapper implements Mapper, Externalizable
         return new LinkedMapper(newList);
     }
 
+    @Override
+    public List getAllPossibleResultObjectsForFullCache()
+    {
+        return this.mappers.get(0).getAllPossibleResultObjectsForFullCache();
+    }
+
     public boolean hasLeftOrDefaultMappingsFor(AsOfAttribute[] leftAsOfAttributes)
     {
         return this.mappers.get(0).hasLeftOrDefaultMappingsFor(leftAsOfAttributes);

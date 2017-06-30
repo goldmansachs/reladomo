@@ -232,6 +232,12 @@ public abstract class AbstractMapper implements Mapper
         return this.isFullyCachedIgnoringLeft() && this.getResultPortal().getCache().isFullCache();
     }
 
+    public List getAllPossibleResultObjectsForFullCache()
+    {
+        if (this.getResultPortal().getCache().isDated()) return null;
+        return this.getResultPortal().getCache().getAll();
+    }
+
     public List filterLeftObjectList(List objects)
     {
         return objects;
