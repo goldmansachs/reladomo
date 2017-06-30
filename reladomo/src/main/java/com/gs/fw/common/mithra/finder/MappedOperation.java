@@ -35,6 +35,7 @@ import com.gs.fw.common.mithra.cache.FullUniqueIndex;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.querycache.CachedQuery;
+import com.gs.fw.common.mithra.querycache.CompactUpdateCountOperation;
 import com.gs.fw.common.mithra.util.*;
 import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
 
@@ -47,6 +48,10 @@ public class MappedOperation implements Operation
 
     public MappedOperation(Mapper mapper, Operation op)
     {
+        if (op instanceof CompactUpdateCountOperation)
+        {
+            op = ((CompactUpdateCountOperation) op).forceGetCachableOperation();
+        }
         this.op = op;
         this.mapper = mapper;
         if (mapper instanceof LinkedMapper)

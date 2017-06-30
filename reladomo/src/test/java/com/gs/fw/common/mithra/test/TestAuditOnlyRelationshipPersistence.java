@@ -52,6 +52,48 @@ extends MithraTestAbstract
         return status;
     }
 
+    public void testDeleteTopObject()
+    {
+        AuditedOrderList orders = new AuditedOrderList(AuditedOrderFinder.processingDate().equalsInfinity());
+
+        int sum = sumStuff(orders);
+
+        assertTrue(sum > 0);
+
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand<Object>()
+        {
+            @Override
+            public Object executeTransaction(MithraTransaction tx) throws Throwable
+            {
+                AuditedOrder order = AuditedOrderFinder.findOne(AuditedOrderFinder.orderId().eq(1));
+                AuditedOrder other = order.getNonPersistentCopy();
+                order.terminate();
+                other.insert();
+                return null;
+            }
+        });
+
+        orders = new AuditedOrderList(AuditedOrderFinder.processingDate().equalsInfinity());
+        sum = sumStuff(orders);
+
+        assertTrue(sum > 0);
+    }
+
+    private int sumStuff(AuditedOrderList orders)
+    {
+        int sum = 0;
+
+        for(int i=0;i<orders.size();i++)
+        {
+            AuditedOrderItemStatusList statuses = orders.get(i).getItems().getAuditedOrderItemStatus();
+            for(int j = 0; j< statuses.size(); j++)
+            {
+                sum += statuses.get(j).getItemId();
+            }
+        }
+        return sum;
+    }
+
     public void testInsertSettingDependentsAtOnceBeforeId()
     {
         AuditedOrder order = new AuditedOrder();
