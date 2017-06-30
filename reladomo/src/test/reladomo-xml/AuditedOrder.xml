@@ -63,6 +63,9 @@
     <Relationship name="bitemporalOrder" relatedObject="BitemporalOrder" cardinality="one-to-one" parameters="Timestamp businessDate">
         this.orderId = BitemporalOrder.orderId and BitemporalOrder.businessDate = {businessDate}
     </Relationship>
+    <Relationship name="itemStatus" relatedObject="AuditedOrderItemStatus" cardinality="one-to-many">
+        AuditedOrderItem.orderId = this.orderId and AuditedOrderItemStatus.itemId = AuditedOrderItem.id
+    </Relationship>
     <Index name="byUserId">userId</Index>
     <Index name="byState">state</Index>
     <Index name="byTrackingId" unique="true">trackingId</Index>

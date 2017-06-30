@@ -28,6 +28,7 @@ import com.gs.fw.common.mithra.test.domain.dated.DatedTable;
 import com.gs.fw.common.mithra.test.domain.dated.DatedTableFinder;
 import com.gs.fw.common.mithra.test.tax.*;
 
+import javax.sound.sampled.AudioFileFormat;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -61,7 +62,9 @@ public class TestDatedRelationship extends MithraTestAbstract
             NonAuditedBalance.class,
             AuditOnlyBalance.class,
             AuditedOrder.class,
+            AuditedOrderItem.class,
             AuditedOrderStatus.class,
+            AuditedOrderItemStatus.class,
             BitemporalOrder.class,
             BitemporalOrderStatus.class,
             BitemporalOrderItem.class,
@@ -94,6 +97,12 @@ public class TestDatedRelationship extends MithraTestAbstract
         }
 
         return dates;
+    }
+
+    public void testNotExistsWithOr()
+    {
+        Operation or = AuditedOrderFinder.itemStatus().notExists().or(AuditedOrderFinder.itemStatus().status().eq(10));
+        assertEquals(6, AuditedOrderFinder.findMany(or).size());
     }
 
     public void testEqualsEdgePoint()

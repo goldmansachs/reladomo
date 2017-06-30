@@ -125,6 +125,12 @@ public class ChainedMapper extends AbstractMapper
         return result;
     }
 
+    @Override
+    public List getAllPossibleResultObjectsForFullCache()
+    {
+        return this.firstMapper.getAllPossibleResultObjectsForFullCache();
+    }
+
     public boolean hasLeftOrDefaultMappingsFor(AsOfAttribute[] leftAsOfAttributes)
     {
         return this.firstMapper.hasLeftOrDefaultMappingsFor(leftAsOfAttributes);

@@ -153,6 +153,8 @@ extends Serializable
 
     public boolean hasLeftOrDefaultMappingsFor(AsOfAttribute[] leftAsOfAttributes);
 
+    public List getAllPossibleResultObjectsForFullCache();
+
     public boolean hasLeftMappingsFor(AsOfAttribute[] leftAsOfAttributes);
 
     public Attribute getAnyRightAttribute();
