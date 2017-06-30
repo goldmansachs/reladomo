@@ -17,6 +17,10 @@
 package com.gs.fw.common.mithra.finder;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
 import com.gs.fw.common.mithra.util.PersisterId;
 
@@ -104,30 +108,11 @@ public abstract class NotInOperation extends AtomicSetBasedOperation
 
     public List applyOperationToPartialCache()
     {
-        if (this.usesUniqueIndex())
-        {
-            List result = this.getByIndex();
-            if (result.size() == this.getSetSize()) return result;
-        }
         return null;
     }
 
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op)
+    @Override
+    public Operation zCombinedAndWithRange(RangeOperation op)
     {
         return null;
     }
@@ -155,4 +140,49 @@ public abstract class NotInOperation extends AtomicSetBasedOperation
                 fullyQualifiedColumnName + " = "+ tempTableName +".c0",
                 fullyQualifiedColumnName + " not in ( )", tempTableName +".c0 is null", position);
     }
+
+    @Override
+    public ShapeMatchResult zShapeMatch(Operation existingOperation)
+    {
+        if (existingOperation instanceof AtomicOperation)
+        {
+            if (((AtomicOperation)existingOperation).getAttribute().equals(this.getAttribute()))
+            {
+                if (existingOperation instanceof AtomicNotEqualityOperation)
+                {
+                    if (this.setContains(existingOperation, ((AtomicNotEqualityOperation)existingOperation).getStaticExtractor()))
+                    {
+                        return new SuperMatchSmr(existingOperation, this);
+                    }
+                }
+                else if (existingOperation instanceof AtomicSetBasedOperation)
+                {
+                    if (existingOperation instanceof NotInOperation && this.getSetSize() >= ((NotInOperation) existingOperation).getSetSize())
+                    {
+                        return this.shapeMatchSet((NotInOperation)existingOperation);
+                    }
+                }
+                else
+                {
+                    //AtomicEqualityOperation
+                    //RangeOperation
+                    //IsNotNullOperation
+                    // StringLikeOperation
+                    // StringNotLikeOperation
+                    // AtomicSelf*Operation
+                    return NoMatchSmr.INSTANCE;
+                }
+            }
+        }
+        //ignoring more complex cases.
+        return NoMatchSmr.INSTANCE;
+    }
+
+    @Override
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
+    {
+        return !extractor.isAttributeNull(o) && !this.setContains(o, extractor);
+    }
+
+    protected abstract ShapeMatchResult shapeMatchSet(NotInOperation existingOperation);
 }

@@ -15,8 +15,10 @@
  */
 package com.gs.fw.common.mithra.test;
 
+import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.set.mutable.primitive.*;
 import com.gs.fw.common.mithra.test.domain.InfinityTimestamp;
+import com.gs.fw.common.mithra.test.domain.ParaDesk;
 import com.gs.fw.common.mithra.test.domain.ParaDeskFinder;
 import com.gs.fw.common.mithra.test.domain.ParaDeskList;
 import com.gs.fw.common.mithra.finder.All;
@@ -49,7 +51,7 @@ extends TestSqlDatatypes
         this.genericRetrievalTest(sql, desks);
         assertTrue(desks.size() > 0);
 
-        boolSet.clear();
+        boolSet = new BooleanHashSet();
         boolSet.add(false);
         sql = "select * from PARA_DESK where ACTIVE_BOOLEAN not in ( 0 ) ";
         desks = new ParaDeskList(ParaDeskFinder.activeBoolean().notIn(boolSet));
@@ -170,6 +172,27 @@ extends TestSqlDatatypes
         sql = "select * from PARA_DESK where CREATE_TIMESTAMP not in ( '9999-12-01 23:59:00.0' , '1981-06-08 02:01:00.0' )";
         desks = new ParaDeskList(ParaDeskFinder.createTimestamp().notIn(objectSet));
         this.genericRetrievalTest(sql, desks);
+    }
+
+    public void testNullableBoolean() throws SQLException
+    {
+        ParaDesk paraDesk = new ParaDesk();
+        paraDesk.setActiveBooleanNull();
+        paraDesk.setDeskIdString("Nul");
+        this.insertTestData(FastList.newListWith(paraDesk));
+
+        BooleanHashSet boolSet = new BooleanHashSet();;
+        boolSet.add(true);
+        boolSet.add(false);
+        String sql = "select * from PARA_DESK where ACTIVE_BOOLEAN not in ( 0 , 1 ) ";
+        List desks = new ParaDeskList(ParaDeskFinder.activeBoolean().notIn(boolSet));
+        this.genericRetrievalTest(sql, desks, 0);
+        assertTrue(desks.size() == 0);
+
+        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN in ( 0, 1 ) ";
+        desks = new ParaDeskList(ParaDeskFinder.activeBoolean().in(boolSet));
+        this.genericRetrievalTest(sql, desks);
+        assertTrue(desks.size() > 0);
     }
 
     public void testHugeNotInClause()

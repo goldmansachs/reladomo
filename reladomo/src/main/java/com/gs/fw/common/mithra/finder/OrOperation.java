@@ -25,10 +25,10 @@ import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
-import com.gs.fw.common.mithra.attribute.TimestampAttribute;
 import com.gs.fw.common.mithra.cache.ConcurrentFullUniqueIndex;
 import com.gs.fw.common.mithra.cache.ExtractorBasedHashStrategy;
 import com.gs.fw.common.mithra.cache.FullUniqueIndex;
+import com.gs.fw.common.mithra.finder.sqcache.*;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.util.*;
 
@@ -691,25 +691,6 @@ public class OrOperation implements Operation
         return null;
     }
 
-    public Operation zFindEquality(TimestampAttribute attr)
-    {
-        Operation result = null;
-        for (int i = 0; i < operations.length; i++)
-        {
-            Operation newResult = operations[i].zFindEquality(attr);
-            if (result == null)
-            {
-                result = newResult;
-            }
-            else
-            {
-                if (!result.equals(newResult)) return null;
-            }
-        }
-        return result;
-
-    }
-
 
     /**
      * the xor operation is used to ensure the order of operands does not impact the hashcode
@@ -815,22 +796,8 @@ public class OrOperation implements Operation
         return null;
     }
 
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op)
+    @Override
+    public Operation zCombinedAndWithRange(RangeOperation op)
     {
         return null;
     }
@@ -863,6 +830,16 @@ public class OrOperation implements Operation
             if (this.operations[i].zPrefersBulkMatching()) return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean zCanFilterInMemory()
+    {
+        for (int i = 0; i < this.operations.length; i++)
+        {
+            if (!this.operations[i].zCanFilterInMemory()) return false;
+        }
+        return true;
     }
 
     protected class DummyContainer
@@ -900,5 +877,58 @@ public class OrOperation implements Operation
     public String toString()
     {
         return ToStringContext.createAndToString(this);
+    }
+
+    @Override
+    public boolean zIsShapeCachable()
+    {
+        return true;
+    }
+
+    @Override
+    public ShapeMatchResult zShapeMatch(Operation existingOperation)
+    {
+        //todo: consider implementing this for or-clauses
+        return this.equals(existingOperation) ? ExactMatchSmr.INSTANCE : NoMatchRequiresExactSmr.INSTANCE;
+    }
+
+    public ShapeMatchResult oneAtATimeReverseShapeMatch(Operation newOperation)
+    {
+        if (newOperation.zCanFilterInMemory())
+        {
+            for (int i = 0; i < this.operations.length; i++)
+            {
+                ShapeMatchResult shapeMatchResult = newOperation.zShapeMatch(operations[i]);
+                if (shapeMatchResult.isExactMatch())
+                {
+                    return new SuperMatchSmr(this, newOperation, constructNewOr(i, newOperation), newOperation);
+                }
+                else if (shapeMatchResult.isSuperMatch())
+                {
+                    return new SuperMatchSmr(this, newOperation, constructNewOr(i, ((SuperMatchSmr) shapeMatchResult).getLookUpOperation()), newOperation);
+                }
+            }
+        }
+        return NoMatchSmr.INSTANCE;
+    }
+
+    private Operation constructNewOr(int replaceIndex, Operation newOperation)
+    {
+        Operation[] ops = new Operation[this.operations.length];
+        System.arraycopy(this.operations, 0, ops, 0, this.operations.length);
+        ops[replaceIndex] = newOperation;
+        return new OrOperation(ops);
+    }
+
+    @Override
+    public int zShapeHash()
+    {
+        int hash = 0xead9f3fc;
+
+        for(Operation op: this.operations)
+        {
+            hash = HashUtil.combineHashes(hash, op.zShapeHash());
+        }
+        return hash;
     }
 }

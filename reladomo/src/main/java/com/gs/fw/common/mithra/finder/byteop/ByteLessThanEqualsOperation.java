@@ -17,15 +17,18 @@
 package com.gs.fw.common.mithra.finder.byteop;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
-import com.gs.fw.common.mithra.attribute.ByteAttribute;
+import com.gs.fw.common.mithra.extractor.ByteExtractor;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.paramop.OpWithByteParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithByteParamExtractor;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 
 
-public class ByteLessThanEqualsOperation extends LessThanEqualsOperation
+public class ByteLessThanEqualsOperation extends LessThanEqualsOperation implements OpWithByteParam
 {
 
     private byte parameter;
@@ -41,80 +44,22 @@ public class ByteLessThanEqualsOperation extends LessThanEqualsOperation
         return parameter;
     }
 
+    @Override
+    public Extractor getStaticExtractor()
+    {
+        return OpWithByteParamExtractor.INSTANCE;
+    }
+
     public void zToString(ToStringContext toStringContext)
     {
         this.getAttribute().zAppendToString(toStringContext);
         toStringContext.append("<=").append(this.parameter);
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
-    {
-        ByteAttribute ByteAttribute = (ByteAttribute)this.getAttribute();
-        if (ByteAttribute.isAttributeNull(o)) return false;
-        return ByteAttribute.byteValueOf(o) <= parameter;
-    }
-
     public int setSqlParameters(PreparedStatement pstmt, int startIndex, SqlQuery query) throws SQLException
     {
         pstmt.setByte(startIndex, parameter);
         return 1;
-    }
-
-    public Operation zCombinedAndWithAtomicEquality(AtomicEqualityOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            if (!op.zIsNullOperation() && ((ByteEqOperation) op).getParameter() <= this.parameter)
-            {
-                return op;
-            }
-            return new None(this.getAttribute());
-        }
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            byte target = ((ByteGreaterThanOperation) op).getParameter();
-            if (target >= this.parameter) return new None(this.getAttribute());
-            return null;
-        }
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            byte target = ((ByteGreaterThanEqualsOperation) op).getParameter();
-            if (target > this.parameter) return new None(this.getAttribute());
-            return null;
-        }
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            byte target = ((ByteLessThanOperation) op).getParameter();
-            if (target <= this.parameter) return op;
-            return this;
-        }
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            byte target = ((ByteLessThanEqualsOperation) op).getParameter();
-            if (target <= this.parameter) return op;
-            return this;
-        }
-        return null;
     }
 
     public int hashCode()
@@ -133,4 +78,9 @@ public class ByteLessThanEqualsOperation extends LessThanEqualsOperation
         return false;
     }
 
+    @Override
+    protected boolean matchesWithoutDeleteCheck(Object holder, Extractor extractor)
+    {
+        return !extractor.isAttributeNull(holder) && ((ByteExtractor)extractor).byteValueOf(holder) <= this.getParameter();
+    }
 }

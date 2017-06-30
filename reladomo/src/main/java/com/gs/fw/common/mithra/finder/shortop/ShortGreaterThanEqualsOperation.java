@@ -17,15 +17,18 @@
 package com.gs.fw.common.mithra.finder.shortop;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
-import com.gs.fw.common.mithra.attribute.ShortAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.extractor.ShortExtractor;
 import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.paramop.OpWithShortParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithShortParamExtractor;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 
 
-public class ShortGreaterThanEqualsOperation extends GreaterThanEqualsOperation
+public class ShortGreaterThanEqualsOperation extends GreaterThanEqualsOperation implements OpWithShortParam
 {
 
     private short parameter;
@@ -41,58 +44,22 @@ public class ShortGreaterThanEqualsOperation extends GreaterThanEqualsOperation
         return parameter;
     }
 
+    @Override
+    public Extractor getStaticExtractor()
+    {
+        return OpWithShortParamExtractor.INSTANCE;
+    }
+
     public void zToString(ToStringContext toStringContext)
     {
         this.getAttribute().zAppendToString(toStringContext);
         toStringContext.append(">=").append(this.parameter);
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
-    {
-        ShortAttribute ShortAttribute = (ShortAttribute)this.getAttribute();
-        if (ShortAttribute.isAttributeNull(o)) return false;
-        return ShortAttribute.shortValueOf(o) >= parameter;
-    }
-
     public int setSqlParameters(PreparedStatement pstmt, int startIndex, SqlQuery query) throws SQLException
     {
         pstmt.setShort(startIndex, parameter);
         return 1;
-    }
-
-    public Operation zCombinedAndWithAtomicEquality(AtomicEqualityOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            if (!op.zIsNullOperation() && ((ShortEqOperation) op).getParameter() >= this.parameter)
-            {
-                return op;
-            }
-            return new None(this.getAttribute());
-        }
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            short target = ((ShortGreaterThanOperation) op).getParameter();
-            if (target >= this.parameter) return op;
-            return this;
-        }
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            short target = ((ShortGreaterThanEqualsOperation) op).getParameter();
-            if (target >= this.parameter) return op;
-            return this;
-        }
-        return null;
     }
 
     public int hashCode()
@@ -111,5 +78,9 @@ public class ShortGreaterThanEqualsOperation extends GreaterThanEqualsOperation
         return false;
     }
 
-
+    @Override
+    protected boolean matchesWithoutDeleteCheck(Object holder, Extractor extractor)
+    {
+        return !extractor.isAttributeNull(holder) && ((ShortExtractor)extractor).shortValueOf(holder) >= this.getParameter();
+    }
 }

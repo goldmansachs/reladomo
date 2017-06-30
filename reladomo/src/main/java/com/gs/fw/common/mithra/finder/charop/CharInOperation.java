@@ -16,6 +16,7 @@
 
 package com.gs.fw.common.mithra.finder.charop;
 
+import com.gs.collections.api.iterator.CharIterator;
 import com.gs.collections.api.set.primitive.CharSet;
 import com.gs.fw.common.mithra.attribute.CharAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
@@ -25,6 +26,10 @@ import com.gs.fw.common.mithra.extractor.PositionBasedOperationParameterExtracto
 import com.gs.fw.common.mithra.finder.InOperation;
 import com.gs.fw.common.mithra.finder.SqlParameterSetter;
 import com.gs.fw.common.mithra.finder.ToStringContext;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.util.HashUtil;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -43,14 +48,6 @@ public class CharInOperation extends InOperation implements SqlParameterSetter
     {
         super(attribute);
         this.set = charSet.freeze();
-    }
-
-    @Override
-    protected Boolean matchesWithoutDeleteCheck(Object o)
-    {
-        CharAttribute attribute = (CharAttribute)this.getAttribute();
-        if (attribute.isAttributeNull(o)) return false;
-        return Boolean.valueOf(this.set.contains(attribute.charValueOf(o)));
     }
 
     public List getByIndex()
@@ -154,5 +151,25 @@ public class CharInOperation extends InOperation implements SqlParameterSetter
         {
             return new Character(this.charValueOf(anObject));
         }
+    }
+
+    @Override
+    public boolean setContains(Object holder, Extractor extractor)
+    {
+        return this.set.contains(((CharExtractor)extractor).charValueOf(holder));
+    }
+
+    @Override
+    protected ShapeMatchResult shapeMatchSet(InOperation existingOperation)
+    {
+        CharIterator charIterator = this.set.charIterator();
+        while(charIterator.hasNext())
+        {
+            if (!((CharInOperation) existingOperation).set.contains(charIterator.next()))
+            {
+                return NoMatchSmr.INSTANCE;
+            }
+        }
+        return this.set.size() == existingOperation.getSetSize() ? ExactMatchSmr.INSTANCE : new SuperMatchSmr(existingOperation, this);
     }
 }

@@ -221,12 +221,6 @@ public class TimestampAsOfEqualityMapper extends EqualityMapper implements AsOfO
 
     public AtomicOperation createAsOfOperationCopy(TemporalAttribute rightAttribute, Operation op)
     {
-//        TimestampAttribute attr = (TimestampAttribute) this.getLeft();
-//        TimestampEqOperation eqOp = (TimestampEqOperation) op.zFindEquality(attr);
-//        if (eqOp != null)
-//        {
-//            return new AsOfEqOperation(rightAttribute, (Timestamp)eqOp.getParameterAsObject());
-//        }
         return null;
     }
 

@@ -18,7 +18,10 @@ package com.gs.fw.common.mithra.finder.timestamp;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.TimestampAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.extractor.TimestampExtractor;
 import com.gs.fw.common.mithra.finder.NonPrimitiveLessThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.paramop.OpWithTimestampParamExtractor;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -44,9 +47,15 @@ public class TimestampLessThanEqualsOperation extends NonPrimitiveLessThanEquals
         // for externalizable
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    @Override
+    public Extractor getStaticExtractor()
     {
-        Timestamp incoming = ((TimestampAttribute)this.getAttribute()).timestampValueOf(o);
+        return OpWithTimestampParamExtractor.INSTANCE;
+    }
+
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
+    {
+        Timestamp incoming = ((TimestampExtractor)extractor).timestampValueOf(o);
         if (incoming == null) return false;
         return incoming.getTime() <= time;
     }

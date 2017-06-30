@@ -29,10 +29,12 @@ import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.MappedAttribute;
-import com.gs.fw.common.mithra.attribute.TimestampAttribute;
 import com.gs.fw.common.mithra.cache.ConcurrentFullUniqueIndex;
 import com.gs.fw.common.mithra.cache.FullUniqueIndex;
 import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchRequiresExactSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.querycache.CachedQuery;
 import com.gs.fw.common.mithra.querycache.CompactUpdateCountOperation;
@@ -624,22 +626,8 @@ public class MappedOperation implements Operation
         throw new RuntimeException("can only equality substitute with atomic or multi-equality");
     }
 
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        return this.zCombinedAndWithAtomic(op);
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        return this.zCombinedAndWithAtomic(op);
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        return this.zCombinedAndWithAtomic(op);
-    }
-
-    public Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op)
+    @Override
+    public Operation zCombinedAndWithRange(RangeOperation op)
     {
         return this.zCombinedAndWithAtomic(op);
     }
@@ -760,11 +748,6 @@ public class MappedOperation implements Operation
         return null;
     }
 
-    public Operation zFindEquality(TimestampAttribute attr)
-    {
-        return this.op.zFindEquality(attr);
-    }
-
     public static Operation createExists(Attribute[] attributes, Attribute... joinedAttributes)
     {
         if (joinedAttributes[0] instanceof MappedAttribute)
@@ -829,5 +812,29 @@ public class MappedOperation implements Operation
     public String toString()
     {
         return ToStringContext.createAndToString(this);
+    }
+
+    @Override
+    public boolean zCanFilterInMemory()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean zIsShapeCachable()
+    {
+        return false;
+    }
+
+    @Override
+    public ShapeMatchResult zShapeMatch(Operation existingOperation)
+    {
+        return this.equals(existingOperation) ? ExactMatchSmr.INSTANCE : NoMatchRequiresExactSmr.INSTANCE;
+    }
+
+    @Override
+    public int zShapeHash()
+    {
+        return this.hashCode();
     }
 }

@@ -17,15 +17,18 @@
 package com.gs.fw.common.mithra.finder.integer;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
-import com.gs.fw.common.mithra.attribute.IntegerAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.extractor.IntExtractor;
 import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.paramop.OpWithIntParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithIntParamExtractor;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 
 
-public class IntegerGreaterThanOperation extends GreaterThanOperation
+public class IntegerGreaterThanOperation extends GreaterThanOperation implements OpWithIntParam
 {
 
     private int parameter;
@@ -41,47 +44,22 @@ public class IntegerGreaterThanOperation extends GreaterThanOperation
         return parameter;
     }
 
+    @Override
+    public Extractor getStaticExtractor()
+    {
+        return OpWithIntParamExtractor.INSTANCE;
+    }
+
     public void zToString(ToStringContext toStringContext)
     {
         this.getAttribute().zAppendToString(toStringContext);
         toStringContext.append(">").append(this.parameter);
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
-    {
-        IntegerAttribute integerAttribute = (IntegerAttribute)this.getAttribute();
-        if (integerAttribute.isAttributeNull(o)) return false;
-        return integerAttribute.intValueOf(o) > parameter;
-    }
-
     public int setSqlParameters(PreparedStatement pstmt, int startIndex, SqlQuery query) throws SQLException
     {
         pstmt.setInt(startIndex, parameter);
         return 1;
-    }
-
-    public Operation zCombinedAndWithAtomicEquality(AtomicEqualityOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            if (!op.zIsNullOperation() && ((IntegerEqOperation) op).getParameter() > this.parameter)
-            {
-                return op;
-            }
-            return new None(this.getAttribute());
-        }
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            int target = ((IntegerGreaterThanOperation) op).getParameter();
-            if (target > this.parameter) return op;
-            return this;
-        }
-        return null;
     }
 
     public int hashCode()
@@ -100,5 +78,9 @@ public class IntegerGreaterThanOperation extends GreaterThanOperation
         return false;
     }
 
-
+    @Override
+    protected boolean matchesWithoutDeleteCheck(Object holder, Extractor extractor)
+    {
+        return !extractor.isAttributeNull(holder) && ((IntExtractor) extractor).intValueOf(holder) > this.getParameter();
+    }
 }

@@ -17,16 +17,19 @@
 package com.gs.fw.common.mithra.finder.doubleop;
 
 import com.gs.fw.common.mithra.attribute.DoubleAttribute;
+import com.gs.fw.common.mithra.extractor.DoubleExtractor;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.AtomicNotEqualityOperation;
 import com.gs.fw.common.mithra.finder.SqlParameterSetter;
 import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.paramop.OpWithDoubleParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithDoubleParamExtractor;
 import com.gs.fw.common.mithra.util.HashUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-
-public class DoubleNotEqOperation  extends AtomicNotEqualityOperation implements SqlParameterSetter
+public class DoubleNotEqOperation  extends AtomicNotEqualityOperation implements SqlParameterSetter, OpWithDoubleParam
 {
     private double parameter;
 
@@ -36,9 +39,15 @@ public class DoubleNotEqOperation  extends AtomicNotEqualityOperation implements
         this.parameter = parameter;
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    @Override
+    protected Extractor getStaticExtractor()
     {
-        DoubleAttribute doubleAttribute = (DoubleAttribute)this.getAttribute();
+        return OpWithDoubleParamExtractor.INSTANCE;
+    }
+
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
+    {
+        DoubleExtractor doubleAttribute = (DoubleExtractor) extractor;
         if (doubleAttribute.isAttributeNull(o)) return false;
         return doubleAttribute.doubleValueOf(o) != parameter;
     }

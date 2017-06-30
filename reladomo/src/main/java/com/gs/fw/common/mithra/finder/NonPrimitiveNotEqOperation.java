@@ -17,15 +17,18 @@
 package com.gs.fw.common.mithra.finder;
 
 import com.gs.fw.common.mithra.attribute.NonPrimitiveAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.finder.paramop.OpWithBigDecimalParamExtractor;
+import com.gs.fw.common.mithra.finder.paramop.OpWithObjectParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithStringParamExtractor;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 
 
-public class NonPrimitiveNotEqOperation extends AtomicNotEqualityOperation implements SqlParameterSetter
+public class NonPrimitiveNotEqOperation extends AtomicNotEqualityOperation implements SqlParameterSetter, OpWithObjectParam
 {
-
     private Object parameter;
 
     public NonPrimitiveNotEqOperation(NonPrimitiveAttribute attribute, Object parameter)
@@ -39,14 +42,24 @@ public class NonPrimitiveNotEqOperation extends AtomicNotEqualityOperation imple
         // for externalizable
     }
 
+    @Override
+    protected Extractor getStaticExtractor()
+    {
+        if (this.parameter instanceof String)
+        {
+            return OpWithStringParamExtractor.INSTANCE;
+        }
+        return OpWithBigDecimalParamExtractor.INSTANCE;
+    }
+
     protected void setParameter(Object parameter)
     {
         this.parameter = parameter;
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
     {
-        Object incoming = this.getAttribute().valueOf(o);
+        Object incoming = extractor.valueOf(o);
         if (incoming == null) return false; // null is not equal to, or not equal to anything. blame it on the SQL standard
         return !incoming.equals(parameter);
     }
@@ -74,6 +87,11 @@ public class NonPrimitiveNotEqOperation extends AtomicNotEqualityOperation imple
     }
 
     public Object getParameterAsObject()
+    {
+        return this.parameter;
+    }
+
+    public Object getParameter()
     {
         return this.parameter;
     }

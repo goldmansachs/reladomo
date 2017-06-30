@@ -24,8 +24,9 @@ import com.gs.fw.common.mithra.finder.AtomicEqualityOperation;
 import com.gs.fw.common.mithra.finder.SqlParameterSetter;
 import com.gs.fw.common.mithra.finder.SqlQuery;
 import com.gs.fw.common.mithra.finder.ToStringContext;
+import com.gs.fw.common.mithra.finder.paramop.OpWithByteArrayParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithByteArrayParamExtractor;
 import com.gs.fw.common.mithra.util.HashUtil;
-import com.gs.fw.common.mithra.util.ListFactory;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -33,12 +34,12 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class ByteArrayEqOperation extends AtomicEqualityOperation implements SqlParameterSetter
+public class ByteArrayEqOperation extends AtomicEqualityOperation implements SqlParameterSetter, OpWithByteArrayParam
 {
 
-    private Object parameter;
+    private byte[] parameter;
 
-    public ByteArrayEqOperation(ByteArrayAttribute attribute, Object parameter)
+    public ByteArrayEqOperation(ByteArrayAttribute attribute, byte[] parameter)
     {
         super(attribute);
         this.parameter = parameter;
@@ -50,9 +51,21 @@ public class ByteArrayEqOperation extends AtomicEqualityOperation implements Sql
         super();
     }
 
-    protected void setParameter(Object parameter)
+    @Override
+    protected Extractor getStaticExtractor()
+    {
+        return OpWithByteArrayParamExtractor.INSTANCE;
+    }
+
+    protected void setParameter(byte[] parameter)
     {
         this.parameter = parameter;
+    }
+
+    @Override
+    public byte[] getParameter()
+    {
+        return this.parameter;
     }
 
     public static boolean byteArrayEquals(Object a, Object b)
@@ -73,9 +86,9 @@ public class ByteArrayEqOperation extends AtomicEqualityOperation implements Sql
         return false;
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
     {
-        Object incoming = this.getAttribute().valueOf(o);
+        Object incoming = extractor.valueOf(o);
         if (incoming == null) return parameter == null;
         return byteArrayEquals(incoming, parameter);
     }

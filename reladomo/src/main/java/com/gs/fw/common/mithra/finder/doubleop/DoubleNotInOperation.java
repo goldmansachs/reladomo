@@ -16,12 +16,20 @@
 
 package com.gs.fw.common.mithra.finder.doubleop;
 
+import com.gs.collections.api.iterator.DoubleIterator;
 import com.gs.collections.api.set.primitive.DoubleSet;
 import com.gs.fw.common.mithra.attribute.DoubleAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
+import com.gs.fw.common.mithra.extractor.DoubleExtractor;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.NotInOperation;
 import com.gs.fw.common.mithra.finder.SqlParameterSetter;
 import com.gs.fw.common.mithra.finder.ToStringContext;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -38,14 +46,6 @@ public class DoubleNotInOperation extends NotInOperation implements SqlParameter
     {
         super(attribute);
         this.set = doubleSet.freeze();
-    }
-
-    @Override
-    protected Boolean matchesWithoutDeleteCheck(Object o)
-    {
-        DoubleAttribute attribute = (DoubleAttribute)this.getAttribute();
-        if (attribute.isAttributeNull(o)) return false;
-        return Boolean.valueOf(!this.set.contains(attribute.doubleValueOf(o)));
     }
 
     protected int setSqlParameters(PreparedStatement pstmt, int startIndex, TimeZone timeZone, int setStart, int numberToSet, DatabaseType databaseType) throws SQLException
@@ -104,5 +104,30 @@ public class DoubleNotInOperation extends NotInOperation implements SqlParameter
     public int getSetSize()
     {
         return this.set.size();
+    }
+
+    @Override
+    public boolean setContains(Object holder, Extractor extractor)
+    {
+        return this.set.contains(((DoubleExtractor)extractor).doubleValueOf(holder));
+    }
+
+    @Override
+    protected ShapeMatchResult shapeMatchSet(NotInOperation existingOperation)
+    {
+        if (existingOperation.getSetSize() < MAX_SHAPE_MATCH_SIZE)
+        {
+            DoubleNotInOperation loopOp = (DoubleNotInOperation) existingOperation;
+            DoubleIterator doubleIterator = loopOp.set.doubleIterator();
+            while(doubleIterator.hasNext())
+            {
+                if (!this.set.contains(doubleIterator.next()))
+                {
+                    return NoMatchSmr.INSTANCE;
+                }
+            }
+            return (this.getSetSize() == loopOp.getSetSize()) ? ExactMatchSmr.INSTANCE : new SuperMatchSmr(existingOperation, this);
+        }
+        return NoMatchSmr.INSTANCE;
     }
 }

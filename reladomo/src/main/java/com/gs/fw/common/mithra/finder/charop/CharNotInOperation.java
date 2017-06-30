@@ -16,12 +16,20 @@
 
 package com.gs.fw.common.mithra.finder.charop;
 
+import com.gs.collections.api.iterator.CharIterator;
 import com.gs.collections.api.set.primitive.CharSet;
 import com.gs.fw.common.mithra.attribute.CharAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
+import com.gs.fw.common.mithra.extractor.CharExtractor;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.NotInOperation;
 import com.gs.fw.common.mithra.finder.SqlParameterSetter;
 import com.gs.fw.common.mithra.finder.ToStringContext;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -38,14 +46,6 @@ public class CharNotInOperation extends NotInOperation implements SqlParameterSe
     {
         super(attribute);
         this.set = charSet.freeze();
-    }
-
-    @Override
-    protected Boolean matchesWithoutDeleteCheck(Object o)
-    {
-        CharAttribute attribute = (CharAttribute)this.getAttribute();
-        if (attribute.isAttributeNull(o)) return false;
-        return Boolean.valueOf(!this.set.contains(attribute.charValueOf(o)));
     }
 
     protected int setSqlParameters(PreparedStatement pstmt, int startIndex, TimeZone timeZone, int setStart, int numberToSet, DatabaseType databaseType) throws SQLException
@@ -105,5 +105,30 @@ public class CharNotInOperation extends NotInOperation implements SqlParameterSe
     public int getSetSize()
     {
         return this.set.size();
+    }
+
+    @Override
+    public boolean setContains(Object holder, Extractor extractor)
+    {
+        return this.set.contains(((CharExtractor)extractor).charValueOf(holder));
+    }
+
+    @Override
+    protected ShapeMatchResult shapeMatchSet(NotInOperation existingOperation)
+    {
+        if (existingOperation.getSetSize() < MAX_SHAPE_MATCH_SIZE)
+        {
+            CharNotInOperation loopOp = (CharNotInOperation) existingOperation;
+            CharIterator charIterator = loopOp.set.charIterator();
+            while(charIterator.hasNext())
+            {
+                if (!this.set.contains(charIterator.next()))
+                {
+                    return NoMatchSmr.INSTANCE;
+                }
+            }
+            return (this.getSetSize() == loopOp.getSetSize()) ? ExactMatchSmr.INSTANCE : new SuperMatchSmr(existingOperation, this);
+        }
+        return NoMatchSmr.INSTANCE;
     }
 }

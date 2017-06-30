@@ -17,7 +17,11 @@
 package com.gs.fw.common.mithra.finder.timestamp;
 
 import com.gs.fw.common.mithra.attribute.TimestampAttribute;
+import com.gs.fw.common.mithra.cache.bean.BeanTimestampExtractor;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.extractor.TimestampExtractor;
 import com.gs.fw.common.mithra.finder.NonPrimitiveNotEqOperation;
+import com.gs.fw.common.mithra.finder.paramop.OpWithTimestampParamExtractor;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -25,11 +29,8 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.sql.Timestamp;
 
-
-
 public class TimestampNotEqOperation extends NonPrimitiveNotEqOperation implements Externalizable
 {
-
     public TimestampNotEqOperation(TimestampAttribute attribute, Timestamp parameter)
     {
         super(attribute, parameter);
@@ -38,6 +39,12 @@ public class TimestampNotEqOperation extends NonPrimitiveNotEqOperation implemen
     public TimestampNotEqOperation()
     {
         // for externalizable
+    }
+
+    @Override
+    protected Extractor getStaticExtractor()
+    {
+        return OpWithTimestampParamExtractor.INSTANCE;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException

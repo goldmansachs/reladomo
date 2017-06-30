@@ -28,6 +28,10 @@ import com.gs.fw.common.mithra.attribute.*;
 import com.gs.fw.common.mithra.databasetype.*;
 import com.gs.fw.common.mithra.extractor.*;
 import com.gs.fw.common.mithra.finder.bytearray.*;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.notification.*;
 import com.gs.fw.common.mithra.util.*;
 import com.gs.fw.common.mithra.util.Time;
@@ -75,11 +79,6 @@ public class NonPrimitiveInOperation extends InOperation implements SqlParameter
     protected Set getSet()
     {
         return set;
-    }
-
-    protected Boolean matchesWithoutDeleteCheck(Object o)
-    {
-        return this.set.contains(this.getAttribute().valueOf(o));
     }
 
     public List getByIndex()
@@ -321,5 +320,25 @@ public class NonPrimitiveInOperation extends InOperation implements SqlParameter
     public BigDecimal getSetValueAsBigDecimal(int index)
     {
         return (BigDecimal) copiedArray[index];
+    }
+
+    @Override
+    public boolean setContains(Object holder, Extractor extractor)
+    {
+        return this.set.contains(extractor.valueOf(holder));
+    }
+
+    @Override
+    protected ShapeMatchResult shapeMatchSet(InOperation existingOperation)
+    {
+        Iterator floatIterator = this.set.iterator();
+        while(floatIterator.hasNext())
+        {
+            if (!((NonPrimitiveInOperation) existingOperation).set.contains(floatIterator.next()))
+            {
+                return NoMatchSmr.INSTANCE;
+            }
+        }
+        return this.set.size() == existingOperation.getSetSize() ? ExactMatchSmr.INSTANCE : new SuperMatchSmr(existingOperation, this);
     }
 }

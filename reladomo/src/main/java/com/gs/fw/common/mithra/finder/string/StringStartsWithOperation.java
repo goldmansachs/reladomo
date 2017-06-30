@@ -17,10 +17,10 @@
 package com.gs.fw.common.mithra.finder.string;
 
 import com.gs.fw.common.mithra.attribute.StringAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.extractor.StringExtractor;
 import com.gs.fw.common.mithra.finder.SqlQuery;
 import com.gs.fw.common.mithra.finder.ToStringContext;
-import com.gs.fw.common.mithra.util.WildcardParser;
-
 
 
 public class StringStartsWithOperation extends StringLikeOperation
@@ -42,9 +42,9 @@ public class StringStartsWithOperation extends StringLikeOperation
         toStringContext.append("startsWith").append("\""+this.getParameter()+"\"");
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
     {
-        String s = ((StringAttribute) this.getAttribute()).stringValueOf(o);
+        String s = ((StringExtractor) extractor).stringValueOf(o);
         return s != null && s.startsWith(this.getParameter());
     }
 }

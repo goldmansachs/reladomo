@@ -23,6 +23,10 @@ import java.io.ObjectOutput;
 import java.util.List;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
 import com.gs.fw.common.mithra.util.PersisterId;
 
@@ -125,27 +129,9 @@ public abstract class InOperation extends AtomicSetBasedOperation implements Ope
         return null;
     }
 
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
+    @Override
+    public Operation zCombinedAndWithRange(RangeOperation op)
     {
-        // todo: rezaem: combine ; need to implement clone first.
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        // todo: rezaem: combine ; need to implement clone first.
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        // todo: rezaem: combine ; need to implement clone first.
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op)
-    {
-        // todo: rezaem: combine ; need to implement clone first.
         return null;
     }
 
@@ -199,4 +185,63 @@ public abstract class InOperation extends AtomicSetBasedOperation implements Ope
                     fullyQualifiedColumnName + " in ( )", "", position);
         }
     }
+
+    @Override
+    public ShapeMatchResult zShapeMatch(Operation existingOperation)
+    {
+        if (this.getSetSize() < MAX_SHAPE_MATCH_SIZE)
+        {
+            if (existingOperation instanceof AtomicOperation)
+            {
+                if (((AtomicOperation)existingOperation).getAttribute().equals(this.getAttribute()))
+                {
+                    if (existingOperation instanceof AtomicEqualityOperation)
+                    {
+                        return NoMatchSmr.INSTANCE;
+                    }
+                    else if (existingOperation instanceof AtomicNotEqualityOperation)
+                    {
+                        if (this.setContains(existingOperation, ((AtomicNotEqualityOperation) existingOperation).getStaticExtractor()))
+                        {
+                            return NoMatchSmr.INSTANCE;
+                        }
+                        return new SuperMatchSmr(existingOperation, this);
+                    }
+                    else if (existingOperation instanceof AtomicSetBasedOperation)
+                    {
+                        if (existingOperation instanceof InOperation && ((InOperation) existingOperation).getSetSize() >= this.getSetSize())
+                        {
+                            return this.shapeMatchSet((InOperation)existingOperation);
+                        }
+                    }
+                    else if (existingOperation instanceof RangeOperation)
+                    {
+                        // too hard to loop here. ignoring for now.
+                        return NoMatchSmr.INSTANCE;
+                    }
+                    else if (existingOperation instanceof IsNotNullOperation)
+                    {
+                        return new SuperMatchSmr(existingOperation, this);
+                    }
+                    else
+                    {
+                        // StringLikeOperation
+                        // StringNotLikeOperation
+                        // AtomicSelf*Operation
+                        return NoMatchSmr.INSTANCE;
+                    }
+                }
+            }
+            //ignoring more complex cases for now.
+        }
+        return NoMatchSmr.INSTANCE;
+    }
+
+    @Override
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
+    {
+        return !extractor.isAttributeNull(o) && this.setContains(o, extractor);
+    }
+
+    protected abstract ShapeMatchResult shapeMatchSet(InOperation existingOperation);
 }

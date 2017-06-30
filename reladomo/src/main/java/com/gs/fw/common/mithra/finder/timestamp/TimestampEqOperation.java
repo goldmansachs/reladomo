@@ -25,6 +25,7 @@ import com.gs.fw.common.mithra.extractor.TimestampExtractor;
 import com.gs.fw.common.mithra.finder.NonPrimitiveEqOperation;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.asofop.AsOfEqOperation;
+import com.gs.fw.common.mithra.finder.paramop.OpWithTimestampParamExtractor;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -45,6 +46,12 @@ public class TimestampEqOperation extends NonPrimitiveEqOperation implements Ext
     public TimestampEqOperation()
     {
         // for externalizable
+    }
+
+    @Override
+    protected Extractor getStaticExtractor()
+    {
+        return OpWithTimestampParamExtractor.INSTANCE;
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
@@ -72,11 +79,6 @@ public class TimestampEqOperation extends NonPrimitiveEqOperation implements Ext
             return new AsOfEqOperation((AsOfAttribute)other, (Timestamp) this.getParameterAsObject());
         }
         return null;
-    }
-
-    public Operation zFindEquality(TimestampAttribute attr)
-    {
-        return (attr.equals(this.getAttribute())) ? this : null;
     }
 
     @Override

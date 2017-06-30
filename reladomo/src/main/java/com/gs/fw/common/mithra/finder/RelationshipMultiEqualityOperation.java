@@ -23,13 +23,16 @@ import java.util.Map;
 import java.util.Set;
 
 import com.gs.collections.impl.list.mutable.FastList;
+import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
-import com.gs.fw.common.mithra.attribute.TimestampAttribute;
 import com.gs.fw.common.mithra.cache.Cache;
 import com.gs.fw.common.mithra.cache.IndexReference;
 import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.querycache.CompactUpdateCountOperation;
 import com.gs.fw.common.mithra.util.*;
@@ -135,16 +138,6 @@ public class RelationshipMultiEqualityOperation implements Operation, EqualityOp
     public Operation zFlipToOneMapper(Mapper mapper)
     {
         return null;
-    }
-
-    public Operation zFindEquality(TimestampAttribute attr)
-    {
-        Operation result = null;
-        for (int i = 0; i < multiExtractor.getLeftAttributes().size() && result == null; i++)
-        {
-            result =  createAtomicOperation(i).zFindEquality(attr);
-        }
-        return result;
     }
 
     public Cache getCache()
@@ -547,7 +540,8 @@ public class RelationshipMultiEqualityOperation implements Operation, EqualityOp
         return null;
     }
 
-    public Operation zCombinedAndWithRangeOperation(RangeOperation op)
+    @Override
+    public Operation zCombinedAndWithRange(RangeOperation op)
     {
         // == ok is fine in this case, as the strings are ultimately coming from a static reference in the finder
         if (op.zGetResultClassName() == this.zGetResultClassName())
@@ -572,26 +566,6 @@ public class RelationshipMultiEqualityOperation implements Operation, EqualityOp
             }
         }
         return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        return this.zCombinedAndWithRangeOperation(op);
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        return this.zCombinedAndWithRangeOperation(op);
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        return this.zCombinedAndWithRangeOperation(op);
-    }
-
-    public Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op)
-    {
-        return this.zCombinedAndWithRangeOperation(op);
     }
 
     public Operation zCombinedAndWithIn(InOperation op)
@@ -791,5 +765,63 @@ public class RelationshipMultiEqualityOperation implements Operation, EqualityOp
     public boolean zHasParallelApply()
     {
         return false;
+    }
+
+    @Override
+    public boolean zCanFilterInMemory()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean zIsShapeCachable()
+    {
+        return true;
+    }
+
+    @Override
+    public ShapeMatchResult zShapeMatch(Operation existingOperation)
+    {
+        // the only case we care about is when existing is another
+        // equality/multi-equality with fewer terms and matching attributes
+        // all other cases are too complex.
+        if (existingOperation instanceof AtomicEqualityOperation)
+        {
+            AtomicEqualityOperation equalityOperation = (AtomicEqualityOperation) existingOperation;
+            if (this.multiExtractor.getLeftAttributes().contains(equalityOperation.getAttribute()))
+            {
+                return MultiEqualityOperation.createSuperMatchSmr(existingOperation, this, equalityOperation, this.getOrCreateMultiEqualityOperation());
+            }
+        }
+        else if (existingOperation instanceof MultiEqualityOperation)
+        {
+            MultiEqualityOperation multiEqualityOperation = (MultiEqualityOperation) existingOperation;
+            int equalityOpCount = multiEqualityOperation.getEqualityOpCount();
+            if (!multiEqualityOperation.hasInClause() && equalityOpCount <= this.getEqualityOpCount())
+            {
+                Set set = (equalityOpCount > 8) ? new UnifiedSet(equalityOpCount) : new SmallSet(equalityOpCount);
+                multiEqualityOperation.addDepenedentAttributesToSet(set);
+                int matched = 0;
+                for(int i=0;i<this.multiExtractor.getLeftAttributes().size();i++)
+                {
+                    if (set.contains(this.multiExtractor.getLeftAttributes().get(i)))
+                    {
+                        matched++;
+                    }
+                }
+                if (matched == set.size())
+                {
+                    return equalityOpCount == this.getEqualityOpCount() ? ExactMatchSmr.INSTANCE :
+                            MultiEqualityOperation.createSuperMatchSmr(existingOperation, this, multiEqualityOperation, this.getOrCreateMultiEqualityOperation(), set);
+                }
+            }
+        }
+        return NoMatchSmr.INSTANCE;
+    }
+
+    @Override
+    public int zShapeHash()
+    {
+        return this.getOrCreateMultiEqualityOperation().zShapeHash();
     }
 }

@@ -16,12 +16,20 @@
 
 package com.gs.fw.common.mithra.finder.longop;
 
+import com.gs.collections.api.iterator.LongIterator;
 import com.gs.collections.api.set.primitive.LongSet;
 import com.gs.fw.common.mithra.attribute.LongAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.extractor.LongExtractor;
 import com.gs.fw.common.mithra.finder.NotInOperation;
 import com.gs.fw.common.mithra.finder.SqlParameterSetter;
 import com.gs.fw.common.mithra.finder.ToStringContext;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -38,14 +46,6 @@ public class LongNotInOperation extends NotInOperation implements SqlParameterSe
     {
         super(attribute);
         this.set = longSet.freeze();
-    }
-
-    @Override
-    protected Boolean matchesWithoutDeleteCheck(Object o)
-    {
-        LongAttribute attribute = (LongAttribute)this.getAttribute();
-        if (attribute.isAttributeNull(o)) return false;
-        return Boolean.valueOf(!this.set.contains(attribute.longValueOf(o)));
     }
 
     protected int setSqlParameters(PreparedStatement pstmt, int startIndex, TimeZone timeZone, int setStart, int numberToSet, DatabaseType databaseType) throws SQLException
@@ -104,5 +104,30 @@ public class LongNotInOperation extends NotInOperation implements SqlParameterSe
     public int getSetSize()
     {
         return this.set.size();
+    }
+
+    @Override
+    public boolean setContains(Object holder, Extractor extractor)
+    {
+        return this.set.contains(((LongExtractor)extractor).longValueOf(holder));
+    }
+
+    @Override
+    protected ShapeMatchResult shapeMatchSet(NotInOperation existingOperation)
+    {
+        if (existingOperation.getSetSize() < MAX_SHAPE_MATCH_SIZE)
+        {
+            LongNotInOperation loopOp = (LongNotInOperation) existingOperation;
+            LongIterator longIterator = loopOp.set.longIterator();
+            while(longIterator.hasNext())
+            {
+                if (!this.set.contains(longIterator.next()))
+                {
+                    return NoMatchSmr.INSTANCE;
+                }
+            }
+            return (this.getSetSize() == loopOp.getSetSize()) ? ExactMatchSmr.INSTANCE : new SuperMatchSmr(existingOperation, this);
+        }
+        return NoMatchSmr.INSTANCE;
     }
 }

@@ -18,9 +18,10 @@ package com.gs.fw.common.mithra.finder.bigdecimal;
 
 
 import com.gs.fw.common.mithra.attribute.Attribute;
-import com.gs.fw.common.mithra.finder.NonPrimitiveGreaterThanEqualsOperation;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.NonPrimitiveLessThanEqualsOperation;
 import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.paramop.OpWithBigDecimalParamExtractor;
 
 public class BigDecimalLessThanEqualsOperation extends NonPrimitiveLessThanEqualsOperation
 {
@@ -32,6 +33,12 @@ public class BigDecimalLessThanEqualsOperation extends NonPrimitiveLessThanEqual
     public BigDecimalLessThanEqualsOperation(Attribute attribute, Comparable parameter)
     {
         super(attribute, parameter);
+    }
+
+    @Override
+    public Extractor getStaticExtractor()
+    {
+        return OpWithBigDecimalParamExtractor.INSTANCE;
     }
 
     @Override

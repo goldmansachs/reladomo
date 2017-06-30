@@ -203,7 +203,7 @@ public class TestDifferentDataTypeOperations extends MithraTestAbstract
         op = DifferentDataTypesFinder.byteColumn().notEq((byte)0);
         list = new DifferentDataTypesList(op);
         sql = "select * from DIFFERENT_DATA_TYPES where BYTE_COLUMN != 0";
-        this.genericRetrievalTest(sql, list);
+        this.genericRetrievalTest(sql, list, false);
         int databaseQuery = MithraManager.getInstance().getDatabaseRetrieveCount();
 
         list = new DifferentDataTypesList(op);
@@ -631,7 +631,7 @@ public class TestDifferentDataTypeOperations extends MithraTestAbstract
         op = DifferentDataTypesFinder.shortColumn().notEq((short)120);
         list = new DifferentDataTypesList(op);
         sql = "select * from DIFFERENT_DATA_TYPES where SHORT_COLUMN != 120";
-        this.genericRetrievalTest(sql, list);
+        this.genericRetrievalTest(sql, list, false);
         int databaseQuery = MithraManager.getInstance().getDatabaseRetrieveCount();
 
         list = new DifferentDataTypesList(op);

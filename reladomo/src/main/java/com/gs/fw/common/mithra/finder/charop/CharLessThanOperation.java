@@ -17,15 +17,18 @@
 package com.gs.fw.common.mithra.finder.charop;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
-import com.gs.fw.common.mithra.attribute.CharAttribute;
+import com.gs.fw.common.mithra.extractor.CharExtractor;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.paramop.OpWithCharParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithCharParamExtractor;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 
 
-public class CharLessThanOperation extends LessThanOperation
+public class CharLessThanOperation extends LessThanOperation implements OpWithCharParam
 {
 
     private char parameter;
@@ -41,69 +44,22 @@ public class CharLessThanOperation extends LessThanOperation
         return parameter;
     }
 
+    @Override
+    public Extractor getStaticExtractor()
+    {
+        return OpWithCharParamExtractor.INSTANCE;
+    }
+
     public void zToString(ToStringContext toStringContext)
     {
         this.getAttribute().zAppendToString(toStringContext);
         toStringContext.append("<").append(this.parameter);
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
-    {
-        CharAttribute integerAttribute = (CharAttribute)this.getAttribute();
-        if (integerAttribute.isAttributeNull(o)) return false;
-        return integerAttribute.charValueOf(o) < parameter;
-    }
-
     public int setSqlParameters(PreparedStatement pstmt, int startIndex, SqlQuery query) throws SQLException
     {
         pstmt.setString(startIndex, new String(new char[] { parameter} ));
         return 1;
-    }
-
-    public Operation zCombinedAndWithAtomicEquality(AtomicEqualityOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            if (!op.zIsNullOperation() && ((CharEqOperation) op).getParameter() < this.parameter)
-            {
-                return op;
-            }
-            return new None(this.getAttribute());
-        }
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            char target = ((CharGreaterThanOperation) op).getParameter();
-            if (target >= this.parameter) return new None(this.getAttribute());
-            return null;
-        }
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            char target = ((CharGreaterThanEqualsOperation) op).getParameter();
-            if (target >= this.parameter) return new None(this.getAttribute());
-            return null;
-        }
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            char target = ((CharLessThanOperation) op).getParameter();
-            if (target < this.parameter) return op;
-            return this;
-        }
-        return null;
     }
 
     public int hashCode()
@@ -122,5 +78,9 @@ public class CharLessThanOperation extends LessThanOperation
         return false;
     }
 
-
+    @Override
+    protected boolean matchesWithoutDeleteCheck(Object holder, Extractor extractor)
+    {
+        return !extractor.isAttributeNull(holder) && ((CharExtractor)extractor).charValueOf(holder) < this.getParameter();
+    }
 }

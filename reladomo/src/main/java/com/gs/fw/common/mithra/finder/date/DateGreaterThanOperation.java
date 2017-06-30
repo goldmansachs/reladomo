@@ -17,7 +17,9 @@
 package com.gs.fw.common.mithra.finder.date;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.NonPrimitiveGreaterThanOperation;
+import com.gs.fw.common.mithra.finder.paramop.OpWithDateParamExtractor;
 import com.gs.fw.common.mithra.util.MithraTimestamp;
 
 import java.io.Externalizable;
@@ -39,6 +41,12 @@ public class DateGreaterThanOperation extends NonPrimitiveGreaterThanOperation i
     public DateGreaterThanOperation()
     {
         // for Externalizable
+    }
+
+    @Override
+    public Extractor getStaticExtractor()
+    {
+        return OpWithDateParamExtractor.INSTANCE;
     }
 
     public void writeExternal(ObjectOutput out) throws IOException

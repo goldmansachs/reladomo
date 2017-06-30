@@ -34,15 +34,17 @@ import com.gs.fw.common.mithra.cache.IndexReference;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.extractor.OperationParameterExtractor;
+import com.gs.fw.common.mithra.extractor.TimestampExtractor;
 import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.paramop.OpWithObjectParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithTimestampParamExtractor;
 import com.gs.fw.common.mithra.finder.timestamp.TimestampEqOperation;
-import com.gs.fw.common.mithra.util.ImmutableTimestamp;
 import com.gs.fw.common.mithra.util.ListFactory;
 import com.gs.fw.common.mithra.util.TimestampPool;
 import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
 
 
-public class AsOfEqOperation extends AtomicEqualityOperation implements SqlParameterSetter, AsOfOperation, Externalizable
+public class AsOfEqOperation extends AtomicEqualityOperation implements SqlParameterSetter, AsOfOperation, Externalizable, OpWithObjectParam
 {
 
     private Timestamp parameter;
@@ -59,6 +61,12 @@ public class AsOfEqOperation extends AtomicEqualityOperation implements SqlParam
         // for externalizable
     }
 
+    @Override
+    protected Extractor getStaticExtractor()
+    {
+        return OpWithTimestampParamExtractor.INSTANCE;
+    }
+
     public List applyOperationToFullCache()
     {
         Cache cache = this.getCache();
@@ -66,9 +74,9 @@ public class AsOfEqOperation extends AtomicEqualityOperation implements SqlParam
         return indexRef.isValid() ? cache.get(indexRef.indexReference, this.parameter) : null;
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
     {
-        AsOfAttribute asOfAttribute = (AsOfAttribute)this.getAttribute();
+        TimestampExtractor asOfAttribute = (TimestampExtractor)extractor;
         return asOfAttribute.timestampValueOf(o).equals(parameter);
     }
 

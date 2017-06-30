@@ -17,18 +17,19 @@
 package com.gs.fw.common.mithra.finder.shortop;
 
 import com.gs.fw.common.mithra.attribute.ShortAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.extractor.ShortExtractor;
 import com.gs.fw.common.mithra.finder.AtomicNotEqualityOperation;
 import com.gs.fw.common.mithra.finder.SqlParameterSetter;
 import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.paramop.OpWithShortParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithShortParamExtractor;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-
-
-public class ShortNotEqOperation extends AtomicNotEqualityOperation implements SqlParameterSetter
+public class ShortNotEqOperation extends AtomicNotEqualityOperation implements SqlParameterSetter, OpWithShortParam
 {
-
     private short parameter;
 
     public ShortNotEqOperation(ShortAttribute attribute, short parameter)
@@ -38,9 +39,15 @@ public class ShortNotEqOperation extends AtomicNotEqualityOperation implements S
     }
 
     @Override
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    protected Extractor getStaticExtractor()
     {
-        ShortAttribute shortAttribute = (ShortAttribute)this.getAttribute();
+        return OpWithShortParamExtractor.INSTANCE;
+    }
+
+    @Override
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
+    {
+        ShortExtractor shortAttribute = (ShortExtractor) extractor;
         if (shortAttribute.isAttributeNull(o)) return false;
         return shortAttribute.shortValueOf(o) != parameter;
     }

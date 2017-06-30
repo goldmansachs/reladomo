@@ -17,8 +17,11 @@
 package com.gs.fw.common.mithra.finder.longop;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
-import com.gs.fw.common.mithra.attribute.LongAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.extractor.LongExtractor;
 import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.paramop.OpWithLongParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithLongParamExtractor;
 import com.gs.fw.common.mithra.util.HashUtil;
 
 import java.sql.PreparedStatement;
@@ -26,7 +29,7 @@ import java.sql.SQLException;
 
 
 
-public class LongLessThanOperation extends LessThanOperation
+public class LongLessThanOperation extends LessThanOperation implements OpWithLongParam
 {
 
     private long parameter;
@@ -42,69 +45,22 @@ public class LongLessThanOperation extends LessThanOperation
         return parameter;
     }
 
+    @Override
+    public Extractor getStaticExtractor()
+    {
+        return OpWithLongParamExtractor.INSTANCE;
+    }
+
     public void zToString(ToStringContext toStringContext)
     {
         this.getAttribute().zAppendToString(toStringContext);
         toStringContext.append("<").append(this.parameter);
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
-    {
-        LongAttribute integerAttribute = (LongAttribute)this.getAttribute();
-        if (integerAttribute.isAttributeNull(o)) return false;
-        return integerAttribute.longValueOf(o) < parameter;
-    }
-
     public int setSqlParameters(PreparedStatement pstmt, int startIndex, SqlQuery query) throws SQLException
     {
         pstmt.setLong(startIndex, parameter);
         return 1;
-    }
-
-    public Operation zCombinedAndWithAtomicEquality(AtomicEqualityOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            if (!op.zIsNullOperation() && ((LongEqOperation) op).getParameter() < this.parameter)
-            {
-                return op;
-            }
-            return new None(this.getAttribute());
-        }
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            long target = ((LongGreaterThanOperation) op).getParameter();
-            if (target >= this.parameter) return new None(this.getAttribute());
-            return null;
-        }
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            long target = ((LongGreaterThanEqualsOperation) op).getParameter();
-            if (target >= this.parameter) return new None(this.getAttribute());
-            return null;
-        }
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        if (op.getAttribute().equals(this.getAttribute()))
-        {
-            long target = ((LongLessThanOperation) op).getParameter();
-            if (target < this.parameter) return op;
-            return this;
-        }
-        return null;
     }
 
     public int hashCode()
@@ -123,4 +79,9 @@ public class LongLessThanOperation extends LessThanOperation
         return false;
     }
 
+    @Override
+    protected boolean matchesWithoutDeleteCheck(Object holder, Extractor extractor)
+    {
+        return !extractor.isAttributeNull(holder) && ((LongExtractor)extractor).longValueOf(holder) < this.getParameter();
+    }
 }

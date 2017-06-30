@@ -18,6 +18,8 @@
 package com.gs.fw.common.mithra.finder;
 
 import com.gs.fw.common.mithra.MithraManagerProvider;
+
+import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,7 +28,10 @@ import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
-import com.gs.fw.common.mithra.attribute.TimestampAttribute;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchRequiresExactSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.util.*;
 
@@ -675,8 +680,7 @@ public class AndOperation implements Operation
             if (op2 != null) newOps.add(op2);
         }
         if (newOps.size() == 0) return null;
-        if (newOps.size() == 1) return (Operation) newOps.get(0);
-        return new AndOperation(newOps);
+        return createAndOrSingleOp(newOps);
     }
 
     public Operation zGetAsOfOp(AsOfAttribute asOfAttribute)
@@ -836,21 +840,10 @@ public class AndOperation implements Operation
                     leftOver.add(operands.get(i));
                 }
             }
-            Operation rest = new AndOperation(leftOver);
+            Operation rest = createAndOrSingleOp(leftOver);
             return flipped.and(new MappedOperation(mapper, rest));
         }
         return null;
-    }
-
-    public Operation zFindEquality(TimestampAttribute attr)
-    {
-        Operation result = null;
-        for (int i = 0; i < operands.size() && result == null; i++)
-        {
-            Operation op = ((Operation) operands.get(i));
-            result = op.zFindEquality(attr);
-        }
-        return result;
     }
 
     /**
@@ -928,22 +921,8 @@ public class AndOperation implements Operation
         return this.and(op);
     }
 
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        return this.and(op);
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        return this.and(op);
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        return this.and(op);
-    }
-
-    public Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op)
+    @Override
+    public Operation zCombinedAndWithRange(RangeOperation op)
     {
         return this.and(op);
     }
@@ -997,5 +976,207 @@ public class AndOperation implements Operation
     public boolean zHasParallelApply()
     {
         return true;
+    }
+
+    @Override
+    public boolean zCanFilterInMemory()
+    {
+        for (int i = 0; i < this.operands.size(); i++)
+        {
+            if (!((Operation) this.operands.get(i)).zCanFilterInMemory())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean zIsShapeCachable()
+    {
+        return true;
+    }
+
+    @Override
+    public ShapeMatchResult zShapeMatch(Operation existingOperation)
+    {
+        this.combineOperands();
+        if (existingOperation instanceof AndOperation)
+        {
+            return zShapeMatchAnd((AndOperation) existingOperation);
+        }
+        else if (existingOperation instanceof OrOperation)
+        {
+            return ((OrOperation) existingOperation).oneAtATimeReverseShapeMatch(this);
+        }
+        else
+        {
+            return zShapeMatchOneAtATime(existingOperation);
+        }
+    }
+
+    private ShapeMatchResult zShapeMatchAnd(AndOperation existingOperation)
+    {
+        InternalList existingOperands = existingOperation.operands;
+        BitSet matchedSlots = new BitSet(existingOperands.size());
+        InternalList filterOperands = new InternalList(this.operands.size());
+        InternalList lookupOperands = new InternalList(this.operands.size());
+        for(int i=0;i<this.operands.size();i++)
+        {
+            Operation operand = (Operation) operands.get(i);
+            if (!operand.zCanFilterInMemory())
+            {
+                int matchedIndex = existingOperands.indexOf(operand);
+                if (matchedIndex < 0)
+                {
+                    return NoMatchRequiresExactSmr.INSTANCE;
+                }
+                else
+                {
+                    lookupOperands.add(operand);
+                    matchedSlots.set(matchedIndex);
+                }
+            }
+            else
+            {
+                boolean matched = false;
+                for(int j=0;j<existingOperands.size() && !matched;j++)
+                {
+                    Operation existingOp = (Operation) existingOperands.get(j);
+                    ShapeMatchResult shapeMatchResult = operand.zShapeMatch(existingOp);
+                    if (shapeMatchResult.isExactMatch())
+                    {
+                        lookupOperands.add(operand);
+                        matched = true;
+                        matchedSlots.set(j);
+                    }
+                    else if (shapeMatchResult.isSuperMatch())
+                    {
+                        lookupOperands.add(((SuperMatchSmr) shapeMatchResult).getLookUpOperation());
+                        filterOperands.add(operand);
+                        matched = true;
+                        matchedSlots.set(j);
+                    }
+                }
+                if (!matched)
+                {
+                    filterOperands.add(operand);
+                }
+            }
+
+        }
+        if (lookupOperands.isEmpty() || matchedSlots.cardinality() != existingOperands.size())
+        {
+            return NoMatchSmr.INSTANCE;
+        }
+        return new SuperMatchSmr(existingOperation, this, createAndOrSingleOp(lookupOperands), createAndOrSingleOp(filterOperands));
+
+    }
+
+    private Operation createAndOrSingleOp(InternalList newOps)
+    {
+        if (newOps.size() == 1)
+        {
+            return (Operation) newOps.get(0);
+        }
+        return new AndOperation(newOps);
+    }
+
+    private ShapeMatchResult zShapeMatchOneAtATime(Operation existingOperation)
+    {
+        for(int i=0;i<operands.size();i++)
+        {
+            Operation operand = (Operation) operands.get(i);
+            ShapeMatchResult shapeMatchResult = operand.zShapeMatch(existingOperation);
+            if (shapeMatchResult.isExactMatch())
+            {
+                return createSuperMatchWithout(i, operand, existingOperation);
+            }
+            else if (shapeMatchResult.isSuperMatch())
+            {
+                return new SuperMatchSmr(existingOperation, this, ((SuperMatchSmr) shapeMatchResult).getLookUpOperation(), this);
+            }
+        }
+        return NoMatchSmr.INSTANCE;
+    }
+
+    private ShapeMatchResult createSuperMatchWithout(int indexToOmit, Operation lookup, Operation existingOperation)
+    {
+        if (this.operands.size() == 2)
+        {
+            Operation filter;
+            if (indexToOmit == 0)
+            {
+                filter = (Operation) this.operands.get(1);
+            }
+            else
+            {
+                filter = (Operation) this.operands.get(0);
+            }
+            if (filter.zCanFilterInMemory())
+            {
+                return new SuperMatchSmr(existingOperation, this, lookup, filter);
+            }
+            else
+            {
+                return NoMatchRequiresExactSmr.INSTANCE;
+            }
+        }
+        else
+        {
+            InternalList filterOperands = new InternalList(this.operands.size() - 1);
+            for(int i=0;i<this.operands.size();i++)
+            {
+                if (i != indexToOmit)
+                {
+                    Operation op = (Operation) this.operands.get(i);
+                    if (op.zCanFilterInMemory())
+                    {
+                        filterOperands.add(op);
+                    }
+                    else
+                    {
+                        return NoMatchRequiresExactSmr.INSTANCE;
+                    }
+                }
+            }
+            return new SuperMatchSmr(existingOperation, this, lookup, new AndOperation(filterOperands));
+        }
+    }
+
+    public ShapeMatchResult reverseShapeMatch(AtomicEqualityOperation atomicEqualityOperation)
+    {
+        InternalList lookupOperands = new InternalList(this.operands.size());
+        for (int i = 0; i < this.operands.size(); i++)
+        {
+            Operation operand = (Operation) operands.get(i);
+            ShapeMatchResult shapeMatchResult = atomicEqualityOperation.zShapeMatch(operand);
+            if (shapeMatchResult.isExactMatch())
+            {
+                lookupOperands.add(atomicEqualityOperation);
+            }
+            else if (shapeMatchResult.isSuperMatch())
+            {
+                lookupOperands.add(operand);
+            }
+            else
+            {
+                return NoMatchSmr.INSTANCE;
+            }
+        }
+        return new SuperMatchSmr(this, atomicEqualityOperation, createAndOrSingleOp(lookupOperands), atomicEqualityOperation);
+    }
+
+    @Override
+    public int zShapeHash()
+    {
+        this.combineOperands();
+        int hash = 0;
+        for(int i=0;i<this.operands.size();i++)
+        {
+            hash = HashUtil.combineHashes(hash, ((Operation)operands.get(i)).zShapeHash());
+        }
+        return hash;
+
     }
 }

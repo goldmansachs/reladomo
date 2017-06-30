@@ -25,11 +25,13 @@ import java.util.Set;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
-import com.gs.fw.common.mithra.attribute.TimestampAttribute;
 import com.gs.fw.common.mithra.cache.ConcurrentFullUniqueIndex;
 import com.gs.fw.common.mithra.cache.ExtractorBasedHashStrategy;
 import com.gs.fw.common.mithra.cache.FullUniqueIndex;
 import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchRequiresExactSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.util.*;
 import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
@@ -489,22 +491,8 @@ public class NotExistsOperation implements Operation
         return null;
     }
 
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        return null;
-    }
-
-    public Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op)
+    @Override
+    public Operation zCombinedAndWithRange(RangeOperation op)
     {
         return null;
     }
@@ -597,11 +585,6 @@ public class NotExistsOperation implements Operation
         return null;
     }
 
-    public Operation zFindEquality(TimestampAttribute attr)
-    {
-        return null;
-    }
-
     public Boolean matches(Object o)
     {
         List result = this.applyOperation(Collections.singletonList(o));
@@ -630,5 +613,29 @@ public class NotExistsOperation implements Operation
     public boolean zHasParallelApply()
     {
         return true;
+    }
+
+    @Override
+    public boolean zCanFilterInMemory()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean zIsShapeCachable()
+    {
+        return false;
+    }
+
+    @Override
+    public ShapeMatchResult zShapeMatch(Operation existingOperation)
+    {
+        return this.equals(existingOperation) ? ExactMatchSmr.INSTANCE : NoMatchRequiresExactSmr.INSTANCE;
+    }
+
+    @Override
+    public int zShapeHash()
+    {
+        return this.hashCode();
     }
 }

@@ -16,6 +16,8 @@
 
 package com.gs.fw.common.mithra.test;
 
+import com.gs.collections.api.list.primitive.IntList;
+import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import com.gs.fw.common.mithra.attribute.TupleAttribute;
 import com.gs.fw.common.mithra.attribute.update.AttributeUpdateWrapper;
@@ -1256,6 +1258,55 @@ extends MithraTestAbstract
             computeHashCode(orders, ExtractorBasedHashStrategy.create(new Extractor[] { OrderFinder.orderId()}));
             System.out.println("------------");
         }
+    }
+
+    public void testSubQueryCache()
+    {
+        int max = 30000;
+        FastList<Integer> userIdList = FastList.newList();
+        int[] userIds = new int[max];
+
+        OrderList list = new OrderList();
+
+        for(int i=0;i<max;i++)
+        {
+            Order order = new Order();
+            order.setOrderId(1000+i);
+            order.setUserId(-i);
+            order.setDescription("desc"+i/10);
+            order.setTrackingId("State"+i);
+            list.add(order);
+            userIdList.add(-i);
+        }
+
+        list.insertAll();
+
+        Collections.shuffle(userIdList);
+        for(int i=0;i<userIdList.size();i++)
+        {
+            userIds[i] = userIdList.get(i);
+        }
+
+        for(int i=0;i<10;i++)
+        {
+            MithraManagerProvider.getMithraManager().clearAllQueryCaches();
+            Operation superOp = OrderFinder.orderId().greaterThanEquals(1000).and(OrderFinder.userId().lessThan(10));
+            OrderList superQuery = OrderFinder.findMany(superOp);
+            superQuery.forceResolve();
+            runSubQueryTest(superOp, userIds);
+        }
+    }
+
+    private void runSubQueryTest(Operation superOp, int[] userIds)
+    {
+        long start = System.currentTimeMillis();
+
+        for(int i=0;i<userIds.length;i++)
+        {
+            OrderFinder.findMany(superOp.and(OrderFinder.userId().eq(userIds[i]))).forceResolve();
+        }
+        long end = System.currentTimeMillis();
+        System.out.println("single equality filter over "+userIds.length+" list length "+(end - start)*1.0/userIds.length+" ms per");
     }
 
     private void computeHashCode(Order[] orders, ExtractorBasedHashStrategy extractorBasedHashStrategy)

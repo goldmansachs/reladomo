@@ -202,7 +202,6 @@ public class RemoteMithraObjectPersister implements MithraDatedObjectPersister, 
         CachedQuery cachedQuery = new CachedQuery(analyzedOperation.getOriginalOperation(), orderby);
         cachedQuery.setReachedMaxRetrieveCount(queryResult.isReachedMaxRetrieveCount());
         cachedQuery.setResult(queryResult.getDeserializedResult());
-        cachedQuery.cacheQuery(forRelationship);
         if (analyzedOperation.isAnalyzedOperationDifferent())
         {
             cachedQuery.setWasDefaulted();
@@ -211,6 +210,7 @@ public class RemoteMithraObjectPersister implements MithraDatedObjectPersister, 
             cachedQuery2.setResult(queryResult.getDeserializedResult());
             cachedQuery2.cacheQuery(forRelationship);
         }
+        cachedQuery.cacheQuery(forRelationship);
         return cachedQuery;
     }
 

@@ -17,15 +17,18 @@
 package com.gs.fw.common.mithra.finder.charop;
 
 import com.gs.fw.common.mithra.attribute.CharAttribute;
+import com.gs.fw.common.mithra.extractor.CharExtractor;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.AtomicNotEqualityOperation;
 import com.gs.fw.common.mithra.finder.SqlParameterSetter;
 import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.paramop.OpWithCharParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithCharParamExtractor;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-
-public class CharNotEqOperation  extends AtomicNotEqualityOperation implements SqlParameterSetter
+public class CharNotEqOperation  extends AtomicNotEqualityOperation implements SqlParameterSetter, OpWithCharParam
 {
     private char parameter;
 
@@ -35,9 +38,15 @@ public class CharNotEqOperation  extends AtomicNotEqualityOperation implements S
         this.parameter = parameter;
     }
 
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    @Override
+    protected Extractor getStaticExtractor()
     {
-        CharAttribute charAttribute = (CharAttribute)this.getAttribute();
+        return OpWithCharParamExtractor.INSTANCE;
+    }
+
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
+    {
+        CharExtractor charAttribute = (CharExtractor) extractor;
         if (charAttribute.isAttributeNull(o)) return false;
         return charAttribute.charValueOf(o) != parameter;
     }

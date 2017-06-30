@@ -36,7 +36,6 @@ import com.gs.fw.common.mithra.extractor.OperationParameterExtractor;
 import com.gs.fw.common.mithra.finder.*;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.util.ListFactory;
-import com.gs.fw.common.mithra.util.MithraTimestamp;
 import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
 
 
@@ -49,6 +48,12 @@ public class AsOfEdgePointOperation extends AtomicEqualityOperation implements A
     {
         super(asOfAttribute);
         this.edgeAttribute = edgeAttribute;
+    }
+
+    @Override
+    protected Extractor getStaticExtractor()
+    {
+        throw new RuntimeException("should not get here");
     }
 
     public Attribute getEdgeAttribute()
@@ -254,7 +259,7 @@ public class AsOfEdgePointOperation extends AtomicEqualityOperation implements A
     }
 
     @Override
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
     {
         return true;
     }

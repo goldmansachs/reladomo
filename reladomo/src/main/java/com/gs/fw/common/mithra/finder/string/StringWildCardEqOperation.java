@@ -17,6 +17,7 @@
 package com.gs.fw.common.mithra.finder.string;
 
 import com.gs.fw.common.mithra.attribute.StringAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.SqlQuery;
 import com.gs.fw.common.mithra.finder.ToStringContext;
 import com.gs.fw.common.mithra.util.WildcardParser;
@@ -47,8 +48,8 @@ public class StringWildCardEqOperation extends StringLikeOperation
     }
 
     @Override
-    protected Boolean matchesWithoutDeleteCheck(Object o)
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
     {
-        return parser.matches((String) this.getAttribute().valueOf(o));
+        return parser.matches((String) extractor.valueOf(o));
     }
 }

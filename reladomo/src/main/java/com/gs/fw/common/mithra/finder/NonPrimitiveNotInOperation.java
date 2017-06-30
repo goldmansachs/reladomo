@@ -16,13 +16,17 @@
 
 package com.gs.fw.common.mithra.finder;
 
-import com.gs.fw.common.mithra.MithraBusinessException;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.NonPrimitiveAttribute;
 import com.gs.fw.common.mithra.attribute.StringAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.bytearray.ByteArraySet;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.collections.impl.set.mutable.UnifiedSet;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.util.Time;
 
 import java.io.Externalizable;
@@ -71,11 +75,6 @@ public class NonPrimitiveNotInOperation extends NotInOperation implements SqlPar
             return max;
         }
         return 0;
-    }
-
-    protected Boolean matchesWithoutDeleteCheck(Object o)
-    {
-        return !this.set.contains(this.getAttribute().valueOf(o));
     }
 
     protected int setSqlParameters(PreparedStatement pstmt, int startIndex, TimeZone timeZone, int setStart, int numberToSet, DatabaseType databaseType) throws SQLException
@@ -209,5 +208,31 @@ public class NonPrimitiveNotInOperation extends NotInOperation implements SqlPar
     public BigDecimal getSetValueAsBigDecimal(int index)
     {
         return (BigDecimal) copiedArray[index];
+    }
+
+
+    @Override
+    public boolean setContains(Object holder, Extractor extractor)
+    {
+        return this.set.contains(extractor.valueOf(holder));
+    }
+
+    @Override
+    protected ShapeMatchResult shapeMatchSet(NotInOperation existingOperation)
+    {
+        if (existingOperation.getSetSize() < MAX_SHAPE_MATCH_SIZE)
+        {
+            NonPrimitiveNotInOperation loopOp = (NonPrimitiveNotInOperation) existingOperation;
+            Iterator floatIterator = loopOp.set.iterator();
+            while(floatIterator.hasNext())
+            {
+                if (!this.set.contains(floatIterator.next()))
+                {
+                    return NoMatchSmr.INSTANCE;
+                }
+            }
+            return (this.getSetSize() == loopOp.getSetSize()) ? ExactMatchSmr.INSTANCE : new SuperMatchSmr(existingOperation, this);
+        }
+        return NoMatchSmr.INSTANCE;
     }
 }

@@ -23,15 +23,20 @@ import java.util.Map;
 import java.util.Set;
 
 import com.gs.collections.impl.list.mutable.FastList;
+import com.gs.collections.impl.map.mutable.UnifiedMap;
+import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
-import com.gs.fw.common.mithra.attribute.TimestampAttribute;
 import com.gs.fw.common.mithra.cache.Cache;
 import com.gs.fw.common.mithra.cache.IndexReference;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.extractor.PositionBasedOperationParameterExtractor;
 import com.gs.fw.common.mithra.finder.asofop.AsOfEdgePointOperation;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.util.*;
 import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
@@ -238,16 +243,6 @@ public class MultiEqualityOperation implements Operation, EqualityOperation
     public Operation zFlipToOneMapper(Mapper mapper)
     {
         return null;
-    }
-
-    public Operation zFindEquality(TimestampAttribute attr)
-    {
-        Operation result = null;
-        for (int i = 0; i < atomicOperations.length && result == null; i++)
-        {
-            result =  atomicOperations[i].zFindEquality(attr);
-        }
-        return result;
     }
 
     public Cache getCache()
@@ -784,7 +779,8 @@ public class MultiEqualityOperation implements Operation, EqualityOperation
         return null;
     }
 
-    public Operation zCombinedAndWithRangeOperation(RangeOperation op)
+    @Override
+    public Operation zCombinedAndWithRange(RangeOperation op)
     {
         // == ok is fine in this case, as the strings are ultimately coming from a static reference in the finder
         if (op.zGetResultClassName() == this.zGetResultClassName())
@@ -811,26 +807,6 @@ public class MultiEqualityOperation implements Operation, EqualityOperation
             }
         }
         return null;
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThan(GreaterThanOperation op)
-    {
-        return this.zCombinedAndWithRangeOperation(op);
-    }
-
-    public Operation zCombinedAndWithAtomicGreaterThanEquals(GreaterThanEqualsOperation op)
-    {
-        return this.zCombinedAndWithRangeOperation(op);
-    }
-
-    public Operation zCombinedAndWithAtomicLessThan(LessThanOperation op)
-    {
-        return this.zCombinedAndWithRangeOperation(op);
-    }
-
-    public Operation zCombinedAndWithAtomicLessThanEquals(LessThanEqualsOperation op)
-    {
-        return this.zCombinedAndWithRangeOperation(op);
     }
 
     public Operation zCombinedAndWithIn(InOperation op)
@@ -955,6 +931,7 @@ public class MultiEqualityOperation implements Operation, EqualityOperation
 
     public boolean hasInClause()
     {
+        //todo: optimize this by memoization
         for (int i = 0; i < this.atomicOperations.length; i++)
         {
             if (atomicOperations[i] instanceof InOperation) return true;
@@ -1066,5 +1043,174 @@ public class MultiEqualityOperation implements Operation, EqualityOperation
     public boolean zHasParallelApply()
     {
         return false;
+    }
+
+    @Override
+    public boolean zCanFilterInMemory()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean zIsShapeCachable()
+    {
+        return true;
+    }
+
+    @Override
+    public ShapeMatchResult zShapeMatch(Operation existingOperation)
+    {
+        // the only case we care about is when existing is another
+        // equality/multi-equality with fewer terms and matching attributes
+        // all other cases are too complex.
+        if (existingOperation instanceof AtomicOperation)
+        {
+            AtomicOperation atomicOp = (AtomicOperation) existingOperation;
+            for(int i=0;i<this.atomicOperations.length; i++)
+            {
+                if (atomicOperations[i].getAttribute().equals(atomicOp.getAttribute()))
+                {
+                    ShapeMatchResult shapeMatchResult = atomicOperations[i].zShapeMatch(atomicOp);
+                    if (shapeMatchResult.isExactMatch())
+                    {
+                        return new SuperMatchSmr(existingOperation, this, atomicOperations[i], this); //todo: can optimize filterOperation
+                    }
+                    else if (shapeMatchResult.isSuperMatch())
+                    {
+                        SuperMatchSmr superMatchSmr = (SuperMatchSmr) shapeMatchResult;
+                        return new SuperMatchSmr(existingOperation, this, superMatchSmr.getLookUpOperation(), this);
+                    }
+                }
+            }
+        }
+        else if (existingOperation instanceof MultiEqualityOperation)
+        {
+            MultiEqualityOperation multiEqualityOperation = (MultiEqualityOperation) existingOperation;
+            if (multiEqualityOperation.hasInClause() || this.hasInClause())
+            {
+                return complexShapeMatch(multiEqualityOperation);
+            }
+            int equalityOpCount = multiEqualityOperation.getEqualityOpCount();
+            if (equalityOpCount <= this.getEqualityOpCount())
+            {
+                Set set = (equalityOpCount > 8) ? new UnifiedSet(equalityOpCount) : new SmallSet(equalityOpCount);
+                multiEqualityOperation.addDepenedentAttributesToSet(set);
+                int matched = 0;
+                for(int i=0;i<this.atomicOperations.length;i++)
+                {
+                    if (set.contains(this.atomicOperations[i].getAttribute()))
+                    {
+                        matched++;
+                    }
+                }
+                if (matched == set.size())
+                {
+                    return equalityOpCount == this.getEqualityOpCount() ? ExactMatchSmr.INSTANCE :
+                            MultiEqualityOperation.createSuperMatchSmr(existingOperation, this, multiEqualityOperation, this, set);
+                }
+            }
+        }
+        //ignoring more complex cases, e.g. "x = 5 & y = 3" is a subset of "x > 1 & y > 0"
+        return NoMatchSmr.INSTANCE;
+    }
+
+    public static ShapeMatchResult createSuperMatchSmr(Operation existingOperation, Operation newOperation, MultiEqualityOperation superOperation, MultiEqualityOperation subOperation, Set set)
+    {
+        // we know these operations do NOT have in-clauses where sub overlaps with super
+        subOperation.calculateFalseHood();
+        superOperation.calculateFalseHood();
+        int lookupCount = 0;
+        AtomicOperation[] forLookup = new AtomicOperation[superOperation.getEqualityOpCount()];
+        int filterCount = 0;
+        AtomicOperation[] forFilter = new AtomicOperation[subOperation.getEqualityOpCount() - superOperation.getEqualityOpCount()];
+        for(AtomicOperation eo: subOperation.atomicOperations)
+        {
+            if (set.contains(eo.getAttribute()))
+            {
+                forLookup[lookupCount++] = eo;
+            }
+            else
+            {
+                forFilter[filterCount++] = eo;
+            }
+        }
+        if (filterCount == 1)
+        {
+            return new SuperMatchSmr(existingOperation, newOperation, new MultiEqualityOperation(forLookup), forFilter[0]);
+        }
+        else
+        {
+            return new SuperMatchSmr(existingOperation, newOperation, new MultiEqualityOperation(forLookup), new MultiEqualityOperation(forFilter));
+        }
+    }
+
+    public static ShapeMatchResult createSuperMatchSmr(Operation existingOperation, RelationshipMultiEqualityOperation relationshipMultiEqualityOperation,
+                                                       AtomicEqualityOperation superOperation, MultiEqualityOperation subOperation)
+    {
+        AtomicOperation[] atomicOperations = subOperation.atomicOperations;
+        for(int i=0;i<atomicOperations.length; i++)
+        {
+            if (atomicOperations[i].getAttribute().equals(superOperation.getAttribute()) && !(atomicOperations[i] instanceof InOperation))
+            {
+                return new SuperMatchSmr(existingOperation, relationshipMultiEqualityOperation, atomicOperations[i], relationshipMultiEqualityOperation); //todo: can optimize filterOperation
+            }
+        }
+        return NoMatchSmr.INSTANCE;
+    }
+
+    private ShapeMatchResult complexShapeMatch(MultiEqualityOperation existingOp)
+    {
+        UnifiedMap<Attribute, AtomicOperation> attrOpMap = new UnifiedMap(existingOp.getEqualityOpCount());
+        for(AtomicOperation ao: existingOp.atomicOperations)
+        {
+            attrOpMap.put(ao.getAttribute(), ao);
+        }
+        int lookupCount = 0;
+        AtomicOperation[] forLookup = new AtomicOperation[this.getEqualityOpCount()];
+        for(AtomicOperation eo: this.atomicOperations)
+        {
+            AtomicOperation matching = attrOpMap.get(eo.getAttribute());
+            if (matching != null)
+            {
+                ShapeMatchResult shapeMatchResult = eo.zShapeMatch(matching);
+                if (shapeMatchResult.isExactMatch())
+                {
+                    forLookup[lookupCount++] = eo;
+                }
+                else if (shapeMatchResult.isSuperMatch())
+                {
+                    forLookup[lookupCount++] = (AtomicOperation) ((SuperMatchSmr)shapeMatchResult).getLookUpOperation();
+                }
+                else //NoMatch
+                {
+                    return shapeMatchResult;
+                }
+            }
+            else
+            {
+                return NoMatchSmr.INSTANCE;
+            }
+        }
+        return new SuperMatchSmr(existingOp, this, new MultiEqualityOperation(forLookup), this); // todo: can optimize filterOperation
+
+    }
+
+    @Override
+    public int zShapeHash()
+    {
+        int hashcode = 0;
+        for (int i = 0; i < this.atomicOperations.length; i++)
+        {
+            AtomicOperation aeo = atomicOperations[i];
+            if (aeo instanceof AtomicEqualityOperation)
+            {
+                hashcode ^= aeo.getAttribute().hashCode();
+            }
+            else
+            {
+                hashcode ^= aeo.hashCode();
+            }
+        }
+        return hashcode;
     }
 }

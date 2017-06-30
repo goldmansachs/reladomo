@@ -67,7 +67,7 @@ extends MithraTestAbstract
                     " and c.CONTRACT_ID = "+contract.getContractId()+
                     " and c.ACCOUNT_ID = '"+contract.getAccountId()+"'"+
                     " and c.PRODUCT_ID = "+contract.getProductId();
-            this.genericRetrievalTest(sql, contract.getUnderliers());
+            this.genericRetrievalTest(sql, contract.getUnderliers(), false);
         }
         assertEquals(oldCount, MithraManagerProvider.getMithraManager().getDatabaseRetrieveCount());
     }
