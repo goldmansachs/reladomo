@@ -602,7 +602,9 @@ public class MithraManager
     {
         if (manager != null)
         {
+            MithraNotificationEventManager old = this.notificationEventManager;
             this.notificationEventManager = manager;
+            manager.initializeFrom(old);
         }
     }
 
