@@ -27,7 +27,7 @@ import com.gs.fw.common.mithra.transaction.MultiUpdateOperation;
 
 import java.util.List;
 import java.util.Map;
-
+import java.util.Set;
 
 
 public interface MithraNotificationEventManager
@@ -84,4 +84,8 @@ public interface MithraNotificationEventManager
     public boolean isQueuedExecutorChannelEmpty();
 
     public void forceSendNow();
+
+    public void initializeFrom(MithraNotificationEventManager old);
+
+    public Set<RegistrationKey> getExistingRegistrations();
 }

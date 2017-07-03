@@ -31,6 +31,7 @@ import com.gs.fw.common.mithra.util.ListFactory;
 import com.gs.fw.common.mithra.util.MithraProcessInfo;
 import com.gs.fw.common.mithra.util.lz4.LZ4BlockInputStream;
 import com.gs.fw.common.mithra.util.lz4.LZ4BlockOutputStream;
+import com.gs.reladomo.metadata.ReladomoClassMetaData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,6 +143,26 @@ public class MithraNotificationEventManagerImpl implements MithraNotificationEve
                 addTaskToQueue(task);
             }
         }
+    }
+
+    @Override
+    public void initializeFrom(MithraNotificationEventManager old)
+    {
+        Set<RegistrationKey> existingRegistrations = old.getExistingRegistrations();
+        for(RegistrationKey key: existingRegistrations)
+        {
+            ReladomoClassMetaData reladomoClassMetaData = ReladomoClassMetaData.fromFinderClassName(key.getClassname());
+            if (MithraManagerProvider.getMithraManager().getConfigManager().isClassConfigured(reladomoClassMetaData.getBusinessOrInterfaceClassName()))
+            {
+                registerForNotification(key.getSubject(), reladomoClassMetaData.getFinderInstance().getMithraObjectPortal());
+            }
+        }
+    }
+
+    @Override
+    public Set<RegistrationKey> getExistingRegistrations()
+    {
+        return mithraNotificationSubscriber.keySet();
     }
 
     public Map getMithraListToNotificationListenerMap()
@@ -378,7 +399,7 @@ public class MithraNotificationEventManagerImpl implements MithraNotificationEve
         List<String> subscribers = new ArrayList<String>(keys.size());
         for (RegistrationKey key : keys)
         {
-            subscribers.add(key.classname);
+            subscribers.add(key.getClassname());
         }
         return subscribers;
     }
@@ -654,43 +675,6 @@ public class MithraNotificationEventManagerImpl implements MithraNotificationEve
                 Runnable r = (Runnable) all.get(i);
                 r.run();
             }
-        }
-    }
-
-    private static class RegistrationKey
-    {
-        private String classname;
-        private String subject;
-
-        public RegistrationKey(String subject, String className)
-        {
-            this.classname = className;
-            this.subject = subject;
-        }
-
-        public boolean equals(Object o)
-        {
-            if (this == o) return true;
-            if (!(o instanceof RegistrationKey)) return false;
-
-            final RegistrationKey registrationKey = (RegistrationKey) o;
-
-            if (classname != null ? !classname.equals(registrationKey.classname) : registrationKey.classname != null)
-                return false;
-            return !(subject != null ? !subject.equals(registrationKey.subject) : registrationKey.subject != null);
-        }
-
-        public int hashCode()
-        {
-            int result;
-            result = (classname != null ? classname.hashCode() : 0);
-            result = 29 * result + (subject != null ? subject.hashCode() : 0);
-            return result;
-        }
-
-        public String toString()
-        {
-            return classname + "," + subject;
         }
     }
 

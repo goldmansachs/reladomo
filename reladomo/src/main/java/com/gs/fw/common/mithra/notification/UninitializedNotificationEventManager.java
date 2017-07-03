@@ -16,6 +16,7 @@
 
 package com.gs.fw.common.mithra.notification;
 
+import com.gs.collections.impl.map.mutable.ConcurrentHashMap;
 import com.gs.fw.common.mithra.MithraDataObject;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.update.AttributeUpdateWrapper;
@@ -27,15 +28,19 @@ import com.gs.fw.common.mithra.transaction.MultiUpdateOperation;
 
 import java.util.List;
 import java.util.Map;
-
+import java.util.Set;
 
 
 public class UninitializedNotificationEventManager implements MithraNotificationEventManager
 {
+    private static final Object NOTHING = new Object();
+    private ConcurrentHashMap<RegistrationKey, Object> registered = ConcurrentHashMap.newMap(200);
 
     public void registerForNotification(String subject, MithraObjectPortal portal)
     {
-
+        String finderClassName = portal.getFinder().getFinderClassName();
+        RegistrationKey key = new RegistrationKey(subject, finderClassName);
+        registered.getIfAbsentPut(key, NOTHING);
     }
 
     public void registerForApplicationNotification(String subject, MithraApplicationNotificationListener listener,
@@ -132,6 +137,17 @@ public class UninitializedNotificationEventManager implements MithraNotification
 
     public void forceSendNow()
     {
+    }
+
+    @Override
+    public void initializeFrom(MithraNotificationEventManager old)
+    {
+    }
+
+    @Override
+    public Set<RegistrationKey> getExistingRegistrations()
+    {
+        return registered.keySet();
     }
 
     public long getMithraVmId()
