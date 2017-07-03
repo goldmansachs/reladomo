@@ -29,6 +29,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 public class SimulatedSequencePrimaryKeyGenerator
@@ -36,6 +38,7 @@ public class SimulatedSequencePrimaryKeyGenerator
 
     private static Logger logger = LoggerFactory.getLogger(SimulatedSequencePrimaryKeyGenerator.class.getName());
 
+    private Lock lock = new ReentrantLock();
     private String sequenceName;
     private Set sourceAttributeSet = new UnifiedSet();
     private int initialValue;
@@ -114,10 +117,18 @@ public class SimulatedSequencePrimaryKeyGenerator
         return new NextBatchTask(size);
     }
 
-    public synchronized void ensureCapacityForBatch(int size, Object sourceAttribute)
+    public void ensureCapacityForBatch(int size, Object sourceAttribute)
     {
-        initializeSimulatedSequence(size, sourceAttribute);
-        ensureCapacity(size);
+        lock.lock();
+        try
+        {
+            initializeSimulatedSequence(size, sourceAttribute);
+            ensureCapacity(size);
+        }
+        finally
+        {
+            lock.unlock();
+        }
     }
 
     private void ensureCapacity(int size)
@@ -203,21 +214,47 @@ public class SimulatedSequencePrimaryKeyGenerator
 
     private void initializeSimulatedSequence(int size, Object sourceAttribute)
     {
-        if(simulatedSequence == null)
+        if(simulatedSequence == null || (sourceAttribute != null && !sourceAttributeSet.contains(sourceAttribute)))
         {
-            long validPrimaryKeyValue = this.getValidPrimaryKeyValue(sourceAttribute);
-            InitializeTask initializer = this.getInitializeTask(size, sourceAttribute, validPrimaryKeyValue);
-            ExceptionCatchingThread.executeTask(initializer);
-
-            if(initializer.getException() != null)
+            long tmp;
+            lock.unlock();
+            try
             {
-                throw new MithraBusinessException("Exception during simulated sequence initialization: ", initializer.getException());
+                tmp = this.getValidPrimaryKeyValue(sourceAttribute);
             }
-            if (sourceAttribute != null) sourceAttributeSet.add(sourceAttribute);
-        }
-        else if (sourceAttribute != null && !sourceAttributeSet.contains(sourceAttribute))
-        {
-            this.validateSequenceNextValue(sourceAttribute);
+            finally
+            {
+                lock.lock();
+            }
+            final long validPrimaryKeyValue = tmp;
+            if (simulatedSequence == null)
+            {
+                InitializeTask initializer = this.getInitializeTask(size, sourceAttribute, validPrimaryKeyValue);
+                ExceptionCatchingThread.executeTask(initializer);
+
+                if(initializer.getException() != null)
+                {
+                    throw new MithraBusinessException("Exception during simulated sequence initialization: ", initializer.getException());
+                }
+                if (sourceAttribute != null) sourceAttributeSet.add(sourceAttribute);
+            }
+            else
+            {
+
+                if (this.checkIfWeNeedToReset(nextIdToGive, validPrimaryKeyValue))
+                {
+                    Long next = (Long) MithraManagerProvider.getMithraManager().executeTransactionalCommandInSeparateThread(new TransactionalCommand()
+                    {
+                        public Object executeTransaction(MithraTransaction tx) throws Throwable
+                        {
+                            return Long.valueOf(resetSequenceValue(validPrimaryKeyValue, simulatedSequence, nextIdToGive));
+                        }
+                    });
+                    nextIdToGive = next.longValue();
+                    nextLimit = nextIdToGive;
+                }
+                sourceAttributeSet.add(sourceAttribute);
+            }
         }
     }
 
@@ -255,33 +292,21 @@ public class SimulatedSequencePrimaryKeyGenerator
     }
 
 
-    private void validateSequenceNextValue(Object sourceAttribute)
+    public long getNextId(Object sourceAttribute) throws MithraException
     {
-        final long validPrimaryKeyValue = this.getValidPrimaryKeyValue(sourceAttribute);
-        boolean mustCheck = this.checkIfWeNeedToReset(nextIdToGive, validPrimaryKeyValue);
-
-        if (mustCheck)
+        lock.lock();
+        try
         {
-            Long next = (Long) MithraManagerProvider.getMithraManager().executeTransactionalCommandInSeparateThread(new TransactionalCommand()
-            {
-                public Object executeTransaction(MithraTransaction tx) throws Throwable
-                {
-                    return Long.valueOf(resetSequenceValue(validPrimaryKeyValue, simulatedSequence, nextIdToGive));
-                }
-            });
-            nextIdToGive = next.longValue();
-            nextLimit = nextIdToGive;
+            initializeSimulatedSequence(batchSize, sourceAttribute);
+            ensureNotEmpty();
+            long nextId = nextIdToGive;
+            nextIdToGive += incrementSize;
+            return nextId;
         }
-        sourceAttributeSet.add(sourceAttribute);
-    }
-
-    public synchronized long getNextId(Object sourceAttribute) throws MithraException
-    {
-        initializeSimulatedSequence(batchSize, sourceAttribute);
-        ensureNotEmpty();
-        long nextId = nextIdToGive;
-        nextIdToGive += incrementSize;
-        return nextId;
+        finally
+        {
+            lock.unlock();
+        }
     }
 
     private void ensureNotEmpty()
@@ -292,29 +317,37 @@ public class SimulatedSequencePrimaryKeyGenerator
         }
     }
 
-    public synchronized List<BulkSequence> getNextIdsInBulk(Object sourceAttribute, int numberToGet)
+    public List<BulkSequence> getNextIdsInBulk(Object sourceAttribute, int numberToGet)
     {
-        initializeSimulatedSequence(batchSize, sourceAttribute);
-        int unused = getNumberOfUnusedIds();
-        if (unused >= numberToGet)
+        lock.lock();
+        try
         {
-            long start = nextIdToGive;
-            long end = nextIdToGive + numberToGet*incrementSize;
-            nextIdToGive = end;
-            return ListFactory.create(new BulkSequence(start, end, incrementSize));
+            initializeSimulatedSequence(batchSize, sourceAttribute);
+            int unused = getNumberOfUnusedIds();
+            if (unused >= numberToGet)
+            {
+                long start = nextIdToGive;
+                long end = nextIdToGive + numberToGet * incrementSize;
+                nextIdToGive = end;
+                return ListFactory.create(new BulkSequence(start, end, incrementSize));
+            }
+            else
+            {
+                FastList<BulkSequence> result = new FastList<BulkSequence>(2);
+                result.add(new BulkSequence(nextIdToGive, nextLimit, incrementSize));
+                nextIdToGive = nextLimit;
+                numberToGet -= unused;
+                getNextBatch(numberToGet);
+                long start = nextIdToGive;
+                long end = nextIdToGive + numberToGet * incrementSize;
+                nextIdToGive = end;
+                result.add(new BulkSequence(start, end, incrementSize));
+                return result;
+            }
         }
-        else
+        finally
         {
-            FastList<BulkSequence> result = new FastList<BulkSequence>(2);
-            result.add(new BulkSequence(nextIdToGive, nextLimit, incrementSize));
-            nextIdToGive = nextLimit;
-            numberToGet -= unused;
-            getNextBatch(numberToGet);
-            long start = nextIdToGive;
-            long end = nextIdToGive + numberToGet*incrementSize;
-            nextIdToGive = end;
-            result.add(new BulkSequence(start, end, incrementSize));
-            return result;
+            lock.unlock();
         }
     }
 
@@ -387,14 +420,11 @@ public class SimulatedSequencePrimaryKeyGenerator
         RelatedFinder finder = ownerPortal.getFinder();
         Operation op = finder.all();
 
-        if ((sourceAttributeType != null ? sourceAttributeType.isStringSourceAttribute() : false) && (sourceAttribute != null ? sourceAttribute.getClass() == String.class : false))
+        if (sourceAttributeType != null)
         {
-            op = op.and(((StringAttribute)primaryKeyAttribute.getSourceAttribute()).eq(sourceAttribute.toString()));
+            op = op.and(primaryKeyAttribute.getSourceAttribute().nonPrimitiveEq(sourceAttribute));
         }
-        else if ((sourceAttributeType != null ? sourceAttributeType.isIntSourceAttribute() : false) && (sourceAttribute != null ? sourceAttribute.getClass() == Integer.class : false))
-        {
-            op = op.and(((IntegerAttribute)primaryKeyAttribute.getSourceAttribute()).eq(((Integer)sourceAttribute).intValue()));
-        }
+
         AsOfAttribute[] asOfAttributes = primaryKeyAttribute.getAsOfAttributes();
         if (asOfAttributes != null)
         {

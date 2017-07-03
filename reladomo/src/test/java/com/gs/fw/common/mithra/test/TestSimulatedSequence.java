@@ -56,6 +56,71 @@ public class TestSimulatedSequence extends MithraTestAbstract
         };
     }
 
+    public void testTwoThreadsHoldingLocks()
+    {
+        final Exchanger rendezvous = new Exchanger();
+
+        Runnable runnable1 = new Runnable()
+        {
+            public void run()
+            {
+
+                MithraManagerProvider.getMithraManager().executeTransactionalCommand(
+                        new TransactionalCommand()
+                        {
+
+                            public Object executeTransaction(MithraTransaction tx) throws Throwable
+                            {
+                                AccountTransaction one = AccountTransactionFinder.findByPrimaryKey(1, "B");
+                                one.setTransactionDescription("something different");
+                                tx.executeBufferedOperations(); // we should now have a lock on this table.
+                                waitForOtherThread(rendezvous);
+                                sleep(1000); // wait for the other thread to lock the simulated sequence. this can't be coordinated.
+                                AccountTransaction newTran = new AccountTransaction();
+                                newTran.setTransactionDescription("new one 1");
+                                newTran.setDeskId("B");
+                                newTran.setTransactionDate(new Timestamp(System.currentTimeMillis()));
+                                newTran.insert();
+                                return null;
+                            }
+                        });
+                waitForOtherThread(rendezvous);
+            }
+
+
+        };
+
+        Runnable runnable2 = new Runnable()
+        {
+            public void run()
+            {
+                MithraManagerProvider.getMithraManager().executeTransactionalCommand(
+                        new TransactionalCommand()
+                        {
+
+                            public Object executeTransaction(MithraTransaction tx) throws Throwable
+                            {
+                                Connection con = ConnectionManagerForTests.getInstance().getConnection("B");
+                                con.createStatement().execute("set lock_timeout 10000");
+                                con.close();
+                                AccountTransaction newTran = new AccountTransaction();
+                                newTran.setTransactionDescription("new one 2");
+                                newTran.setDeskId("B");
+                                newTran.setTransactionDate(new Timestamp(System.currentTimeMillis()));
+                                waitForOtherThread(rendezvous); // wait for the other thread to lock the table
+                                newTran.insert(); // this should try to do a max from the table
+                                con = ConnectionManagerForTests.getInstance().getConnection("B");
+                                con.createStatement().execute("set lock_timeout 2000");
+                                con.close();
+                                return null;
+                            }
+                        });
+                waitForOtherThread(rendezvous);
+            }
+        };
+        assertTrue(runMultithreadedTest(runnable1, runnable2));
+    }
+
     public void testSequenceInitialization()  throws Exception
     {
         new RiskValueTestAccountList(RiskValueTestAccountFinder.all()).deleteAll();
