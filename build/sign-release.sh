@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RELADOMO_VERSION=16.2.0
+RELADOMO_VERSION=16.3.1
 
 echo Enter passphrase:
 read -s PASSPHRASE

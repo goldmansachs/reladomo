@@ -1,4 +1,14 @@
 # Change Log
+## 16.3.1 - 2017-07-05
+### Enhancements:
+- Implement a simple subquery cache.
+- Notification initialization may be done after full cache load.
+
+### Bug Fixes:
+- Fix simulated sequence rare initialization deadlock.
+- Fix NPE in full cache not-exists.
+- Prevent compact operations from ending up in the query cache.
+
 ## 16.3.0 - 2017-06-02
 ### Enhancements:
 - Better heuristics for camel casing when generating xml from existing schema
