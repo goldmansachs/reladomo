@@ -393,6 +393,26 @@ public class TestSubQueryCache extends MithraTestAbstract
         assertNotSubQuery(op, subOp, OrderItemFinder.getFinderInstance());
     }
 
+    public void testEqualsEdgePoint()
+    {
+        Operation op = AuditedOrderFinder.processingDate().equalsEdgePoint();
+        Operation subOp = AuditedOrderFinder.processingDate().equalsInfinity();
+        assertNotSubQuery(op, subOp, AuditedOrderFinder.getFinderInstance());
+    }
+
+    public void testEqualsEdgePointInAnd()
+    {
+        Operation op = AuditedOrderFinder.description().greaterThan("A").and(AuditedOrderFinder.processingDate().equalsEdgePoint());
+        Operation subOp = AuditedOrderFinder.description().eq("First order");
+        assertNotSubQuery(op, subOp, AuditedOrderFinder.getFinderInstance());
+    }
+
+    public void testEqualsEdgePointInAnd2()
+    {
+        Operation op = AuditedOrderFinder.orderId().greaterThan(0).and(AuditedOrderFinder.processingDate().equalsEdgePoint());
+        Operation subOp = AuditedOrderFinder.orderId().greaterThan(1);
+        assertNotSubQuery(op, subOp, AuditedOrderFinder.getFinderInstance());
+    }
 
     // util methods
     private IntHashSet createSetOneTwo()

@@ -198,6 +198,10 @@ public abstract class AtomicEqualityOperation extends AbstractAtomicOperation im
     @Override
     public ShapeMatchResult zShapeMatch(Operation existingOperation)
     {
+        if (existingOperation instanceof AsOfEdgePointOperation)
+        {
+            return NoMatchSmr.INSTANCE;
+        }
         if (existingOperation instanceof AbstractAtomicOperation)
         {
             AbstractAtomicOperation existingAtomic = (AbstractAtomicOperation) existingOperation;

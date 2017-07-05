@@ -259,9 +259,21 @@ public class AsOfEdgePointOperation extends AtomicEqualityOperation implements A
     }
 
     @Override
-    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
+    public boolean zIsShapeCachable()
+    {
+        return false;
+    }
+
+    @Override
+    public Boolean matches(Object o)
     {
         return true;
+    }
+
+    @Override
+    protected boolean matchesWithoutDeleteCheck(Object o, Extractor extractor)
+    {
+        return false;
     }
 
     public boolean equals(Object obj)
