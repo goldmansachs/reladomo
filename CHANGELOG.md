@@ -1,4 +1,8 @@
 # Change Log
+## 16.3.2 - 2017-07-05
+### Bug Fixes:
+- Fix equalsEdgePoint with subquery
+
 ## 16.3.1 - 2017-07-05
 ### Enhancements:
 - Implement a simple subquery cache.
