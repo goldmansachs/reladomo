@@ -17,6 +17,7 @@
 package com.gs.fw.common.mithra.notification;
 
 import com.gs.collections.impl.map.mutable.UnifiedMap;
+import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.update.AttributeUpdateWrapper;
@@ -62,6 +63,8 @@ public class MithraNotificationEventManagerImpl implements MithraNotificationEve
     private static final int PERIOD = 100;
     private LZ4BlockOutputStream lz4BlockOutputStream = new LZ4BlockOutputStream(null, false);
     private LZ4BlockInputStream lz4BlockInputStream = new LZ4BlockInputStream(null);
+    private volatile boolean shutdown;
+    private Thread shutdownHook = null;
 
     public long getMithraVmId()
     {
@@ -70,8 +73,34 @@ public class MithraNotificationEventManagerImpl implements MithraNotificationEve
 
     public MithraNotificationEventManagerImpl(MithraMessagingAdapterFactory adapterFactory)
     {
+        this(adapterFactory, true);
+    }
+    public MithraNotificationEventManagerImpl(MithraMessagingAdapterFactory adapterFactory, boolean useShutdownHook)
+    {
         initializeNotificationHelperThreads();
         this.adapterFactory = adapterFactory;
+        if (useShutdownHook)
+        {
+            setupShutdownHook();
+        }
+    }
+
+    private void setupShutdownHook()
+    {
+        Thread hook = new Thread()
+        {
+            @Override
+            public void run()
+            {
+                if (!shutdown)
+                {
+                    forceSendNow();
+                    shutdown();
+                }
+            }
+        };
+        this.shutdownHook = hook;
+        Runtime.getRuntime().addShutdownHook(hook);
     }
 
     private synchronized MithraNotificationMessagingAdapter getOrCreateAdapter(String subject)
@@ -148,7 +177,8 @@ public class MithraNotificationEventManagerImpl implements MithraNotificationEve
     @Override
     public void initializeFrom(MithraNotificationEventManager old)
     {
-        Set<RegistrationKey> existingRegistrations = old.getExistingRegistrations();
+        Set<RegistrationKey> existingRegistrations = UnifiedSet.newSet(old.getExistingRegistrations());
+        old.shutdown();
         for(RegistrationKey key: existingRegistrations)
         {
             ReladomoClassMetaData reladomoClassMetaData = ReladomoClassMetaData.fromFinderClassName(key.getClassname());
@@ -642,6 +672,7 @@ public class MithraNotificationEventManagerImpl implements MithraNotificationEve
 
     public void shutdown()
     {
+        this.shutdown = true;
         if (queuedExecutor != null)
         {
             queuedExecutor.shutdownNow();
@@ -656,6 +687,11 @@ public class MithraNotificationEventManagerImpl implements MithraNotificationEve
             adapter.shutdown();
         }
         adapterFactory.shutdown();
+        if (this.shutdownHook != null)
+        {
+            Runtime.getRuntime().removeShutdownHook(this.shutdownHook);
+            shutdownHook = null;
+        }
     }
 
     public boolean isQueuedExecutorChannelEmpty()
