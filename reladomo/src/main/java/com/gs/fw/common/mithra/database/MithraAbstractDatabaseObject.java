@@ -3029,25 +3029,7 @@ public abstract class MithraAbstractDatabaseObject
     {
         TimeZone databaseTimeZone = this.getDatabaseTimeZoneGenericSource(source);
 
-        String schema = this.getSchemaGenericSource(source);
-        if (schema == null)
-        {
-            Connection con = null;
-            try
-            {
-                con = this.getConnectionForReadGenericSource(source);
-                schema = con.getCatalog();
-            }
-            catch (SQLException e)
-            {
-                throw new MithraDatabaseException("could not determine schema for bulk insert ", e);
-            }
-            finally
-            {
-                this.closeConnection(con);
-            }
-
-        }
+        String schema = getSchemaForBulkInsert(databaseType, source);
         String tableName = getOrCreateTupleTempTable(context, source);
 
         BulkLoader bulkLoader = null;
@@ -4420,25 +4402,7 @@ public abstract class MithraAbstractDatabaseObject
     {
         TimeZone databaseTimeZone = this.getDatabaseTimeZoneGenericSource(source);
 
-        String schema = this.getSchemaGenericSource(source);
-        if (schema == null)
-        {
-            Connection con = null;
-            try
-            {
-                con = this.getConnectionForReadGenericSource(source);
-                schema = con.getCatalog();
-            }
-            catch (SQLException e)
-            {
-                throw new MithraDatabaseException("could not determine schema for bulk insert ", e);
-            }
-            finally
-            {
-                this.closeConnection(con);
-            }
-
-        }
+        String schema = getSchemaForBulkInsert(databaseType, source);
 
         BulkLoader bulkLoader = null;
 
@@ -4508,6 +4472,29 @@ public abstract class MithraAbstractDatabaseObject
             if (bulkLoader != null) bulkLoader.destroy();
             this.closeStatementAndConnection(con, stm);
         }
+    }
+
+    private String getSchemaForBulkInsert(DatabaseType databaseType, Object source)
+    {
+        String schema = this.getSchemaGenericSource(source);
+        if (schema == null)
+        {
+            Connection con = null;
+            try
+            {
+                con = this.getConnectionForReadGenericSource(source);
+                schema = databaseType.getCurrentSchema(con);
+            }
+            catch (SQLException e)
+            {
+                throw new MithraDatabaseException("could not determine schema for bulk insert ", e);
+            }
+            finally
+            {
+                this.closeConnection(con);
+            }
+        }
+        return schema;
     }
 
     protected void zBatchUpdate(BatchUpdateOperation batchUpdateOperation)

@@ -34,8 +34,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.TimeZone;
 
-public class MsSqlTestConnectionManager extends AbstractMithraTestConnectionManager
-implements SourcelessConnectionManager
+public class MsSqlTestConnectionManager extends VendorTestConnectionManager
 {
     private static final Logger logger = LoggerFactory.getLogger(MsSqlTestConnectionManager.class);
     private final static MsSqlTestConnectionManager instance = new MsSqlTestConnectionManager();
@@ -44,9 +43,6 @@ implements SourcelessConnectionManager
     {
         return instance;
     }
-
-    private XAConnectionManager connectionManager;
-    private TimeZone databaseTimeZone;
 
     protected MsSqlTestConnectionManager()
     {
@@ -62,47 +58,12 @@ implements SourcelessConnectionManager
         connectionManager.setUseStatementPooling(true);
         connectionManager.setProperty("com.gs.fw.aig.jdbc.global.DataSourceImpl","com.microsoft.sqlserver.jdbc.SQLServerDataSource");
         connectionManager.initialisePool();
+        this.setDatabaseType(MsSqlDatabaseType.getInstance());
     }
 
     public BulkLoader createBulkLoader()
     throws BulkLoaderException
     {
         return null;
-    }
-
-    public Connection getConnection()
-    {
-        return this.connectionManager.getConnection();
-    }
-
-    public DatabaseType getDatabaseType()
-    {
-        return MsSqlDatabaseType.getInstance();
-    }
-
-    public TimeZone getDatabaseTimeZone()
-    {
-        return this.databaseTimeZone;
-    }
-
-    public void setDatabaseTimeZone(TimeZone databaseTimeZone)
-    {
-        this.databaseTimeZone = databaseTimeZone;
-    }
-
-    public String getDatabaseIdentifier()
-    {
-        return null;
-    }
-
-    public List getConnectionManagers()
-    {
-        return ListFactory.create(this.connectionManager);
-    }    
-
-    @Override
-    protected Collection<XAConnectionManager> getAllConnectionManagers()
-    {
-        return FastList.newListWith(this.connectionManager);
     }
 }

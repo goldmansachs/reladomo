@@ -874,7 +874,7 @@ public class SybaseDatabaseType extends AbstractDatabaseType
         return MithraTimestamp.zConvertTimeForReadingWithUtcCalendar(timestamp, timeZone);
     }
 
-    private Calendar getCalendarInstance()
+    protected Calendar getCalendarInstance()
     {
         SingleInstanceGregorianCalendar c = (SingleInstanceGregorianCalendar) calendarInstance.get();
         if (c == null)

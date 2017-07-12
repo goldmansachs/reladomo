@@ -2232,12 +2232,6 @@ public class TestMariaGeneralTestCases extends MithraMariaTestAbstract
         testIn.xtestLargeInWithToManyRelationshipTwoDeepWithOr();
     }
 
-    public void testConnectionManagerShutdown()
-    {
-        ((XAConnectionManager) SybaseTestConnectionManager.getInstance().getConnectionManagers().get(0)).shutdown();
-//        ((XAConnectionManager) SybaseTestConnectionManager.getInstance().getConnectionManagers().get(0)).shutdown();
-    }
-
     public void testTupleIn()
     {
         TupleSet set = new MithraArrayTupleTupleSet();

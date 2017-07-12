@@ -32,8 +32,7 @@ import java.sql.Connection;
 import java.util.Collection;
 import java.util.TimeZone;
 
-public class SybaseIqTestConnectionManager extends AbstractMithraTestConnectionManager
-implements SourcelessConnectionManager, ObjectSourceConnectionManager
+public class SybaseIqTestConnectionManager extends VendorTestConnectionManager
 {
     private static final Logger logger = LoggerFactory.getLogger(SybaseIqTestConnectionManager.class);
     private final static SybaseIqTestConnectionManager instance = new SybaseIqTestConnectionManager();
@@ -42,10 +41,6 @@ implements SourcelessConnectionManager, ObjectSourceConnectionManager
     {
         return instance;
     }
-
-    private XAConnectionManager connectionManager;
-    private TimeZone databaseTimeZone;
-    private SybaseIqDatabaseType databaseType;
 
     protected SybaseIqTestConnectionManager()
     {
@@ -93,64 +88,8 @@ implements SourcelessConnectionManager, ObjectSourceConnectionManager
                     appLoadDir);
     }
 
-    public Connection getConnection()
-    {
-        return this.connectionManager.getConnection();
-    }
-
     public SybaseIqDatabaseType getDatabaseType()
     {
-        return this.databaseType;
-    }
-
-    public void setDatabaseType(SybaseIqDatabaseType databaseType)
-    {
-        this.databaseType = databaseType;
-    }
-
-    public TimeZone getDatabaseTimeZone()
-    {
-        return this.databaseTimeZone;
-    }
-
-    public void setDatabaseTimeZone(TimeZone databaseTimeZone)
-    {
-        this.databaseTimeZone = databaseTimeZone;
-    }
-
-    public String getDatabaseIdentifier()
-    {
-        return null;
-    }
-
-    public BulkLoader createBulkLoader(Object sourceAttribute) throws BulkLoaderException
-    {
-        return createBulkLoader();
-    }
-
-    public Connection getConnection(Object sourceAttribute)
-    {
-        return getConnection();
-    }
-
-    public DatabaseType getDatabaseType(Object sourceAttribute)
-    {
-        return getDatabaseType();
-    }
-
-    public TimeZone getDatabaseTimeZone(Object sourceAttribute)
-    {
-        return getDatabaseTimeZone();
-    }
-
-    public String getDatabaseIdentifier(Object sourceAttribute)
-    {
-        return getDatabaseIdentifier();
-    }
-
-    @Override
-    protected Collection<XAConnectionManager> getAllConnectionManagers()
-    {
-        return FastList.newListWith(this.connectionManager);
+        return (SybaseIqDatabaseType) this.databaseType;
     }
 }

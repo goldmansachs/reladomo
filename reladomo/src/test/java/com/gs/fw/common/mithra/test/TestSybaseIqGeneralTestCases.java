@@ -21,7 +21,7 @@ import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.attribute.TupleAttribute;
 import com.gs.fw.common.mithra.behavior.txparticipation.MithraOptimisticLockException;
-import com.gs.fw.common.mithra.databasetype.SybaseIqDatabaseType;
+import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.aggregate.TestStandardDeviation;
@@ -34,13 +34,17 @@ import com.gs.fw.common.mithra.util.Time;
 import junit.framework.Assert;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.Random;
+import java.util.TimeZone;
 import java.util.concurrent.Exchanger;
 
 public class TestSybaseIqGeneralTestCases extends MithraSybaseIqTestAbstract
@@ -1348,25 +1352,25 @@ public class TestSybaseIqGeneralTestCases extends MithraSybaseIqTestAbstract
 
     public void testTupleInWithSharedTempTables()
     {
-        runTupleIn(SybaseIqDatabaseType.getInstance());
+        runTupleIn(getNormalDatabaseType());
     }
 
     public void testTupleInWithUnSharedTempTables()
     {
         try
         {
-            runTupleIn(SybaseIqDatabaseType.getInstanceWithoutSharedTempTables());
+            runTupleIn(getUnsharedTempDatabaseType());
         }
         finally
         {
-            SybaseIqTestConnectionManager.getInstance().setDatabaseType(SybaseIqDatabaseType.getInstance());
+            getVendorTestConnectionManager().setDatabaseType(getNormalDatabaseType());
         }
 
     }
 
-    public void runTupleIn(SybaseIqDatabaseType databaseType)
+    public void runTupleIn(DatabaseType databaseType)
     {
-        SybaseIqTestConnectionManager.getInstance().setDatabaseType(databaseType);
+        getVendorTestConnectionManager().setDatabaseType(databaseType);
         final int initialId = 10000;
         final int listSize = 200;
         bulkInsertProducts(initialId, listSize);
@@ -1688,7 +1692,7 @@ public class TestSybaseIqGeneralTestCases extends MithraSybaseIqTestAbstract
         final TinyBalanceList toUpdateList = new TinyBalanceList(op);
         toUpdateList.forceResolve();
 
-        Connection con = SybaseIqTestConnectionManager.getInstance().getConnection();
+        Connection con = getVendorTestConnectionManager().getConnection();
         con.createStatement().execute("update TINY_BALANCE set IN_Z = '"+timestampFormat.format(new Timestamp(System.currentTimeMillis()+10))+"' where BALANCE_ID in (10005, 10010)");
         con.close();
 
@@ -2015,16 +2019,15 @@ public class TestSybaseIqGeneralTestCases extends MithraSybaseIqTestAbstract
     {
         try
         {
-            SybaseIqTestConnectionManager.getInstance().setDatabaseType(SybaseIqDatabaseType.getInstanceWithoutSharedTempTables());
+            getVendorTestConnectionManager().setDatabaseType(getUnsharedTempDatabaseType());
             testTempObjectBulkInsert();
         }
         finally
         {
-            SybaseIqTestConnectionManager.getInstance().setDatabaseType(SybaseIqDatabaseType.getInstance());
+            getVendorTestConnectionManager().setDatabaseType(getNormalDatabaseType());
         }
 
     }
-
     /* todo: */ public void fixmetestDeleteAllInBatches()
     {
         OrderList list = createOrderList(5000, 1000);
@@ -2086,7 +2089,7 @@ public class TestSybaseIqGeneralTestCases extends MithraSybaseIqTestAbstract
         StringDatedOrder order = new StringDatedOrder();
         int orderId = 9876;
         Timestamp ts = new Timestamp(timestampFormat.parse("2008-03-29 18:30:00.0").getTime());
-        Date dt = dateFormat.parse("2008-03-29");
+        java.util.Date dt = dateFormat.parse("2008-03-29");
         order.setOrderId(orderId);
         order.setDescription("Order "+orderId);
         order.setUserId(1);
@@ -2114,7 +2117,7 @@ public class TestSybaseIqGeneralTestCases extends MithraSybaseIqTestAbstract
     public void testBatchDeleteWithDateAsString()
     {
         Operation op = StringDatedOrderFinder.processingDate().lessThan(new Timestamp(System.currentTimeMillis()));
-        op = op.and(StringDatedOrderFinder.orderDate().lessThan(new Date()));
+        op = op.and(StringDatedOrderFinder.orderDate().lessThan(new java.util.Date()));
 
         StringDatedOrderList orderList = StringDatedOrderFinder.findMany(op);
         assertEquals(4, orderList.size());
@@ -2144,7 +2147,7 @@ public class TestSybaseIqGeneralTestCases extends MithraSybaseIqTestAbstract
     public void testUpdateObjectWithUtilDateAsString2()
         throws Exception
     {
-        Date newDate = dateFormat.parse("2008-03-29");
+        java.util.Date newDate = dateFormat.parse("2008-03-29");
         Operation op = StringDatedOrderFinder.orderId().eq(1);
         op = op.and(StringDatedOrderFinder.processingDate().eq(Timestamp.valueOf("2004-01-12 00:00:00.0")));
 
@@ -2519,7 +2522,7 @@ public class TestSybaseIqGeneralTestCases extends MithraSybaseIqTestAbstract
 
     public void testUniqueIndexViolationForSybaseUpdate() throws SQLException
     {
-        Connection con = SybaseIqTestConnectionManager.getInstance().getConnection();
+        Connection con = getVendorTestConnectionManager().getConnection();
         String dropSql = "if exists (select name from mithra_qa.dbo.sysindexes where name = 'PROD_DESC' and id=object_id('PRODUCT')) " +
                                                     "drop index PRODUCT.PROD_DESC";
         con.createStatement().execute(dropSql);
@@ -2791,4 +2794,139 @@ public class TestSybaseIqGeneralTestCases extends MithraSybaseIqTestAbstract
     {
         new TestBasicRetrieval().testMaxObjectsToRetrieve();
     }
+
+    public void testTimestampEst() throws Exception
+    {
+        Connection con = getVendorTestConnectionManager().getConnection();
+        executeUpdate(con, "create table BAR ( ID integer not null, DT_COL_UTC datetime not null )");
+
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (0,'2012-11-04 00:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (1,'2012-11-04 01:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (2,'2012-11-04 02:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (3,'2012-11-04 03:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (4,'2012-11-04 04:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (5,'2012-11-04 05:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (6,'2012-11-04 06:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (7,'2012-11-04 07:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (8,'2012-11-04 08:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (9,'2012-11-04 09:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (10,'2012-11-04 10:00:00.000')");
+
+        Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getTimeZone("UTC"));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        Statement stm = con.createStatement();
+        ResultSet rs = stm.executeQuery("select ID, DT_COL_UTC, DT_COL_UTC from BAR order by ID");
+        for(int i=0;i<11;i++)
+        {
+            rs.next();
+            rs.getInt(1);
+            Timestamp dbTs = rs.getTimestamp(2);
+            Timestamp utcTs = rs.getTimestamp(3, c);
+            System.out.println("db: "+dbTs+" as utc: "+sdf.format(utcTs));
+        }
+        rs.close();
+        stm.close();
+
+        executeUpdate(con, "drop table BAR");
+        con.close();
+    }
+
+    public void testTimestampDst() throws Exception
+    {
+        Connection con = getVendorTestConnectionManager().getConnection();
+        executeUpdate(con, "create table BAR ( ID integer not null, DT_COL_UTC datetime not null )");
+
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (0,'2013-03-10 00:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (1,'2013-03-10 01:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (2,'2013-03-10 02:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (3,'2013-03-10 03:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (4,'2013-03-10 04:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (5,'2013-03-10 05:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (6,'2013-03-10 06:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (7,'2013-03-10 07:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (8,'2013-03-10 08:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (9,'2013-03-10 09:00:00.000')");
+        executeUpdate(con, "INSERT INTO BAR (ID,DT_COL_UTC) values (10,'2013-03-10 10:00:00.000')");
+
+        Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getTimeZone("UTC"));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        Statement stm = con.createStatement();
+        ResultSet rs = stm.executeQuery("select ID, DT_COL_UTC, DT_COL_UTC from BAR order by ID");
+        for(int i=0;i<11;i++)
+        {
+            rs.next();
+            rs.getInt(1);
+            Timestamp dbTs = rs.getTimestamp(2);
+            Timestamp utcTs = rs.getTimestamp(3, c);
+            System.out.println("db: "+dbTs+" raw millis: "+dbTs.getTime()+" as utc: "+sdf.format(utcTs));
+        }
+        rs.close();
+        stm.close();
+
+        executeUpdate(con, "drop table BAR");
+        con.close();
+    }
+
+    public void testTimestampInPreparedStatement() throws Exception
+    {
+        Connection con = getVendorTestConnectionManager().getConnection();
+        executeUpdate(con, "create table FOO ( ID integer not null, TIMESTAMP_COL_NONE datetime not null )");
+
+        executeUpdate(con, "INSERT INTO FOO (ID,TIMESTAMP_COL_NONE) values (1,'2007-01-01 01:01:01.999')");
+
+        Statement stm = con.createStatement();
+        ResultSet rs = stm.executeQuery("select count(1) from FOO where TIMESTAMP_COL_NONE = '2007-01-01 01:01:01.999'");
+        int firstCount = assertOneRow(rs);
+        stm.close();
+
+        Calendar c = Calendar.getInstance();
+        c.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        PreparedStatement ps = con.prepareStatement("select count(1) from FOO where TIMESTAMP_COL_NONE = ?");
+        ps.setTimestamp(1, new Timestamp(1167613261999L), c); //  1167613261999L is '2007-01-01 01:01:01.999 EST' in UTC
+        rs = ps.executeQuery();
+        int secondCount = assertOneRow(rs);
+        ps.close();
+
+        executeUpdate(con, "drop table FOO");
+        con.close();
+
+        if (firstCount != 1)
+        {
+            System.out.println("hardcoded timestamp failed! Expecting 1, but got " + firstCount);
+        }
+        else if (secondCount != 1)
+        {
+            System.out.println("preparedStatement.setTimestamp with calendar failed! Expecting 1, but got " + secondCount);
+        }
+        else
+        {
+            System.out.println("All good.");
+        }
+    }
+
+    private void executeUpdate(Connection con, String sql) throws SQLException
+    {
+        Statement stm = con.createStatement();
+        stm.executeUpdate(sql);
+        stm.close();
+    }
+
+    private static int assertOneRow(ResultSet rs) throws SQLException
+    {
+        if (!rs.next())
+        {
+            return -1;
+        }
+        int count = rs.getInt(1);
+        rs.close();
+        return count;
+    }
+
 }

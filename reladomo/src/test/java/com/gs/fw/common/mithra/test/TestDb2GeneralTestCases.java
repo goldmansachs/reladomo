@@ -2438,11 +2438,6 @@ public class TestDb2GeneralTestCases extends MithraDb2TestAbstract
         testIn.xtestLargeInWithToManyRelationshipTwoDeepWithOr();
     }
 
-    public void testConnectionManagerShutdown()
-    {
-        ((XAConnectionManager) SybaseTestConnectionManager.getInstance().getConnectionManagers().get(0)).shutdown();
-    }
-
     public void testTupleIn()
     {
         TupleSet set = new MithraArrayTupleTupleSet();

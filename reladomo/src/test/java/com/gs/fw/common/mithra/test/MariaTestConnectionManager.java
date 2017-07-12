@@ -33,8 +33,7 @@ import com.gs.fw.common.mithra.databasetype.MariaDatabaseType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MariaTestConnectionManager extends AbstractMithraTestConnectionManager
-implements SourcelessConnectionManager
+public class MariaTestConnectionManager extends VendorTestConnectionManager
 {
     private static final Logger logger = LoggerFactory.getLogger(MariaTestConnectionManager.class);
     private final static MariaTestConnectionManager instance = new MariaTestConnectionManager();
@@ -65,46 +64,17 @@ implements SourcelessConnectionManager
         connectionManager.initialisePool();
 
         MariaDatabaseType.getInstance().setTempSchema(getCredential("maria_schemaName"));
+        this.setDatabaseType(MariaDatabaseType.getInstance());
     }
 
     public BulkLoader createBulkLoader()
     throws BulkLoaderException
     {
-        return this.getDatabaseType().createBulkLoader(
-                getCredential("maria_user"),
-                getCredential("maria_password"),
-                    this.connectionManager.getHostName(),
-                    this.connectionManager.getPort());
-    }
-
-    public Connection getConnection()
-    {
-        return this.connectionManager.getConnection();
-    }
-
-    public DatabaseType getDatabaseType()
-    {
-        return MariaDatabaseType.getInstance();
-    }
-
-    public TimeZone getDatabaseTimeZone()
-    {
-        return this.databaseTimeZone;
-    }
-
-    public void setDatabaseTimeZone(TimeZone databaseTimeZone)
-    {
-        this.databaseTimeZone = databaseTimeZone;
+        return null;
     }
 
     public String getDatabaseIdentifier()
     {
         return getCredential("maria_hostName")+getCredential("maria_databaseName");
-    }
-
-    @Override
-    protected Collection<XAConnectionManager> getAllConnectionManagers()
-    {
-        return FastList.newListWith(this.connectionManager);
     }
 }

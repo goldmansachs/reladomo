@@ -99,6 +99,7 @@
     <path id="reladomo.test.classpath">
         <fileset refid="fileset.lib.compile"/>
         <fileset refid="fileset.lib.test"/>
+        <fileset refid="fileset.lib.drivers"/>
     </path>
 
     <path id="fop.classpath">

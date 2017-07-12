@@ -32,8 +32,7 @@ import java.sql.Connection;
 import java.util.Collection;
 import java.util.TimeZone;
 
-public class PostgresTestConnectionManager extends AbstractMithraTestConnectionManager
-implements SourcelessConnectionManager
+public class PostgresTestConnectionManager extends VendorTestConnectionManager
 {
     private static final Logger logger = LoggerFactory.getLogger(PostgresTestConnectionManager.class);
     private final static PostgresTestConnectionManager instance = new PostgresTestConnectionManager();
@@ -42,9 +41,6 @@ implements SourcelessConnectionManager
     {
         return instance;
     }
-
-    private XAConnectionManager connectionManager;
-    private TimeZone databaseTimeZone;
 
     protected PostgresTestConnectionManager()
     {
@@ -63,46 +59,17 @@ implements SourcelessConnectionManager
         connectionManager.initialisePool();
 
         PostgresDatabaseType.getInstance().setTempSchema(getCredential("postgres_schemaName"));
+        this.setDatabaseType(PostgresDatabaseType.getInstance());
     }
 
     public BulkLoader createBulkLoader()
     throws BulkLoaderException
     {
-        return this.getDatabaseType().createBulkLoader(
-                getCredential("postgres_user"),
-                getCredential("postgres_password"),
-                    this.connectionManager.getHostName(),
-                    this.connectionManager.getPort());
-    }
-
-    public Connection getConnection()
-    {
-        return this.connectionManager.getConnection();
-    }
-
-    public DatabaseType getDatabaseType()
-    {
-        return PostgresDatabaseType.getInstance();
-    }
-
-    public TimeZone getDatabaseTimeZone()
-    {
-        return this.databaseTimeZone;
-    }
-
-    public void setDatabaseTimeZone(TimeZone databaseTimeZone)
-    {
-        this.databaseTimeZone = databaseTimeZone;
+        return null;
     }
 
     public String getDatabaseIdentifier()
     {
         return getCredential("postgres_hostName")+getCredential("postgres_databaseName");
-    }
-
-    @Override
-    protected Collection<XAConnectionManager> getAllConnectionManagers()
-    {
-        return FastList.newListWith(this.connectionManager);
     }
 }

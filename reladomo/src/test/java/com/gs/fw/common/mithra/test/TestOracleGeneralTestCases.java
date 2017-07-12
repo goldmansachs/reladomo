@@ -2285,11 +2285,6 @@ public class TestOracleGeneralTestCases extends MithraOracleTestAbstract
         testIn.testLargeInWithPostDistinct();
     }
 
-    public void testConnectionManagerShutdown()
-    {
-        ((XAConnectionManager)SybaseTestConnectionManager.getInstance().getConnectionManagers().get(0)).shutdown();
-    }
-
     public void testTupleIn()
     {
         TupleSet set = new MithraArrayTupleTupleSet();
