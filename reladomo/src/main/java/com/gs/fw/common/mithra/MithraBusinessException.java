@@ -17,6 +17,7 @@
 package com.gs.fw.common.mithra;
 
 
+import org.slf4j.Logger;
 
 public class MithraBusinessException extends MithraException
 {
@@ -41,6 +42,22 @@ public class MithraBusinessException extends MithraException
     public void setRetriable(boolean retriable)
     {
         this.isRetriable = retriable;
+    }
+
+    // must not be called from within a transaction, unless the work is being done async in a non-tx thread.
+    public int ifRetriableWaitElseThrow(String msg, int retriesLeft, Logger logger)
+    {
+        if (this.isRetriable() && --retriesLeft > 0)
+        {
+            logger.warn(msg+ " " + this.getMessage());
+            if (logger.isDebugEnabled())
+            {
+                logger.debug("find failed with retriable error. retrying.", this);
+            }
+            this.waitBeforeRetrying();
+        }
+        else throw this;
+        return retriesLeft;
     }
 
     public boolean isTimedOut()

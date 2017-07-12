@@ -564,7 +564,7 @@ public abstract class MithraAbstractDatabaseObject
         else
         {
             int retry = 10;
-            while (retry > 0)
+            while (true)
             {
                 try
                 {
@@ -576,20 +576,11 @@ public abstract class MithraAbstractDatabaseObject
                             executeCreateTable(genericSource, sql, indexSql, isForQuery);
                         }
                     });
-                    retry = 0;
+                    break;
                 }
                 catch (MithraBusinessException e)
                 {
-                    if (e.isRetriable())
-                    {
-                        retry--;
-                        if (retry > 0)
-                        {
-                            this.getSqlLogger().warn("create table failed with retriable exception, will retry " + retry + " more times");
-                            continue;
-                        }
-                    }
-                    throw e;
+                    retry = e.ifRetriableWaitElseThrow("create table failed with retriable exception, will retry", retry, this.getSqlLogger());
                 }
             }
         }
@@ -650,25 +641,16 @@ public abstract class MithraAbstractDatabaseObject
         String sql = sb.toString();
         String indexSql = this.createSharedIndexSql(fullTableName, pkAttributes, dt);
         int retry = 10;
-        while (retry > 0)
+        while (true)
         {
             try
             {
                 executeCreateTable(genericSource, sql, indexSql, isForQuery);
-                retry = 0;
+                break;
             }
             catch (MithraBusinessException e)
             {
-                if (e.isRetriable())
-                {
-                    retry--;
-                    if (retry > 0)
-                    {
-                        this.getSqlLogger().warn("create table failed with retriable exception, will retry " + retry + " more times");
-                        continue;
-                    }
-                }
-                throw e;
+                retry = e.ifRetriableWaitElseThrow("create table failed with retriable exception, will retry", retry, this.getSqlLogger());
             }
         }
         return fullTableName;
@@ -850,16 +832,8 @@ public abstract class MithraAbstractDatabaseObject
                 catch (MithraBusinessException e)
                 {
                     this.cleanUpDbConnections(true);
-                    if (e.isRetriable() && --retriesLeft > 0)
-                    {
-                        logger.warn("cursor failed with retriable error. retrying. " + e.getMessage());
-                        if (logger.isDebugEnabled())
-                        {
-                            logger.debug("cursor failed with retriable error. retrying.", e);
-                        }
-                        e.waitBeforeRetrying();
-                        this.currentQueryNumber = -1;
-                    } else throw e;
+                    retriesLeft = e.ifRetriableWaitElseThrow("cursor failed with retriable error. retrying.", retriesLeft, logger);
+                    this.currentQueryNumber = -1;
                 }
             }
         }
