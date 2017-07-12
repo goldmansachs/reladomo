@@ -16,6 +16,8 @@
 
 package com.gs.fw.common.mithra.generator;
 
+import com.gs.fw.common.mithra.generator.filesystem.FauxFileSystem;
+import com.gs.fw.common.mithra.generator.filesystem.PlainFileSystem;
 import com.gs.fw.common.mithra.generator.metamodel.*;
 import com.gs.fw.common.mithra.generator.type.JavaTypeException;
 import com.gs.fw.common.mithra.generator.util.FullFileBuffer;
@@ -23,13 +25,12 @@ import com.gs.fw.common.mithra.generator.util.AutoShutdownThreadExecutor;
 import com.gs.fw.common.mithra.generator.util.AwaitingThreadExecutor;
 import com.gs.fw.common.mithra.generator.util.ChopAndStickResource;
 import com.gs.fw.common.mithra.generator.util.SerialResource;
+import com.gs.fw.common.mithra.generator.filesystem.GeneratedFileManager;
 
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.zip.CRC32;
 
 public class BaseMithraGenerator
 {
@@ -44,7 +45,6 @@ public class BaseMithraGenerator
 
     private static final int MD5_LENGTH = 32;
     private String md5 = null;
-    private CRC32 crc32 = new CRC32();
     protected Logger logger;
 
     private GenerationLogger generationLogger = null;
@@ -78,6 +78,9 @@ public class BaseMithraGenerator
     protected MithraObjectTypeParser mithraObjectTypeParser;
     // private List<MithraInterfaceTypeWrapper> sortedMithraInterfaces;
 
+    protected GeneratedFileManager generatedFileManager;
+    protected FauxFileSystem fauxFileSystem = new PlainFileSystem();
+
     public void setLogger(Logger logger)
     {
         this.logger = logger;
@@ -95,6 +98,11 @@ public class BaseMithraGenerator
             this.generationLogger = new SimpleGenerationLogger();
         }
         return this.generationLogger;
+    }
+
+    public void setFauxFileSystem(FauxFileSystem fauxFileSystem)
+    {
+        this.fauxFileSystem = fauxFileSystem;
     }
 
     private FullFileBuffer getFullFileBuffer()
@@ -158,12 +166,7 @@ public class BaseMithraGenerator
 
     public String getCrc()
     {
-        String result = Long.toHexString(crc32.getValue());
-        while(result.length() < 8)
-        {
-            result = "0" + result;
-        }
-        return result;
+        return mithraObjectTypeParser.getChecksum();
     }
 
     public void setGenerateFileHeaders(boolean generateFileHeaders)
@@ -301,37 +304,40 @@ public class BaseMithraGenerator
         this.sortedMithraEnumerations = new ArrayList<MithraEnumerationTypeWrapper>(this.mithraEnumerations.values());
     }
 
-    public File parseAndValidate()
+    public String parseAndValidate()
     {
-        File file = parseMithraObjectTypes();
+        String filePath = parseMithraObjectTypes();
         parseImportedMithraObjectTypes();
         validateMithraObjectTypes();
-        return file;
+        return filePath;
     }
 
-    private File parseMithraObjectTypes()
+    private String parseMithraObjectTypes()
     {
         mithraObjectTypeParser.setLogger(this.logger);
         mithraObjectTypeParser.setForceOffHeap(this.forceOffHeap);
         mithraObjectTypeParser.setDefaultFinalGetters(this.defaultFinalGetters);
-        File file = mithraObjectTypeParser.parse();
+        mithraObjectTypeParser.setFauxFileSystem(this.fauxFileSystem);
+        String filePath = mithraObjectTypeParser.parse();
 
         this.mithraObjects.putAll(mithraObjectTypeParser.getMithraObjects());
 
         this.mithraEmbeddedValueObjects.putAll(mithraObjectTypeParser.getMithraEmbeddedValueObjects());
         this.mithraInterfaces.putAll(mithraObjectTypeParser.getMithraInterfaces());
         this.mithraEnumerations.putAll(mithraObjectTypeParser.getMithraEnumerations());
-        return file;
+        return filePath;
     }
 
     private void parseImportedMithraObjectTypes()
     {
         for (MithraGeneratorImport generatorImport : this.getImports())
         {
+            generatorImport.setFauxFileSystem(this.fauxFileSystem);
             MithraImportXMLObjectTypeParser importXMLParser = new MithraImportXMLObjectTypeParser(generatorImport);
             importXMLParser.setLogger(this.logger);
             importXMLParser.setForceOffHeap(this.forceOffHeap);
             importXMLParser.setDefaultFinalGetters(this.defaultFinalGetters);
+            importXMLParser.setFauxFileSystem(this.fauxFileSystem);
             importXMLParser.parse();
 
             this.mithraObjects.putAll(importXMLParser.getMithraObjects());
@@ -583,54 +589,6 @@ public class BaseMithraGenerator
         {
             this.logger.error("\t" + errors.get( i ));
         }
-    }
-
-    public void copyIfChanged(byte[] src, File outFile, AtomicInteger count) throws IOException
-    {
-        boolean copyFile = false;
-        if ((!outFile.exists()) || (outFile.length() != src.length))
-        {
-            copyFile = true;
-        }
-        else
-        {
-            byte[] outContent = readFile(outFile);
-            for(int i=0;i<src.length;i++)
-            {
-                if (src[i] != outContent[i])
-                {
-                    copyFile = true;
-                    break;
-                }
-            }
-        }
-        if (copyFile && outFile.exists() && !outFile.canWrite())
-        {
-            throw new MithraGeneratorException(outFile+" must be updated, but it is readonly.");
-        }
-
-        if (copyFile)
-        {
-            FileOutputStream fout = new FileOutputStream(outFile);
-            fout.write(src);
-            fout.close();
-            count.incrementAndGet();
-            this.logger.info("wrote file: " + outFile.getName());
-        }
-    }
-
-    private byte[] readFile(File file) throws IOException
-    {
-        int length = (int)file.length();
-        FileInputStream fis = new FileInputStream(file);
-        byte[] result = new byte[length];
-        int pos = 0;
-        while(pos < length)
-        {
-            pos += fis.read(result, pos, length - pos);
-        }
-        fis.close();
-        return result;
     }
 
     public void addConfiguredMithraImport(MithraGeneratorImport importElement)

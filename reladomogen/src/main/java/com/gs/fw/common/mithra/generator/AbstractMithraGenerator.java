@@ -207,11 +207,6 @@ public abstract class AbstractMithraGenerator extends Task implements Logger, Ge
         }
     }
 
-    protected void copyIfChanged(byte[] src, File outFile, AtomicInteger count) throws IOException, BuildException
-    {
-        this.baseGenerator.copyIfChanged(src, outFile, count);
-    }
-
     public MithraGeneratorImport createMithraImport()
     {
         return new MithraGeneratorImport();

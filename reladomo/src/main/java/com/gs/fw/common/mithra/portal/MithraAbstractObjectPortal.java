@@ -563,16 +563,7 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
             }
             catch (MithraBusinessException e)
             {
-                if (e.isRetriable() && --retriesLeft > 0)
-                {
-                    logger.warn("find failed with retriable error. retrying. " + e.getMessage());
-                    if (logger.isDebugEnabled())
-                    {
-                        logger.debug("find failed with retriable error. retrying.", e);
-                    }
-                    e.waitBeforeRetrying();
-                }
-                else throw e;
+                retriesLeft = e.ifRetriableWaitElseThrow("find failed with retriable error. retrying.", retriesLeft, logger);
             }
         }
     }
@@ -971,16 +962,7 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
             }
             catch (MithraBusinessException e)
             {
-                if (e.isRetriable() && --retriesLeft > 0)
-                {
-                    logger.warn("find failed with retriable error. retrying. " + e.getMessage());
-                    if (logger.isDebugEnabled())
-                    {
-                        logger.debug("find failed with retriable error. retrying.", e);
-                    }
-                    e.waitBeforeRetrying();
-                }
-                else throw e;
+                retriesLeft = e.ifRetriableWaitElseThrow("find failed with retriable error. retrying.", retriesLeft, logger);
             }
         }
     }
@@ -1254,16 +1236,7 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
             }
             catch (MithraBusinessException e)
             {
-                if (e.isRetriable() && --retriesLeft > 0)
-                {
-                    logger.warn("find failed with retriable error. retrying. " + e.getMessage());
-                    if (logger.isDebugEnabled())
-                    {
-                        logger.debug("find failed with retriable error. retrying.", e);
-                    }
-                    e.waitBeforeRetrying();
-                }
-                else throw e;
+                retriesLeft = e.ifRetriableWaitElseThrow("find failed with retriable error. retrying.", retriesLeft, logger);
             }
         }
     }

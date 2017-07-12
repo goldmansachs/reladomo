@@ -16,6 +16,7 @@
 
 package com.gs.fw.common.mithra.generator;
 
+import com.gs.fw.common.mithra.generator.filesystem.FauxFileSystem;
 import com.gs.fw.common.mithra.generator.metamodel.MithraInterfaceType;
 
 import java.io.File;
@@ -37,10 +38,11 @@ public interface MithraObjectTypeParser
     void setLogger(Logger logger);
     void setForceOffHeap(boolean forceOffHeap);
     void setDefaultFinalGetters(boolean defaultFinalGetters);
+    void setFauxFileSystem(FauxFileSystem fauxFileSystem);
 
     // actually parse
-    // todo : Change this interface to just return a name instead of the File
-    File parse();
+    // returns the name of the class list, usually as a file path.
+    String parse();
 
 
     // invoked after a successful parse
@@ -48,4 +50,6 @@ public interface MithraObjectTypeParser
     Map<String,MithraEmbeddedValueObjectTypeWrapper> getMithraEmbeddedValueObjects();
     Map<String,MithraInterfaceType> getMithraInterfaces();
     Map<String,MithraEnumerationTypeWrapper> getMithraEnumerations();
+
+    String getChecksum();
 }

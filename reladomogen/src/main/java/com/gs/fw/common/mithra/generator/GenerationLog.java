@@ -17,10 +17,10 @@
 package com.gs.fw.common.mithra.generator;
 
 import com.gs.fw.common.mithra.generator.util.StringUtility;
+import com.gs.fw.common.mithra.generator.filesystem.GeneratedFileManager;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.io.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class GenerationLog
@@ -45,15 +45,16 @@ public class GenerationLog
         return xmlCrc;
     }
 
-    public void writeLog(String generatedDir, String classListName) throws IOException
+    public void writeLog(String generatedDir, GeneratedFileManager fileManager, String classListName) throws IOException
     {
         String logNameFromClassListName = getLogNameFromClassListName(generatedDir, classListName);
-        System.out.println("writing log to "+logNameFromClassListName);
-        File file = new File(logNameFromClassListName);
-        FileWriter writer = new FileWriter(file);
+        System.out.println("writing log to "+logNameFromClassListName+".log");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(1000);
+        OutputStreamWriter writer = new OutputStreamWriter(baos);
         writer.write(this.md5+"\n");
         writer.write(this.xmlCrc+"\n");
         writer.close();
+        fileManager.writeFile(true, "", logNameFromClassListName, ".log", baos.toByteArray(), new AtomicInteger());
     }
 
     private static String getLogNameFromClassListName(String generatedDir, String classListName)
@@ -78,7 +79,7 @@ public class GenerationLog
             }
         }
 
-        return generatedDir+File.separator+cleanedClassListName.substring(matchedCharIndex, cleanedClassListName.length())+".log";
+        return cleanedClassListName.substring(matchedCharIndex, cleanedClassListName.length());
     }
 
     private static String getCleanedDir(String generatedDir)
@@ -90,13 +91,13 @@ public class GenerationLog
         return cleanedGeneratedDir;
     }
 
-    public static GenerationLog readOldLog(String generatedDir, String fileNameForClassList) throws IOException
+    public static GenerationLog readOldLog(String generatedDir, String fileNameForClassList, GeneratedFileManager fileManager) throws IOException
     {
         GenerationLog result = new GenerationLog("xxx", "00");
-        File file = new File(getLogNameFromClassListName(generatedDir, fileNameForClassList));
-        if (file.exists())
+        byte[] bytes = fileManager.readFileInGeneratedDir(getLogNameFromClassListName(generatedDir, fileNameForClassList)+".log");
+        if (bytes != null)
         {
-            FileInputStream fis = new FileInputStream(file);
+            InputStream fis = new ByteArrayInputStream(bytes);
             try
             {
                 LineNumberReader reader = new LineNumberReader(new InputStreamReader(fis));

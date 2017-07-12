@@ -14,7 +14,7 @@
  under the License.
  */
 
-package com.gs.fw.common.mithra.generator.writer;
+package com.gs.fw.common.mithra.generator.filesystem;
 
 import com.gs.fw.common.mithra.generator.GenerationLogger;
 import com.gs.fw.common.mithra.generator.Logger;
@@ -36,8 +36,10 @@ public interface GeneratedFileManager
         public final boolean generateConcreteClasses;
         public final GenerationLogger generationLogger;
         public final Logger logger;
+        public final FauxFileSystem fauxFileSystem;
 
-        public Options(String generatedDir, String nonGeneratedDir, boolean warnAboutConcreteClasses, boolean generateConcreteClasses, GenerationLogger generationLogger, Logger logger)
+        public Options(String generatedDir, String nonGeneratedDir, boolean warnAboutConcreteClasses, boolean generateConcreteClasses,
+                       GenerationLogger generationLogger, Logger logger, FauxFileSystem fauxFileSystem)
         {
             this.generatedDir = generatedDir;
             this.nonGeneratedDir = nonGeneratedDir;
@@ -45,6 +47,7 @@ public interface GeneratedFileManager
             this.generateConcreteClasses = generateConcreteClasses;
             this.generationLogger = generationLogger;
             this.logger = logger;
+            this.fauxFileSystem = fauxFileSystem;
         }
     }
     
@@ -60,4 +63,9 @@ public interface GeneratedFileManager
         This method should create the file with the content from the input file data
      */
     void writeFile(boolean replaceIfExists, String packageName, String className, String fileSuffix, byte[] fileData, AtomicInteger count) throws IOException;
+
+    /*
+    returns null if file doesn't exist
+     */
+    byte[] readFileInGeneratedDir(String relativePath) throws IOException;
 }

@@ -1,5 +1,6 @@
 package com.gs.fw.common.mithra.generator;
 
+import com.gs.fw.common.mithra.generator.filesystem.*;
 import com.gs.fw.common.mithra.generator.metamodel.*;
 import com.gs.fw.common.mithra.generator.util.*;
 
@@ -38,6 +39,7 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
     private boolean ignorePackageNamingConvention = false;
     private boolean defaultFinalGetters = false;
     private boolean forceOffHeap = false;
+    protected FauxFileSystem fauxFileSystem;
 
     private ThreadLocal<FullFileBuffer> fullFileBufferThreadLocal = new ThreadLocal<FullFileBuffer>();
 
@@ -71,6 +73,12 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
         this.defaultFinalGetters = defaultFinalGetters;
     }
 
+    @Override
+    public void setFauxFileSystem(FauxFileSystem fauxFileSystem)
+    {
+        this.fauxFileSystem = fauxFileSystem;
+    }
+
     public Map<String, MithraObjectTypeWrapper> getMithraObjects()
     {
         return this.mithraObjects;
@@ -86,18 +94,29 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
         return this.mithraEnumerations;
     }
 
+    @Override
+    public String getChecksum()
+    {
+        String result = Long.toHexString(crc32.getValue());
+        while(result.length() < 8)
+        {
+            result = "0" + result;
+        }
+        return result;
+    }
+
     public Map<String,MithraInterfaceType> getMithraInterfaces()
     {
         return mithraInterfaces;
     }
 
-    public File parse() throws MithraGeneratorException
+    public String parse() throws MithraGeneratorException
     {
         try
         {
-            File file = new File(mithraClassListXml);
-            parseMithraXml(file.getName(), null, new MithraGeneratorImport.DirectoryFileProvider(file.getParent()));
-            return file;
+            FauxFile file = this.fauxFileSystem.newFile(mithraClassListXml);
+            parseMithraXml(file.getName(), null, new DirectoryFileProvider(this.fauxFileSystem, file.getParent()));
+            return file.getPath();
         }
         catch (Throwable e)
         {
@@ -105,13 +124,13 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
         }
     }
 
-    public void parseMithraXml(String fileName, String importSource, MithraGeneratorImport.FileProvider fileProvider) throws FileNotFoundException
+    public void parseMithraXml(String fileName, String importSource, FileProvider fileProvider) throws FileNotFoundException
     {
         MithraType result;
         InputStream mithraFileIs = null;
         try
         {
-            MithraGeneratorImport.FileInputStreamWithSize streamWithSize = fileProvider.getFileInputStream(fileName);
+            FileInputStreamWithSize streamWithSize = fileProvider.getFileInputStream(fileName);
             FullFileBuffer ffb = new FullFileBuffer();
             ffb.bufferFile(streamWithSize.getInputStream(), (int) streamWithSize.getSize());
             ffb.updateCrc(crc32);
@@ -152,7 +171,7 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
     }
 
     private int parseMithraObjects(final MithraType mithraType, final String importSource,
-                                   final MithraGeneratorImport.FileProvider fileProvider) throws FileNotFoundException
+                                   final FileProvider fileProvider) throws FileNotFoundException
     {
         List<MithraObjectResourceType> mithraObjectList = mithraType.getMithraObjectResources();
         chopAndStickResource.resetSerialResource();
@@ -188,7 +207,7 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
     }
 
     private int parseMithraPureObjects(final MithraType mithraType, final String importSource,
-                                       final MithraGeneratorImport.FileProvider fileProvider) throws FileNotFoundException
+                                       final FileProvider fileProvider) throws FileNotFoundException
     {
         List<MithraPureObjectResourceType> mithraPureObjectList = mithraType.getMithraPureObjectResources();
         if (!mithraPureObjectList.isEmpty())
@@ -224,7 +243,7 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
     }
 
     private int parseMithraTempObjects(final MithraType mithraType, final String importSource,
-                                       final MithraGeneratorImport.FileProvider fileProvider) throws FileNotFoundException
+                                       final FileProvider fileProvider) throws FileNotFoundException
     {
         List<MithraTempObjectResourceType> mithraTempObjectList = mithraType.getMithraTempObjectResources();
         if (mithraTempObjectList.size() > 0)
@@ -258,7 +277,7 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
     }
 
     private int parseMithraEmbeddedValueObjects(final MithraType mithraType, final String importSource,
-                                                final MithraGeneratorImport.FileProvider fileProvider) throws FileNotFoundException
+                                                final FileProvider fileProvider) throws FileNotFoundException
     {
         List<MithraEmbeddedValueObjectResourceType> mithraEmbeddedValueObjectList = mithraType.getMithraEmbeddedValueObjectResources();
         if (!mithraEmbeddedValueObjectList.isEmpty())
@@ -289,7 +308,7 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
     }
 
     private int parseMithraEnumerations(final MithraType mithraType, final String importSource,
-                                        final MithraGeneratorImport.FileProvider fileProvider) throws FileNotFoundException
+                                        final FileProvider fileProvider) throws FileNotFoundException
     {
         List<MithraEnumerationResourceType> mithraEnumerationList = (List<MithraEnumerationResourceType>) mithraType.getMithraEnumerationResources();
         if (!mithraEnumerationList.isEmpty())
@@ -319,7 +338,7 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
     }
 
     private MithraInterfaceType parseMithraInterfaceType(String objectName, Map objectMap,
-                                                         MithraGeneratorImport.FileProvider fileProvider,
+                                                         FileProvider fileProvider,
                                                          GeneratorTask task, boolean isReadOnlyInterfaces,
                                                          String importedSource)
     {
@@ -332,7 +351,7 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
     }
 
     private MithraBaseObjectType parseMithraObject(String objectName, Map objectMap,
-                                                   MithraGeneratorImport.FileProvider fileProvider,
+                                                   FileProvider fileProvider,
                                                    GeneratorTask task, String errorType)
     {
         return parseMithraBaseObject(objectName, objectMap, fileProvider, task);
@@ -351,7 +370,7 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
     }
 
     private int parseMithraInterfaceObjects(final MithraType mithraType, final String importSource,
-                                            final MithraGeneratorImport.FileProvider fileProvider) throws FileNotFoundException
+                                            final FileProvider fileProvider) throws FileNotFoundException
     {
         List<MithraInterfaceResourceType> mithraObjectList = mithraType.getMithraInterfaceResources();
         chopAndStickResource.resetSerialResource();
@@ -377,7 +396,7 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
     }
 
     private MithraBaseObjectType parseMithraBaseObject(String objectName, Map objectMap,
-                                                       MithraGeneratorImport.FileProvider fileProvider,
+                                                       FileProvider fileProvider,
                                                        GeneratorTask task)
     {
         MithraBaseObjectType mithraObject = (MithraBaseObjectType) parseMithraType(objectName, objectMap, fileProvider, task);
@@ -386,7 +405,7 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
 
     }
 
-    private Object parseMithraType(String objectName, Map objectMap, MithraGeneratorImport.FileProvider fileProvider, GeneratorTask task)
+    private Object parseMithraType(String objectName, Map objectMap, FileProvider fileProvider, GeneratorTask task)
     {
         Object mithraObject = null;
         this.logger.info("Reading " + objectName);
@@ -401,7 +420,7 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
             boolean serialAquired = false;
             try
             {
-                MithraGeneratorImport.FileInputStreamWithSize streamWithSize = fileProvider.getFileInputStream(objectFileName);
+                FileInputStreamWithSize streamWithSize = fileProvider.getFileInputStream(objectFileName);
                 FullFileBuffer ffb = getFullFileBuffer();
                 chopAndStickResource.acquireIoResource();
                 try
