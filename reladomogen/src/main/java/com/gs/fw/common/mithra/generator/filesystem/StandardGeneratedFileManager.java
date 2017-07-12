@@ -14,14 +14,11 @@
  under the License.
  */
 
-package com.gs.fw.common.mithra.generator.writer;
+package com.gs.fw.common.mithra.generator.filesystem;
 
 import com.gs.fw.common.mithra.generator.MithraGeneratorException;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class StandardGeneratedFileManager implements GeneratedFileManager
@@ -38,8 +35,8 @@ public class StandardGeneratedFileManager implements GeneratedFileManager
     public boolean shouldCreateFile(boolean replaceIfExists, String packageName, String className, String outputFileSuffix)
     {
         String targetDir = replaceIfExists ? this.options.generatedDir : this.options.nonGeneratedDir;
-        File outDir = new File(targetDir, packageName);
-        File outFile = new File(outDir, className + outputFileSuffix + ".java");
+        FauxFile outDir = this.options.fauxFileSystem.newFile(targetDir, packageName);
+        FauxFile outFile = this.options.fauxFileSystem.newFile(outDir, className + outputFileSuffix + ".java");
         if (outFile.exists() && !replaceIfExists)
         {
             return false;
@@ -67,14 +64,14 @@ public class StandardGeneratedFileManager implements GeneratedFileManager
     public void writeFile(boolean replaceIfExists, String packageName, String className, String outputFileSuffix, byte[] fileData, final AtomicInteger count) throws IOException
     {
         String targetDir = replaceIfExists ? this.options.generatedDir : this.options.nonGeneratedDir;
-        File outDir = new File(targetDir, packageName);
-        File outFile = new File(outDir, className + outputFileSuffix + ".java");
+        FauxFile outDir = this.options.fauxFileSystem.newFile(targetDir, packageName);
+        FauxFile outFile = this.options.fauxFileSystem.newFile(outDir, className + outputFileSuffix);
 
         outDir.mkdirs();
         copyIfChanged(fileData, outFile, count);
     }
 
-    public void copyIfChanged(byte[] src, File outFile, AtomicInteger count) throws IOException
+    public void copyIfChanged(byte[] src, FauxFile outFile, AtomicInteger count) throws IOException
     {
         boolean copyFile = false;
         if ((!outFile.exists()) || (outFile.length() != src.length))
@@ -100,7 +97,7 @@ public class StandardGeneratedFileManager implements GeneratedFileManager
 
         if (copyFile)
         {
-            FileOutputStream fout = new FileOutputStream(outFile);
+            OutputStream fout = outFile.newFileOutputStream();
             fout.write(src);
             fout.close();
             count.incrementAndGet();
@@ -108,10 +105,21 @@ public class StandardGeneratedFileManager implements GeneratedFileManager
         }
     }
 
-    private byte[] readFile(File file) throws IOException
+    @Override
+    public byte[] readFileInGeneratedDir(String relativePath) throws IOException
+    {
+        FauxFile file = this.options.fauxFileSystem.newFile(this.options.generatedDir, relativePath);
+        if (file.exists() && !file.isDirectory())
+        {
+            return readFile(file);
+        }
+        return null;
+    }
+
+    private byte[] readFile(FauxFile file) throws IOException
     {
         int length = (int)file.length();
-        FileInputStream fis = new FileInputStream(file);
+        InputStream fis = file.newFileInputStream();
         byte[] result = new byte[length];
         int pos = 0;
         while(pos < length)

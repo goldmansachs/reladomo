@@ -16,6 +16,9 @@
 
 package com.gs.fw.common.mithra.generator;
 
+import com.gs.fw.common.mithra.generator.filesystem.FauxFile;
+import com.gs.fw.common.mithra.generator.filesystem.FileProvider;
+
 import java.io.File;
 
 public class MithraImportXMLObjectTypeParser extends MithraXMLObjectTypeParser
@@ -28,14 +31,14 @@ public class MithraImportXMLObjectTypeParser extends MithraXMLObjectTypeParser
         this.mithraGeneratorImport = mithraGeneratorImport;
     }
 
-    public File parse() throws MithraGeneratorException
+    public String parse() throws MithraGeneratorException
     {
         try
         {
-            File file = new File(mithraClassListXml);
-            MithraGeneratorImport.FileProvider fileProvider = mithraGeneratorImport.getFileProvider();
+            FauxFile file = this.fauxFileSystem.newFile(mithraClassListXml);
+            FileProvider fileProvider = mithraGeneratorImport.getFileProvider();
             parseMithraXml(file.getName(), fileProvider.getSourceName(), fileProvider);
-            return file;
+            return file.getPath();
         }
         catch (Throwable e)
         {

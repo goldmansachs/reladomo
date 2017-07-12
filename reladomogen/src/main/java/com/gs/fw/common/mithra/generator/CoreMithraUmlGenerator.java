@@ -16,6 +16,8 @@
 
 package com.gs.fw.common.mithra.generator;
 
+import com.gs.fw.common.mithra.generator.filesystem.FauxFile;
+
 import java.io.*;
 import java.util.Iterator;
 
@@ -38,8 +40,7 @@ public class CoreMithraUmlGenerator extends CoreMithraGenerator
         try
         {
             parseAndValidate();
-            File out = new File(this.getOutputFile());
-            FileOutputStream fos = new FileOutputStream(out);
+            OutputStream fos = this.fauxFileSystem.newFile(this.getOutputFile()).newFileOutputStream();
             PrintWriter writer = new PrintWriter(fos);
             for (Iterator iterator = this.getMithraObjects().values().iterator(); iterator.hasNext();)
             {

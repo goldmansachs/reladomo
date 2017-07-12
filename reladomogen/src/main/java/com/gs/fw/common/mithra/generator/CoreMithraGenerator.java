@@ -16,10 +16,11 @@
 
 package com.gs.fw.common.mithra.generator;
 
+import com.gs.fw.common.mithra.generator.filesystem.PlainFileSystem;
 import com.gs.fw.common.mithra.generator.metamodel.MithraInterfaceType;
 import com.gs.fw.common.mithra.generator.util.AwaitingThreadExecutor;
-import com.gs.fw.common.mithra.generator.writer.GeneratedFileManager;
-import com.gs.fw.common.mithra.generator.writer.StandardGeneratedFileManager;
+import com.gs.fw.common.mithra.generator.filesystem.GeneratedFileManager;
+import com.gs.fw.common.mithra.generator.filesystem.StandardGeneratedFileManager;
 
 import java.io.*;
 import java.util.*;
@@ -86,7 +87,6 @@ public class CoreMithraGenerator extends BaseMithraGenerator
     private ThreadLocal<ByteArrayOutputStream> byteArrayOutputStreamThreadLocal = new ThreadLocal<ByteArrayOutputStream>();
     private ThreadLocal<SourceFormatter> sourceFormatterThreadLocal = new ThreadLocal<SourceFormatter>();
 
-    private GeneratedFileManager generatedFileManager;
 
     static
     {
@@ -202,7 +202,7 @@ public class CoreMithraGenerator extends BaseMithraGenerator
                 this.warnAboutConcreteClasses,
                 this.generateConcreteClasses,
                 this.getGenerationLogger(),
-                this.logger
+                this.logger, this.fauxFileSystem
         );
         this.generatedFileManager.setOptions(fileGenerationOptions);
     }
@@ -451,7 +451,7 @@ public class CoreMithraGenerator extends BaseMithraGenerator
                     getChopAndStickResource().acquireIoResource();
                     try
                     {
-                        generatedFileManager.writeFile(relaceIfExists, packageName, className, outputFileSuffix, result, count);
+                        generatedFileManager.writeFile(relaceIfExists, packageName, className, outputFileSuffix+".java", result, count);
                     }
                     finally
                     {
@@ -530,9 +530,9 @@ public class CoreMithraGenerator extends BaseMithraGenerator
             {
                 long start = System.currentTimeMillis();
                 this.logger.info("MithraGenerator MD5: " + this.getMd5());
-                File file = parseAndValidate();
+                String filePath = parseAndValidate();
                 GenerationLogger generationLogger = this.getGenerationLogger();
-                generationLogger.setOldGenerationLog(GenerationLog.readOldLog(this.getGeneratedDir(), file.getPath()));
+                generationLogger.setOldGenerationLog(GenerationLog.readOldLog(this.getGeneratedDir(), filePath, this.generatedFileManager));
                 generationLogger.setNewGenerationLog(new GenerationLog(this.getMd5(), this.getCrc()));
                 int normal = this.processMithraObjects(getMithraObjects().values());
                 int mithraInterfaces = this.processMithraInterfaces(getMithraInterfaces().values());
@@ -540,7 +540,7 @@ public class CoreMithraGenerator extends BaseMithraGenerator
                 int enumerations = this.processMithraObjects(getMithraEnumerations().values());
                 if (!generationLogger.getNewGenerationLog().isSame(generationLogger.getOldGenerationLog()))
                 {
-                    generationLogger.getNewGenerationLog().writeLog(this.getGeneratedDir(), file.getPath());
+                    generationLogger.getNewGenerationLog().writeLog(this.getGeneratedDir(), this.generatedFileManager, filePath);
                 }
                 this.logger.info("Wrote " + normal + " normal/pure/temp, " +
                         mithraInterfaces + " interface, " +

@@ -16,11 +16,7 @@
 
 package com.gs.fw.common.mithra.generator;
 
-import java.io.*;
-import java.util.Arrays;
-import java.util.List;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
+import com.gs.fw.common.mithra.generator.filesystem.*;
 
 
 public class MithraGeneratorImport
@@ -30,6 +26,7 @@ public class MithraGeneratorImport
     private String archive;
     private String[] excludeList;
     private FileProvider fileProvider;
+    private FauxFileSystem fauxFileSystem;
 
     public void init()
     {
@@ -75,7 +72,7 @@ public class MithraGeneratorImport
             }
             else if (dir != null)
             {
-                fileProvider = new DirectoryFileProvider(excludeList, dir);
+                fileProvider = new DirectoryFileProvider(this.fauxFileSystem, excludeList, dir);
             }
             else
             {
@@ -85,142 +82,13 @@ public class MithraGeneratorImport
         return fileProvider;
     }
 
-    static interface FileProvider
+    public void setFauxFileSystem(FauxFileSystem fauxFileSystem)
     {
-        public FileInputStreamWithSize getFileInputStream(String fileName) throws FileNotFoundException;
-        public String getSourceName();
-        public boolean excludeObject(String objectName);
-        public void close();
+        this.fauxFileSystem = fauxFileSystem;
     }
 
-    public static class FileInputStreamWithSize
+    public FauxFileSystem getFauxFileSystem()
     {
-        private InputStream inputStream;
-        private long size;
-
-        public FileInputStreamWithSize(InputStream inputStream, long size)
-        {
-            this.inputStream = inputStream;
-            this.size = size;
-        }
-
-        public InputStream getInputStream()
-        {
-            return inputStream;
-        }
-
-        public long getSize()
-        {
-            return size;
-        }
+        return fauxFileSystem;
     }
-
-    static abstract class AbstractFileProvider implements FileProvider
-    {
-        private List excludeList;
-
-        public AbstractFileProvider(String[] excludeList)
-        {
-            this.excludeList = excludeList == null ? null : Arrays.asList(excludeList);
-        }
-
-        public boolean excludeObject(String objectName)
-        {
-            return excludeList != null && excludeList.contains(objectName);
-        }
-    }
-
-    public static class DirectoryFileProvider extends AbstractFileProvider
-    {
-        private String dir;
-
-        public DirectoryFileProvider(String dir)
-        {
-            super(null);
-            this.dir = dir;
-        }
-
-        public DirectoryFileProvider(String[] excludeList, String dir)
-        {
-            super(excludeList);
-            this.dir = dir;
-        }
-
-        public FileInputStreamWithSize getFileInputStream(String fileName) throws FileNotFoundException
-        {
-            File file = new File(this.dir, fileName);
-            return new FileInputStreamWithSize(new FileInputStream(file), file.length());
-        }
-
-        public String getSourceName()
-        {
-            return dir;
-        }
-
-        public void close()
-        {
-        }
-    }
-
-    static class JarFileProvider extends AbstractFileProvider
-    {
-        private String dir;
-        private JarFile jarFile;
-
-        public JarFileProvider(String[] excludeList, String archive, String dir)
-        {
-            super(excludeList);
-
-            try
-            {
-                this.jarFile = new JarFile(archive);
-                this.dir = dir;
-            }
-            catch (IOException e)
-            {
-                throw new MithraGeneratorException("unable to find mithra import archive '" + archive + "'", e);
-            }
-        }
-
-        public FileInputStreamWithSize getFileInputStream(String fileName) throws FileNotFoundException
-        {
-            String fullFileName = this.getDirectoryPrefix() + fileName;
-            try
-            {
-                ZipEntry entry = jarFile.getEntry(fullFileName);
-                if(entry == null) throw new MithraGeneratorException("unable to find '" + fullFileName + "' in import archive file '" + jarFile.getName() + "'");
-                return new FileInputStreamWithSize(jarFile.getInputStream(entry), entry.getSize());
-            }
-            catch (IOException e)
-            {
-                close();
-                throw new MithraGeneratorException("unexpected error while reading '" + fullFileName + "' from import archive '" + jarFile.getName() + "'", e);
-            }
-
-        }
-
-        private String getDirectoryPrefix()
-        {
-            // nb, "/" is required for  JAR files
-            return dir == null ? "" : (dir + "/");
-        }
-
-        public void close()
-        {
-            try
-            {
-                jarFile.close();
-            }
-            catch (IOException e)
-            {
-                throw new MithraGeneratorException("can't close archive jar file '" + jarFile.getName() + "'", e);
-            }
-        }
-
-        public String getSourceName()
-        {
-            return jarFile.getName();
-        }
-    }
-
 }

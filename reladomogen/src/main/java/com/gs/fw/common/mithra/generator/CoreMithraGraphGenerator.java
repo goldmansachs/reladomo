@@ -995,7 +995,7 @@ public class CoreMithraGraphGenerator extends BaseMithraGenerator
                 this.processRelationships();
                 this.processNonMithraSuperClasses();
                 this.processMithraInterfaces();
-                PrintWriter writer = new PrintWriter(new FileOutputStream(this.getOutputFile()));
+                PrintWriter writer = new PrintWriter(this.fauxFileSystem.newFile(this.getOutputFile()).newFileOutputStream());
                 writer.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                 writer.println("<graphml xmlns=\"http://graphml.graphdrawing.org/xmlns/graphml\" xmlns:y=\"http://www.yworks.com/xml/graphml\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns/graphml http://www.yworks.com/xml/schema/graphml/1.0/ygraphml.xsd\">");
                 writer.println("<key id=\"d0\" for=\"node\" yfiles.type=\"nodegraphics\"/>");
