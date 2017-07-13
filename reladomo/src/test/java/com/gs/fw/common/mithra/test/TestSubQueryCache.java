@@ -89,6 +89,13 @@ public class TestSubQueryCache extends MithraTestAbstract
         assertOrderSubQuery(op, subOp);
     }
 
+    public void testAndMultiEquality()
+    {
+        Operation op = OrderFinder.description().greaterThan("A").and(OrderFinder.orderId().lessThan(1000));
+        Operation subOp = OrderFinder.description().eq("First order").and(OrderFinder.orderId().eq(1));
+        assertOrderSubQuery(op, subOp);
+    }
+
     public void testMappedOperationNotSubqueried()
     {
         Operation op = OrderFinder.userId().eq(1);
@@ -393,7 +400,7 @@ public class TestSubQueryCache extends MithraTestAbstract
         assertNotSubQuery(op, subOp, OrderItemFinder.getFinderInstance());
     }
 
-    public void testEqualsEdgePoint()
+    public void testEqualsEdgePointNoMatch()
     {
         Operation op = AuditedOrderFinder.processingDate().equalsEdgePoint();
         Operation subOp = AuditedOrderFinder.processingDate().equalsInfinity();
@@ -401,6 +408,20 @@ public class TestSubQueryCache extends MithraTestAbstract
     }
 
     public void testEqualsEdgePointInAnd()
+    {
+        Operation op = AuditedOrderFinder.description().greaterThan("A").and(AuditedOrderFinder.processingDate().equalsEdgePoint());
+        Operation subOp = AuditedOrderFinder.description().eq("First order").and(AuditedOrderFinder.processingDate().equalsEdgePoint());
+        assertSubQuery(op, subOp, AuditedOrderFinder.getFinderInstance());
+    }
+
+    public void testEqualsEdgePoint()
+    {
+        Operation op = AuditedOrderFinder.processingDate().equalsEdgePoint();
+        Operation subOp = AuditedOrderFinder.description().eq("First order").and(AuditedOrderFinder.processingDate().equalsEdgePoint());
+        assertSubQuery(op, subOp, AuditedOrderFinder.getFinderInstance());
+    }
+
+    public void testEqualsEdgePointInAndNoMatch()
     {
         Operation op = AuditedOrderFinder.description().greaterThan("A").and(AuditedOrderFinder.processingDate().equalsEdgePoint());
         Operation subOp = AuditedOrderFinder.description().eq("First order");

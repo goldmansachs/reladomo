@@ -200,6 +200,10 @@ public abstract class AtomicEqualityOperation extends AbstractAtomicOperation im
     {
         if (existingOperation instanceof AsOfEdgePointOperation)
         {
+            if (existingOperation.equals(this))
+            {
+                return ExactMatchSmr.INSTANCE;
+            }
             return NoMatchSmr.INSTANCE;
         }
         if (existingOperation instanceof AbstractAtomicOperation)
