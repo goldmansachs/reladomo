@@ -1110,7 +1110,10 @@ public class MultiEqualityOperation implements Operation, EqualityOperation
                 }
             }
         }
-        //ignoring more complex cases, e.g. "x = 5 & y = 3" is a subset of "x > 1 & y > 0"
+        else if (existingOperation instanceof AndOperation)
+        {
+            return ((AndOperation)existingOperation).reverseShapeMatch(this, atomicOperations);
+        }
         return NoMatchSmr.INSTANCE;
     }
 

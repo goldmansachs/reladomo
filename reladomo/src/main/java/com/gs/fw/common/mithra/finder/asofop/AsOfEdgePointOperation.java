@@ -261,7 +261,7 @@ public class AsOfEdgePointOperation extends AtomicEqualityOperation implements A
     @Override
     public boolean zIsShapeCachable()
     {
-        return false;
+        return true;
     }
 
     @Override

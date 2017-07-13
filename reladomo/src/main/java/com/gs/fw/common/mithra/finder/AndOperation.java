@@ -1015,6 +1015,52 @@ public class AndOperation implements Operation
         }
     }
 
+    public ShapeMatchResult reverseShapeMatch(MultiEqualityOperation op, AtomicOperation[] atomicOperations)
+    {
+        InternalList existingOperands = this.operands;
+        BitSet matchedSlots = new BitSet(existingOperands.size());
+        InternalList filterOperands = new InternalList(atomicOperations.length);
+        InternalList lookupOperands = new InternalList(atomicOperations.length);
+        for(int i=0;i<atomicOperations.length;i++)
+        {
+            Operation operand = atomicOperations[i];
+            shapeMatchSingleOperation(existingOperands, matchedSlots, filterOperands, lookupOperands, operand);
+        }
+        if (lookupOperands.isEmpty() || matchedSlots.cardinality() != existingOperands.size())
+        {
+            return NoMatchSmr.INSTANCE;
+        }
+        return new SuperMatchSmr(this, op, createAndOrSingleOp(lookupOperands), createAndOrSingleOp(filterOperands));
+
+    }
+
+    private void shapeMatchSingleOperation(InternalList existingOperands, BitSet matchedSlots, InternalList filterOperands, InternalList lookupOperands, Operation operand)
+    {
+        boolean matched = false;
+        for(int j=0;j<existingOperands.size() && !matched;j++)
+        {
+            Operation existingOp = (Operation) existingOperands.get(j);
+            ShapeMatchResult shapeMatchResult = operand.zShapeMatch(existingOp);
+            if (shapeMatchResult.isExactMatch())
+            {
+                lookupOperands.add(operand);
+                matched = true;
+                matchedSlots.set(j);
+            }
+            else if (shapeMatchResult.isSuperMatch())
+            {
+                lookupOperands.add(((SuperMatchSmr) shapeMatchResult).getLookUpOperation());
+                filterOperands.add(operand);
+                matched = true;
+                matchedSlots.set(j);
+            }
+        }
+        if (!matched)
+        {
+            filterOperands.add(operand);
+        }
+    }
+
     private ShapeMatchResult zShapeMatchAnd(AndOperation existingOperation)
     {
         InternalList existingOperands = existingOperation.operands;
@@ -1039,29 +1085,7 @@ public class AndOperation implements Operation
             }
             else
             {
-                boolean matched = false;
-                for(int j=0;j<existingOperands.size() && !matched;j++)
-                {
-                    Operation existingOp = (Operation) existingOperands.get(j);
-                    ShapeMatchResult shapeMatchResult = operand.zShapeMatch(existingOp);
-                    if (shapeMatchResult.isExactMatch())
-                    {
-                        lookupOperands.add(operand);
-                        matched = true;
-                        matchedSlots.set(j);
-                    }
-                    else if (shapeMatchResult.isSuperMatch())
-                    {
-                        lookupOperands.add(((SuperMatchSmr) shapeMatchResult).getLookUpOperation());
-                        filterOperands.add(operand);
-                        matched = true;
-                        matchedSlots.set(j);
-                    }
-                }
-                if (!matched)
-                {
-                    filterOperands.add(operand);
-                }
+                shapeMatchSingleOperation(existingOperands, matchedSlots, filterOperands, lookupOperands, operand);
             }
 
         }
@@ -1079,7 +1103,13 @@ public class AndOperation implements Operation
         {
             return (Operation) newOps.get(0);
         }
-        return new AndOperation(newOps);
+        AndOperation andOperation = new AndOperation(newOps);
+        andOperation.combineOperands();
+        if (andOperation.operands.size() == 1)
+        {
+            return (Operation) andOperation.operands.get(0);
+        }
+        return andOperation;
     }
 
     private ShapeMatchResult zShapeMatchOneAtATime(Operation existingOperation)
