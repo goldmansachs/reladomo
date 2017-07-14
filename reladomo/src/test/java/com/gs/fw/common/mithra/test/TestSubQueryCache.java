@@ -18,6 +18,7 @@ package com.gs.fw.common.mithra.test;
 
 import com.gs.collections.impl.set.mutable.primitive.DoubleHashSet;
 import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
+import com.gs.fw.common.mithra.MithraList;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.test.domain.*;
@@ -26,6 +27,34 @@ import java.util.List;
 
 public class TestSubQueryCache extends MithraTestAbstract
 {
+    public void testAll()
+    {
+        Operation op = OrderFinder.all();
+        Operation subOp = OrderFinder.userId().eq(2);
+        assertOrderSubQuery(op, subOp);
+    }
+
+    public void testAllWithMax()
+    {
+        if (!OrderFinder.getMithraObjectPortal().isFullyCached())
+        {
+            Operation op = OrderFinder.all();
+            Operation subOp = OrderFinder.userId().eq(2);
+            RelatedFinder finderInstance = OrderFinder.getFinderInstance();
+            MithraList many = finderInstance.findMany(op);
+            many.setMaxObjectsToRetrieve(1);
+            assertTrue(!many.isEmpty());
+
+            int retrievalCount = this.getRetrievalCount();
+            List subList = finderInstance.findMany(subOp);
+            int subSize = subList.size();
+            assertTrue(subSize > 0);
+            assertEquals(retrievalCount + 1, this.getRetrievalCount());
+
+            assertEquals(subSize, finderInstance.findManyBypassCache(subOp).size());
+        }
+    }
+
     public void testGreaterThanEqualityInteger()
     {
         Operation op = OrderFinder.userId().greaterThan(0);
@@ -91,8 +120,22 @@ public class TestSubQueryCache extends MithraTestAbstract
 
     public void testAndMultiEquality()
     {
-        Operation op = OrderFinder.description().greaterThan("A").and(OrderFinder.orderId().lessThan(1000));
-        Operation subOp = OrderFinder.description().eq("First order").and(OrderFinder.orderId().eq(1));
+        Operation op = OrderFinder.description().greaterThan("A").and(OrderFinder.userId().greaterThan(0));
+        Operation subOp = OrderFinder.description().eq("First order").and(OrderFinder.userId().eq(1));
+        assertOrderSubQuery(op, subOp);
+    }
+
+    public void testAndMultiEqualityExtra()
+    {
+        Operation op = OrderFinder.description().greaterThan("A").and(OrderFinder.userId().lessThan(1000));
+        Operation subOp = OrderFinder.description().eq("First order").and(OrderFinder.userId().eq(1)).and(OrderFinder.state().eq("In-Progress"));
+        assertOrderSubQuery(op, subOp);
+    }
+
+    public void testComplexAnd()
+    {
+        Operation op = OrderFinder.description().greaterThan("A").and(OrderFinder.userId().lessThan(1000));
+        Operation subOp = OrderFinder.description().greaterThan("B").and(OrderFinder.userId().eq(1)).and(OrderFinder.state().eq("In-Progress"));
         assertOrderSubQuery(op, subOp);
     }
 
