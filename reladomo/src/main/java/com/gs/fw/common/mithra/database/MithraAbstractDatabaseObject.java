@@ -2444,6 +2444,7 @@ public abstract class MithraAbstractDatabaseObject
                 this.getSqlLogger().warn("Connection is dead, but underlying pool is not closable. " + con.getClass().getName());
             }
             dbe.setRetriable(!(databaseType.isKilledConnection(e) && isNoRetries()));
+            this.getConnectionManagerWrapper().cleanupDeadConnection(dbe, con);
         }
         throw dbe;
     }
@@ -5126,6 +5127,7 @@ public abstract class MithraAbstractDatabaseObject
         try
         {
             tempContext = new TupleTempContext(prototypeArray, false);
+            //we only get here in transactions. no need for special retry handling
             tempContext.insert(dataList, this.getMithraObjectPortal(), databaseType.getUpdateViaInsertAndJoinThreshold(), false);
 
             StringBuilder builder = new StringBuilder(30 + updates.size() * 12);

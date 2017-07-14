@@ -17,12 +17,17 @@
 package com.gs.fw.common.mithra;
 
 
+import com.gs.fw.common.mithra.tempobject.CommonTempContext;
+import com.gs.fw.common.mithra.util.SmallSet;
 import org.slf4j.Logger;
+
+import java.util.Set;
 
 public class MithraBusinessException extends MithraException
 {
     private boolean isRetriable;
     private boolean isTimedOut;
+    private transient Set<CommonTempContext> contexts;
 
     public MithraBusinessException(String message)
     {
@@ -54,10 +59,22 @@ public class MithraBusinessException extends MithraException
             {
                 logger.debug("find failed with retriable error. retrying.", this);
             }
+            cleanupAndRecreateTempContexts();
             this.waitBeforeRetrying();
         }
         else throw this;
         return retriesLeft;
+    }
+
+    private void cleanupAndRecreateTempContexts()
+    {
+        if (contexts != null)
+        {
+            for(CommonTempContext context: contexts)
+            {
+                context.cleanupAndRecreate();
+            }
+        }
     }
 
     public boolean isTimedOut()
@@ -73,5 +90,17 @@ public class MithraBusinessException extends MithraException
     public void waitBeforeRetrying()
     {
         MithraManagerProvider.getMithraManager().sleepBeforeTransactionRetry();
+    }
+
+    public void addContextsForRetry(Set<CommonTempContext> contexts)
+    {
+        if (contexts.size() > 0)
+        {
+            if (this.contexts == null)
+            {
+                this.contexts = new SmallSet(2);
+            }
+            this.contexts.addAll(contexts);
+        }
     }
 }

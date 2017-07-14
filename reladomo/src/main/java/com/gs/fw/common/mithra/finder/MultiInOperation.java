@@ -655,6 +655,7 @@ public class MultiInOperation implements Operation, SqlParameterSetter
             {
                 source = query.getSourceAttributeValue(query.getCurrentMapperList(), query.getCurrentSourceNumber());
             }
+            //this doesn't require retry handling; the context is destroyed before retry code is called.
             tempContext.insert(this.attributes[0].getOwnerPortal(), 100, source, mithraTupleSet.getTupleList(), query.isParallel());
             Mapper mapper = createMapper(tempContext);
             query.registerTempTupleMapper(mapper);

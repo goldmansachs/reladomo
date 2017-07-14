@@ -20,6 +20,7 @@ import com.gs.collections.api.block.function.Function;
 import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.gs.fw.common.mithra.MithraList;
+import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.*;
 import com.gs.fw.common.mithra.cache.ExtractorBasedHashStrategy;
@@ -70,6 +71,8 @@ public class TupleTempContext implements Serializable, CommonTempContext
     private static volatile char[] constantStart = new char[20];
     private boolean prefersMultiThreadedDataAccess = true;
     private final boolean isForQuery;
+    private boolean retryHook;
+    private transient InsertRetryBlock retryBlock;
 
     static
     {
@@ -77,6 +80,7 @@ public class TupleTempContext implements Serializable, CommonTempContext
         pid = MithraProcessInfo.getPidAsShort();
         fillConstantStart();
     }
+
 
     public TupleTempContext(Attribute[] prototypeAttributes, int[] maxLengths, boolean isForQuery)
     {
@@ -226,6 +230,10 @@ public class TupleTempContext implements Serializable, CommonTempContext
         }
         destination.getMithraTuplePersister().insertTuples(this,
                 new LazyListAdaptor(prototypeObjects, LazyTuple.createFactory(prototypeAttributes)), bulkInsertThreshold);
+        if (!this.prefersMultiThreadedDataAccess && this.retryHook)
+        {
+            this.retryBlock = new InsertRetryBlock(prototypeObjects, destination, bulkInsertThreshold);
+        }
     }
 
     public void insert(SetBasedAtomicOperation op, MithraObjectPortal destination, int bulkInsertThreshold, Object source, boolean isParallel)
@@ -358,6 +366,17 @@ public class TupleTempContext implements Serializable, CommonTempContext
                 logger.error("Could not destroy temp context", t);
             }
         }
+        clearNames();
+        clearRetry();
+    }
+
+    private void clearRetry()
+    {
+        this.retryBlock = null;
+    }
+
+    private synchronized void clearNames()
+    {
         this.nameMap.clear();
         this.fullyQualifiedNameMap.clear();
     }
@@ -427,6 +446,17 @@ public class TupleTempContext implements Serializable, CommonTempContext
         isSingleThreaded = true;
     }
 
+    @Override
+    public void cleanupAndRecreate()
+    {
+        this.clearNames();
+        if (this.retryBlock != null)
+        {
+            this.insert(this.retryBlock.prototypeObjects, this.retryBlock.destination, this.retryBlock.bulkInsertThreshold, false);
+            this.retryBlock = null;
+        }
+    }
+
     public boolean isSingleThreaded()
     {
         return isSingleThreaded;
@@ -449,6 +479,11 @@ public class TupleTempContext implements Serializable, CommonTempContext
             return maxLengths[pos];
         }
         return 0;
+    }
+
+    public void enableRetryHook()
+    {
+        this.retryHook = !MithraManagerProvider.getMithraManager().isInTransaction();
     }
 
     private static class NameKey implements Serializable
@@ -647,4 +682,17 @@ public class TupleTempContext implements Serializable, CommonTempContext
         }
     }
 
+    private class InsertRetryBlock
+    {
+        List prototypeObjects;
+        MithraObjectPortal destination;
+        int bulkInsertThreshold;
+
+        public InsertRetryBlock(List prototypeObjects, MithraObjectPortal destination, int bulkInsertThreshold)
+        {
+            this.prototypeObjects = prototypeObjects;
+            this.destination = destination;
+            this.bulkInsertThreshold = bulkInsertThreshold;
+        }
+    }
 }
