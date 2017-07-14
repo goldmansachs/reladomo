@@ -68,6 +68,12 @@ public abstract class AbstractMithraTemporaryContext implements MithraTemporaryC
     }
 
     @Override
+    public void cleanupAndRecreate()
+    {
+        //nothing to do
+    }
+
+    @Override
     public void markSingleThreaded()
     {
         this.isSingleThreaded = true;

@@ -205,6 +205,7 @@ public abstract class AtomicSetBasedOperation extends AbstractAtomicOperation im
         TupleTempContext tempContext = new TupleTempContext(prototypeAttributes, sourceAttr, maxLengths, true);
         try
         {
+            //doesn't require retry handling; the temp context is destroyed before we get to retry
             tempContext.insert(this, query.getAnalyzedOperation().getOriginalOperation().getResultObjectPortal(),
                     IN_CLAUSE_BULK_INSERT_THRESHOLD, source, query.isParallel());
         }

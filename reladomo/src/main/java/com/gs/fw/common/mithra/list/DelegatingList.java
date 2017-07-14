@@ -666,6 +666,7 @@ public abstract class DelegatingList<E> implements MithraList<E>
         for (int i = 0; i < lists.size(); i++)
         {
             TupleTempContext tempContext = new TupleTempContext(pkAttributes, true);
+            tempContext.enableRetryHook();
             try
             {
                 List segregatedList = lists.get(i);
@@ -674,7 +675,7 @@ public abstract class DelegatingList<E> implements MithraList<E>
                 {
                     if (tx != null) tx.zSetOperationEvaluationMode(true);
                     source = sourceAttribute != null ? sourceAttribute.valueOf(segregatedList.get(0)) : null;
-                    tempContext.insert(segregatedList, portal, REFRESH_BULK_INSERT_THRESHOLD, this.getNumberOfParallelThreads() > 1);
+                    tempContext.insert(segregatedList, portal, REFRESH_BULK_INSERT_THRESHOLD, false);
                 }
                 finally
                 {

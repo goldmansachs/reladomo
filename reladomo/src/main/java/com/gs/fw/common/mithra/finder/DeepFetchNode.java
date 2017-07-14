@@ -786,7 +786,8 @@ public class DeepFetchNode implements Serializable, DeepFetchTree
         if (!parentList.isEmpty())
         {
             result = new TupleTempContext(arrayAttributes, sourceAttribute, null, true);
-            result.insert(parentList, relatedFinder.zGetMapper().getFromPortal(), 100, true);
+            result.enableRetryHook();
+            result.insert(parentList, relatedFinder.zGetMapper().getFromPortal(), 100, false); //todo: set isParallel to true after implementing parallel deep fetch.
         }
         return result;
     }

@@ -20,4 +20,6 @@ package com.gs.fw.common.mithra.tempobject;
 public interface CommonTempContext
 {
     void markSingleThreaded();
+
+    void cleanupAndRecreate();
 }

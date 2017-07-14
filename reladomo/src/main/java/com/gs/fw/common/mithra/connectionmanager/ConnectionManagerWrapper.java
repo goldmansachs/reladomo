@@ -17,16 +17,22 @@
 package com.gs.fw.common.mithra.connectionmanager;
 
 
+import com.gs.collections.api.block.procedure.Procedure2;
+import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.map.mutable.UnifiedMap;
+import com.gs.fw.common.mithra.MithraDatabaseException;
 import com.gs.fw.common.mithra.bulkloader.BulkLoader;
 import com.gs.fw.common.mithra.bulkloader.BulkLoaderException;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.tempobject.CommonTempContext;
 import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.SmallSet;
 import com.gs.fw.common.mithra.util.WrappedConnection;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Set;
 import java.util.TimeZone;
 
 public class ConnectionManagerWrapper implements SourcelessConnectionManager,
@@ -219,15 +225,51 @@ public class ConnectionManagerWrapper implements SourcelessConnectionManager,
     {
         if (c instanceof WrappedConnectionIgnoreClose)
         {
-            ((WrappedConnectionIgnoreClose)c).incrementUsage();
+            ((WrappedConnectionIgnoreClose)c).incrementUsage(context);
             return;
         }
-        WrappedConnectionIgnoreClose wrappedConnection = new WrappedConnectionIgnoreClose(c);
+        WrappedConnectionIgnoreClose wrappedConnection = new WrappedConnectionIgnoreClose(c, context);
         synchronized (this.tempContextMap)
         {
             tempContextMap.put(new ConnectionKey(Thread.currentThread(), source), wrappedConnection);
         }
         context.markSingleThreaded();
+    }
+
+    public void cleanupDeadConnection(final MithraDatabaseException dbe, final Connection deadConnection)
+    {
+        if (this.tempContextMap.size() > 0)
+        {
+            synchronized (this.tempContextMap)
+            {
+                final List<ConnectionKey> toRemove = FastList.newList();
+                this.tempContextMap.forEachKeyValue(new Procedure2<ConnectionKey, WrappedConnectionIgnoreClose>()
+                {
+                    @Override
+                    public void value(ConnectionKey connectionKey, WrappedConnectionIgnoreClose wrappedConnectionIgnoreClose)
+                    {
+                        if (connectionKey.thread == Thread.currentThread() && wrappedConnectionIgnoreClose == deadConnection)
+                        {
+                            toRemove.add(connectionKey);
+                            dbe.addContextsForRetry(wrappedConnectionIgnoreClose.contexts);
+                            try
+                            {
+                                wrappedConnectionIgnoreClose.reallyClose();
+                            }
+                            catch (SQLException e)
+                            {
+                                //ignore
+                            }
+                        }
+                    }
+                });
+                for(int i=0;i<toRemove.size();i++)
+                {
+                    this.tempContextMap.remove(toRemove.get(i));
+                }
+            }
+        }
+
     }
 
     private static final class ConnectionKey
@@ -262,10 +304,12 @@ public class ConnectionManagerWrapper implements SourcelessConnectionManager,
     private static final class WrappedConnectionIgnoreClose extends WrappedConnection
     {
         private int usageCount = 1;
+        private Set<CommonTempContext> contexts = new SmallSet(2);
 
-        private WrappedConnectionIgnoreClose(Connection c)
+        private WrappedConnectionIgnoreClose(Connection c, CommonTempContext context)
         {
             super(c);
+            contexts.add(context);
         }
 
         @Override
@@ -279,8 +323,9 @@ public class ConnectionManagerWrapper implements SourcelessConnectionManager,
             this.getUnderlyingConnection().close();
         }
 
-        public void incrementUsage()
+        public void incrementUsage(CommonTempContext context)
         {
+            contexts.add(context);
             usageCount++;
         }
 
