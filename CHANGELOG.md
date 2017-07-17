@@ -1,4 +1,13 @@
 # Change Log
+## 16.4.0 - 2017-07-17
+### Enhancements:
+- Add a shutdown hook to the notification manager.
+- Improve subquery cache by recognizing more cases
+- Use connection based temp tables more frequently, with proper retry
+
+### Bug Fixes:
+- Fix code generator dirty checking (CRC)
+
 ## 16.3.2 - 2017-07-05
 ### Bug Fixes:
 - Fix equalsEdgePoint with subquery
