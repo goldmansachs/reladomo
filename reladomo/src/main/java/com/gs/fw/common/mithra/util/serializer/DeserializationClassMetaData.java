@@ -41,7 +41,6 @@ public class DeserializationClassMetaData
 {
     private static final Class[][] CONSTRUCTOR_ARGS = new Class[3][];
     private static final Object[] NO_ARGS = new Object[0];
-    private final Function<? super String, ? extends Method> RELATIONSHIP_SETTER_LOOKUP = new RelationshipSetterLookup();
 
     private final RelatedFinder relatedFinder;
     private final PrivateReladomoClassMetaData metaData;
@@ -51,7 +50,6 @@ public class DeserializationClassMetaData
     private Constructor businessClassConstructor;
     private final List<Attribute> settableAttributes = FastList.newList();
     private final Set<String> dependentRelationshipNames = UnifiedSet.newSet();
-    private ConcurrentHashMap<String, Method> relationshipSetters = new ConcurrentHashMap<String, Method>();
 
     static
     {
@@ -110,23 +108,6 @@ public class DeserializationClassMetaData
         }
     }
 
-    private Class findBusinessClass(String className)
-    {
-        try
-        {
-            Class<?> aClass = Class.forName(className);
-            if (aClass.isInterface())
-            {
-                aClass = Class.forName(className+"Impl");
-            }
-            return aClass;
-        }
-        catch (ClassNotFoundException e)
-        {
-            throw new RuntimeException("Could not get class "+className, e);
-        }
-    }
-
     public Set<String> getDependentRelationshipNames()
     {
         return dependentRelationshipNames;
@@ -134,7 +115,7 @@ public class DeserializationClassMetaData
 
     public Method getRelationshipSetter(String name)
     {
-        return relationshipSetters.getIfAbsentPutWith(name, RELATIONSHIP_SETTER_LOOKUP, name);
+        return this.metaData.getRelationshipSetter(name);
     }
 
     private void initBusinessObjectConstructor()
@@ -273,32 +254,5 @@ public class DeserializationClassMetaData
             throw new DeserializationException("Could not construct "+metaData.getBusinessImplClass().getName(), e);
         }
         return null; // never gets here.
-    }
-
-    private class RelationshipSetterLookup implements Function<String, Method>
-    {
-        @Override
-        public Method valueOf(String name)
-        {
-            Method[] methods;
-            try
-            {
-                methods = Class.forName(DeserializationClassMetaData.this.getBusinessClassName()).getMethods();
-            }
-            catch (ClassNotFoundException e)
-            {
-                throw new RuntimeException("Could not get methods for class "+DeserializationClassMetaData.this.getBusinessClassName(), e);
-            }
-            for(Method m: methods)
-            {
-                if (m.getName().startsWith("set") &&
-                        Character.toLowerCase(m.getName().charAt(3)) == Character.toLowerCase(name.charAt(0))  &&
-                        m.getName().substring(4).equals(name.substring(1)) && m.getParameterTypes().length == 1)
-                {
-                    return m;
-                }
-            }
-            return null;
-        }
     }
 }

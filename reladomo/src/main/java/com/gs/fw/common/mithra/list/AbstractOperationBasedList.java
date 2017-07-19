@@ -20,6 +20,7 @@ package com.gs.fw.common.mithra.list;
 import com.gs.fw.common.mithra.MithraBusinessException;
 import com.gs.fw.common.mithra.MithraList;
 import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.MithraTransactionalList;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.cache.FullUniqueIndex;
 import com.gs.fw.common.mithra.cache.Index;
@@ -29,6 +30,7 @@ import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.list.cursor.Cursor;
+import com.gs.fw.common.mithra.list.merge.TopLevelMergeOptions;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.notification.listener.MithraApplicationNotificationListener;
 import com.gs.fw.common.mithra.querycache.CachedQuery;
@@ -553,4 +555,15 @@ public class AbstractOperationBasedList<E> implements MithraDelegatedList<E>, Se
         throw new MithraBusinessException("Can't modify an operation based list.");
     }
 
+    @Override
+    public MithraList<E> asAdhoc(DelegatingList<E> delegatingList)
+    {
+        return delegatingList.zCopyIntoAdhoc(delegatingList.getOperation().getResultObjectPortal().getFinder().constructEmptyList());
+    }
+
+    @Override
+    public void merge(DelegatingList<E> adhoc, MithraTransactionalList<E> incoming, TopLevelMergeOptions<E> mergeOptions)
+    {
+        throw new RuntimeException("Should never get here");
+    }
 }

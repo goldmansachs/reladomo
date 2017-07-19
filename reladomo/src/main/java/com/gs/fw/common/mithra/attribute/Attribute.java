@@ -120,6 +120,11 @@ public abstract class Attribute<Owner, V> implements com.gs.fw.finder.Attribute<
         return this.shadowAttribute;
     }
 
+    public boolean hasShadowAttriute()
+    {
+        return this.shadowAttribute != this;
+    }
+
     public Object getProperty(String key)
     {
         if (properties == null) return null;
@@ -488,6 +493,11 @@ public abstract class Attribute<Owner, V> implements com.gs.fw.finder.Attribute<
     public void setValueNullUntil(Owner o, Timestamp exclusiveUntil)
     {
         throw new RuntimeException("not implemented");
+    }
+
+    public void copyValueFrom(Owner dest, Owner src)
+    {
+        this.setValue(dest, this.valueOf(src));
     }
 
     public String toString()

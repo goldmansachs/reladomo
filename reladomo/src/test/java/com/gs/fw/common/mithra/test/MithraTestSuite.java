@@ -61,6 +61,7 @@ public class MithraTestSuite
         suite.addTestSuite(TestCursor.class);
 
         suite.addTestSuite(TestRelationshipPersistence.class);
+        suite.addTestSuite(TestListMerge.class);
         suite.addTestSuite(TransactionalInsertTest.class);
 
         //Test primary key generators

@@ -27,6 +27,7 @@ import com.gs.fw.common.mithra.cache.ExtractorBasedHashStrategy;
 import com.gs.fw.common.mithra.cache.Index;
 import com.gs.fw.common.mithra.extractor.EmbeddedValueExtractor;
 import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.list.merge.TopLevelMergeOptions;
 import com.gs.fw.common.mithra.notification.listener.MithraApplicationNotificationListener;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
 import com.gs.fw.common.mithra.util.*;
@@ -1135,10 +1136,54 @@ public abstract class DelegatingList<E> implements MithraList<E>
         return this.delegated.getInternalIndex(this);
     }
 
+    public MithraTransactionalList<E> merge(MithraTransactionalList<E> incoming, TopLevelMergeOptions<E> mergeOptions)
+    {
+        DelegatingList<E> adhoc = (DelegatingList<E>) this.asAdhoc();
+        adhoc.delegated.merge(adhoc, incoming, mergeOptions);
+        return (MithraTransactionalList<E>) adhoc;
+    }
+
+    public MithraList<E> asAdhoc()
+    {
+        this.forceResolve();
+        return this.delegated.asAdhoc(this);
+    }
+
+    public MithraList<E> zCopyIntoAdhoc(MithraList<E> mithraList)
+    {
+        for(int i=0;i<this.size();i++)
+        {
+            mithraList.add(this.get(i));
+        }
+        ((DelegatingList)mithraList).listOptions = copyListOptions();
+        return mithraList;
+    }
+
+    private ListOptions copyListOptions()
+    {
+        if (this.listOptions == null)
+        {
+            return null;
+        }
+        return listOptions.copyForAdhoc();
+    }
+
     private static class ListOptions implements Serializable
     {
         private transient volatile Object currentTransaction;
         private volatile DeepFetchNode deepFetchRoot;
         private OrderBy orderBy;
+
+        public ListOptions copyForAdhoc()
+        {
+            ListOptions result = new ListOptions();
+            result.currentTransaction = currentTransaction;
+            result.orderBy = orderBy;
+            if (deepFetchRoot != null)
+            {
+                result.deepFetchRoot = deepFetchRoot.copyForAdHoc();
+            }
+            return result;
+        }
     }
 }

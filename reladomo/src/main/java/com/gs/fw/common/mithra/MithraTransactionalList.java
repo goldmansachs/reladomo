@@ -17,10 +17,12 @@
 
 package com.gs.fw.common.mithra;
 
+import com.gs.fw.common.mithra.list.merge.TopLevelMergeOptions;
 import com.gs.fw.finder.TransactionalDomainList;
 
 public interface MithraTransactionalList<E> extends MithraList<E>, TransactionalDomainList<E>
 {
+    public MithraTransactionalList<E> getNonPersistentCopy();
 
     public MithraTransactionalList getNonPersistentGenericCopy();
 
@@ -33,4 +35,15 @@ public interface MithraTransactionalList<E> extends MithraList<E>, Transactional
     public void bulkInsertAll();
 
     public void cascadeInsertAll();
+
+    /**
+     * Incorporate the changes in the incoming list, according to the mergeOptions, into
+     * this list.
+     * Operation based lists first copy this list to an adhoc list (see asAdhoc) and then merge, returning the result
+     *
+     * @param incoming list with changes.
+     * @param mergeOptions options for merging.
+     * @return The resulting list, which can be "this" if the list was not operation based.
+     */
+    public MithraTransactionalList<E> merge(MithraTransactionalList<E> incoming, TopLevelMergeOptions<E> mergeOptions);
 }

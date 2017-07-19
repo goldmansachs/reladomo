@@ -112,4 +112,12 @@ public interface MithraList<E> extends DomainList<E>, RandomAccess
      * @return null if nothing has been deep fetched, otherwise, the root of the deep fetch tree
      */
     public DeepFetchTree getDeepFetchTree();
+
+    /**
+     * if this is an operation based list, copy it to a non-operation based list, retaining the
+     * deep fetches.
+     * If this is already an adhoc list (non-operation based), just return itself.
+     * @return an adhoc list.
+     */
+    public MithraList<E> asAdhoc();
 }

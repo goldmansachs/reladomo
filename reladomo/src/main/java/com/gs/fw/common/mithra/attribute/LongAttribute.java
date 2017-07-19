@@ -126,6 +126,19 @@ public abstract class LongAttribute<T> extends PrimitiveNumericAttribute<T, Long
 
     public abstract Operation notEq(LongAttribute other);
 
+    @Override
+    public void copyValueFrom(T dest, T src)
+    {
+        if (this.isAttributeNull(src))
+        {
+            this.setValueNull(dest);
+        }
+        else
+        {
+            this.setValue(dest, this.longValueOf(src));
+        }
+    }
+
     public Long valueOf(T o)
     {
         return isAttributeNull(o) ? null : Long.valueOf(this.longValueOf(o));

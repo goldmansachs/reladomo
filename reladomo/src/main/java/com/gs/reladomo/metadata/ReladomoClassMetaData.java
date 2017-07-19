@@ -28,6 +28,7 @@ import com.gs.fw.common.mithra.attribute.VersionAttribute;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.list.DelegatingList;
 import com.gs.fw.common.mithra.util.ReflectionMethodCache;
+import com.gs.fw.common.mithra.util.serializer.DeserializationClassMetaData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,10 +51,12 @@ public abstract class ReladomoClassMetaData
     private static Logger logger = LoggerFactory.getLogger(ReladomoClassMetaData.class.getName());
 
     private static final ConcurrentHashMap<Class, ReladomoClassMetaData> CACHE = new ConcurrentHashMap<Class, ReladomoClassMetaData>();
+    private final Function<? super String, ? extends Method> RELATIONSHIP_SETTER_LOOKUP = new RelationshipSetterLookup();
 
     private final Class finderClass;
     private final RelatedFinder relatedFinder;
-    
+    private final ConcurrentHashMap<String, Method> relationshipSetters = new ConcurrentHashMap<String, Method>();
+
     private Object processingDate;
     private Object businessDate;
     private String businessOrInterfaceClassName;
@@ -447,6 +450,11 @@ public abstract class ReladomoClassMetaData
         return relatedFinder.getHierarchyDepth();
     }
 
+    public Method getRelationshipSetter(String name)
+    {
+        return relationshipSetters.getIfAbsentPutWith(name, RELATIONSHIP_SETTER_LOOKUP, name);
+    }
+
     protected static Object invokeStaticMethod(Class classToInvoke, String methodName)
     {
         try
@@ -461,4 +469,22 @@ public abstract class ReladomoClassMetaData
         }
     }
 
+    private class RelationshipSetterLookup implements Function<String, Method>
+    {
+        @Override
+        public Method valueOf(String name)
+        {
+            Method[] methods = ReladomoClassMetaData.this.getBusinessOrInterfaceClass().getMethods();
+            for(Method m: methods)
+            {
+                if (m.getName().startsWith("set") &&
+                        Character.toLowerCase(m.getName().charAt(3)) == Character.toLowerCase(name.charAt(0))  &&
+                        m.getName().substring(4).equals(name.substring(1)) && m.getParameterTypes().length == 1)
+                {
+                    return m;
+                }
+            }
+            return null;
+        }
+    }
 }
