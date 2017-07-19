@@ -632,9 +632,16 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
         return this.getNotNullSetterExpressionForIndex(this.nullablePrimitiveAttributes.size() + index);
     }
 
-    public Set<String> getImports()
+    public Set<String> getImportSet()
     {
         return Collections.unmodifiableSet(this.imports);
+    }
+
+    public List<String> getImports()
+    {
+        ArrayList<String> imports = new ArrayList<String>(this.imports);
+        Collections.sort(imports);
+        return imports;
     }
 
     public boolean isTransactional()
@@ -3963,7 +3970,7 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
         this.substituteSuperType.setClassName(superClassName);
         this.substituteSuperType.setSuperClass(super.getFullyQualifiedSuperClassType());
         this.substituteSuperType.setDated(this.hasAsOfAttributes() || childrenAreDated());
-        this.substituteSuperType.setImports(this.getImports());
+        this.substituteSuperType.setImports(this.getImportSet());
     }
 
     public String getImplClassNameWithSlashes()
