@@ -42,10 +42,8 @@ public class CoreMithraUmlGenerator extends CoreMithraGenerator
             parseAndValidate();
             OutputStream fos = this.fauxFileSystem.newFile(this.getOutputFile()).newFileOutputStream();
             PrintWriter writer = new PrintWriter(fos);
-            for (Iterator iterator = this.getMithraObjects().values().iterator(); iterator.hasNext();)
+            for (MithraObjectTypeWrapper mithraObjectTypeWrapper: getSortedMithraObjects())
             {
-                MithraObjectTypeWrapper mithraObjectTypeWrapper = (MithraObjectTypeWrapper) iterator.next();
-
                 writer.write("/**\n");
 
                 RelationshipAttribute[] relationshipAttributes = mithraObjectTypeWrapper.getRelationshipAttributes();

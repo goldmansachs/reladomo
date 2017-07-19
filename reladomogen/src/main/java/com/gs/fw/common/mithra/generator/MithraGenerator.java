@@ -106,24 +106,25 @@ public class MithraGenerator extends AbstractMithraGenerator
             }
         };
 
-        MithraObjectTypeParser parser = new MithraXMLObjectTypeParser("H:/projects/Mithra/Mithra/xml/mithra/test/MithraClassList.xml");
+        String root = "/home/moh/projects/reladomo/";
+        MithraObjectTypeParser parser = new MithraXMLObjectTypeParser(root + "reladomo/src/test/reladomo-xml/MithraClassList.xml");
 
         gen.setMithraObjectTypeParser(parser);
-        gen.setGeneratedDir("H:/temp/Mithra/src");
-        gen.setNonGeneratedDir("H:/temp/Mithra/src");
+        gen.setGeneratedDir(root + "tmp/gen");
+        gen.setNonGeneratedDir(root + "tmp/nogen");
         gen.setGenerateGscListMethod(true);
         gen.setCodeFormat(CoreMithraGenerator.FORMAT_FAST);
-        gen.setDefaultFinalGetters(true);
+        gen.setDefaultFinalGetters(false);
 
         long startTime = System.currentTimeMillis();
 
         MithraGeneratorImport generatorImport = new MithraGeneratorImport();
-        generatorImport.setDir("H:/projects/Mithra/Mithra/xml/mithra/test/");
+        generatorImport.setDir(root + "reladomo/src/test/reladomo-xml/");
         generatorImport.setFilename("MithraClassListToImport.xml");
         gen.addConfiguredMithraImport(generatorImport);
 
         generatorImport = new MithraGeneratorImport();
-        generatorImport.setDir("H:/projects/Mithra/Mithra/xml/mithra/test/testmithraimport");
+        generatorImport.setDir(root + "reladomo/src/test/reladomo-xml/testmithraimport/");
         generatorImport.setFilename("MithraTestImportClassList.xml");
         gen.addConfiguredMithraImport(generatorImport);
 

@@ -404,17 +404,15 @@ public class CoreMithraGraphGenerator extends BaseMithraGenerator
         }
         else
         {
-            this.objectsToDraw.addAll(this.getMithraObjects().values());
+            this.objectsToDraw.addAll(this.getSortedMithraObjects());
         }
     }
 
     public void processRelationships()
     {
         HashMap uniqueRelationships = new HashMap();
-        for (Iterator iterator = getMithraObjects().values().iterator(); iterator.hasNext();)
+        for (MithraObjectTypeWrapper mithraObjectTypeWrapper: this.getSortedMithraObjects())
         {
-            MithraObjectTypeWrapper mithraObjectTypeWrapper = (MithraObjectTypeWrapper) iterator.next();
-
             if (isExcluded(mithraObjectTypeWrapper))
             {
                 continue;
