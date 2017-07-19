@@ -534,7 +534,7 @@ public class CoreMithraGenerator extends BaseMithraGenerator
                 GenerationLogger generationLogger = this.getGenerationLogger();
                 generationLogger.setOldGenerationLog(GenerationLog.readOldLog(this.getGeneratedDir(), filePath, this.generatedFileManager));
                 generationLogger.setNewGenerationLog(new GenerationLog(this.getMd5(), this.getCrc()));
-                int normal = this.processMithraObjects(getMithraObjects().values());
+                int normal = this.processMithraObjects(getSortedMithraObjects());
                 int mithraInterfaces = this.processMithraInterfaces(getMithraInterfaces().values());
                 int embedded = this.processMithraObjects(getMithraEmbeddedValueObjects().values());
                 int enumerations = this.processMithraObjects(getMithraEnumerations().values());

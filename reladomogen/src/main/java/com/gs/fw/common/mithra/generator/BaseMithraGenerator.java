@@ -236,6 +236,11 @@ public class BaseMithraGenerator
         return this.mithraObjects;
     }
 
+    public List<MithraObjectTypeWrapper> getSortedMithraObjects()
+    {
+        return sortedMithraObjects;
+    }
+
     public Map<String, MithraEmbeddedValueObjectTypeWrapper> getMithraEmbeddedValueObjects()
     {
         return this.mithraEmbeddedValueObjects;
@@ -384,7 +389,7 @@ public class BaseMithraGenerator
 
     private void processForeignKeys()
     {
-        for (MithraObjectTypeWrapper mithraObjectTypeWrapper: this.mithraObjects.values())
+        for (MithraObjectTypeWrapper mithraObjectTypeWrapper: this.sortedMithraObjects)
         {
             mithraObjectTypeWrapper.processForeignKeys();
         }
@@ -536,7 +541,7 @@ public class BaseMithraGenerator
     private boolean checkRelationships()
     {
         boolean result = true;
-        for (MithraObjectTypeWrapper mithraObjectTypeWrapper: this.mithraObjects.values())
+        for (MithraObjectTypeWrapper mithraObjectTypeWrapper: this.sortedMithraObjects)
         {
             Map errors = mithraObjectTypeWrapper.checkRelationships(this.mithraObjects);
             if (errors.size() > 0)

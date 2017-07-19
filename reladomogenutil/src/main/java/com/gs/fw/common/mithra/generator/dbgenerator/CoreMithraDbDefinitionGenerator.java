@@ -178,10 +178,8 @@ public class CoreMithraDbDefinitionGenerator extends BaseMithraGenerator
             try
             {
                 parseAndValidate();
-                for (Iterator iterator = getMithraObjects().values().iterator(); iterator.hasNext();)
+                for (MithraObjectTypeWrapper mithraObjectTypeWrapper: getSortedMithraObjects())
                 {
-                    MithraObjectTypeWrapper mithraObjectTypeWrapper = (MithraObjectTypeWrapper) iterator.next();
-
                     /* Check for wrapper in build list, if specified (build list is comma-separated class names) */
                     if ((buildListArray != null) && (!buildListArray.contains(mithraObjectTypeWrapper.getClassName())))
                     {
