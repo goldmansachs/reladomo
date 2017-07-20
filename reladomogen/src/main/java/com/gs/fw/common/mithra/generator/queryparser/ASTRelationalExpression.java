@@ -135,7 +135,7 @@ public class ASTRelationalExpression extends SimpleNode implements LeafLevelExpr
             this.right = temp;
             this.operator = this.operator.getReverseOperator();
         }
-        if (!this.isJoin() && this.operator.isIsNull())
+        if (!this.isJoin() && this.operator.isIsNullOrIsNotNull())
         {
             if (!this.left.getAttribute().isNullable())
             {
@@ -328,7 +328,7 @@ public class ASTRelationalExpression extends SimpleNode implements LeafLevelExpr
         {
             if (this.operator.isUnary())
             {
-                if (attribute.isNullable() && this.operator.isIsNull())
+                if (attribute.isNullable() && this.operator.isIsNullOrIsNotNull())
                 {
                     String not = ((ASTIsNullClause) this.operator).isNot() ? "!" : "";
                     return not + prefix + attribute.getNullGetter();

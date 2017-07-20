@@ -110,12 +110,18 @@ public class ASTIsNullClause extends SimpleNode implements LeafLevelExpression, 
 		return false;
 	}
 
-	public boolean isIsNull()
+	public boolean isIsNullOrIsNotNull()
 	{
 		return true;
 	}
 
-	public Operator getReverseOperator()
+    @Override
+    public boolean isIsNotNull()
+    {
+        return isNot();
+    }
+
+    public Operator getReverseOperator()
 	{
 		throw new RuntimeException("not implemented");
 	}

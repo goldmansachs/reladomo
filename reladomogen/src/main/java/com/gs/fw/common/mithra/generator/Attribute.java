@@ -27,6 +27,7 @@ public class Attribute extends AbstractAttribute
     private String owningReverseRelationshipOwningClassPackage;
     private String owningReverseRelationshipOwningClass;
     private String owningReverseRelationshipName;
+    private RelationshipAttribute owningRelationship;
 
     public Attribute(AttributePureType wrapped, MithraObjectTypeWrapper owner)
             throws JavaTypeException
@@ -77,5 +78,28 @@ public class Attribute extends AbstractAttribute
         this.owningReverseRelationshipOwningClassPackage = owningReverseRelationshipOwningClassPackage;
         this.owningReverseRelationshipOwningClass = owningReverseRelationshipOwningClass;
         this.owningReverseRelationshipName = owningReverseRelationshipName;
+    }
+
+    public boolean setOwningRelationship(RelationshipAttribute owningRelationship)
+    {
+        if (this.owningRelationship == null)
+        {
+            this.owningRelationship = owningRelationship;
+            return true;
+        }
+        if (owningRelationship.isBetterForAttributeOwnership(this.owningRelationship, this))
+        {
+            this.owningRelationshipName = null;
+            this.owningReverseRelationshipName = null;
+            this.owningReverseRelationshipOwningClass = null;
+            this.owningReverseRelationshipOwningClassPackage = null;
+            return true;
+        }
+        return false;
+    }
+
+    public RelationshipAttribute getOwningRelationship()
+    {
+        return owningRelationship;
     }
 }

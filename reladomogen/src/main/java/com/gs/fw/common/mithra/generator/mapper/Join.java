@@ -1637,28 +1637,8 @@ public class Join
     {
         if (this.rightFilters != null)
         {
-            List<ASTRelationalExpression> rightExpressions = new ArrayList<ASTRelationalExpression>();
-            this.rightFilters.jjtAccept(new RightAttributeMapperVisitor(rightExpressions), null);
-            for(int i=0;i<rightExpressions.size();i++)
-            {
-                ASTRelationalExpression exp = rightExpressions.get(i);
-                AbstractAttribute rightAttr = exp.getLeft().getAttribute();
-                if (!rightAttr.isAsOfAttribute())
-                {
-                    Operator op = exp.getOperator();
-                    if (!op.isIsNull())
-                    {
-                        String right = op.isUnary() ? null : exp.getLiteralRightHand(Join.this.left.chooseForRelationshipAdd(Join.this.right));
-                        String correspondingParameter = findCorrespondingParameter(right);
-
-                        if (!(correspondingParameter == null || ((isByPrimaryKey() && needsParameterOperationForPrimaryKey(correspondingParameter))
-                                || (getUniqueMatchingIndex() != null && needsParameterOperationForUniqueIndex(correspondingParameter)))))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
+            String overSpecificationCheck = getOverSpecificationCheck();
+            return overSpecificationCheck != null && !overSpecificationCheck.trim().isEmpty();
         }
         return false;
     }
@@ -1666,7 +1646,8 @@ public class Join
     public String getOverSpecificationCheck()
     {
         RightFilterOverSpecificationVisitor filters = new RightFilterOverSpecificationVisitor();
-        return (String) this.rightFilters.jjtAccept(filters, null);
+        String result = (String) this.rightFilters.jjtAccept(filters, null);
+        return filters.dependsOnParameter ? result : null;
     }
 
     public String getFindByUniqueLookupParameters()
@@ -2030,6 +2011,11 @@ public class Join
                 {
                     addOr(result).append(localResult);
                 }
+                else
+                {
+                    result.setLength(0);
+                    break;
+                }
             }
             return result.length() == 0 ? "" : "(" + result + ")";
         }
@@ -2042,9 +2028,13 @@ public class Join
             if (!rightAttr.isAsOfAttribute())
             {
                 Operator op = node.getOperator();
-                if (op.isIsNull())
+                if (op.isIsNullOrIsNotNull())
                 {
                     addAnd(result);
+                    if (op.isIsNotNull())
+                    {
+                        result.append("!");
+                    }
                     result.append("_castedTargetData.").append(rightAttr.getNullGetter());
                 }
                 else
@@ -2096,6 +2086,7 @@ public class Join
 
     private class RightFilterOverSpecificationVisitor extends MithraQLVisitorAdapter
     {
+        private boolean dependsOnParameter = false;
         @Override
         public Object visit(ASTAndExpression node, Object data)
         {
@@ -2134,7 +2125,7 @@ public class Join
             if (!rightAttr.isAsOfAttribute())
             {
                 Operator op = node.getOperator();
-                if (!op.isIsNull())
+                if (!op.isIsNullOrIsNotNull())
                 {
                     String right = op.isUnary() ? null : node.getLiteralRightHand(Join.this.left.chooseForRelationshipAdd(Join.this.right));
                     String correspondingParameter = findCorrespondingParameter(right);
@@ -2142,39 +2133,47 @@ public class Join
                     if (!(correspondingParameter == null || ((isByPrimaryKey() && needsParameterOperationForPrimaryKey(correspondingParameter))
                             || (getUniqueMatchingIndex() != null && needsParameterOperationForUniqueIndex(correspondingParameter)))))
                     {
+                        dependsOnParameter = true;
+                    }
+                    result.append("((");
+                    if (rightAttr.isNullable())
+                    {
+                        result.append("!_result.").append(rightAttr.getNullGetter());
                         addAnd(result);
-                        result.append("((");
-                        if (rightAttr.isNullable())
-                        {
-                            result.append("!_result.").append(rightAttr.getNullGetter());
-                            addAnd(result);
-                        }
-                        String left = "_result."+rightAttr.getGetter()+"()";
+                    }
+                    String left = "_result."+rightAttr.getGetter()+"()";
 
-                        if (rightAttr.isPrimitive())
-                        {
-                            result.append(op.getPrimitiveExpression(left, right));
-                        }
-                        else
-                        {
-                            result.append(op.getNonPrimitiveExpression(left, right));
-                        }
-                        result.append(')');
+                    if (rightAttr.isPrimitive())
+                    {
+                        result.append(op.getPrimitiveExpression(left, right));
+                    }
+                    else
+                    {
+                        result.append(op.getNonPrimitiveExpression(left, right));
+                    }
+                    result.append(')');
 
-                        if (isParameterUsed(relationshipAttribute.getParameterVariableList(), right)
-                                && rightAttr.isNullable() && !rightAttr.isPrimitive())
-                        {
-                            addOr(result);
+                    if (isParameterUsed(relationshipAttribute.getParameterVariableList(), right)
+                            && rightAttr.isNullable() && !rightAttr.isPrimitive())
+                    {
+                        addOr(result);
 
-                            result.append("(_result.").append(rightAttr.getNullGetter());
+                        result.append("(_result.").append(rightAttr.getNullGetter());
 
-                            addAnd(result);
-                            result.append(right).append(" == null");
+                        addAnd(result);
+                        result.append(right).append(" == null");
 
-                            result.append(')');
-                        }
                         result.append(')');
                     }
+                    result.append(')');
+                }
+                else
+                {
+                    if (op.isIsNotNull())
+                    {
+                        result.append("!");
+                    }
+                    result.append("_result.").append(rightAttr.getNullGetter());
                 }
             }
             return result.toString();

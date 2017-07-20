@@ -39,7 +39,13 @@ public class ASTInOperator extends SimpleNode implements Operator
 		return visitor.visit(this, data);
 	}
 
-	public boolean isIsNull()
+	public boolean isIsNullOrIsNotNull()
+	{
+		return false;
+	}
+
+	@Override
+	public boolean isIsNotNull()
 	{
 		return false;
 	}
