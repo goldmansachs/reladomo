@@ -37,7 +37,9 @@ public interface Operator
 
 	public String getMethodName();
 
-	public boolean isIsNull();
+	public boolean isIsNullOrIsNotNull();
+
+	public boolean isIsNotNull();
 
     public boolean equalsOther(SimpleNode other);
 

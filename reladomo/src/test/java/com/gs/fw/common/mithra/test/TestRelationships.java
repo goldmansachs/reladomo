@@ -1421,4 +1421,59 @@ public class TestRelationships extends MithraTestAbstract
         }
         assertEquals(dbCalls, dbCalls());
     }
+
+    public void testOverspecifiedRelationshipsOne()
+    {
+        OrderItem item = OrderItemFinder.findByPrimaryKey(1);
+        assertNotNull(item.getOrderWithOr("a", 1));
+        assertNotNull(item.getOrderWithOr("a", 1));
+        MithraManagerProvider.getMithraManager().clearAllQueryCaches();
+        assertNull(item.getOrderWithOr("X", 12));
+        assertNull(item.getOrderWithOr("X", 12));
+        MithraManagerProvider.getMithraManager().clearAllQueryCaches();
+        assertNotNull(item.getOrderWithOr("X", 1));
+        assertNotNull(item.getOrderWithOr("X", 1));
+        MithraManagerProvider.getMithraManager().clearAllQueryCaches();
+        assertNotNull(item.getOrderWithOr("A", 12));
+        assertNotNull(item.getOrderWithOr("A", 12));
+
+        MithraManagerProvider.getMithraManager().clearAllQueryCaches();
+        assertNotNull(item.getOrderWithAndOr("A", 1));
+        assertNotNull(item.getOrderWithAndOr("A", 1));
+
+        MithraManagerProvider.getMithraManager().clearAllQueryCaches();
+        assertNull(item.getOrderWithAndOr("X", 1));
+        assertNull(item.getOrderWithAndOr("X", 1));
+
+        MithraManagerProvider.getMithraManager().clearAllQueryCaches();
+        assertNotNull(item.getOrderWithAndOr("G", 1));
+        assertNotNull(item.getOrderWithAndOr("G", 1));
+
+        MithraManagerProvider.getMithraManager().clearAllQueryCaches();
+        assertNull(item.getOrderWithAndOr("G", 12));
+        assertNull(item.getOrderWithAndOr("G", 12));
+
+
+        MithraManagerProvider.getMithraManager().clearAllQueryCaches();
+        assertNull(item.getOrderWithIsNull());
+        assertNull(item.getOrderWithIsNull());
+
+        MithraManagerProvider.getMithraManager().clearAllQueryCaches();
+        assertNotNull(item.getOrderWithOrIsNull("A"));
+        assertNotNull(item.getOrderWithOrIsNull("A"));
+        MithraManagerProvider.getMithraManager().clearAllQueryCaches();
+        assertNull(item.getOrderWithOrIsNull("X"));
+        assertNull(item.getOrderWithOrIsNull("X"));
+
+
+        item.getOrder().setDescription(null);
+
+        MithraManagerProvider.getMithraManager().clearAllQueryCaches();
+        assertNotNull(item.getOrderWithIsNull());
+        assertNotNull(item.getOrderWithIsNull());
+
+        MithraManagerProvider.getMithraManager().clearAllQueryCaches();
+        assertNotNull(item.getOrderWithOrIsNull("X"));
+        assertNotNull(item.getOrderWithOrIsNull("X"));
+    }
 }

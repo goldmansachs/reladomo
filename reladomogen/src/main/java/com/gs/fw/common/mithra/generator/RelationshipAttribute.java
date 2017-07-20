@@ -676,18 +676,24 @@ public class RelationshipAttribute implements CommonAttribute
 
             if (oneToMany || oneToOneForward)
             {
-                attributeToSet.setOwningReverseRelationshipName(this.fromObject.getPackageName(), this.fromObject.getClassName(), this.name);
-                if (this.reverseName != null)
+                if (attributeToSet.setOwningRelationship(this))
                 {
-                    attributeToSet.setOwningRelationshipName(this.reverseName);
+                    attributeToSet.setOwningReverseRelationshipName(this.fromObject.getPackageName(), this.fromObject.getClassName(), this.name);
+                    if (this.reverseName != null)
+                    {
+                        attributeToSet.setOwningRelationshipName(this.reverseName);
+                    }
                 }
             }
             else if (oneToOneReverse || manyToOne)
             {
-                attributeToGetForSetOnRelatedObject.setOwningRelationshipName(this.name);
-                if (this.reverseName != null)
+                if (attributeToGetForSetOnRelatedObject.setOwningRelationship(this))
                 {
-                    attributeToGetForSetOnRelatedObject.setOwningReverseRelationshipName(this.relatedObject.getPackageName(), this.relatedObject.getClassName(), this.reverseName);
+                    if (this.reverseName != null)
+                    {
+                        attributeToGetForSetOnRelatedObject.setOwningReverseRelationshipName(this.relatedObject.getPackageName(), this.relatedObject.getClassName(), this.reverseName);
+                    }
+                    attributeToGetForSetOnRelatedObject.setOwningRelationshipName(this.name);
                 }
             }
             // *-to-*
@@ -1445,6 +1451,21 @@ public class RelationshipAttribute implements CommonAttribute
     public boolean isFinalGetter()
     {
         return this.xmlRelationshipType.isFinalGetterSet() ? this.xmlRelationshipType.isFinalGetter() : this.fromObject.isDefaultFinalGetters();
+    }
+
+    public boolean isBetterForAttributeOwnership(RelationshipAttribute other, Attribute attribute)
+    {
+        boolean thisDep = this.isDependent() || this.isRelatedDependent();
+        boolean otherDep = other.isDependent() || other.isRelatedDependent();
+        if (thisDep && !otherDep)
+        {
+            return true;
+        }
+        if (this.name.length() == other.name.length())
+        {
+            return this.name.compareTo(other.name) < 0;
+        }
+        return this.name.length() < other.name.length();
     }
 
     private static class ImportAdditionVisitor extends MithraQLVisitorAdapter

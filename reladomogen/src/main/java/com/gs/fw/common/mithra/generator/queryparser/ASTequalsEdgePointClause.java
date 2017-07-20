@@ -108,7 +108,13 @@ public class ASTequalsEdgePointClause extends SimpleNode implements Operator
         return "equalsEdgePoint";
     }
 
-    public boolean isIsNull()
+    public boolean isIsNullOrIsNotNull()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isIsNotNull()
     {
         return false;
     }

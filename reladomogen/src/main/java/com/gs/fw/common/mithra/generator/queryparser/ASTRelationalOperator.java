@@ -29,12 +29,18 @@ public class ASTRelationalOperator extends SimpleNode implements Operator
     private boolean lesserThanOrEqualTo;
     private String string;
 
-	public boolean isIsNull()
+	public boolean isIsNullOrIsNotNull()
 	{
 		return false;
 	}
 
-	public boolean isGreaterThan()
+    @Override
+    public boolean isIsNotNull()
+    {
+        return false;
+    }
+
+    public boolean isGreaterThan()
     {
         return greaterThan;
     }

@@ -37,6 +37,14 @@
     <Relationship name="nullTestOrder" relatedObject="Order" cardinality="many-to-one">this.orderId is not null and this.orderId = Order.orderId</Relationship>
     <Relationship name="otherInProgressItems" relatedObject="OrderItem" cardinality="many-to-many">this.orderId = OrderItem.orderId and OrderItem.state = "In-Progress"</Relationship>
     <Relationship name="otherExpensiveItems" relatedObject="OrderItem" cardinality="many-to-many">this.orderId = OrderItem.orderId and OrderItem.originalPrice &gt; 5</Relationship>
+    <Relationship name="orderWithOr" relatedObject="Order" cardinality="many-to-one" parameters="String minDesc, int userId">
+        this.orderId = Order.orderId and (Order.description &gt; {minDesc} or Order.userId = {userId}) </Relationship>
+    <Relationship name="orderWithIsNull" relatedObject="Order" cardinality="many-to-one">
+        this.orderId = Order.orderId and Order.description is null </Relationship>
+    <Relationship name="orderWithOrIsNull" relatedObject="Order" cardinality="many-to-one" parameters="String minDesc">
+        this.orderId = Order.orderId and (Order.description &gt; {minDesc} or Order.description is null) </Relationship>
+    <Relationship name="orderWithAndOr" relatedObject="Order" cardinality="many-to-one" parameters="String minDesc, int userId">
+        this.orderId = Order.orderId and Order.state > {minDesc} and (Order.description &gt; {minDesc} or Order.userId = {userId}) </Relationship>
 
     <Relationship name="overSpecifiedOrder" relatedObject="Order" cardinality="many-to-one" parameters="Set descriptions">
         this.orderId = Order.orderId and Order.description in {descriptions}
