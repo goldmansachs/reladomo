@@ -117,6 +117,19 @@ public abstract class FloatAttribute<T> extends PrimitiveNumericAttribute<T, Flo
 
     public abstract Operation notEq(FloatAttribute other);
 
+    @Override
+    public void copyValueFrom(T dest, T src)
+    {
+        if (this.isAttributeNull(src))
+        {
+            this.setValueNull(dest);
+        }
+        else
+        {
+            this.setValue(dest, this.floatValueOf(src));
+        }
+    }
+
     public Float valueOf(T o)
     {
         if (this.isAttributeNull(o)) return null;

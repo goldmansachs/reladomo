@@ -145,6 +145,19 @@ public abstract class BooleanAttribute<T> extends Attribute<T, Boolean> implemen
 
     public abstract Operation notEq(BooleanAttribute other);
 
+    @Override
+    public void copyValueFrom(T dest, T src)
+    {
+        if (this.isAttributeNull(src))
+        {
+            this.setValueNull(dest);
+        }
+        else
+        {
+            this.setValue(dest, this.booleanValueOf(src));
+        }
+    }
+
     public Boolean valueOf(T o)
     {
         if (this.isAttributeNull(o))

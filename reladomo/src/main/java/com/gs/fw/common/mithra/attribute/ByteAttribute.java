@@ -133,6 +133,19 @@ public abstract class ByteAttribute<T> extends PrimitiveNumericAttribute<T, Byte
 
     public abstract Operation notEq(ByteAttribute other);
 
+    @Override
+    public void copyValueFrom(T dest, T src)
+    {
+        if (this.isAttributeNull(src))
+        {
+            this.setValueNull(dest);
+        }
+        else
+        {
+            this.setValue(dest, this.byteValueOf(src));
+        }
+    }
+
     public Byte valueOf(T o)
     {
         return this.isAttributeNull(o) ? null : Byte.valueOf(this.byteValueOf(o));

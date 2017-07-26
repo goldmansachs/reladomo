@@ -17,8 +17,14 @@
 
 package com.gs.fw.common.mithra.list;
 
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraTransaction;
+import com.gs.fw.common.mithra.MithraTransactionalList;
+import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.extractor.EmbeddedValueExtractor;
 import com.gs.fw.common.mithra.attribute.*;
+import com.gs.fw.common.mithra.list.merge.MergeBuffer;
+import com.gs.fw.common.mithra.list.merge.TopLevelMergeOptions;
 import com.gs.fw.common.mithra.util.Time;
 
 import java.sql.Timestamp;
@@ -247,5 +253,22 @@ public class AbstractTransactionalNonOperationBasedList<E> extends AbstractNonOp
     public void setEvoValue(DelegatingList delegatingList, EmbeddedValueExtractor attr, Object newValue)
     {
         this.getFastList(delegatingList).setEvoValue(attr, newValue);
+    }
+
+    @Override
+    public void merge(final DelegatingList<E> dbList, final MithraTransactionalList<E> incoming, final TopLevelMergeOptions<E> mergeOptions)
+    {
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand<Object>()
+        {
+            @Override
+            public Object executeTransaction(MithraTransaction tx) throws Throwable
+            {
+
+                MergeBuffer mergeBuffer = new MergeBuffer(mergeOptions);
+                mergeBuffer.mergeLists(dbList, incoming);
+                mergeBuffer.executeBufferForPersistence();
+                return null;
+            }
+        });
     }
 }

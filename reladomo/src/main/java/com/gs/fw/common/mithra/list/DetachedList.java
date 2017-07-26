@@ -16,8 +16,11 @@
 
 package com.gs.fw.common.mithra.list;
 
+import com.gs.fw.common.mithra.MithraTransactionalList;
 import com.gs.fw.common.mithra.MithraTransactionalObject;
 import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.list.merge.MergeBuffer;
+import com.gs.fw.common.mithra.list.merge.TopLevelMergeOptions;
 
 import java.util.Collection;
 
@@ -69,5 +72,12 @@ public class DetachedList<E> extends AbstractTransactionalNonOperationBasedList<
     public void addRemovedItem(DelegatingList delegatingList, MithraTransactionalObject detachedCopy)
     {
         getFastList(delegatingList).addRemovedItem(detachedCopy);
+    }
+
+    @Override
+    public void merge(DelegatingList<E> dbList, MithraTransactionalList<E> incoming, TopLevelMergeOptions<E> mergeOptions)
+    {
+        MergeBuffer mergeBuffer = new MergeBuffer(mergeOptions, true);
+        mergeBuffer.mergeLists(dbList, incoming);
     }
 }

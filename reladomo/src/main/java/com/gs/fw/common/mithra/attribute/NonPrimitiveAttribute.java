@@ -81,6 +81,12 @@ public abstract class NonPrimitiveAttribute<Owner, Type> extends Attribute<Owner
         return new MutableComparableReference((Comparable) in.readObject());
     }
 
+    @Override
+    public void copyValueFrom(Owner dest, Owner src)
+    {
+        this.setValue(dest, this.valueOf(src));
+    }
+
     public int valueHashCode(Owner o)
     {
         Object val = this.valueOf(o);

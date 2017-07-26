@@ -171,6 +171,19 @@ public abstract class IntegerAttribute<T> extends PrimitiveNumericAttribute<T, I
 
     public abstract Operation notEq(IntegerAttribute other);
 
+    @Override
+    public void copyValueFrom(T dest, T src)
+    {
+        if (this.isAttributeNull(src))
+        {
+            this.setValueNull(dest);
+        }
+        else
+        {
+            this.setValue(dest, this.intValueOf(src));
+        }
+    }
+
     public Integer valueOf(T o)
     {
         return (this.isAttributeNull(o)) ? null : Integer.valueOf(this.intValueOf(o));

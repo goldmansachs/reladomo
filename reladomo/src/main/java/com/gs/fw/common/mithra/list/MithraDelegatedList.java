@@ -18,9 +18,11 @@
 package com.gs.fw.common.mithra.list;
 
 import com.gs.fw.common.mithra.MithraList;
+import com.gs.fw.common.mithra.MithraTransactionalList;
 import com.gs.fw.common.mithra.cache.Index;
 import com.gs.fw.common.mithra.finder.AbstractRelatedFinder;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
+import com.gs.fw.common.mithra.list.merge.TopLevelMergeOptions;
 import com.gs.fw.common.mithra.notification.listener.MithraApplicationNotificationListener;
 import com.gs.fw.common.mithra.util.DoWhileProcedure;
 import com.gs.fw.common.mithra.util.Filter;
@@ -146,4 +148,8 @@ public interface MithraDelegatedList<E> extends Serializable
     public List<E> subList(DelegatingList<E> delegatingList, int fromIndex, int toIndex);
 
     public Iterator<E> iterator(DelegatingList<E> delegatingList);
+
+    public MithraList<E> asAdhoc(DelegatingList<E> delegatingList);
+
+    public void merge(DelegatingList<E> adhoc, MithraTransactionalList<E> incoming, TopLevelMergeOptions<E> mergeOptions);
 }

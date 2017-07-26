@@ -114,6 +114,19 @@ public abstract class DoubleAttribute<T> extends PrimitiveNumericAttribute<T, Do
 
     public abstract Operation notEq(DoubleAttribute other);
 
+    @Override
+    public void copyValueFrom(T dest, T src)
+    {
+        if (this.isAttributeNull(src))
+        {
+            this.setValueNull(dest);
+        }
+        else
+        {
+            this.setValue(dest, this.doubleValueOf(src));
+        }
+    }
+
     public Double valueOf(T o)
     {
         if (this.isAttributeNull(o)) return null;

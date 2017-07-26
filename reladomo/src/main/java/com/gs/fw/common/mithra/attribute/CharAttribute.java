@@ -117,6 +117,19 @@ public abstract class CharAttribute<T> extends Attribute<T, Character> implement
 
     public abstract Operation notEq(CharAttribute other);
 
+    @Override
+    public void copyValueFrom(T dest, T src)
+    {
+        if (this.isAttributeNull(src))
+        {
+            this.setValueNull(dest);
+        }
+        else
+        {
+            this.setValue(dest, this.charValueOf(src));
+        }
+    }
+
     public Character valueOf(T o)
     {
         if (this.isAttributeNull(o)) return null;

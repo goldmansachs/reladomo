@@ -80,6 +80,33 @@ public class DeepFetchNode implements Serializable, DeepFetchTree
         this.relatedFinder = relatedFinder;
     }
 
+    public DeepFetchNode copyForAdHoc()
+    {
+        return copyForAdHoc(null);
+    }
+
+    protected DeepFetchNode copyForAdHoc(DeepFetchNode parent)
+    {
+        DeepFetchNode result = new DeepFetchNode(parent, this.relatedFinder);
+        result.resolved = this.resolved;
+        result.fullyResolved = this.fullyResolved;
+        if (cachedQueryList != null)
+        {
+            result.cachedQueryList = FastList.newList(this.cachedQueryList);
+        }
+        result.resolvedList = this.resolvedList;
+        result.chainedResults = this.chainedResults;
+        if (children != null)
+        {
+            result.children = FastList.newList(children.size());
+            for(int i=0;i<this.children.size();i++)
+            {
+                result.children.add(this.children.get(i).copyForAdHoc(result));
+            }
+        }
+        return result;
+    }
+
     @Override
     public List<DeepFetchTree> getChildren()
     {

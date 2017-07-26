@@ -134,6 +134,19 @@ public abstract class ShortAttribute<T> extends PrimitiveNumericAttribute<T, Sho
 
     public abstract Operation notEq(ShortAttribute other);
 
+    @Override
+    public void copyValueFrom(T dest, T src)
+    {
+        if (this.isAttributeNull(src))
+        {
+            this.setValueNull(dest);
+        }
+        else
+        {
+            this.setValue(dest, this.shortValueOf(src));
+        }
+    }
+
     public Short valueOf(T o)
     {
         return this.isAttributeNull(o) ? null : Short.valueOf(this.shortValueOf(o));

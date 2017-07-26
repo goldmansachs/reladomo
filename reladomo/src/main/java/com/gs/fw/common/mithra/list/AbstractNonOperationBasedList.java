@@ -18,9 +18,11 @@ package com.gs.fw.common.mithra.list;
 
 import com.gs.fw.common.mithra.MithraList;
 import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.MithraTransactionalList;
 import com.gs.fw.common.mithra.cache.Index;
 import com.gs.fw.common.mithra.finder.AbstractRelatedFinder;
 import com.gs.fw.common.mithra.finder.DeepFetchNode;
+import com.gs.fw.common.mithra.list.merge.TopLevelMergeOptions;
 import com.gs.fw.common.mithra.util.DoWhileProcedure;
 import com.gs.fw.common.mithra.util.Filter;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
@@ -349,5 +351,17 @@ public class AbstractNonOperationBasedList<E> implements MithraDelegatedList<E>
     public Iterator<E> iterator(DelegatingList<E> delegatingList)
     {
         return this.getFastList(delegatingList).iterator();
+    }
+
+    @Override
+    public MithraList<E> asAdhoc(DelegatingList<E> delegatingList)
+    {
+        return delegatingList;
+    }
+
+    @Override
+    public void merge(DelegatingList<E> adhoc, MithraTransactionalList<E> incoming, TopLevelMergeOptions<E> mergeOptions)
+    {
+        throw new UnsupportedOperationException("merge is only supported for transactional lists");
     }
 }
