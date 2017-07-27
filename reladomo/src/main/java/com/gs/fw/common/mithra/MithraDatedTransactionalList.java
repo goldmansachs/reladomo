@@ -17,6 +17,7 @@
 
 package com.gs.fw.common.mithra;
 
+import com.gs.fw.common.mithra.list.merge.TopLevelMergeOptions;
 import com.gs.fw.finder.TemporalTransactionalDomainList;
 
 public interface MithraDatedTransactionalList<E> extends MithraList<E>, TemporalTransactionalDomainList<E>
@@ -27,4 +28,15 @@ public interface MithraDatedTransactionalList<E> extends MithraList<E>, Temporal
     public MithraDatedTransactionalList<E> getDetachedCopy();
 
     public void copyDetachedValuesToOriginalOrInsertIfNewOrDeleteIfRemoved();
+
+    /**
+     * Incorporate the changes in the incoming list, according to the mergeOptions, into
+     * this list.
+     * Operation based lists first copy this list to an adhoc list (see asAdhoc) and then merge, returning the result
+     *
+     * @param incoming list with changes.
+     * @param mergeOptions options for merging.
+     * @return The resulting list, which can be "this" if the list was not operation based.
+     */
+    public MithraList<E> merge(MithraList<E> incoming, TopLevelMergeOptions<E> mergeOptions);
 }

@@ -1136,11 +1136,11 @@ public abstract class DelegatingList<E> implements MithraList<E>
         return this.delegated.getInternalIndex(this);
     }
 
-    public MithraTransactionalList<E> merge(MithraTransactionalList<E> incoming, TopLevelMergeOptions<E> mergeOptions)
+    public MithraList<E> merge(MithraList<E> incoming, TopLevelMergeOptions<E> mergeOptions)
     {
         DelegatingList<E> adhoc = (DelegatingList<E>) this.asAdhoc();
         adhoc.delegated.merge(adhoc, incoming, mergeOptions);
-        return (MithraTransactionalList<E>) adhoc;
+        return adhoc;
     }
 
     public MithraList<E> asAdhoc()

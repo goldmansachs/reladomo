@@ -151,5 +151,5 @@ public interface MithraDelegatedList<E> extends Serializable
 
     public MithraList<E> asAdhoc(DelegatingList<E> delegatingList);
 
-    public void merge(DelegatingList<E> adhoc, MithraTransactionalList<E> incoming, TopLevelMergeOptions<E> mergeOptions);
+    public void merge(DelegatingList<E> adhoc, MithraList<E> incoming, TopLevelMergeOptions<E> mergeOptions);
 }

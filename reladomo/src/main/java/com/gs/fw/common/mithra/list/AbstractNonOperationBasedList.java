@@ -360,7 +360,7 @@ public class AbstractNonOperationBasedList<E> implements MithraDelegatedList<E>
     }
 
     @Override
-    public void merge(DelegatingList<E> adhoc, MithraTransactionalList<E> incoming, TopLevelMergeOptions<E> mergeOptions)
+    public void merge(DelegatingList<E> adhoc, MithraList<E> incoming, TopLevelMergeOptions<E> mergeOptions)
     {
         throw new UnsupportedOperationException("merge is only supported for transactional lists");
     }

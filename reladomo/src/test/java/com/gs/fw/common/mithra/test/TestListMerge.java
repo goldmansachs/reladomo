@@ -66,6 +66,44 @@ public class TestListMerge extends MithraTestAbstract
         assertTrue(OrderFinder.findByPrimaryKey(2).getUserId() > 1000);
     }
 
+    public void testShallowAudited()
+    {
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand<Object>()
+        {
+            @Override
+            public Object executeTransaction(MithraTransaction tx) throws Throwable
+            {
+                IntHashSet set = IntHashSet.newSetWith(1,2,3,4);
+                AuditedOrderList list = AuditedOrderFinder.findMany(AuditedOrderFinder.orderId().in(set));
+                AuditedOrderList nonPersistentCopy = list.getNonPersistentCopy();
+                nonPersistentCopy.setOrderBy(AuditedOrderFinder.orderId().ascendingOrderBy());
+                for(int i=0;i<4;i++)
+                {
+                    AuditedOrder order = nonPersistentCopy.get(i);
+                    order.setUserId(order.getUserId()+1000);
+                    order.setDescription("X"+order.getDescription());
+                    order.setOrderId(0);
+                }
+                nonPersistentCopy.remove(2);
+                AuditedOrder newAuditedOrder = createAuditedOrder2000();
+                nonPersistentCopy.add(newAuditedOrder);
+
+                TopLevelMergeOptions mergeOptions = new TopLevelMergeOptions(AuditedOrderFinder.getFinderInstance());
+                mergeOptions.matchOn(AuditedOrderFinder.trackingId());
+                list.merge(nonPersistentCopy, mergeOptions);
+                assertNull(AuditedOrderFinder.findByPrimaryKey(3, AuditedOrderFinder.processingDate().getInfinityDate()));
+                assertNotNull(AuditedOrderFinder.findByPrimaryKey(2000, AuditedOrderFinder.processingDate().getInfinityDate()));
+                assertTrue(AuditedOrderFinder.findByPrimaryKey(1, AuditedOrderFinder.processingDate().getInfinityDate()).getDescription().startsWith("X"));
+                assertTrue(AuditedOrderFinder.findByPrimaryKey(2, AuditedOrderFinder.processingDate().getInfinityDate()).getUserId() > 1000);
+                return null;
+            }
+        });
+        assertNull(AuditedOrderFinder.findOne(AuditedOrderFinder.orderId().eq(3)));
+        assertNotNull(AuditedOrderFinder.findByPrimaryKey(2000, AuditedOrderFinder.processingDate().getInfinityDate()));
+        assertTrue(AuditedOrderFinder.findByPrimaryKey(1, AuditedOrderFinder.processingDate().getInfinityDate()).getDescription().startsWith("X"));
+        assertTrue(AuditedOrderFinder.findByPrimaryKey(2, AuditedOrderFinder.processingDate().getInfinityDate()).getUserId() > 1000);
+    }
+
     private Order createOrder2000()
     {
         Order newOrder = new Order();
@@ -74,6 +112,16 @@ public class TestListMerge extends MithraTestAbstract
         newOrder.setTrackingId("newnew");
         newOrder.setDescription("new desc");
         return newOrder;
+    }
+
+    private AuditedOrder createAuditedOrder2000()
+    {
+        AuditedOrder newAuditedOrder = new AuditedOrder();
+        newAuditedOrder.setOrderId(2000);
+        newAuditedOrder.setUserId(50);
+        newAuditedOrder.setTrackingId("newnew");
+        newAuditedOrder.setDescription("new desc");
+        return newAuditedOrder;
     }
 
     public void testDeep()

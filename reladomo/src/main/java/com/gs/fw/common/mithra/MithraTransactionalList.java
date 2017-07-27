@@ -45,5 +45,5 @@ public interface MithraTransactionalList<E> extends MithraList<E>, Transactional
      * @param mergeOptions options for merging.
      * @return The resulting list, which can be "this" if the list was not operation based.
      */
-    public MithraTransactionalList<E> merge(MithraTransactionalList<E> incoming, TopLevelMergeOptions<E> mergeOptions);
+    public MithraList<E> merge(MithraList<E> incoming, TopLevelMergeOptions<E> mergeOptions);
 }
