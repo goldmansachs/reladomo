@@ -39,6 +39,7 @@ import com.gs.fw.common.mithra.MithraManager;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.finder.*;
 import com.gs.fw.common.mithra.list.*;
+import com.gs.fw.common.mithra.list.merge.TopLevelMergeOptions;
 import com.gs.fw.finder.OrderBy;
 <% if (isGenerateGscListMethod) { %>
 import com.gs.collections.api.list.MutableList;
@@ -123,6 +124,11 @@ public class <%= className %> extends DelegatingList<<%= wrapper.getClassName() 
         return result;
     }
 
+    public <%= wrapper.getListClassName() %> asAdhoc()
+    {
+        return (<%= wrapper.getListClassName() %>) super.asAdhoc();
+    }
+
     public <%= wrapper.getListSuperInterface()%> getNonPersistentGenericCopy()
     {
         return this.getNonPersistentCopy();
@@ -142,6 +148,11 @@ public class <%= className %> extends DelegatingList<<%= wrapper.getClassName() 
     <% } %>
 
     <% if (wrapper.isTransactional()) { %>
+    public <%= wrapper.getListClassName() %> merge(MithraTransactionalList<<%= wrapper.getClassName() %>> incoming, TopLevelMergeOptions<<%= wrapper.getClassName() %>> mergeOptions)
+    {
+        return (<%= wrapper.getListClassName() %>) super.merge(incoming, mergeOptions);
+    }
+
     public <%= wrapper.getListClassName() %> getDetachedCopy()
     {
         <%= wrapper.getListClassName() %> result = new <%= wrapper.getListClassName() %>();

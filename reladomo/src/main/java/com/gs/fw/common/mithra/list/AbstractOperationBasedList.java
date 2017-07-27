@@ -562,7 +562,7 @@ public class AbstractOperationBasedList<E> implements MithraDelegatedList<E>, Se
     }
 
     @Override
-    public void merge(DelegatingList<E> adhoc, MithraTransactionalList<E> incoming, TopLevelMergeOptions<E> mergeOptions)
+    public void merge(DelegatingList<E> adhoc, MithraList<E> incoming, TopLevelMergeOptions<E> mergeOptions)
     {
         throw new RuntimeException("Should never get here");
     }

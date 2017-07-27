@@ -19,6 +19,7 @@ package com.gs.fw.common.mithra.list.merge;
 import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.cache.FullUniqueIndex;
 import com.gs.fw.common.mithra.extractor.Extractor;
@@ -516,6 +517,8 @@ public class MergeBuffer<E> // todo: implements QueueExecutor or create a super 
             Attribute[] doNotUpdate = mergeOptions.getDoNotUpdate();
             Attribute[] persistentAttributes = mergeOptions.getMetaData().getPersistentAttributes();
             Attribute[] primaryKeyAttributes = mergeOptions.getMetaData().getPrimaryKeyAttributes();
+            AsOfAttribute[] asOfAttributes = mergeOptions.getMetaData().getAsOfAttributes();
+
             Set<Attribute> foreignKeys = UnifiedSet.newSet();
             if (!topLevel)
             {
@@ -548,6 +551,14 @@ public class MergeBuffer<E> // todo: implements QueueExecutor or create a super 
             for(Attribute a: foreignKeys)
             {
                 attributesToUpdate.remove(a);
+            }
+            if (asOfAttributes != null)
+            {
+                for(AsOfAttribute asOfAttribute: asOfAttributes)
+                {
+                    attributesToUpdate.remove(asOfAttribute.getFromAttribute());
+                    attributesToUpdate.remove(asOfAttribute.getToAttribute());
+                }
             }
             this.toUpdate = new Attribute[attributesToUpdate.size()];
             attributesToUpdate.toArray(this.toUpdate);

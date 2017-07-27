@@ -16,6 +16,7 @@
 
 package com.gs.fw.common.mithra.list;
 
+import com.gs.fw.common.mithra.MithraList;
 import com.gs.fw.common.mithra.MithraTransactionalList;
 import com.gs.fw.common.mithra.MithraTransactionalObject;
 import com.gs.fw.common.mithra.finder.Operation;
@@ -75,7 +76,7 @@ public class DetachedList<E> extends AbstractTransactionalNonOperationBasedList<
     }
 
     @Override
-    public void merge(DelegatingList<E> dbList, MithraTransactionalList<E> incoming, TopLevelMergeOptions<E> mergeOptions)
+    public void merge(DelegatingList<E> dbList, MithraList<E> incoming, TopLevelMergeOptions<E> mergeOptions)
     {
         MergeBuffer mergeBuffer = new MergeBuffer(mergeOptions, true);
         mergeBuffer.mergeLists(dbList, incoming);

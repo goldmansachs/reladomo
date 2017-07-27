@@ -17,10 +17,7 @@
 
 package com.gs.fw.common.mithra.list;
 
-import com.gs.fw.common.mithra.MithraManagerProvider;
-import com.gs.fw.common.mithra.MithraTransaction;
-import com.gs.fw.common.mithra.MithraTransactionalList;
-import com.gs.fw.common.mithra.TransactionalCommand;
+import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.extractor.EmbeddedValueExtractor;
 import com.gs.fw.common.mithra.attribute.*;
 import com.gs.fw.common.mithra.list.merge.MergeBuffer;
@@ -256,7 +253,7 @@ public class AbstractTransactionalNonOperationBasedList<E> extends AbstractNonOp
     }
 
     @Override
-    public void merge(final DelegatingList<E> dbList, final MithraTransactionalList<E> incoming, final TopLevelMergeOptions<E> mergeOptions)
+    public void merge(final DelegatingList<E> dbList, final MithraList<E> incoming, final TopLevelMergeOptions<E> mergeOptions)
     {
         MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand<Object>()
         {
