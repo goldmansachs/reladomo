@@ -32,7 +32,9 @@ import org.slf4j.LoggerFactory;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 
@@ -46,10 +48,38 @@ public class PostgresDatabaseType extends AbstractDatabaseType
     private static final PostgresDatabaseType instance = new PostgresDatabaseType();
     private String tempSchema = null;
     private static final char[] POSTGRES_SQL_META_CHARS = {'=', '%', '_', '\\'};
+    private static final Map<String, String> sqlToJavaTypes;
 
     public static Logger getLogger()
     {
         return logger;
+    }
+
+    static
+    {
+        sqlToJavaTypes = new HashMap<String, String>();
+        sqlToJavaTypes.put("int4", "int");
+        sqlToJavaTypes.put("int2", "short");
+        sqlToJavaTypes.put("tinyint", "short");
+        sqlToJavaTypes.put("float4", "float");
+        sqlToJavaTypes.put("float8", "double");
+        sqlToJavaTypes.put("smallmoney", "not implemented");
+        sqlToJavaTypes.put("money", "not implemented");
+        sqlToJavaTypes.put("char", "char");
+        sqlToJavaTypes.put("varchar", "String");
+        sqlToJavaTypes.put("text", "String");
+        sqlToJavaTypes.put("bytea", "byte[]");
+        sqlToJavaTypes.put("date", "Date");
+        sqlToJavaTypes.put("datetime", "Timestamp");
+        sqlToJavaTypes.put("smalldatetime", "Timestamp");
+        sqlToJavaTypes.put("timestamp", "Timestamp");
+        sqlToJavaTypes.put("bool", "boolean");
+        sqlToJavaTypes.put("binary", "byte[]");
+        sqlToJavaTypes.put("varbinary", "byte[]");
+        sqlToJavaTypes.put("decimal", "BigDecimal");
+        sqlToJavaTypes.put("real", "float");
+        sqlToJavaTypes.put("time", "Time");
+        sqlToJavaTypes.put("int8", "long");
     }
 
     /** Singleton */
@@ -296,7 +326,31 @@ public class PostgresDatabaseType extends AbstractDatabaseType
 
     public String getJavaTypeFromSql(String sql, Integer precision, Integer decimal)
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        String javaType = sqlToJavaTypes.get(sql);
+
+        if ("numeric".equalsIgnoreCase(sql))
+        {
+            if (decimal != 0)
+            {
+                javaType =  "double";
+            }
+            else if (precision <= 8)
+            {
+                javaType =  "int";
+            }
+            else
+            {
+                javaType =  "long";
+            }
+        }
+        if("char".equals(sql))
+        {
+            if(precision > 1)
+            {
+                javaType = "String";
+            }
+        }
+        return javaType;
     }
 
     protected boolean hasSelectUnionMultiInsert()

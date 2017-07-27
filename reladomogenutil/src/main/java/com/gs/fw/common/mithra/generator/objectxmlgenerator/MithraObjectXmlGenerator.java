@@ -32,6 +32,30 @@ import java.util.*;
 
 public class MithraObjectXmlGenerator extends Task
 {
+    private static final String DB_NAME_POSTGRES = "postgres";
+    private static final String DB_NAME_ORACLE = "oracle";
+    private static final String DB_NAME_MARIA = "maria";
+    private static final String DB_NAME_MSSQL = "mssql";
+    private static final String DB_NAME_SYBASE = "sybase";
+    private static final String DB_NAME_H2 = "h2";
+
+    private static final String DB_NAME_UDB82 = "udb82";
+    private static final String DB_NAME_SYBASEIQ = "sybaseiq";
+
+    private static final Set<String> VALID_DBS = new HashSet<String>();
+
+    static
+    {
+        VALID_DBS.add(DB_NAME_MSSQL);
+        VALID_DBS.add(DB_NAME_H2);
+        VALID_DBS.add(DB_NAME_POSTGRES);
+        VALID_DBS.add(DB_NAME_SYBASE);
+        VALID_DBS.add(DB_NAME_SYBASEIQ);
+        VALID_DBS.add(DB_NAME_UDB82);
+//        VALID_DBS.add(DB_NAME_MARIA);
+        VALID_DBS.add(DB_NAME_ORACLE);
+    }
+
     private boolean executed = false;
     private boolean excludeAsOfAttributesFromDbIndex = true;
     private String userName;
@@ -53,6 +77,9 @@ public class MithraObjectXmlGenerator extends Task
     private String defaultIfNotSpecifiedMethod = "com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()";
     private boolean generateTransactionalTables = true;
     private String processingDateTimezoneConversion = null;
+
+
+
     // END optional parameters for the xml generator
 
     private String includeTables;
@@ -62,11 +89,6 @@ public class MithraObjectXmlGenerator extends Task
     private Map<String, TableInfo> tables = new HashMap<String, TableInfo>();
     private Map<String, TableInfo> views = new HashMap<String, TableInfo>();
 
-    private final String DB_NAME_SYBASE = "sybase";
-    private final String DB_NAME_H2 = "h2";
-
-    private final String DB_NAME_UDB82 = "udb82";
-    private final String DB_NAME_SYBASEIQ = "sybaseiq";
 
     public boolean isExcludeAsOfAttributesFromDbIndex()
     {
@@ -95,7 +117,7 @@ public class MithraObjectXmlGenerator extends Task
 
     public void setDatabaseType(String databaseType)
     {
-        this.databaseType = databaseType;
+        this.databaseType = databaseType.toLowerCase();
     }
 
     public String getGeneratedPackageName()
@@ -452,7 +474,7 @@ public class MithraObjectXmlGenerator extends Task
 
     private void initializeSchemaOrCatalog()
     {
-        if (databaseType.equalsIgnoreCase(DB_NAME_SYBASE))
+        if (databaseType.equalsIgnoreCase(DB_NAME_SYBASE) || databaseType.equalsIgnoreCase(DB_NAME_POSTGRES) || databaseType.equalsIgnoreCase(DB_NAME_MARIA) || databaseType.equalsIgnoreCase(DB_NAME_MSSQL))
         {
             this.schemaName = null;
             this.catalog = schema;
@@ -466,6 +488,11 @@ public class MithraObjectXmlGenerator extends Task
 
     private void initializeDbType()
     {
+        if (!VALID_DBS.contains(databaseType))
+        {
+            this.log("Invalid database type specified. The valid values for this attribute are: "+VALID_DBS.toString(), Project.MSG_ERR);
+            throw new BuildException("Invalid database type specified.");
+        }
         if (databaseType.equalsIgnoreCase(DB_NAME_SYBASE))
         {
             dbType = SybaseDatabaseType.getInstance();
@@ -482,10 +509,21 @@ public class MithraObjectXmlGenerator extends Task
         {
             dbType = H2DatabaseType.getInstance();
         }
-        else
+        else if (databaseType.equalsIgnoreCase(DB_NAME_POSTGRES))
         {
-            this.log("Invalid database type specified. The valid values for this attribute are: \"" + DB_NAME_SYBASE + "\" or \"" + DB_NAME_UDB82 + "\"" + "\" or \"" + DB_NAME_SYBASEIQ + "\"", Project.MSG_ERR);
-            throw new BuildException("Invalid database type specified.");
+            dbType = PostgresDatabaseType.getInstance();
+        }
+        else if (databaseType.equalsIgnoreCase(DB_NAME_MARIA))
+        {
+            dbType = MariaDatabaseType.getInstance();
+        }
+        else if (databaseType.equalsIgnoreCase(DB_NAME_ORACLE))
+        {
+            dbType = OracleDatabaseType.getInstance();
+        }
+        else if (databaseType.equalsIgnoreCase(DB_NAME_MSSQL))
+        {
+            dbType = MsSqlDatabaseType.getInstance();
         }
     }
 
@@ -510,7 +548,7 @@ public class MithraObjectXmlGenerator extends Task
         }
         if (databaseType == null)
         {
-            initializationErrors.add("No databaseType specified. Please specify databaseType. The valid values for this attribute are: \"" + DB_NAME_SYBASE + "\" or \"" + DB_NAME_UDB82 + "\"");
+            initializationErrors.add("No databaseType specified. Please specify databaseType. The valid values for this attribute are: "+VALID_DBS.toString());
         }
         return initializationErrors;
     }
@@ -890,4 +928,40 @@ public class MithraObjectXmlGenerator extends Task
         }
     }
 
+
+    protected static String getCredential(String key, Properties credentials)
+    {
+        String property = credentials.getProperty(key);
+        if (property == null)
+        {
+            throw new RuntimeException("Missing property: "+key);
+        }
+        return property;
+    }
+
+    public static void main(String[] args)
+    {
+        System.out.println("Not a real main method. For testing only");
+        Properties credentials = new Properties();
+        try
+        {
+            credentials.load(MithraObjectXmlGenerator.class.getClassLoader().getResourceAsStream("credentials.properties"));
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("No credentials found");
+        }
+        MithraObjectXmlGenerator generator = new MithraObjectXmlGenerator();
+        generator.setUserName(getCredential("postgres_user", credentials));
+        generator.setPassword(getCredential("postgres_password", credentials));
+        generator.setUrl("jdbc:postgresql://"+getCredential("postgres_hostName", credentials)+":"+
+                getCredential("postgres_port", credentials)+"/"+getCredential("postgres_databaseName", credentials));
+        generator.setDatabaseType("postgres");
+        generator.setDriver("org.postgresql.Driver");
+        generator.setOutputDir("./reladomogenutil/target/reverse/postgres");
+        generator.setSchema(getCredential("postgres_schemaName", credentials));
+        generator.setIncludeTables("ALL_TYPES, IDENTITY_TABLE, PRODUCT, TEST_BALANCE_NO_ACMAP, ORDERS, ORDER_ITEM");
+
+        generator.execute();
+    }
 }
