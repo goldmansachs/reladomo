@@ -454,7 +454,7 @@ public class MsSqlDatabaseType extends AbstractDatabaseType
         {
             if (decimal != 0)
             {
-                javaType =  "double";
+                javaType =  "BigDecimal";
             }
             else if (precision <= 8)
             {

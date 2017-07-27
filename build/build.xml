@@ -1210,10 +1210,30 @@
         <taskdef name="reladomo-gen-xml" classname="com.gs.fw.common.mithra.generator.objectxmlgenerator.MithraObjectXmlGenerator" loaderRef="mithraXmlGenerator">
             <classpath refid="reladomo.genutil.run.classpath"/>
         </taskdef>
-        <mkdir dir ="${mithra.home}/build/mithra/tmp/generated"/>
-        <reladomo-gen-xml userName="${sybase_username}" password="${sybase_password}" databaseType="sybase" outputDir="${root}/reladomogenutil/target/db/sybase"
+        <mkdir dir ="${root}/reladomogenutil/target/reverse/sybase"/>
+        <reladomo-gen-xml userName="${sybase_username}" password="${sybase_password}" databaseType="sybase" outputDir="${root}/reladomogenutil/target/reverse/sybase"
                     driver="com.sybase.jdbc4.jdbc.SybDriver"
                     url="${sybase_url}" schema="${sybase_schema}" includeTables="ALL_TYPES, IDENTITY_TABLE, PRODUCT, TEST_BALANCE_NO_ACMAP, ORDERS, ORDER_ITEM"/>
+        <mkdir dir ="${root}/reladomogenutil/target/reverse/postgres"/>
+        <reladomo-gen-xml userName="${postgres_user}" password="${postgres_password}" databaseType="postgres" outputDir="${root}/reladomogenutil/target/reverse/postgres"
+                    driver="org.postgresql.Driver"
+                    url="jdbc:postgresql://${postgres_hostName}:${postgres_port}/${postgres_databaseName}" schema="${postgres_schemaName}"
+                          includeTables="all_types, identity_table, product, test_balance_no_acmap, orders, order_item, big_orders"/>
+        <mkdir dir ="${root}/reladomogenutil/target/reverse/oracle"/>
+        <reladomo-gen-xml userName="${oracle_user}" password="${oracle_password}" databaseType="oracle" outputDir="${root}/reladomogenutil/target/reverse/oracle"
+                    driver="oracle.jdbc.driver.OracleDriver"
+                    url="jdbc:oracle:thin:@${oracle_hostName}:${oracle_port}:${oracle_ssid}" schema="${oracle_schemaName}"
+                          includeTables="ALL_TYPES, IDENTITY_TABLE, PRODUCT, TEST_BALANCE_NO_ACMAP, ORDERS, ORDER_ITEM, BIG_ORDERS"/>
+        <mkdir dir ="${root}/reladomogenutil/target/reverse/mssql"/>
+        <reladomo-gen-xml userName="${mssql_user}" password="${mssql_password}" databaseType="mssql" outputDir="${root}/reladomogenutil/target/reverse/mssql"
+                    driver="com.microsoft.sqlserver.jdbc.SQLServerDriver"
+                    url="jdbc:sqlserver://${mssql_hostName}:${mssql_port}" schema="${mssql_schemaName}"
+                          includeTables="ALL_TYPES, IDENTITY_TABLE, PRODUCT, TEST_BALANCE_NO_ACMAP, ORDERS, ORDER_ITEM, BIG_ORDERS"/>
+        <!--<mkdir dir ="${root}/reladomogenutil/target/reverse/maria"/>-->
+        <!--<reladomo-gen-xml userName="${maria_user}" password="${maria_password}" databaseType="maria" outputDir="${root}/reladomogenutil/target/reverse/maria"-->
+                    <!--driver="org.mariadb.jdbc.Driver"-->
+                    <!--url="jdbc:mariadb://${maria_hostname}:${maria_port}/${maria_databaseName}" schema="${maria_schemaName}"-->
+                          <!--includeTables="all_types, identity_table, product, test_balance_no_acmap, orders, order_item, big_orders"/>-->
     </target>
 
     <!-- ************************** /reladomogenutil **********************************-->

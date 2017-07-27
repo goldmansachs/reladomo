@@ -27,6 +27,8 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class OracleDatabaseType extends AbstractDatabaseType
@@ -37,12 +39,39 @@ public class OracleDatabaseType extends AbstractDatabaseType
     private static final int DUPLICATE_ERROR_CODE = 23001;
     public static final int MAX_CLAUSES = 240;
     private static final OracleDatabaseType instance = new OracleDatabaseType();
+    private static final Map<String, String> sqlToJavaTypes;
+
+
     private String tempSchema = null;
 
     private static final int CODE_CONNECTION_INCONSISTENT = 17447;
     private static final int CODE_CONNECTION_CLOSED = 17008;
     private static final int CODE_STREAM_CLOSED = 17027;
     private static final int CODE_SOCKET_ERROR = 17410;
+
+    static
+    {
+        sqlToJavaTypes = new HashMap<String, String>();
+        sqlToJavaTypes.put("int4", "int");
+        sqlToJavaTypes.put("int2", "short");
+        sqlToJavaTypes.put("tinyint", "short");
+        sqlToJavaTypes.put("binary_float", "float");
+        sqlToJavaTypes.put("binary_double", "double");
+        sqlToJavaTypes.put("char", "char");
+        sqlToJavaTypes.put("varchar2", "String");
+        sqlToJavaTypes.put("varchar", "String");
+        sqlToJavaTypes.put("text", "String");
+        sqlToJavaTypes.put("blob", "byte[]");
+        sqlToJavaTypes.put("date", "Date");
+        sqlToJavaTypes.put("timestamp(6)", "Timestamp");
+        sqlToJavaTypes.put("bool", "boolean");
+        sqlToJavaTypes.put("binary", "byte[]");
+        sqlToJavaTypes.put("varbinary", "byte[]");
+        sqlToJavaTypes.put("decimal", "BigDecimal");
+        sqlToJavaTypes.put("real", "float");
+        sqlToJavaTypes.put("interval day(0) to second(5)", "Time");
+        sqlToJavaTypes.put("int8", "long");
+    }
 
     public static Logger getLogger()
     {
@@ -410,7 +439,42 @@ public class OracleDatabaseType extends AbstractDatabaseType
 
     public String getJavaTypeFromSql(String sql, Integer precision, Integer decimal)
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        String javaType = sqlToJavaTypes.get(sql);
+
+        if ("NUMBER".equalsIgnoreCase(sql))
+        {
+            if (precision == 0 && decimal == -127)
+            {
+                javaType = "int";
+            }
+            else if (decimal != 0)
+            {
+                javaType =  "BigDecimal";
+            }
+            else
+            {
+                int prec = precision;
+                switch (prec)
+                {
+                    case 1:
+                        javaType = "boolean";
+                        break;
+                    case 3:
+                        javaType = "byte";
+                        break;
+                    case 6:
+                        javaType = "short";
+                        break;
+                    case 19:
+                        javaType = "long";
+                        break;
+                    default:
+                        javaType = "NUMBER";
+                        break;
+                }
+            }
+        }
+        return javaType;
     }
 
     protected boolean hasSelectUnionMultiInsert()
