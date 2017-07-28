@@ -1229,11 +1229,11 @@
                     driver="com.microsoft.sqlserver.jdbc.SQLServerDriver"
                     url="jdbc:sqlserver://${mssql_hostName}:${mssql_port}" schema="${mssql_schemaName}"
                           includeTables="ALL_TYPES, IDENTITY_TABLE, PRODUCT, TEST_BALANCE_NO_ACMAP, ORDERS, ORDER_ITEM, BIG_ORDERS"/>
-        <!--<mkdir dir ="${root}/reladomogenutil/target/reverse/maria"/>-->
-        <!--<reladomo-gen-xml userName="${maria_user}" password="${maria_password}" databaseType="maria" outputDir="${root}/reladomogenutil/target/reverse/maria"-->
-                    <!--driver="org.mariadb.jdbc.Driver"-->
-                    <!--url="jdbc:mariadb://${maria_hostname}:${maria_port}/${maria_databaseName}" schema="${maria_schemaName}"-->
-                          <!--includeTables="all_types, identity_table, product, test_balance_no_acmap, orders, order_item, big_orders"/>-->
+        <mkdir dir ="${root}/reladomogenutil/target/reverse/maria"/>
+        <reladomo-gen-xml userName="${maria_user}" password="${maria_password}" databaseType="maria" outputDir="${root}/reladomogenutil/target/reverse/maria"
+                    driver="org.mariadb.jdbc.Driver"
+                    url="jdbc:mariadb://${maria_hostname}:${maria_port}/${maria_databaseName}" schema="${maria_schemaName}"
+                          includeTables="ALL_TYPES, IDENTITY_TABLE, PRODUCT, TEST_BALANCE_NO_ACMAP, ORDERS, ORDER_ITEM, BIG_ORDERS"/>
     </target>
 
     <!-- ************************** /reladomogenutil **********************************-->

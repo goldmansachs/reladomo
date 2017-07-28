@@ -23,7 +23,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -51,10 +53,32 @@ public class MariaDatabaseType extends AbstractDatabaseType
     private static final MariaDatabaseType instance = new MariaDatabaseType();
     private String tempSchema = null;
     private static final char[] MARIA_SQL_LIKE_META_CHARS = {'%', '_', '\\'};
+    private static final Map<String, String> sqlToJavaTypes;
 
     public static Logger getLogger()
     {
         return logger;
+    }
+
+    static
+    {
+        sqlToJavaTypes = new HashMap<String, String>();
+        sqlToJavaTypes.put("bigint", "long");
+        sqlToJavaTypes.put("int", "int");
+        sqlToJavaTypes.put("smallint", "short");
+        sqlToJavaTypes.put("tinyint", "byte");
+        sqlToJavaTypes.put("float", "float");
+        sqlToJavaTypes.put("double", "double");
+        sqlToJavaTypes.put("char", "char");
+        sqlToJavaTypes.put("varchar", "String");
+        sqlToJavaTypes.put("text", "String");
+        sqlToJavaTypes.put("blob", "byte[]");
+        sqlToJavaTypes.put("date", "Date");
+        sqlToJavaTypes.put("datetime", "Timestamp");
+        sqlToJavaTypes.put("binary", "byte[]");
+        sqlToJavaTypes.put("varbinary", "byte[]");
+        sqlToJavaTypes.put("decimal", "BigDecimal");
+        sqlToJavaTypes.put("time", "Time");
     }
 
     /** Singleton */
@@ -287,7 +311,31 @@ public class MariaDatabaseType extends AbstractDatabaseType
 
     public String getJavaTypeFromSql(String sql, Integer precision, Integer decimal)
     {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        String javaType = sqlToJavaTypes.get(sql);
+
+        if ("decimal".equalsIgnoreCase(sql))
+        {
+            if (decimal != 0)
+            {
+                javaType =  "BigDecimal";
+            }
+            else if (precision <= 8)
+            {
+                javaType =  "int";
+            }
+            else
+            {
+                javaType =  "long";
+            }
+        }
+        if("char".equals(sql))
+        {
+            if(precision > 1)
+            {
+                javaType = "String";
+            }
+        }
+        return javaType;
     }
 
     protected boolean hasSelectUnionMultiInsert()

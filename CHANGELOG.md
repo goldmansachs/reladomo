@@ -2,7 +2,7 @@
 ## 16.5.0 - 2017-07-28
 ### Enhancements:
 - New merge api for transactional lists.
-- Add Postgres, MsSql, and Oracle support to schema to xml generation.
+- Add Postgres, MsSql, Maria, and Oracle support to schema to xml generation.
 
 ### Bug Fixes:
 - Fix over specified relationship resolution.
