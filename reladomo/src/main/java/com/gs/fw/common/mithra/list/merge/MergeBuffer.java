@@ -165,7 +165,7 @@ public class MergeBuffer<E> // todo: implements QueueExecutor or create a super 
         incomingIndex.addAll(incoming);
         if (mergeOptions.getInputDuplicateHandling() == MergeOptions.DuplicateHandling.THROW_ON_DUPLICATE && incomingIndex.size() < incoming.size())
         {
-            throw new MithraBusinessException("the incoming list had duplicates based on the provided merge keys!");
+            throw new MithraBusinessException("the incoming list of "+incoming.get(0).getClass().getName()+" had duplicates based on the provided merge keys!");
         }
         if (mergeOptions.getDbDuplicateHandling() == MergeOptions.DuplicateHandling.THROW_ON_DUPLICATE)
         {
@@ -173,7 +173,7 @@ public class MergeBuffer<E> // todo: implements QueueExecutor or create a super 
             index.addAll(dbList);
             if (index.size() != dbList.size())
             {
-                throw new MithraBusinessException("the database list had duplicates based on the provided merge keys!");
+                throw new MithraBusinessException("the database list of "+dbList.get(0).getClass().getName()+" had duplicates based on the provided merge keys!");
             }
         }
         Comparator<E> comparator = this.getCompartor();
