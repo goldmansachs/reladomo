@@ -32,20 +32,6 @@ public class MergeOptions<E>
     private Attribute[] doNotCompare;
     private Attribute[] doNotUpdate;
 
-    public FullUniqueIndex<E> createFullUniqueIndex(int capacity)
-    {
-        resolveToMatchOn();
-        return new FullUniqueIndex<E>(toMatchOn, capacity);
-    }
-
-    private void resolveToMatchOn()
-    {
-        if (this.toMatchOn == null)
-        {
-            this.toMatchOn = metaData.getPrimaryKeyAttributes();
-        }
-    }
-
     public MergeHook<E> getMergeHook()
     {
         return mergeHook;
@@ -81,10 +67,6 @@ public class MergeOptions<E>
 
     public Extractor[] getToMatchOn()
     {
-        if (this.toMatchOn == null)
-        {
-            return this.getMetaData().getPrimaryKeyAttributes();
-        }
         return toMatchOn;
     }
 

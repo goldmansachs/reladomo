@@ -52,7 +52,7 @@ public class MithraObjectXmlGenerator extends Task
         VALID_DBS.add(DB_NAME_SYBASE);
         VALID_DBS.add(DB_NAME_SYBASEIQ);
         VALID_DBS.add(DB_NAME_UDB82);
-//        VALID_DBS.add(DB_NAME_MARIA);
+        VALID_DBS.add(DB_NAME_MARIA);
         VALID_DBS.add(DB_NAME_ORACLE);
     }
 

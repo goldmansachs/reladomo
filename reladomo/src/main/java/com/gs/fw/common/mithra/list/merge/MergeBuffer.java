@@ -49,6 +49,7 @@ public class MergeBuffer<E> // todo: implements QueueExecutor or create a super 
     private List<E> toUpdateIncomngSide;
     private Attribute[] toUpdate;
     private boolean detached;
+    private Extractor[] toMatchOn;
 
     public MergeBuffer(TopLevelMergeOptions<E> mergeOptions)
     {
@@ -89,7 +90,7 @@ public class MergeBuffer<E> // todo: implements QueueExecutor or create a super 
     {
         if (incomingIndex == null)
         {
-            incomingIndex = mergeOptions.createFullUniqueIndex(size);
+            incomingIndex = this.createFullUniqueIndex(size);
         }
         else
         {
@@ -102,7 +103,7 @@ public class MergeBuffer<E> // todo: implements QueueExecutor or create a super 
     {
         if (dbIndex == null)
         {
-            dbIndex = mergeOptions.createFullUniqueIndex(size);
+            dbIndex = this.createFullUniqueIndex(size);
         }
         else
         {
@@ -115,12 +116,12 @@ public class MergeBuffer<E> // todo: implements QueueExecutor or create a super 
     {
         if (comparator == null)
         {
-            Extractor[] toMatchOn = mergeOptions.getToMatchOn();
+            Extractor[] toMatchOn = this.resolveToMatchOn();
             Attribute[] doNotCompare = mergeOptions.getDoNotCompare();
             Attribute[] persistentAttributes = mergeOptions.getMetaData().getPersistentAttributes();
             Attribute[] primaryKeyAttributes = mergeOptions.getMetaData().getPrimaryKeyAttributes();
 
-            if (Arrays.equals(toMatchOn ,primaryKeyAttributes) && doNotCompare == null)
+            if (Arrays.equals(toMatchOn ,primaryKeyAttributes) && doNotCompare == null && this.topLevel)
             {
                 comparator = CANONICAL_COMPARATOR;
             }
@@ -131,7 +132,7 @@ public class MergeBuffer<E> // todo: implements QueueExecutor or create a super 
                 {
                     attributesToCheck.add(a);
                 }
-                for(Extractor e: toMatchOn)
+                for (Extractor e : toMatchOn)
                 {
                     attributesToCheck.remove(e);
                 }
@@ -141,6 +142,10 @@ public class MergeBuffer<E> // todo: implements QueueExecutor or create a super 
                     {
                         attributesToCheck.remove(a);
                     }
+                }
+                for(Attribute a: this.getForeignKeys())
+                {
+                    attributesToCheck.remove(a);
                 }
                 comparator = new ChainedAttributeComparator(FastList.newList(attributesToCheck));
             }
@@ -160,7 +165,7 @@ public class MergeBuffer<E> // todo: implements QueueExecutor or create a super 
         incomingIndex.addAll(incoming);
         if (mergeOptions.getInputDuplicateHandling() == MergeOptions.DuplicateHandling.THROW_ON_DUPLICATE && incomingIndex.size() < incoming.size())
         {
-            throw new MithraBusinessException("the incoming list had duplicates based on the provided merge keys!");
+            throw new MithraBusinessException("the incoming list of "+incoming.get(0).getClass().getName()+" had duplicates based on the provided merge keys!");
         }
         if (mergeOptions.getDbDuplicateHandling() == MergeOptions.DuplicateHandling.THROW_ON_DUPLICATE)
         {
@@ -168,7 +173,7 @@ public class MergeBuffer<E> // todo: implements QueueExecutor or create a super 
             index.addAll(dbList);
             if (index.size() != dbList.size())
             {
-                throw new MithraBusinessException("the database list had duplicates based on the provided merge keys!");
+                throw new MithraBusinessException("the database list of "+dbList.get(0).getClass().getName()+" had duplicates based on the provided merge keys!");
             }
         }
         Comparator<E> comparator = this.getCompartor();
@@ -513,17 +518,13 @@ public class MergeBuffer<E> // todo: implements QueueExecutor or create a super 
     {
         if (this.toUpdate == null)
         {
-            Extractor[] toMatchOn = mergeOptions.getToMatchOn();
+            Extractor[] toMatchOn = this.resolveToMatchOn();
             Attribute[] doNotUpdate = mergeOptions.getDoNotUpdate();
             Attribute[] persistentAttributes = mergeOptions.getMetaData().getPersistentAttributes();
             Attribute[] primaryKeyAttributes = mergeOptions.getMetaData().getPrimaryKeyAttributes();
             AsOfAttribute[] asOfAttributes = mergeOptions.getMetaData().getAsOfAttributes();
 
-            Set<Attribute> foreignKeys = UnifiedSet.newSet();
-            if (!topLevel)
-            {
-                ((NavigatedMergeOption)mergeOptions).getRelatedFinder().zWithoutParentSelector().zGetMapper().addDepenedentAttributesToSet(foreignKeys);
-            }
+            Set<Attribute> foreignKeys = getForeignKeys();
 
             UnifiedSet<Attribute> attributesToUpdate = new UnifiedSet<Attribute>(persistentAttributes.length);
             for(Attribute a: persistentAttributes)
@@ -593,6 +594,53 @@ public class MergeBuffer<E> // todo: implements QueueExecutor or create a super 
         }
     }
 
+    public FullUniqueIndex<E> createFullUniqueIndex(int capacity)
+    {
+        Extractor[] toMatchOn = resolveToMatchOn();
+        return new FullUniqueIndex<E>(toMatchOn, capacity);
+    }
+
+    protected Extractor[] resolveToMatchOn()
+    {
+        if (this.toMatchOn == null)
+        {
+            Set matchAttr = UnifiedSet.newSet();
+            if (this.mergeOptions.getToMatchOn() != null)
+            {
+                for(Extractor a: this.mergeOptions.getToMatchOn())
+                {
+                    matchAttr.add(a);
+                }
+            }
+            else
+            {
+                for(Extractor a: this.mergeOptions.getMetaData().getPrimaryKeyAttributes())
+                {
+                    matchAttr.add(a);
+                }
+            }
+            Set<Attribute> foreignKeys = getForeignKeys();
+            for(Attribute a: foreignKeys)
+            {
+                matchAttr.remove(a);
+            }
+
+            Extractor[] x = new Extractor[matchAttr.size()];
+            matchAttr.toArray(x);
+            this.toMatchOn = x;
+        }
+        return this.toMatchOn;
+    }
+
+    private Set<Attribute> getForeignKeys()
+    {
+        Set<Attribute> foreignKeys = UnifiedSet.newSet();
+        if (!topLevel)
+        {
+            ((NavigatedMergeOption)mergeOptions).getRelatedFinder().zWithoutParentSelector().zGetMapper().addDepenedentAttributesToSet(foreignKeys);
+        }
+        return foreignKeys;
+    }
 
     private static class CanonicalComparator<X extends MithraTransactionalObject> implements Comparator<X>
     {

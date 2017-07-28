@@ -1,4 +1,13 @@
 # Change Log
+## 16.5.0 - 2017-07-28
+### Enhancements:
+- New merge api for transactional lists.
+- Add Postgres, MsSql, Maria, and Oracle support to schema to xml generation.
+
+### Bug Fixes:
+- Fix over specified relationship resolution.
+- Ensure same ordering when processing same input for generation.
+
 ## 16.4.0 - 2017-07-17
 ### Enhancements:
 - Add a shutdown hook to the notification manager.
@@ -40,7 +49,6 @@
 - Increment refresh and database retrieval counts for temporal objects correctly.
 - Fix NPE in DbExtractor for UTC converted attributes
 
-# Change Log
 ## 16.1.4 - 2017-05-03
 ### Enhancements:
 - Improve using full cache in a transaction when transaction participation is not required

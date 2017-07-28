@@ -1,8 +1,11 @@
 # Reladomo
-[![][travis img]][travis]
 [![][maven img]][maven]
-[![][release img]][release]
+[![][ChangeLog img]][ChangeLog]
+[![][docs img]][docs]
+[![][contrib img]][contrib]
 [![][license-apache img]][license-apache]
+[![][travis img]][travis]
+[![][release img]][release]
 
 ## What is it? 
 Reladomo is an object-relational mapping (ORM) framework for Java with the following enterprise features:
@@ -11,6 +14,7 @@ Reladomo is an object-relational mapping (ORM) framework for Java with the follo
 * Bi-temporal chaining 
 * Transparent multi-schema support 
 * Full support for unit-testable code 
+* See the [documentation](https://goldmansachs.github.io/reladomo/) for more detail.
 
 ## What can I do with it? 
 * Model data as objects with meaningful relationships between them 
@@ -94,8 +98,17 @@ Extract the jar file and refer to the docs below.
 [license-apache]:LICENSE.txt
 [license-apache img]:https://img.shields.io/badge/License-Apache%202-blue.svg
 
-[maven]:http://search.maven.org/#search|gav|1|g:"com.goldmansachs.reladomo"%20AND%20a:"reladomo"
+[maven]:http://search.maven.org/#search|gav|1|g:"com.goldmansachs.reladomo"
 [maven img]:https://maven-badges.herokuapp.com/maven-central/com.goldmansachs.reladomo/reladomo/badge.svg
 
 [release]:https://github.com/goldmansachs/reladomo/releases
 [release img]:https://img.shields.io/github/release/goldmansachs/reladomo.svg
+
+[docs]:https://goldmansachs.github.io/reladomo/
+[docs img]:https://img.shields.io/badge/Documentation-online-brightgreen.svg
+
+[ChangeLog]:CHANGELOG.md
+[ChangeLog img]:https://img.shields.io/badge/Change%20log-markdown-blue.svg
+
+[contrib]:CONTRIBUTING.md
+[contrib img]:https://img.shields.io/badge/Contribution-guide-blue.svg
