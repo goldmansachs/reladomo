@@ -9,8 +9,8 @@ central,javax.validation,validation-api,1.1.0.Final,-sources.jar,lib/ui,7D49B53C
 privaterepo,com.gs.fw.core,fw-psp,3.4.0,jar,lib/ui,94BE1C437DFBCD308BB7CBB67223E918733EA9C0
 
 #drivers
-central,org.postgresql,postgresql,9.3-1101-jdbc4,jar,lib/drivers,9DA59F12BADEA19B3B2884161F624BCF6750F985
-central,org.mariadb.jdbc,mariadb-java-client,1.4.6,jar,lib/drivers,BAF6436CD74B45E36FAFD30786D51BBE363F59B4
+#central,org.postgresql,postgresql,9.3-1101-jdbc4,jar,lib/drivers,9DA59F12BADEA19B3B2884161F624BCF6750F985
+#central,org.mariadb.jdbc,mariadb-java-client,1.4.6,jar,lib/drivers,BAF6436CD74B45E36FAFD30786D51BBE363F59B4
 privaterepo,com.sybase.jdbcx,jconn4,16.0.SP01.EBF24579,jar,lib/drivers,59C2CE3AE6CB2DB55B32149065BE9F9D1B54E1AE
 privaterepo,com.ibm.db2.jcc,db2jcc,v10.5FixPak06.jcc4.19.26,jar,lib/drivers,C994E3387A9D2730656A63789414588D3E588461
 privaterepo,com.ibm.db2.jcc,db2jcc_license_cu,v10.5FixPak06.jcc4.19.26,jar,lib/drivers,24CB654C34C9A1C01489A8B73E84335BD593C1E5
