@@ -1,4 +1,11 @@
 # Change Log
+## 16.5.1 - 2017-08-03
+### Enhancements:
+- Add getInstanceForOracle12 to OracleDatabaseType that can do batch updates with optimistic locking
+
+### Bug Fixes:
+- Disable batch updates on Oracle when doing optimistic locking
+
 ## 16.5.0 - 2017-07-28
 ### Enhancements:
 - New merge api for transactional lists.
