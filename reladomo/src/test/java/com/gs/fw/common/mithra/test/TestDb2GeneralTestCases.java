@@ -59,6 +59,16 @@ public class TestDb2GeneralTestCases extends MithraDb2TestAbstract
         super.tearDown();
     }
 
+    public void testTimestampGranularity2() throws Exception
+    {
+        new CommonVendorTestCases().testTimestampGranularity();
+    }
+
+    public void testOptimisticLocking() throws Exception
+    {
+        new CommonVendorTestCases().testOptimisticLocking();
+    }
+
     public void testSimpleOrder()
     {
         Assert.assertEquals(4, new ProductList(ProductFinder.all()).size());

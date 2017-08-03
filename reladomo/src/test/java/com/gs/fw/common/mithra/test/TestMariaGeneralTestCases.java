@@ -98,6 +98,16 @@ public class TestMariaGeneralTestCases extends MithraMariaTestAbstract
         super.tearDown();
     }
 
+    public void testTimestampGranularity() throws Exception
+    {
+        new CommonVendorTestCases().testTimestampGranularity();
+    }
+
+    public void testOptimisticLocking() throws Exception
+    {
+        new CommonVendorTestCases().testOptimisticLocking();
+    }
+
     public void testStringLikeEscapes()
     {
         new TestStringLike().testStringLikeEscapes();

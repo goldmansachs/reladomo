@@ -39,10 +39,12 @@ public class OracleDatabaseType extends AbstractDatabaseType
     private static final int DUPLICATE_ERROR_CODE = 23001;
     public static final int MAX_CLAUSES = 240;
     private static final OracleDatabaseType instance = new OracleDatabaseType();
+    private static final OracleDatabaseType instance12 = new OracleDatabaseType(true);
     private static final Map<String, String> sqlToJavaTypes;
 
 
     private String tempSchema = null;
+    private boolean optimisticBatch = false;
 
     private static final int CODE_CONNECTION_INCONSISTENT = 17447;
     private static final int CODE_CONNECTION_CLOSED = 17008;
@@ -81,6 +83,11 @@ public class OracleDatabaseType extends AbstractDatabaseType
     /** Singleton */
     protected OracleDatabaseType()
     {
+    }
+
+    protected OracleDatabaseType(boolean optimisticBatch)
+    {
+        this.optimisticBatch = optimisticBatch;
     }
 
     @Override
@@ -172,6 +179,11 @@ public class OracleDatabaseType extends AbstractDatabaseType
     public static OracleDatabaseType getInstance()
     {
         return instance;
+    }
+
+    public static OracleDatabaseType getInstanceForOracle12()
+    {
+        return instance12;
     }
 
     public String getPerStatementLock(boolean lock)
@@ -586,5 +598,11 @@ public class OracleDatabaseType extends AbstractDatabaseType
     public int getNullableBooleanJavaSqlType()
     {
         return Types.NUMERIC;
+    }
+
+    @Override
+    public boolean canCombineOptimisticWithBatchUpdates()
+    {
+        return this.optimisticBatch;
     }
 }

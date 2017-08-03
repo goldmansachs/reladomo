@@ -76,6 +76,16 @@ public class TestPostgresGeneralTestCases extends MithraPostgresTestAbstract
         new CommonVendorTestCases().testRollback();
     }
 
+    public void testTimestampGranularity() throws Exception
+    {
+        new CommonVendorTestCases().testTimestampGranularity();
+    }
+
+    public void testOptimisticLocking() throws Exception
+    {
+        new CommonVendorTestCases().testOptimisticLocking();
+    }
+
     public void testSimpleOrder()
     {
         Assert.assertEquals(4, new ProductList(ProductFinder.all()).size());

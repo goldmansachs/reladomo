@@ -3775,8 +3775,8 @@ public abstract class MithraAbstractDatabaseObject
         UpdateOperation firstOperation = updateOperations.get(0);
         MithraDataObject firstData = this.getDataForUpdate(firstOperation);
         Object source = this.getSourceAttributeValueFromObjectGeneric(firstData);
-
         DatabaseType databaseType = this.getDatabaseTypeGenericSource(source);
+
         if (databaseType.getUpdateViaInsertAndJoinThreshold() > 0 &&
                 databaseType.getUpdateViaInsertAndJoinThreshold() < updateOperations.size() &&
                 this.getFinder().getVersionAttribute() == null &&
@@ -3786,6 +3786,21 @@ public abstract class MithraAbstractDatabaseObject
             zBatchUpdateViaInsertAndJoin(updateOperations, source, databaseType);
             return;
         }
+        if (this.hasOptimisticLocking())
+        {
+            if (this.getMithraObjectPortal().getTxParticipationMode().isOptimisticLocking() && !databaseType.canCombineOptimisticWithBatchUpdates())
+            {
+                //we'll do single updates
+                for(int i=0;i<updateOperations.size();i++)
+                {
+                    UpdateOperation updateOperation = updateOperations.get(i);
+                    zUpdate(updateOperation.getMithraObject(), updateOperation.getUpdates());
+                }
+
+                return;
+            }
+        }
+
         List firstUpdateWrappers = firstOperation.getUpdates();
         StringBuilder builder = new StringBuilder(30 + firstUpdateWrappers.size() * 12);
         builder.append("update ");

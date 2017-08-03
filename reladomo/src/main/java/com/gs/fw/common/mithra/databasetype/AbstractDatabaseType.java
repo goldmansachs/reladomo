@@ -993,6 +993,12 @@ public abstract class AbstractDatabaseType implements DatabaseType
         builder.append(")");
     }
 
+    @Override
+    public boolean canCombineOptimisticWithBatchUpdates()
+    {
+        return true;
+    }
+
     protected void startUpdateViaJoinQuery(String fullyQualifiedTableNameGenericSource, StringBuilder builder)
     {
         builder.append("update ").append(fullyQualifiedTableNameGenericSource);
