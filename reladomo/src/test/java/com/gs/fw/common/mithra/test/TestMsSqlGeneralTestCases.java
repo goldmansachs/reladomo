@@ -61,6 +61,16 @@ public class TestMsSqlGeneralTestCases extends MithraMsSqlTestAbstract
        super.tearDown();
     }
 
+    public void testTimestampGranularity2() throws Exception
+    {
+        new CommonVendorTestCases().testTimestampGranularity();
+    }
+
+    public void testOptimisticLocking() throws Exception
+    {
+        new CommonVendorTestCases().testOptimisticLocking();
+    }
+
     public void testStandardDeviation() throws ParseException
     {
         new TestStandardDeviation().testStdDevDouble();

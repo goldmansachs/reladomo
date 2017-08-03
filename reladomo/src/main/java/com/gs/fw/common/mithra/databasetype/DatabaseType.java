@@ -289,4 +289,6 @@ public interface DatabaseType extends CommonDatabaseType
             MithraObjectPortal mithraObjectPortal,
             String fullyQualifiedTableNameGenericSource,
             StringBuilder builder);
+
+    public boolean canCombineOptimisticWithBatchUpdates();
 }

@@ -103,6 +103,12 @@ public class MithraOracleTestAbstract extends MithraTestAbstract
       }
 
 
+    @Override
+    public Connection getConnection()
+    {
+        return OracleTestConnectionManager.getInstance().getConnection();
+    }
+
     protected void validateMithraResult(Operation op, String sql)
     {
         validateMithraResult(op, sql, 1);

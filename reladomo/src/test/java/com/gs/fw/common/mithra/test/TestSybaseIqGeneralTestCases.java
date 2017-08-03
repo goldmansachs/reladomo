@@ -63,6 +63,16 @@ public class TestSybaseIqGeneralTestCases extends MithraSybaseIqTestAbstract
         super.tearDown();
     }
 
+    public void testTimestampGranularity2() throws Exception
+    {
+        new CommonVendorTestCases().testTimestampGranularity();
+    }
+
+    public void testOptimisticLocking() throws Exception
+    {
+        new CommonVendorTestCases().testOptimisticLocking();
+    }
+
     public void testToCheckRepeatReadIsDisabled() throws Exception
     {
         new TestSybaseConnectionSetupForTests().testToCheckRepeatReadIsDisabled();

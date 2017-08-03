@@ -17,10 +17,10 @@
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.behavior.txparticipation.MithraOptimisticLockException;
 import com.gs.fw.common.mithra.connectionmanager.XAConnectionManager;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.aggregate.TestStandardDeviation;
@@ -33,13 +33,13 @@ import com.gs.fw.common.mithra.util.TupleSet;
 import junit.framework.Assert;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Exchanger;
 
@@ -55,6 +55,47 @@ public class TestOracleGeneralTestCases extends MithraOracleTestAbstract
     {
         MithraManagerProvider.getMithraManager().setTransactionTimeout(60);
        super.tearDown();
+    }
+
+    public void testTimestampGranularity() throws Exception
+    {
+        new CommonVendorTestCases().testTimestampGranularity();
+    }
+
+    public void testOptimisticLocking() throws Exception
+    {
+        new CommonVendorTestCases().testOptimisticLocking();
+    }
+
+    public void testOptimisticLocking2() throws Exception
+    {
+        final TestEodAcctIfPnlList list = TestEodAcctIfPnlFinder.findMany(TestEodAcctIfPnlFinder.all());
+        list.forceResolve();
+
+        Connection connection = this.getConnection();
+        connection.createStatement().executeUpdate("update EOD_ACCT_IF_PNL set IN_Z=TO_DATE('2017-08-03 10:00:00', 'YYYY-MM-DD HH:MI:SS')");
+        connection.close();
+
+        try
+        {
+            MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand<Object>()
+            {
+                @Override
+                public Object executeTransaction(MithraTransaction tx) throws Throwable
+                {
+                    TestEodAcctIfPnlFinder.setTransactionModeReadCacheWithOptimisticLocking(tx);
+                    for(TestEodAcctIfPnl pnl: list)
+                    {
+                        pnl.setUserId("fred");
+                    }
+                    return null;
+                }
+            });
+        }
+        catch (MithraOptimisticLockException e)
+        {
+            // expected
+        }
     }
 
     public void testStandardDeviation() throws ParseException
