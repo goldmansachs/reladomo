@@ -126,6 +126,10 @@ public class MsSqlDatabaseType extends AbstractDatabaseType
         sqlToJavaTypes.put("money", "not implemented");
         sqlToJavaTypes.put("char", "char");
         sqlToJavaTypes.put("varchar", "String");
+        sqlToJavaTypes.put("nchar", "char");
+        sqlToJavaTypes.put("nvarchar", "String");
+        sqlToJavaTypes.put("unichar", "char");
+        sqlToJavaTypes.put("univarchar", "String");
         sqlToJavaTypes.put("text", "String");
         sqlToJavaTypes.put("image", "byte[]");
         sqlToJavaTypes.put("datetime", "Timestamp");
