@@ -355,7 +355,7 @@ public class XAConnectionManager extends AbstractConnectionManager
             }
             catch (SQLException e)
             {
-                SQLException moreInfoException = new SQLException("error creating connnection to database: " + this.schemaName+
+                SQLException moreInfoException = new SQLException("error creating connection to database: " + this.schemaName+
                 " for connection string: "+this.connectString);
                 moreInfoException.initCause(e);
                 throw moreInfoException;
