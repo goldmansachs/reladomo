@@ -104,7 +104,7 @@ public class TopLevelMergeOptions<E> extends MergeOptions<E>
         {
             if (!finderInstance.getDependentRelationshipFinders().contains(arf))
             {
-                throw new MithraBusinessException("Can only navigate to dependent relationships! "+arf.getRelationshipName()+" is not a depdendenr");
+                throw new MithraBusinessException("Can only navigate to dependent relationships! "+arf.getRelationshipName()+" is not a dependent");
             }
         }
         FastList<AbstractRelatedFinder> list = FastList.newList(4);
