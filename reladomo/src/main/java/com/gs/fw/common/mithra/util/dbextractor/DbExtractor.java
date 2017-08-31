@@ -558,7 +558,7 @@ public class DbExtractor
     private Object getValueConvertIfNeeded(Attribute attribute, Object object)
     {
         Object value = attribute.valueOf(object);
-        if (attribute instanceof TimestampAttribute)
+        if (attribute instanceof TimestampAttribute && value != null)
         {
             TimestampAttribute timestampAttribute = (TimestampAttribute) attribute;
             if (timestampAttribute.requiresConversionFromUtc() &&
