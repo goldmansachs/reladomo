@@ -179,11 +179,6 @@ public abstract class AbstractMithraGenerator extends Task implements Logger, Ge
         return this.baseGenerator.getMithraEmbeddedValueObjects();
     }
 
-    public Map<String, MithraEnumerationTypeWrapper> getMithraEnumerations()
-    {
-        return this.baseGenerator.getMithraEnumerations();
-    }
-
     public Map<String, MithraInterfaceType> getMithraInterfaces()
     {
         return this.baseGenerator.getMithraInterfaces();

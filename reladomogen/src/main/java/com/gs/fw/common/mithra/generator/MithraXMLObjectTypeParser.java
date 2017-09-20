@@ -29,8 +29,6 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
     private List<MithraObjectTypeWrapper> sortedMithraObjects;
     private Map<String, MithraEmbeddedValueObjectTypeWrapper> mithraEmbeddedValueObjects = new ConcurrentHashMap<String, MithraEmbeddedValueObjectTypeWrapper>();
     private List<MithraEmbeddedValueObjectTypeWrapper> sortedMithraEmbeddedValueObjects;
-    private Map<String, MithraEnumerationTypeWrapper> mithraEnumerations = new ConcurrentHashMap<String, MithraEnumerationTypeWrapper>();
-    private List<MithraEnumerationTypeWrapper> sortedMithraEnumerations;
     private Map<String, MithraInterfaceType> mithraInterfaces = new ConcurrentHashMap<String, MithraInterfaceType>();
 
     private boolean generateFileHeaders = false;
@@ -89,11 +87,6 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
         return this.mithraEmbeddedValueObjects;
     }
 
-    public Map<String, MithraEnumerationTypeWrapper> getMithraEnumerations()
-    {
-        return this.mithraEnumerations;
-    }
-
     @Override
     public String getChecksum()
     {
@@ -143,14 +136,12 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
             int pureObjects = this.parseMithraPureObjects(result, importSource, fileProvider);
             int tempObjects = this.parseMithraTempObjects(result, importSource, fileProvider);
             int embeddedObjects = this.parseMithraEmbeddedValueObjects(result, importSource, fileProvider);
-            int enumerations = this.parseMithraEnumerations(result, importSource, fileProvider);
             int mithraInterfaceObjects = this.parseMithraInterfaceObjects(result, importSource, fileProvider);
             String msg = fileName + ": parsed ";
             msg = concatParsed(msg, normalObjects, "normal");
             msg = concatParsed(msg, pureObjects, "pure");
             msg = concatParsed(msg, tempObjects, "temp");
             msg = concatParsed(msg, embeddedObjects, "embedded");
-            msg = concatParsed(msg, enumerations, "enumeration");
             msg = concatParsed(msg, mithraInterfaceObjects, "mithraInterface");
             msg += " Mithra objects in "+(System.currentTimeMillis() - start)+" ms.";
             this.logger.info(msg);
@@ -305,36 +296,6 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
             waitForExecutorWithCheck();
         }
         return mithraEmbeddedValueObjectList.size();
-    }
-
-    private int parseMithraEnumerations(final MithraType mithraType, final String importSource,
-                                        final FileProvider fileProvider) throws FileNotFoundException
-    {
-        List<MithraEnumerationResourceType> mithraEnumerationList = (List<MithraEnumerationResourceType>) mithraType.getMithraEnumerationResources();
-        if (!mithraEnumerationList.isEmpty())
-        {
-            chopAndStickResource.resetSerialResource();
-            for (int i=0;i<mithraEnumerationList.size();i++)
-            {
-                final MithraEnumerationResourceType mithraEnumerationResourceType = mithraEnumerationList.get(i);
-                getExecutor().submit(new GeneratorTask(i)
-                {
-                    public void run()
-                    {
-                        String enumerationName = mithraEnumerationResourceType.getName();
-                        MithraEnumerationType enumeration = (MithraEnumerationType) parseMithraBaseObject(enumerationName, mithraEnumerations, fileProvider, this);
-                        if (enumeration != null)
-                        {
-                            String enumerationFileName = enumerationName + ".xml";
-                            MithraEnumerationTypeWrapper wrapper = new MithraEnumerationTypeWrapper(enumeration, enumerationFileName, importSource);
-                            mithraEnumerations.put(mithraEnumerationResourceType.getName(), wrapper);
-                        }
-                    }
-                });
-            }
-            waitForExecutorWithCheck();
-        }
-        return mithraEnumerationList.size();
     }
 
     private MithraInterfaceType parseMithraInterfaceType(String objectName, Map objectMap,
@@ -588,11 +549,6 @@ public class MithraXMLObjectTypeParser implements MithraObjectTypeParser
     public List<MithraEmbeddedValueObjectTypeWrapper> getSortedMithraEmbeddedValueObjects()
     {
         return sortedMithraEmbeddedValueObjects;
-    }
-
-    private void createSortedEnumerationsList()
-    {
-        this.sortedMithraEnumerations = new ArrayList<MithraEnumerationTypeWrapper>(this.mithraEnumerations.values());
     }
 
     private FullFileBuffer getFullFileBuffer()

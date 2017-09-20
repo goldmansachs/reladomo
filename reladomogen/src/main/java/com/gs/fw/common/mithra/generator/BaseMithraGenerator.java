@@ -72,8 +72,6 @@ public class BaseMithraGenerator
     private List<MithraObjectTypeWrapper> sortedMithraObjects;
     private Map<String, MithraEmbeddedValueObjectTypeWrapper> mithraEmbeddedValueObjects = new ConcurrentHashMap<String, MithraEmbeddedValueObjectTypeWrapper>();
     private List<MithraEmbeddedValueObjectTypeWrapper> sortedMithraEmbeddedValueObjects;
-    private Map<String, MithraEnumerationTypeWrapper> mithraEnumerations = new ConcurrentHashMap<String, MithraEnumerationTypeWrapper>();
-    private List<MithraEnumerationTypeWrapper> sortedMithraEnumerations;
     private Map<String, MithraInterfaceType> mithraInterfaces = new ConcurrentHashMap<String, MithraInterfaceType>();
     protected MithraObjectTypeParser mithraObjectTypeParser;
     // private List<MithraInterfaceTypeWrapper> sortedMithraInterfaces;
@@ -246,11 +244,6 @@ public class BaseMithraGenerator
         return this.mithraEmbeddedValueObjects;
     }
 
-    public Map<String, MithraEnumerationTypeWrapper> getMithraEnumerations()
-    {
-        return this.mithraEnumerations;
-    }
-
     public Map<String, MithraInterfaceType> getMithraInterfaces()
     {
         return this.mithraInterfaces;
@@ -304,11 +297,6 @@ public class BaseMithraGenerator
         this.sortedMithraEmbeddedValueObjects = new ArrayList<MithraEmbeddedValueObjectTypeWrapper>(this.mithraEmbeddedValueObjects.values());
     }
 
-    private void createSortedEnumerationsList()
-    {
-        this.sortedMithraEnumerations = new ArrayList<MithraEnumerationTypeWrapper>(this.mithraEnumerations.values());
-    }
-
     public String parseAndValidate()
     {
         String filePath = parseMithraObjectTypes();
@@ -329,7 +317,6 @@ public class BaseMithraGenerator
 
         this.mithraEmbeddedValueObjects.putAll(mithraObjectTypeParser.getMithraEmbeddedValueObjects());
         this.mithraInterfaces.putAll(mithraObjectTypeParser.getMithraInterfaces());
-        this.mithraEnumerations.putAll(mithraObjectTypeParser.getMithraEnumerations());
         return filePath;
     }
 
@@ -348,7 +335,6 @@ public class BaseMithraGenerator
             this.mithraObjects.putAll(importXMLParser.getMithraObjects());
             this.mithraEmbeddedValueObjects.putAll(importXMLParser.getMithraEmbeddedValueObjects());
             this.mithraInterfaces.putAll(importXMLParser.getMithraInterfaces());
-            this.mithraEnumerations.putAll(importXMLParser.getMithraEnumerations());
         }
     }
 
@@ -377,7 +363,6 @@ public class BaseMithraGenerator
         boolean result = this.checkAllNames();
         result &= this.resolveAttributes();
         result &= this.resolveEmbeddedValues();
-        result &= this.resolveEnumerations();
         result &= this.resolveSuperClasses();
         result &= this.resolveIndices();
         result &= this.checkRelationships();  // once we have validated these real ones validate the interface relationship.
@@ -511,17 +496,6 @@ public class BaseMithraGenerator
         for (MithraObjectTypeWrapper mithraObjectTypeWrapper : this.sortedMithraObjects)
         {
             List errors = mithraObjectTypeWrapper.resolveEmbeddedValueObjects(this.getMithraEmbeddedValueObjects(), this.mithraObjects);
-            allGood = processErrorsIfAny(errors, allGood, mithraObjectTypeWrapper.getSourceFileName());
-        }
-        return allGood;
-    }
-
-    private boolean resolveEnumerations() throws JavaTypeException
-    {
-        boolean allGood = true;
-        for (MithraObjectTypeWrapper mithraObjectTypeWrapper : this.sortedMithraObjects)
-        {
-            List errors = mithraObjectTypeWrapper.resolveEnumerations(this.getMithraEnumerations());
             allGood = processErrorsIfAny(errors, allGood, mithraObjectTypeWrapper.getSourceFileName());
         }
         return allGood;

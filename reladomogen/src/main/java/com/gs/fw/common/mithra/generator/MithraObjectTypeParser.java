@@ -49,7 +49,6 @@ public interface MithraObjectTypeParser
     Map<String,MithraObjectTypeWrapper> getMithraObjects();
     Map<String,MithraEmbeddedValueObjectTypeWrapper> getMithraEmbeddedValueObjects();
     Map<String,MithraInterfaceType> getMithraInterfaces();
-    Map<String,MithraEnumerationTypeWrapper> getMithraEnumerations();
 
     String getChecksum();
 }

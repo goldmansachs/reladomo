@@ -40,33 +40,33 @@ public interface <%=wrapper.getAbstractInterfaceName()%>
 {
 
  <% for (int i = 0; i < normalAttributes.length; i++){ %>
-        <%= normalAttributes[i].getVisibility() %> <%=normalAttributes[i].getTypeAsString()%> <%=normalAttributes[i].getGetter()%>();
+        <%=normalAttributes[i].getTypeAsString()%> <%=normalAttributes[i].getGetter()%>();
         <%if(!wrapper.isReadOnlyInterfaces()) {%>
-        <%= normalAttributes[i].getVisibility() %> void <%=normalAttributes[i].getSetter()%>(<%=normalAttributes[i].getTypeAsString()%> newValue);
+        void <%=normalAttributes[i].getSetter()%>(<%=normalAttributes[i].getTypeAsString()%> newValue);
         <%}%>
-        <%= normalAttributes[i].getVisibility() %> boolean <%= normalAttributes[i].getNullGetter() %>;
+        boolean <%= normalAttributes[i].getNullGetter() %>;
         <% if (!wrapper.isReadOnlyInterfaces() && wrapper.isTransactional() && wrapper.hasBusinessDateAsOfAttribute() && !(normalAttributes[i].isAsOfAttributeFrom() || normalAttributes[i].isAsOfAttributeTo() )) { %>
-        <%= normalAttributes[i].getVisibility() %> void <%= normalAttributes[i].getSetter()%>Until(<%=normalAttributes[i].getTypeAsString()%> newValue, Timestamp exclusiveUntil);
+        void <%= normalAttributes[i].getSetter()%>Until(<%=normalAttributes[i].getTypeAsString()%> newValue, Timestamp exclusiveUntil);
         <% if(normalAttributes[i].isDoubleAttribute() || normalAttributes[i].isBigDecimalAttribute()){%>
-        <%= normalAttributes[i].getVisibility() %> void <%= normalAttributes[i].getIncrementer()%>(<%=normalAttributes[i].getTypeAsString()%> increment);
-        <%= normalAttributes[i].getVisibility() %> void <%= normalAttributes[i].getIncrementer()%>Until(<%=normalAttributes[i].getTypeAsString()%> increment, Timestamp exclusiveUntil);
+        void <%= normalAttributes[i].getIncrementer()%>(<%=normalAttributes[i].getTypeAsString()%> increment);
+        void <%= normalAttributes[i].getIncrementer()%>Until(<%=normalAttributes[i].getTypeAsString()%> increment, Timestamp exclusiveUntil);
         <%}%>
         <%}%>
 <%}%>
 <%if(!wrapper.isReadOnlyInterfaces()){%>
 <% for (int i = 0; i < nullablePrimitiveAttributes.length; i ++) { %>
-    <%= nullablePrimitiveAttributes[i].getVisibility() %> void <%= nullablePrimitiveAttributes[i].getSetter() %>Null();
+    void <%= nullablePrimitiveAttributes[i].getSetter() %>Null();
 <%}%>
 <%}%>
 
 <% for (int i = 0; i < relationshipAttributes.length; i++){%>
     public <%=relationshipAttributes[ i ].getTypeAsString()%> <%=relationshipAttributes[ i ].getGetter()%>(<%=relationshipAttributes[ i ].getParameters() %>);
     <% if (!wrapper.isReadOnlyInterfaces() && wrapper.isTransactional() && relationshipAttributes[i].hasSetter()) { %>
-	public void <%=relationshipAttributes[ i ].getSetter()%>(<%=relationshipAttributes[ i ].getTypeAsString()%> <%= relationshipAttributes[i].getName()%>);
+	void <%=relationshipAttributes[ i ].getSetter()%>(<%=relationshipAttributes[ i ].getTypeAsString()%> <%= relationshipAttributes[i].getName()%>);
     <%}%>
 <%}%>
 
 <% for (int i=0;i<asOfAttributes.length;i++) { %>
-    public <%=asOfAttributes[i].getTypeAsString()%> <%=asOfAttributes[ i ].getGetter()%>();
+    <%=asOfAttributes[i].getTypeAsString()%> <%=asOfAttributes[ i ].getGetter()%>();
     <% } %>
 }

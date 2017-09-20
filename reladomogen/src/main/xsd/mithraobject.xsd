@@ -27,7 +27,6 @@
     <xsd:element name="MithraTempObject" type="MithraTempObjectType"/>
     <xsd:element name="MithraInterface" type="MithraInterfaceType"/>
     <xsd:element name="MithraEmbeddedValueObject" type="MithraEmbeddedValueObjectType"/>
-    <xsd:element name="MithraEnumeration" type="MithraEnumerationType"/>
 
     <xsd:complexType name="MithraBaseObjectType">
         <xsd:sequence>
@@ -153,15 +152,6 @@
                             <!--A computed attribute is defined as a formula using other attributes of this object (but not relationships).-->
                     <!--</xsd:documentation></xsd:annotation>-->
                 <!--</xsd:element>-->
-                <xsd:element name="EnumerationAttribute" type="EnumerationAttributeType" minOccurs="0" maxOccurs="unbounded">
-                    <xsd:annotation><xsd:documentation xml:lang="en">
-                        This is not implemented.
-                        <!--An attribute whose value is an enumeration. Each member of the enumeration should be mapped to-->
-                        <!--a different underlying database value. All database value mappings must be representable as-->
-                        <!--EITHER ints OR booleans OR Strings. One enumeration member may be mapped to "null". Corresponding-->
-                        <!--getters and setters will be generated for each enumeration attribute.-->
-                    </xsd:documentation></xsd:annotation>
-                </xsd:element>
                 <xsd:element name="TransactionalMethodSignature" type="TransactionalMethodSignatureType" minOccurs="0" maxOccurs="unbounded">
                     <xsd:annotation><xsd:documentation xml:lang="en">
                         A method on this object that is marked as transactional. The method signature shown here will be in the generated code
@@ -201,8 +191,6 @@
             </xsd:element>
             <xsd:element name="MithraEmbeddedValueObjectResource" type="MithraEmbeddedValueObjectResourceType" minOccurs="0" maxOccurs="unbounded">
             </xsd:element>
-            <xsd:element name="MithraEnumerationResource" type="MithraEnumerationResourceType" minOccurs="0" maxOccurs="unbounded">
-            </xsd:element>
         </xsd:sequence>
         <xsd:attribute name="generateInterfaces" type="xsd:boolean" use="optional" default="false"/>
         <xsd:attribute name="readOnlyInterfaces" type="xsd:boolean" use="optional" default="false"/>
@@ -239,11 +227,6 @@
     </xsd:complexType>
 
     <xsd:complexType name="MithraEmbeddedValueObjectResourceType">
-        <xsd:complexContent><xsd:extension base="MithraBaseObjectResourceType">
-        </xsd:extension></xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="MithraEnumerationResourceType">
         <xsd:complexContent><xsd:extension base="MithraBaseObjectResourceType">
         </xsd:extension></xsd:complexContent>
     </xsd:complexType>
@@ -534,80 +517,6 @@
             <xsd:annotation><xsd:documentation xml:lang="en">
                 Generate a final method for this relationship to prevent overriding. Default is false for
                 backwards compatibility.
-            </xsd:documentation></xsd:annotation>
-        </xsd:attribute>
-    </xsd:complexType>
-
-    <xsd:complexType name="EnumerationAttributeType">
-        <xsd:sequence>
-            <xsd:element name="Mapping" type="EnumerationMappingType" minOccurs="0" maxOccurs="unbounded">
-                <xsd:annotation><xsd:documentation xml:lang="en">
-                    The mapping between an enumeration member and an underlying database value.
-                </xsd:documentation></xsd:annotation>
-            </xsd:element>
-        </xsd:sequence>
-        <xsd:attribute name="name" type="xsd:token" use="required">
-            <xsd:annotation><xsd:documentation xml:lang="en">
-                The name of this enumeration attribute.
-            </xsd:documentation></xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="type" type="xsd:token" use="required">
-            <xsd:annotation><xsd:documentation xml:lang="en">
-                The Java 5+ Enum class of this enumeration attribute.
-            </xsd:documentation></xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="persistenceType" type="xsd:token" use="required">
-            <xsd:annotation><xsd:documentation xml:lang="en">
-                The java type that determines how this enumeration attribute is persisted. Possible values include
-                perschar, int, and String.
-            </xsd:documentation></xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="columnName" type="xsd:token" use="required">
-            <xsd:annotation><xsd:documentation xml:lang="en">
-                The database column corresponding to this enumeration attribute.
-            </xsd:documentation></xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="nullable" type="xsd:boolean" default="true">
-            <xsd:annotation><xsd:documentation xml:lang="en">
-                When nullable is set to true (which is the default except for primary keys) for primitive attributes, two new methods are generated:
-                is[attribute name]Null() and set[attribute name]Null(). A nullable primary key must be part of complex (multi-column) key.
-            </xsd:documentation></xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="defaultIfNull" type="xsd:token">
-            <xsd:annotation><xsd:documentation xml:lang="en">
-                This enumeration member that will be returned if the underlying database value is null. If an
-                enumeration member is explicitly mapped to "null" then this setting will be ignored, and the mapped
-                enumeration member will be returned.
-            </xsd:documentation></xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="readonly" type="xsd:boolean" default="false">
-            <xsd:annotation><xsd:documentation xml:lang="en">
-                A readonly enumeration attribute cannot be modified once it has been written to the database.
-            </xsd:documentation></xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="maxLength" type="xsd:int">
-            <xsd:annotation><xsd:documentation xml:lang="en">
-                Applies only to enumeration attributes whose persistence type is string. The maximum length of this
-                enumeration attribute. If this is set, an exception is thrown if a larger string is set or it truncated
-                depending on the truncate behavior.
-            </xsd:documentation></xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="modifyTimePrecisionOnSet" type="TimePrecisionType" default="millisecond">
-            <xsd:annotation><xsd:documentation xml:lang="en">
-                This is only valid for Time types. Valid values are 'millisecond', 'sybase', and "tenMillisecond". Millis is default value. Unless truncate is set, it will throw an exception.
-            </xsd:documentation></xsd:annotation>
-        </xsd:attribute>
-    </xsd:complexType>
-
-    <xsd:complexType name="EnumerationMappingType">
-        <xsd:attribute name="memberName" type="xsd:token" use="required">
-            <xsd:annotation><xsd:documentation xml:lang="en">
-                The enumeration member being mapped.
-            </xsd:documentation></xsd:annotation>
-        </xsd:attribute>
-        <xsd:attribute name="databaseValue" type="xsd:token" use="required">
-            <xsd:annotation><xsd:documentation xml:lang="en">
-                The databaseValue being mapped.
             </xsd:documentation></xsd:annotation>
         </xsd:attribute>
     </xsd:complexType>
@@ -1492,27 +1401,6 @@
             <xsd:annotation><xsd:documentation xml:lang="en">
                 Generate a final method for this embedded value to prevent overriding. Default is false for
                 backwards compatibility.
-            </xsd:documentation></xsd:annotation>
-        </xsd:attribute>
-    </xsd:complexType>
-
-    <xsd:complexType name="MithraEnumerationType">
-        <xsd:complexContent><xsd:extension base="MithraBaseObjectType">
-            <xsd:sequence>
-                <xsd:element name="Member" type="EnumerationMemberType" minOccurs="1" maxOccurs="unbounded">
-                    <xsd:annotation><xsd:documentation xml:lang="en">
-                        A member of this enumeration. This member will be mapped to an underlying database value for every
-                        Mithra object in which this enumeration is referenced.
-                    </xsd:documentation></xsd:annotation>
-                </xsd:element>
-            </xsd:sequence>
-        </xsd:extension></xsd:complexContent>
-    </xsd:complexType>
-
-    <xsd:complexType name="EnumerationMemberType">
-        <xsd:attribute name="name" type="xsd:token" use="required">
-            <xsd:annotation><xsd:documentation>
-                The name of this enumeration member.
             </xsd:documentation></xsd:annotation>
         </xsd:attribute>
     </xsd:complexType>
