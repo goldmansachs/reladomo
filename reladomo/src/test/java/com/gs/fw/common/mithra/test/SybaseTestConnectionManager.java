@@ -33,8 +33,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
 
-public class SybaseTestConnectionManager extends AbstractMithraTestConnectionManager
-implements SourcelessConnectionManager
+public class SybaseTestConnectionManager extends VendorTestConnectionManager
 {
     private final static SybaseTestConnectionManager instance = new SybaseTestConnectionManager();
 
@@ -43,8 +42,6 @@ implements SourcelessConnectionManager
         return instance;
     }
 
-    private XAConnectionManager connectionManager;
-    private TimeZone databaseTimeZone;
     private boolean isDataModelMismatchIsFatal = true;
 
     protected SybaseTestConnectionManager()
@@ -84,39 +81,9 @@ implements SourcelessConnectionManager
         isDataModelMismatchIsFatal = isFatal;
     }
 
-    public Connection getConnection()
-    {
-        return this.connectionManager.getConnection();
-    }
-
-    public DatabaseType getDatabaseType()
-    {
-        return SybaseDatabaseType.getSybase15Instance();
-    }
-
-    public TimeZone getDatabaseTimeZone()
-    {
-        return this.databaseTimeZone;
-    }
-
-    public void setDatabaseTimeZone(TimeZone databaseTimeZone)
-    {
-        this.databaseTimeZone = databaseTimeZone;
-    }
-
-    public String getDatabaseIdentifier()
-    {
-        return null;
-    }
-
     public List getConnectionManagers()
     {
         return ListFactory.create(this.connectionManager);
     }
 
-    @Override
-    protected Collection<XAConnectionManager> getAllConnectionManagers()
-    {
-        return FastList.newListWith(this.connectionManager);
-    }
 }

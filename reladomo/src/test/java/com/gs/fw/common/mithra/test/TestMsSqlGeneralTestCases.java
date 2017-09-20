@@ -2246,11 +2246,6 @@ public class TestMsSqlGeneralTestCases extends MithraMsSqlTestAbstract
         testIn.testLargeInWithPostDistinct();
     }
 
-    public void testConnectionManagerShutdown()
-    {
-        ((XAConnectionManager)SybaseTestConnectionManager.getInstance().getConnectionManagers().get(0)).shutdown();
-    }
-
     public void testTupleIn()
     {
         TupleSet set = new MithraArrayTupleTupleSet();

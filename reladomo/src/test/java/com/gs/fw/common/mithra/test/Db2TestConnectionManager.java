@@ -31,8 +31,7 @@ import java.sql.Connection;
 import java.util.Collection;
 import java.util.TimeZone;
 
-public class Db2TestConnectionManager extends AbstractMithraTestConnectionManager
-implements SourcelessConnectionManager
+public class Db2TestConnectionManager extends VendorTestConnectionManager
 {
     private static final Logger logger = LoggerFactory.getLogger(Db2TestConnectionManager.class);
     private final static Db2TestConnectionManager instance = new Db2TestConnectionManager();
@@ -41,9 +40,6 @@ implements SourcelessConnectionManager
     {
         return instance;
     }
-
-    private XAConnectionManager connectionManager;
-    private TimeZone databaseTimeZone;
 
     protected Db2TestConnectionManager()
     {
@@ -61,46 +57,17 @@ implements SourcelessConnectionManager
         connectionManager.setPoolSize(100);
         connectionManager.setUseStatementPooling(true);
         connectionManager.initialisePool();
+
+        this.setDatabaseType(Udb82DatabaseType.getInstance());
     }
 
     public BulkLoader createBulkLoader()
     throws BulkLoaderException
     {
-        return this.getDatabaseType().createBulkLoader(
-                getCredential("db2_user"),
-                getCredential("db2_password"),
-                    this.connectionManager.getHostName(),
-                    this.connectionManager.getPort());
+        return null;
     }
-
-    public Connection getConnection()
-    {
-        return this.connectionManager.getConnection();
-    }
-
-    public DatabaseType getDatabaseType()
-    {
-        return Udb82DatabaseType.getInstance();
-    }
-
-    public TimeZone getDatabaseTimeZone()
-    {
-        return this.databaseTimeZone;
-    }
-
-    public void setDatabaseTimeZone(TimeZone databaseTimeZone)
-    {
-        this.databaseTimeZone = databaseTimeZone;
-    }
-
     public String getDatabaseIdentifier()
     {
         return getCredential("db2_hostName")+getCredential("db2_databaseName");
-    }
-
-    @Override
-    protected Collection<XAConnectionManager> getAllConnectionManagers()
-    {
-        return FastList.newListWith(this.connectionManager);
     }
 }

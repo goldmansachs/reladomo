@@ -223,9 +223,15 @@ public class SybaseIqDatabaseType extends SybaseDatabaseType
     {
         if (schema == null || schema.length() == 0 || schema.equals(this.getTempDbSchemaName()))
         {
-            schema = connection.getCatalog();
+            schema = this.getCurrentSchema(connection);
         }
         return TableColumnInfo.createTableMetadataWithExtraSelect(connection, schema, table, this.getFullyQualifiedTableName(schema, table));
+    }
+
+    @Override
+    public boolean indexRequiresSchemaName()
+    {
+        return false;
     }
 
     public String getModFunction(String fullyQualifiedLeftHandExpression, int divisor)

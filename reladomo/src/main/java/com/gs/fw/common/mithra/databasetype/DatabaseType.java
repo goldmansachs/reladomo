@@ -156,6 +156,8 @@ public interface DatabaseType extends CommonDatabaseType
 
     public String getModFunction(String fullyQualifiedLeftHandExpression, int divisor);
 
+    public String getCurrentSchema(Connection con) throws SQLException;
+
     public void setSchemaOnConnection(Connection con, String schema) throws SQLException;
 
     public String appendNonSharedTempTableCreatePreamble(StringBuilder sb, String tempTableName);

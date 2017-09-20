@@ -20,6 +20,7 @@ package com.gs.fw.common.mithra.test;
 import com.gs.fw.common.mithra.MithraList;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.databasetype.SybaseIqDatabaseType;
+import com.gs.fw.common.mithra.databasetype.SybaseIqNativeDatabaseType;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.domain.*;
 
@@ -42,15 +43,31 @@ public class MithraSybaseIqTestAbstract extends MithraTestAbstract
         return testDataFileName;
     }
 
+    // switch the next 3 methods to Native types for testing with Native driver. Also, switch in the MithraSybaseIqTestConfig.xml
+    protected DatabaseType getNormalDatabaseType()
+    {
+        return SybaseIqDatabaseType.getInstance();
+    }
+
+    protected DatabaseType getUnsharedTempDatabaseType()
+    {
+        return SybaseIqDatabaseType.getInstanceWithoutSharedTempTables();
+    }
+
+    protected VendorTestConnectionManager getVendorTestConnectionManager()
+    {
+        return SybaseIqTestConnectionManager.getInstance();
+    }
+
     protected void setUp()
     throws Exception
     {
         TestInfinityTimestamp.fixForSybaseIq();
         setMithraTestObjectToResultSetComparator(new AllTypesIqResultSetComparator());
-        mithraTestResource = new MithraTestResource("MithraSybaseIqTestConfig.xml", SybaseIqDatabaseType.getInstance());
+        mithraTestResource = new MithraTestResource("MithraSybaseIqTestConfig.xml", getNormalDatabaseType());
         mithraTestResource.setRestrictedClassList(getRestrictedClassList());
 
-        SybaseIqTestConnectionManager connectionManager = SybaseIqTestConnectionManager.getInstance();
+        VendorTestConnectionManager connectionManager = getVendorTestConnectionManager();
         connectionManager.setDefaultSource("DVDB");
         connectionManager.setDatabaseTimeZone(this.getDatabaseTimeZone());
 
@@ -66,7 +83,7 @@ public class MithraSybaseIqTestAbstract extends MithraTestAbstract
         {
             mithraTestResource.tearDown();
         }
-        if (!SybaseIqTestConnectionManager.getInstance().ensureAllConnectionsReturnedToPool())
+        if (!getVendorTestConnectionManager().ensureAllConnectionsReturnedToPool())
         {
             fail("Connections were not returned to pool");
         }
@@ -89,7 +106,7 @@ public class MithraSybaseIqTestAbstract extends MithraTestAbstract
           try
           {
               list.setBypassCache(true);
-              Connection con = SybaseIqTestConnectionManager.getInstance().getConnection();
+              Connection con = getVendorTestConnectionManager().getConnection();
               PreparedStatement ps = con.prepareStatement(sql);
               this.genericRetrievalTest(ps, list, con, minSize);
           }
@@ -188,7 +205,7 @@ public class MithraSybaseIqTestAbstract extends MithraTestAbstract
 
     public void testLocalTempTable() throws Exception
     {
-        Connection con = SybaseIqTestConnectionManager.getInstance().getConnection();
+        Connection con = getVendorTestConnectionManager().getConnection();
         Statement stm = con.createStatement();
         stm.executeUpdate("create local temporary table TAAAAWMCEAHLGOOLFPCAOrderDriv (c0 integer not null)  on commit preserve rows");
         ResultSet rs = stm.executeQuery("select 1 from TAAAAWMCEAHLGOOLFPCAOrderDriv where 0 = 1");

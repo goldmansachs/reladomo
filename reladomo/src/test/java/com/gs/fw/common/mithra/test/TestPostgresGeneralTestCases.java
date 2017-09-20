@@ -2212,12 +2212,6 @@ public class TestPostgresGeneralTestCases extends MithraPostgresTestAbstract
         testIn.xtestLargeInWithToManyRelationshipTwoDeepWithOr();
     }
 
-    public void testConnectionManagerShutdown()
-    {
-        ((XAConnectionManager) SybaseTestConnectionManager.getInstance().getConnectionManagers().get(0)).shutdown();
-//        ((XAConnectionManager) SybaseTestConnectionManager.getInstance().getConnectionManagers().get(0)).shutdown();
-    }
-
     public void testTupleIn()
     {
         TupleSet set = new MithraArrayTupleTupleSet();

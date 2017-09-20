@@ -43,11 +43,11 @@ public class SybaseIqBulkLoader extends AbstractSybaseBulkLoader
     public static final int NCLOB = 2011;
     
     private String dbLoadDir;
-    private String appLoadDir;
-    private File bulkFile;
-    private OutputStream bulkOutputStream;
-    private OutputStreamFormatter[] columnFormatters;
-    private int objectsBound;
+    protected String appLoadDir;
+    protected File bulkFile;
+    protected OutputStream bulkOutputStream;
+    protected OutputStreamFormatter[] columnFormatters;
+    protected int objectsBound;
 
     public SybaseIqBulkLoader(SybaseDatabaseType sybaseDatabaseType, String dbLoadDir, String appLoadDir)
     {
@@ -220,7 +220,7 @@ public class SybaseIqBulkLoader extends AbstractSybaseBulkLoader
         }
     }
 
-    private void setExpectedExecuteReturn(int expected)
+    protected void setExpectedExecuteReturn(int expected)
     {
         MithraTransaction tx = MithraManagerProvider.getMithraManager().zGetCurrentTransactionWithNoCheck();
         if (tx != null)

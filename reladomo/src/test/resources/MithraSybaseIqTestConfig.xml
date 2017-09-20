@@ -18,6 +18,9 @@
 
 <MithraRuntime>
     <ConnectionManager className="com.gs.fw.common.mithra.test.SybaseIqTestConnectionManager">
+        <MithraTemporaryObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderDriver"/>
+
+        <Schema name="mithra">
         <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.Product" cacheType="partial"/>
         <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AllTypesIq" cacheType="partial"/>
         <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TimestampConversion" cacheType="partial"/>
@@ -47,8 +50,7 @@
         <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.ExchangeRateChild" cacheType="partial"/>
         <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TinyBalance" cacheType="partial"/>
         <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.TimezoneTest" cacheType="partial"/>
-
-        <MithraTemporaryObjectConfiguration className="com.gs.fw.common.mithra.test.domain.OrderDriver"/>
+        </Schema>
 
     </ConnectionManager>
 </MithraRuntime>

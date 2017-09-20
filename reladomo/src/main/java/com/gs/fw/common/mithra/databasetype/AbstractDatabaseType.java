@@ -462,6 +462,12 @@ public abstract class AbstractDatabaseType implements DatabaseType
         return "MOD("+fullyQualifiedLeftHandExpression+","+divisor+")";
     }
 
+    @Override
+    public String getCurrentSchema(Connection con) throws SQLException
+    {
+        return con.getCatalog();
+    }
+
     public void setSchemaOnConnection(Connection con, String schema) throws SQLException
     {
         con.setCatalog(schema);

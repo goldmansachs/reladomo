@@ -18,7 +18,7 @@ privaterepo,com.gs.eq.pb.custody.thirdParty,sqljdbc4-2.0,1.2-20111214.212630-1,j
 #privaterepo,com.oracle,oracle-ojdbc14,10204-093598,jar,lib/drivers,
 
 #gsapi
-privaterepo,com.gs.mithra,mithra-jtdsjbcp,1.2.0.16,jar,lib/gsapi,1FB904490404D1E50C2F3B57709DA6BF7419A2DA
+privaterepo,com.gs.mithra,mithra-jtdsjbcp,1.2.0.17,jar,lib/gsapi,0EBFFC632FE3D2AE056F271E358C5992CD7C8A69
 privaterepo,com.gs.fw.aig.intgr,gsintegrator-api,1.8.1,jar,lib/gsapi,994C959A0FDE6DDEA150B7666C16A04AA17846B5
 privaterepo,com.gs.fw.aig.jdbc,jndijdbc,2.5.2,jar,lib/gsapi,99F2A99F2C2A4A06C4067A6DE64AE9DAC1C19D2D
 privaterepo,com.gs.ficc.artifactory,rvjpro,5.3,jar,lib/gsapi,7CA7EE6140FB16101B63B376A8DF38A2FDF6AB5C

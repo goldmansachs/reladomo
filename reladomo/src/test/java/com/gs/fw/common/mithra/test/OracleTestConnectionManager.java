@@ -33,8 +33,7 @@ import java.sql.Connection;
 import java.util.Collection;
 import java.util.TimeZone;
 
-public class OracleTestConnectionManager extends AbstractMithraTestConnectionManager
-implements SourcelessConnectionManager
+public class OracleTestConnectionManager extends VendorTestConnectionManager
 {
     private static final Logger logger = LoggerFactory.getLogger(OracleTestConnectionManager.class);
     private final static OracleTestConnectionManager instance = new OracleTestConnectionManager();
@@ -43,9 +42,6 @@ implements SourcelessConnectionManager
     {
         return instance;
     }
-
-    private XAConnectionManager connectionManager;
-    private TimeZone databaseTimeZone;
 
     protected OracleTestConnectionManager()
     {
@@ -64,6 +60,7 @@ implements SourcelessConnectionManager
         connectionManager.initialisePool();
 
         OracleDatabaseType.getInstance().setTempSchema(getCredential("oracle_schemaName"));
+        this.setDatabaseType(OracleDatabaseType.getInstance());
     }
 
     public String getSchemaName()
@@ -74,41 +71,11 @@ implements SourcelessConnectionManager
     public BulkLoader createBulkLoader()
     throws BulkLoaderException
     {
-        return this.getDatabaseType().createBulkLoader(
-                getCredential("oracle_user"),
-                getCredential("oracle_password"),
-                    this.connectionManager.getHostName(),
-                    this.connectionManager.getPort());
-    }
-
-    public Connection getConnection()
-    {
-        return this.connectionManager.getConnection();
-    }
-
-    public DatabaseType getDatabaseType()
-    {
-        return OracleDatabaseType.getInstance();
-    }
-
-    public TimeZone getDatabaseTimeZone()
-    {
-        return this.databaseTimeZone;
-    }
-
-    public void setDatabaseTimeZone(TimeZone databaseTimeZone)
-    {
-        this.databaseTimeZone = databaseTimeZone;
+        return null;
     }
 
     public String getDatabaseIdentifier()
     {
         return getCredential("oracle_hostName")+getCredential("oracle_schemaName");
-    }
-
-    @Override
-    protected Collection<XAConnectionManager> getAllConnectionManagers()
-    {
-        return FastList.newListWith(this.connectionManager);
     }
 }
