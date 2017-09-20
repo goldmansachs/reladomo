@@ -60,7 +60,6 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
     private List<Attribute> nullablePrimitiveAttributes;
     private List<Attribute> nullablePrimitiveMutablePkAttributes;
     private List<EmbeddedValue> embeddedValueObjects = new ArrayList<EmbeddedValue>();
-    private List<EnumerationAttribute> enumerations = new ArrayList<EnumerationAttribute>();
     private TransactionalMethodSignature[] transactionalMethodSignatures;
     private TransactionalMethodSignature[] datedTransactionalMethodSignatures;
     private List<MithraObjectTypeWrapper> childClasses = new ArrayList<MithraObjectTypeWrapper>();
@@ -475,12 +474,6 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
         attributes = filteredList.toArray(attributes);
         Arrays.sort(attributes);
         return attributes;
-    }
-
-    public EnumerationAttribute[] getEnumerations()
-    {
-        EnumerationAttribute[] enumerations = new EnumerationAttribute[this.enumerations.size()];
-        return this.enumerations.toArray(enumerations);
     }
 
     public boolean hasMithraInterfaces()
@@ -1415,13 +1408,6 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
         return errorMessages;
     }
 
-    public List resolveEnumerations(Map<String, MithraEnumerationTypeWrapper> allEnumerations)
-    {
-        List errorMessages = new ArrayList();
-        this.extractEnumerations(errorMessages);
-        return errorMessages;
-    }
-
     private void extractEmbeddedValueObjects(List errors)
     {
         if (this.getWrapped().getEmbeddedValues() != null)
@@ -1457,24 +1443,6 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
             }
         }
         return false;
-    }
-
-    private void extractEnumerations(List errors)
-    {
-        if (this.getWrapped().getEnumerationAttributes() != null)
-        {
-            for (int i = 0; i < this.getWrapped().getEnumerationAttributes().size(); i++)
-            {
-                EnumerationAttributeType enumerationAttributeType = (EnumerationAttributeType) this.getWrapped().getEnumerationAttributes().get(i);
-                EnumerationAttribute enumeration = new EnumerationAttribute(this, enumerationAttributeType);
-                this.addEnumeration(enumeration);
-            }
-        }
-    }
-
-    private void addEnumeration(EnumerationAttribute enumeration)
-    {
-        this.enumerations.add(enumeration);
     }
 
     public List resolveMithraInterfaces(Map<String, MithraInterfaceType> mithraInterfaces)
@@ -2929,10 +2897,6 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
     {
         List<AbstractAttribute> attributes = new ArrayList<AbstractAttribute>();
         attributes.addAll(this.attributes);
-        if (this.enumerations != null)
-        {
-            attributes.addAll(this.enumerations);
-        }
         for (int i = 0; i < this.inheritedAttributes.size(); i++)
         {
             AbstractAttribute inheritedAttribute = this.inheritedAttributes.get(i);
@@ -3438,7 +3402,7 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
 
     public AbstractAttribute[] getPersistentAttributes()
     {
-        List<AbstractAttribute> attributes = new ArrayList<AbstractAttribute>(this.attributes.size() + this.enumerations.size());
+        List<AbstractAttribute> attributes = new ArrayList<AbstractAttribute>(this.attributes.size());
         for(int i=0;i<this.primaryKeyAttributes.size();i++)
         {
             Attribute pkAttr = this.primaryKeyAttributes.get(i);
@@ -3448,7 +3412,6 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
             }
         }
         attributes.addAll(this.attributes);
-        attributes.addAll(this.enumerations);
         AbstractAttribute[] result = new AbstractAttribute[attributes.size()];
         return attributes.toArray(result);
     }
@@ -3459,10 +3422,6 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
         if (this.attributes != null)
         {
             attributes.addAll(this.attributes);
-        }
-        if (this.enumerations != null)
-        {
-            attributes.addAll(this.enumerations);
         }
         if (this.hasSourceAttribute())
         {

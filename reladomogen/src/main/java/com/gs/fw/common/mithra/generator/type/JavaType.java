@@ -123,11 +123,6 @@ public abstract class JavaType
         throw new JavaTypeException("Invalid JavaType " + javaTypeName);
     }
 
-    public static JavaType createEnumeration(String wrappedEnum, String javaTypeName) throws JavaTypeException
-    {
-        return new EnumerationJavaType(wrappedEnum, JavaType.create(javaTypeName));
-    }
-
     public String getFinderAttributeType()
     {
         return this.getJavaTypeStringPrimary()+"Attribute";

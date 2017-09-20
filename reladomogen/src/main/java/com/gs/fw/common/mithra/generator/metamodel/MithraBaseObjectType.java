@@ -86,12 +86,7 @@ public class MithraBaseObjectType
         return Collections.EMPTY_LIST;
     }
 
-    public List<? extends EnumerationAttributeType> getEnumerationAttributes()
-    {
-        return Collections.EMPTY_LIST;
-    }
-
-      public List<String> getMithraInterfaces()
+    public List<String> getMithraInterfaces()
     {
         return Collections.EMPTY_LIST;
     }

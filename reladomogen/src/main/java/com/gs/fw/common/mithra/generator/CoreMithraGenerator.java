@@ -537,15 +537,13 @@ public class CoreMithraGenerator extends BaseMithraGenerator
                 int normal = this.processMithraObjects(getSortedMithraObjects());
                 int mithraInterfaces = this.processMithraInterfaces(getMithraInterfaces().values());
                 int embedded = this.processMithraObjects(getMithraEmbeddedValueObjects().values());
-                int enumerations = this.processMithraObjects(getMithraEnumerations().values());
                 if (!generationLogger.getNewGenerationLog().isSame(generationLogger.getOldGenerationLog()))
                 {
                     generationLogger.getNewGenerationLog().writeLog(this.getGeneratedDir(), this.generatedFileManager, filePath);
                 }
                 this.logger.info("Wrote " + normal + " normal/pure/temp, " +
                         mithraInterfaces + " interface, " +
-                        embedded + " embedded value, " +
-                        enumerations + " enumeration Mithra objects (" + (System.currentTimeMillis() - start) + " ms)");
+                        embedded + " embedded value (" + (System.currentTimeMillis() - start) + " ms)");
                 executed = true;
                 AwaitingThreadExecutor executor = this.getExecutor();
                 if (executor != null)
