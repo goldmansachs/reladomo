@@ -8,7 +8,7 @@ central,org.slf4j,slf4j-api,1.7.21,jar,lib/compile,139535A69A4239DB087DE9BAB0BEE
 
 #drivers
 central,org.postgresql,postgresql,9.3-1101-jdbc4,jar,lib/drivers,9DA59F12BADEA19B3B2884161F624BCF6750F985
-central,org.mariadb.jdbc,mariadb-java-client,1.4.6,jar,lib/drivers,BAF6436CD74B45E36FAFD30786D51BBE363F59B4
+central,org.mariadb.jdbc,mariadb-java-client,1.6.4,jar,lib/drivers,D78298105516737322552E71F3AB948C1E08F189
 
 # test libs:
 central,log4j,log4j,1.2.17,jar,lib/test,5AF35056B4D257E4B64B9E8069C0746E8B08629F
