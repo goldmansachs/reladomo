@@ -43,9 +43,6 @@ public class MariaTestConnectionManager extends VendorTestConnectionManager
         return instance;
     }
 
-    private XAConnectionManager connectionManager;
-    private TimeZone databaseTimeZone;
-
     protected MariaTestConnectionManager()
     {
         readCredentials();
