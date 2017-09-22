@@ -1,4 +1,14 @@
 # Change Log
+## 16.6.0 - 2017-09-22
+### Enhancements:
+- Support Sybase IQ native driver 16.1 with bulk insert support
+- Added n/uni char/varchar to MsSQL reverse mapping
+- Remove unimplemented Enum mapping
+
+### Bug Fixes:
+- Fix DbExtractor NPE with timezone converted values
+- Fix interface method visibility
+
 ## 16.5.1 - 2017-08-03
 ### Enhancements:
 - Add getInstanceForOracle12 to OracleDatabaseType that can do batch updates with optimistic locking
