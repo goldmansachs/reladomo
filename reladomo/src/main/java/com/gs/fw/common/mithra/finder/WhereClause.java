@@ -21,6 +21,7 @@ import com.gs.collections.impl.set.mutable.UnifiedSet;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.BitSet;
 import java.util.List;
 import java.util.Set;
 
@@ -37,17 +38,18 @@ public class WhereClause
 
     private StringBuilder whereClause = new StringBuilder(16);
     private List<SqlParameterSetter> sqlParameterSetters = null;
-    private Object owner;
+    private WhereClauseOwner owner;
     private int orCount;
     private List<TempTableJoin> tempTableJoins;
     private Set<String> reachableColumns;
+    private BooleanStack booleanStack; // true means boolean operation was added to the where clause
 
-    public WhereClause(Object owner)
+    public WhereClause(WhereClauseOwner owner)
     {
         this.owner = owner;
     }
 
-    public int setSqlParameters(SqlQuery query, PreparedStatement ps, int count, Object source) throws SQLException
+    public int setSqlParameters(SqlQuery query, PreparedStatement ps, int count, WhereClauseOwner source) throws SQLException
     {
         if (source == this.owner && sqlParameterSetters != null)
         {
@@ -234,17 +236,31 @@ public class WhereClause
         }
     }
 
-    public boolean beginAnd()
+    public void beginAnd()
     {
-        return beginAnd(0, whereClause != null ? whereClause.length() : 0);
+        pushBooleanOp(beginAnd(0, whereClause != null ? whereClause.length() : 0));
     }
 
-    public boolean beginAnd(int start, int end)
+    protected boolean beginAnd(int start, int end)
     {
         if (isBlank(start, end)) return false;
         if (hasBracketAndOrInPosition(end)) return false;
         whereClause.append(AND_REPLACEMENT_STRING);
         return true;
+    }
+
+    private void pushBooleanOp(boolean val)
+    {
+        if (this.booleanStack == null)
+        {
+            this.booleanStack = new BooleanStack();
+        }
+        this.booleanStack.push(val);
+    }
+
+    private boolean popBooleanStack()
+    {
+        return this.booleanStack.pop();
     }
 
     private boolean hasBracketAndOrInPosition(int end)
@@ -253,9 +269,10 @@ public class WhereClause
         return lastChar == AND_REPLACEMENT_CHAR || lastChar == BRACKET_REPLACEMENT_CHAR || lastChar == OR_REPLACEMENT_CHAR;
     }
 
-    public boolean endAnd(boolean insertedReplacement)
+    public void endAnd()
     {
-        return endAnd(insertedReplacement, whereClause != null ? whereClause.length() : 0);
+        boolean inserted = popBooleanStack();
+        endAnd(inserted, whereClause != null ? whereClause.length() : 0);
     }
 
     public boolean endAnd(boolean insertedReplacement, int positionToLookFrom)
@@ -270,13 +287,13 @@ public class WhereClause
         return true;
     }
 
-    public boolean beginOr()
+    public void beginOr()
     {
         orCount++;
-        return beginOr(0, whereClause != null ? whereClause.length() : 0);
+        pushBooleanOp(beginOr(0, whereClause != null ? whereClause.length() : 0));
     }
 
-    public boolean beginOr(int start, int end)
+    protected boolean beginOr(int start, int end)
     {
         if (isBlank(start, end)) return false;
         if (hasBracketAndOrInPosition(end)) return false;
@@ -284,13 +301,14 @@ public class WhereClause
         return true;
     }
 
-    public boolean endOr(boolean insertedReplacement)
+    public void endOr()
     {
+        boolean inserted = popBooleanStack();
         orCount--;
-        return endOr(insertedReplacement, whereClause != null ? whereClause.length() : 0);
+        endOr(inserted, whereClause != null ? whereClause.length() : 0);
     }
 
-    public boolean endOr(boolean insertedReplacement, int positionToLookFrom)
+    protected boolean endOr(boolean insertedReplacement, int positionToLookFrom)
     {
         if (!insertedReplacement) return false;
         int firstPosition = positionToLookFrom - 1;
@@ -321,7 +339,7 @@ public class WhereClause
         this.sqlParameterSetters.add(sqlParameterSetter);
     }
 
-    public Object getOwner()
+    public WhereClauseOwner getOwner()
     {
         return owner;
     }
@@ -400,5 +418,42 @@ public class WhereClause
     public boolean isColumnReachable(String fullyQualifiedColumnName)
     {
         return this.reachableColumns != null && this.reachableColumns.contains(fullyQualifiedColumnName);
+    }
+
+    private static class BooleanStack
+    {
+        private int size;
+        private BitSet set = new BitSet();
+
+        public void push(boolean val)
+        {
+            if (val)
+            {
+                set.set(size);
+            }
+            else
+            {
+                set.clear(size);
+            }
+            size++;
+        }
+
+        public boolean pop()
+        {
+            size--;
+            return set.get(size);
+        }
+
+        public boolean peek()
+        {
+            return set.get(size - 1);
+        }
+    }
+
+    public interface WhereClauseOwner
+    {
+        public WhereClause getWhereClause();
+
+        public WhereClause getParentWhereClause(SqlQuery sqlQuery);
     }
 }

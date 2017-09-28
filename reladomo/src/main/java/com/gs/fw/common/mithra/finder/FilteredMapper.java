@@ -432,17 +432,17 @@ public class FilteredMapper extends AbstractMapper
             if (leftFilters != null)
             {
                 query.popMapperContainer();
-                boolean insertedAnd = query.beginAnd();
+                query.beginAnd();
                 leftFilters.generateSql(query);
-                query.endAnd(insertedAnd);
+                query.endAnd();
                 query.pushMapperContainer(this);
             }
             mapper.generateSql(query);
             if (rightFilters != null)
             {
-                boolean insertedAnd = query.beginAnd();
+                query.beginAnd();
                 rightFilters.generateSql(query);
-                query.endAnd(insertedAnd);
+                query.endAnd();
             }
         }
         else

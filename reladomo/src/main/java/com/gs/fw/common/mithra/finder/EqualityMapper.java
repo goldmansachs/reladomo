@@ -151,10 +151,9 @@ public class EqualityMapper extends AbstractMapper implements Cloneable
     protected void generateRightHandSql(SqlQuery query, boolean checkAlreadyMapped, boolean needToGenerate, String fullyQualifiedLeftColumnName)
     {
         if (checkAlreadyMapped && !this.isRightMapped) query.pushMapper(this);
-        boolean insertedAnd = false;
         if (this.isLeftMapped)
         {
-            insertedAnd = query.beginAnd();
+            query.beginAnd();
         }
         if (needToGenerate && !(left.isSourceAttribute() || right.isSourceAttribute()))
         {
@@ -170,7 +169,10 @@ public class EqualityMapper extends AbstractMapper implements Cloneable
                 query.generateJoinSql(fullyQualifiedLeftColumnName, right.getFullyQualifiedLeftHandExpression(query), "=");
             }
         }
-        query.endAnd(insertedAnd);
+        if (this.isLeftMapped)
+        {
+            query.endAnd();
+        }
     }
 
     protected String generateLeftHandSql(SqlQuery query, boolean needToGenerate)

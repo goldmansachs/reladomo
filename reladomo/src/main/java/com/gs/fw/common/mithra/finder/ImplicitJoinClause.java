@@ -178,20 +178,20 @@ public class ImplicitJoinClause implements JoinClause
 
     public void generateJoinSql(SqlQuery query, String fullyQualifiedLeftColumnName, String fullyQualifiedRightHandColumn, String operator)
     {
-        boolean insertedAnd = query.beginAnd();
+        query.beginAnd();
         query.appendWhereClause(fullyQualifiedLeftColumnName);
         query.appendWhereClause(operator);
         query.appendWhereClause(fullyQualifiedRightHandColumn);
-        query.endAnd(insertedAnd);
+        query.endAnd();
     }
 
     public void generateAsOfJoinSql(SqlQuery query, MapperStackImpl mapperStack, String fullyQualifiedLeftColumnName, String fullyQualifiedRightHandColumn, String operator)
     {
-        boolean insertedAnd = query.beginAnd();
+        query.beginAnd();
         query.appendWhereClause(fullyQualifiedLeftColumnName);
         query.appendWhereClause(operator);
         query.appendWhereClause(fullyQualifiedRightHandColumn);
-        query.endAnd(insertedAnd);
+        query.endAnd();
     }
 
     public boolean isTopLevel()

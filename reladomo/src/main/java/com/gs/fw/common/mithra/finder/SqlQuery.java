@@ -40,7 +40,7 @@ import java.util.TimeZone;
 
 
 
-public class SqlQuery implements MapperStack
+public class SqlQuery implements MapperStack, WhereClause.WhereClauseOwner
 {
 
     private static final Logger logger = LoggerFactory.getLogger(SqlQuery.class);
@@ -305,32 +305,62 @@ public class SqlQuery implements MapperStack
 
     public void beginBracket()
     {
-        this.getActiveWhereClause().beginBracket();
+        WhereClause activeWhereClause = this.getActiveWhereClause();
+        while (activeWhereClause != null)
+        {
+            activeWhereClause.beginBracket();
+            activeWhereClause = activeWhereClause.getOwner().getParentWhereClause(this);
+        }
     }
 
-    public boolean endBracket()
+    public void endBracket()
     {
-        return this.getActiveWhereClause().endBracket();
+        WhereClause activeWhereClause = this.getActiveWhereClause();
+        while (activeWhereClause != null)
+        {
+            activeWhereClause.endBracket();
+            activeWhereClause = activeWhereClause.getOwner().getParentWhereClause(this);
+        }
     }
 
-    public boolean beginAnd()
+    public void beginAnd()
     {
-        return this.getActiveWhereClause().beginAnd();
+        WhereClause activeWhereClause = this.getActiveWhereClause();
+        while (activeWhereClause != null)
+        {
+            activeWhereClause.beginAnd();
+            activeWhereClause = activeWhereClause.getOwner().getParentWhereClause(this);
+        }
     }
 
-    public boolean endAnd(boolean insertedMarker)
+    public void endAnd()
     {
-        return this.getActiveWhereClause().endAnd(insertedMarker);
+        WhereClause activeWhereClause = this.getActiveWhereClause();
+        while (activeWhereClause != null)
+        {
+            activeWhereClause.endAnd();
+            activeWhereClause = activeWhereClause.getOwner().getParentWhereClause(this);
+        }
     }
 
-    public boolean beginOr()
+    public void beginOr()
     {
-        return this.getActiveWhereClause().beginOr();
+        WhereClause activeWhereClause = this.getActiveWhereClause();
+        while (activeWhereClause != null)
+        {
+            activeWhereClause.beginOr();
+            activeWhereClause = activeWhereClause.getOwner().getParentWhereClause(this);
+        }
     }
 
-    public boolean endOr(boolean insertedMarker)
+    public void endOr()
     {
-        return this.getActiveWhereClause().endOr(insertedMarker);
+        WhereClause activeWhereClause = this.getActiveWhereClause();
+        while (activeWhereClause != null)
+        {
+            activeWhereClause.endOr();
+            activeWhereClause = activeWhereClause.getOwner().getParentWhereClause(this);
+        }
     }
 
     public int getWhereClauseLength()
@@ -913,9 +943,15 @@ public class SqlQuery implements MapperStack
         this.totalInClauseParameters += setSize;
     }
 
-    protected WhereClause getWhereClause()
+    public WhereClause getWhereClause()
     {
         return whereClause;
+    }
+
+    @Override
+    public WhereClause getParentWhereClause(SqlQuery sqlQuery)
+    {
+        return null;
     }
 
     public void setNotExistsForNextOperation()

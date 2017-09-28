@@ -515,9 +515,9 @@ public class MappedOperation implements Operation
     public void generateSql(SqlQuery query)
     {
         mapper.generateSql(query);
-        boolean insertedAnd = query.beginAnd();
+        query.beginAnd();
         op.generateSql(query);
-        query.endAnd(insertedAnd);
+        query.endAnd();
         mapper.popMappers(query);
     }
 

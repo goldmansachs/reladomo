@@ -21,7 +21,8 @@ import com.gs.fw.common.mithra.test.domain.*;
 import com.gs.fw.common.mithra.finder.Operation;
 
 import java.sql.SQLException;
-
+import java.sql.Timestamp;
+import java.util.Date;
 
 
 public class TestOr extends TestSqlDatatypes
@@ -54,6 +55,38 @@ public class TestOr extends TestSqlDatatypes
     {
         Operation op = OrderFinder.description().startsWith("S").or(OrderFinder.orderStatus().status().notEq(10));
         OrderFinder.findMany(op).forceResolve();
+    }
+
+    public void testDeepMultiOrAnd()
+    {
+        new OrderItem(700, 56, 4, 21, 17.5, 15.5, "Done").insert();
+        new OrderStatus(56, 11, "Barney", new Timestamp(0), new Date(1000)).insert();
+
+        Operation a = OrderItemFinder.order().orderStatus().lastUser().eq("Barney");
+        Operation b = OrderItemFinder.order().orderStatus().expectedDate().greaterThan(new Date(24*60*60*1000));
+        Operation c = OrderItemFinder.order().orderStatusWithInterfaces().lastUser().eq("Fred");
+        Operation e = OrderItemFinder.productInfo().manufacturerId().eq(2);
+
+        Operation o = a.or(b.and(c)).or(e);
+        OrderItemList many = OrderItemFinder.findMany(o);
+        assertEquals(4, many.size());
+    }
+
+    public void testDeepMultiOrAnd2()
+    {
+        new OrderItem(700, 56, 4, 21, 17.5, 15.5, "Done").insert();
+        new OrderStatus(56, 11, "Barney", new Timestamp(0), new Date(1000)).insert();
+
+        Operation a = OrderItemFinder.order().orderStatus().lastUser().eq("Barney");
+        Operation b = OrderItemFinder.order().orderStatus().expectedDate().greaterThan(new Date(24*60*60*1000));
+        Operation c = OrderItemFinder.order().orderStatusWithInterfaces().lastUser().eq("Fred");
+        Operation d = OrderItemFinder.order().userId().lessThan(1000);
+        Operation e = OrderItemFinder.productInfo().manufacturerId().eq(2);
+        Operation f = OrderItemFinder.order().orderStatus().lastUser().notEq("Barney");
+
+        Operation o = a.or(b.and(c)).or(d.or(e.and(f)));
+        OrderItemList many = OrderItemFinder.findMany(o);
+        assertEquals(7, many.size());
     }
 
     public void testEqualsEdgePointWithOr()

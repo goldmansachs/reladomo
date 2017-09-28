@@ -701,9 +701,9 @@ public class AndOperation implements Operation
         for (int i = 0; i < operands.size(); i++)
         {
             Operation op = ((Operation) operands.get(i));
-            boolean addedAnd = query.beginAnd();
+            query.beginAnd();
             op.generateSql(query);
-            query.endAnd(addedAnd);
+            query.endAnd();
         }
     }
 
