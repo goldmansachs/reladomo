@@ -192,9 +192,9 @@ public class ExplicitJoinClause implements JoinClause
     private void addParentWhereClause(SqlQuery query, String sql)
     {
         WhereClause wc = getAggregateOrQueryWhereClause(query);
-        boolean insertedAnd = wc.beginAnd();
+        wc.beginAnd();
         wc.appendWithSpace(sql);
-        wc.endAnd(insertedAnd);
+        wc.endAnd();
     }
 
     private WhereClause getAggregateOrQueryWhereClause(SqlQuery query)
@@ -353,9 +353,9 @@ public class ExplicitJoinClause implements JoinClause
                 MixedSqlJoin mixedSqlJoin = outOfScopeMixedSqlJoins.get(i);
                 StringBuilder builder = new StringBuilder(32);
                 mixedSqlJoin.appendInnerOnClauseWithSubstitution(builder, query, this.whereClause);
-                boolean beginAnd = this.whereClause.beginAnd();
+                this.whereClause.beginAnd();
                 this.whereClause.appendWithSpace(builder);
-                this.whereClause.endAnd(beginAnd);
+                this.whereClause.endAnd();
                 this.whereClause.addSqlParameterSetter(mixedSqlJoin.parameterSetter);
             }
         }
@@ -364,10 +364,10 @@ public class ExplicitJoinClause implements JoinClause
             for(int i=0;i<this.whereClauseSqlJoins.size();i++)
             {
                 SqlJoin sqlJoin = this.whereClauseSqlJoins.get(i);
-                boolean beginAnd = this.whereClause.beginAnd();
+                this.whereClause.beginAnd();
                 this.whereClause.appendWithSpace(query.getColumnNameWithDerivedTableSubstitution(sqlJoin.fullyQualifiedLeftColumnName, this.whereClause))
                         .appendWithSpace(sqlJoin.operator).appendWithSpace(sqlJoin.fullyQualifiedRightHandColumn);
-                this.whereClause.endAnd(beginAnd);
+                this.whereClause.endAnd();
             }
         }
         fromClause.append(' ').append(this.mustLeftJoin ? "left" : "inner").append(" join ");

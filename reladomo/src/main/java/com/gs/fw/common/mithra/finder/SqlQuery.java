@@ -313,24 +313,24 @@ public class SqlQuery implements MapperStack
         return this.getActiveWhereClause().endBracket();
     }
 
-    public boolean beginAnd()
+    public void beginAnd()
     {
-        return this.getActiveWhereClause().beginAnd();
+        this.getActiveWhereClause().beginAnd();
     }
 
-    public boolean endAnd(boolean insertedMarker)
+    public void endAnd()
     {
-        return this.getActiveWhereClause().endAnd(insertedMarker);
+        this.getActiveWhereClause().endAnd();
     }
 
-    public boolean beginOr()
+    public void beginOr()
     {
-        return this.getActiveWhereClause().beginOr();
+        this.getActiveWhereClause().beginOr();
     }
 
-    public boolean endOr(boolean insertedMarker)
+    public void endOr()
     {
-        return this.getActiveWhereClause().endOr(insertedMarker);
+        this.getActiveWhereClause().endOr();
     }
 
     public int getWhereClauseLength()

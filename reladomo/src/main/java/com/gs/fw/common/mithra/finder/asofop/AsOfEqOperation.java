@@ -215,7 +215,7 @@ public class AsOfEqOperation extends AtomicEqualityOperation implements SqlParam
     public void generateSql(SqlQuery query, ObjectWithMapperStack attributeWithStack, ObjectWithMapperStack asOfOperationWithStack)
     {
         query.restoreMapperStack(attributeWithStack);
-        boolean insertedAnd = query.beginAnd();
+        query.beginAnd();
         TemporalAttribute temporalAttriute = (TemporalAttribute) attributeWithStack.getObject();
         if (temporalAttriute.isAsOfAttribute())
         {
@@ -248,7 +248,7 @@ public class AsOfEqOperation extends AtomicEqualityOperation implements SqlParam
 //            query.addSqlParameterSetter(this);
 //            query.appendWhereClause(attribute.getFullyQualifiedLeftHandExpression(query)+ " = ?");
 //        }
-        query.endAnd(insertedAnd);
+        query.endAnd();
     }
 
     public void registerAsOfAttributesAndOperations(AsOfEqualityChecker checker)

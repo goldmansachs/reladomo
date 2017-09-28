@@ -425,9 +425,9 @@ public class NotExistsOperation implements Operation
         pushContainer(query);
         query.setNotExistsForNextOperation();
         mapper.generateSql(query);
-        boolean insertedAnd = query.beginAnd();
+        query.beginAnd();
         op.generateSql(query);
-        query.endAnd(insertedAnd);
+        query.endAnd();
         mapper.popMappers(query);
         query.popMapperContainer();
     }

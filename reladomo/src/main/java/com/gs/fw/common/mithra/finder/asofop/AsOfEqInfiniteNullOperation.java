@@ -65,7 +65,7 @@ public class AsOfEqInfiniteNullOperation extends AsOfEqOperation
     public void generateSql(SqlQuery query, ObjectWithMapperStack attributeWithStack, ObjectWithMapperStack asOfOperationWithStack)
     {
         query.restoreMapperStack(attributeWithStack);
-        boolean insertedAnd = query.beginAnd();
+        query.beginAnd();
         TemporalAttribute temporalAttribute = (TemporalAttribute) attributeWithStack.getObject();
         if (temporalAttribute.isAsOfAttribute())
         {
@@ -98,7 +98,7 @@ public class AsOfEqInfiniteNullOperation extends AsOfEqOperation
 //            query.addSqlParameterSetter(this);
 //            query.appendWhereClause(attribute.getFullyQualifiedLeftHandExpression(query) + " = ?");
 //        }
-        query.endAnd(insertedAnd);
+        query.endAnd();
     }
 
 }

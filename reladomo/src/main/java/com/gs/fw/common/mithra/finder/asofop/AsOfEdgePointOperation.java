@@ -135,7 +135,7 @@ public class AsOfEdgePointOperation extends AtomicEqualityOperation implements A
 
         String fullyQualifiedColumnName = this.getFullyQualifiedColumnName(query, asOfOperationWithStack);
         query.restoreMapperStack(attributeWithStack);
-        boolean insertedAnd = query.beginAnd();
+        query.beginAnd();
         AsOfAttribute attribute = (AsOfAttribute) attributeWithStack.getObject();
         String toColumn = attribute.getFullyQualifiedToColumnName(query);
         String fromColumn = attribute.getFullyQualifiedFromColumnName(query);
@@ -157,7 +157,7 @@ public class AsOfEdgePointOperation extends AtomicEqualityOperation implements A
                 query.generateAsOfJoinSql(asOfOperationWithStack.getMapperStack(), fullyQualifiedColumnName, toColumn, "<");
             }
         }
-        query.endAnd(insertedAnd);
+        query.endAnd();
     }
 
     private void generateReverseJoin(SqlQuery query, ObjectWithMapperStack attributeWithStack, ObjectWithMapperStack asOfOperationWithStack)
@@ -170,7 +170,7 @@ public class AsOfEdgePointOperation extends AtomicEqualityOperation implements A
         query.restoreMapperStack(asOfOperationWithStack);
         String fullyQualifiedColumnName = this.getEdgeAttribute().getFullyQualifiedLeftHandExpression(query);
 
-        boolean insertedAnd = query.beginAnd();
+        query.beginAnd();
         if (attribute.isToIsInclusive())
         {
             query.generateAsOfJoinSql(attributeWithStack.getMapperStack(), fromColumn, fullyQualifiedColumnName, "<");
@@ -189,7 +189,7 @@ public class AsOfEdgePointOperation extends AtomicEqualityOperation implements A
                 query.generateAsOfJoinSql(attributeWithStack.getMapperStack(), toColumnName, fullyQualifiedColumnName, ">");
             }
         }
-        query.endAnd(insertedAnd);
+        query.endAnd();
         if (attributeWithStack.getMapperStack().isEmpty())
         {
             query.addExtraJoinColumn(fullyQualifiedColumnName);

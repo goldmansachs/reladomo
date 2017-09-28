@@ -718,13 +718,13 @@ public class MultiEqualityMapper extends AbstractMapper
             for(int i=0;i<this.equalityMappers.size();i++)
             {
                 EqualityMapper equalityMapper = ((EqualityMapper)this.equalityMappers.get(i));
-                boolean insertedAnd = query.beginAnd();
+                query.beginAnd();
                 boolean appends = equalityMapper.addsToWhereClause();
                 if (appends)
                 {
                     leftArray[i] = equalityMapper.generateLeftHandSql(query, true);
                 }
-                query.endAnd(insertedAnd);
+                query.endAnd();
             }
         }
         query.pushMapper(this);

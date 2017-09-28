@@ -537,11 +537,11 @@ public class OrOperation implements Operation
         {
             Operation op = operations[i];
             query.pushMapperContainer(new DummyContainer(i));
-            boolean insertedOr = query.beginOr();
+            query.beginOr();
             query.beginBracket();
             op.generateSql(query);
             query.endBracket();
-            query.endOr(insertedOr);
+            query.endOr();
             query.popMapperContainer();
         }
         query.endBracket();

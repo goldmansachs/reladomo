@@ -167,9 +167,9 @@ public class MultiEqualityOperation implements Operation, EqualityOperation
         for (int i = 0; i < atomicOperations.length; i++)
         {
             AtomicOperation op = atomicOperations[i];
-            boolean insertedAnd = query.beginAnd();
+            query.beginAnd();
             op.generateSql(query);
-            query.endAnd(insertedAnd);
+            query.endAnd();
         }
     }
 
