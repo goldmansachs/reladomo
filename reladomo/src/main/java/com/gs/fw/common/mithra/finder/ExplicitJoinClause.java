@@ -26,7 +26,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 
-public class ExplicitJoinClause implements JoinClause
+public class ExplicitJoinClause implements JoinClause, WhereClause.WhereClauseOwner
 {
     private boolean isContainerOnly = true;
     private MithraObjectPortal portal;
@@ -334,6 +334,24 @@ public class ExplicitJoinClause implements JoinClause
     public WhereClause getWhereClause()
     {
         return whereClause;
+    }
+
+    @Override
+    public WhereClause getParentWhereClause(SqlQuery sqlQuery)
+    {
+        ExplicitJoinClause p = this.parent;
+        while (p != null)
+        {
+            if (p.getWhereClause() == null)
+            {
+                p = p.parent;
+            }
+            else
+            {
+                return p.getWhereClause();
+            }
+        }
+        return sqlQuery.getWhereClause();
     }
 
     public void appendJoinsToFromClause(SqlQuery query, StringBuilder fromClause, String withLock, String withoutLock)

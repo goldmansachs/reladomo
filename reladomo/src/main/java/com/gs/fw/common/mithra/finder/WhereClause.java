@@ -38,18 +38,18 @@ public class WhereClause
 
     private StringBuilder whereClause = new StringBuilder(16);
     private List<SqlParameterSetter> sqlParameterSetters = null;
-    private Object owner;
+    private WhereClauseOwner owner;
     private int orCount;
     private List<TempTableJoin> tempTableJoins;
     private Set<String> reachableColumns;
     private BooleanStack booleanStack; // true means boolean operation was added to the where clause
 
-    public WhereClause(Object owner)
+    public WhereClause(WhereClauseOwner owner)
     {
         this.owner = owner;
     }
 
-    public int setSqlParameters(SqlQuery query, PreparedStatement ps, int count, Object source) throws SQLException
+    public int setSqlParameters(SqlQuery query, PreparedStatement ps, int count, WhereClauseOwner source) throws SQLException
     {
         if (source == this.owner && sqlParameterSetters != null)
         {
@@ -339,7 +339,7 @@ public class WhereClause
         this.sqlParameterSetters.add(sqlParameterSetter);
     }
 
-    public Object getOwner()
+    public WhereClauseOwner getOwner()
     {
         return owner;
     }
@@ -448,5 +448,12 @@ public class WhereClause
         {
             return set.get(size - 1);
         }
+    }
+
+    public interface WhereClauseOwner
+    {
+        public WhereClause getWhereClause();
+
+        public WhereClause getParentWhereClause(SqlQuery sqlQuery);
     }
 }

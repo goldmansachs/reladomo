@@ -65,7 +65,9 @@ extends MithraTestAbstract
             OrderItem.class,
             OrderItemStatus.class,
             OrderStatus.class,
+            OrderStatusWi.class,
             Product.class,
+            ProductSynonym.class,
             UserGroup.class,
             BigOrder.class,
             BigOrderItem.class

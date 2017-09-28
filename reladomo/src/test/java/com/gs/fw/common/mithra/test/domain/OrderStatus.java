@@ -18,6 +18,7 @@
 package com.gs.fw.common.mithra.test.domain;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 
 public class OrderStatus extends OrderStatusAbstract
@@ -26,5 +27,15 @@ public class OrderStatus extends OrderStatusAbstract
 	public OrderStatus()
 	{
 		super();
+	}
+
+	public OrderStatus(int orderId, int status, String lastUser, Timestamp lastUpdate, Date expectedDate)
+	{
+		super();
+		this.setOrderId(orderId);
+		this.setStatus(status);
+		this.setLastUser(lastUser);
+		this.setLastUpdateTime(lastUpdate);
+		this.setExpectedDate(expectedDate);
 	}
 }

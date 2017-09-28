@@ -27,4 +27,17 @@ public class OrderItem extends OrderItemAbstract
     {
         super();
     }
+    
+    public OrderItem(int id, int orderId, int productId, double quantity, double originalPrice, double discountPrice, String state)
+    {
+        super();
+        this.setId(id);
+        this.setOrderId(orderId);
+        this.setProductId(productId);
+        this.setQuantity(quantity);
+        this.setOriginalPrice(originalPrice);
+        this.setDiscountPrice(discountPrice);
+        this.setState(state);
+    }
+        
 }
