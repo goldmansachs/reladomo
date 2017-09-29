@@ -43,7 +43,7 @@ ANT_ARGS="-Dant.home=$ANT_HOME"
 ANT_ARGS="$ANT_ARGS -Dlog4j.configuration=log4j.config"
 export ANT_ARGS
 
-JVM_ARGS="-ms16m -mx2000m -server -XX:MaxPermSize=128m -XX:+UseParallelGC -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -XX:CompileThreshold=100 -XX:+UseSpinning"
+JVM_ARGS="-ms16m -mx2000m -server -XX:MaxPermSize=128m -XX:+UseParallelGC -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -XX:CompileThreshold=100"
 export JVM_ARGS
 
 PATH=$ANTBUILD_HOME/build/bin:$PATH

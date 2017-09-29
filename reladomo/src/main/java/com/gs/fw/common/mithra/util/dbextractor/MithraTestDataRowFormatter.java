@@ -17,7 +17,6 @@
 package com.gs.fw.common.mithra.util.dbextractor;
 
 import com.gs.collections.api.block.function.Function;
-import javax.xml.bind.DatatypeConverter;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -31,9 +30,22 @@ public class MithraTestDataRowFormatter implements Function<Object, String>
 {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
     private static final NumberFormat NUMBER_FORMAT = new DecimalFormat("#.############");
+    private static final String[] byteToHex = new String[256];
 
     private static final String QUOTE = "\"";
     private static final String NULL = "null";
+
+    static
+    {
+        for(int i=0;i<16;i++)
+        {
+            byteToHex[i] = "0"+Integer.toHexString(i).toUpperCase();
+        }
+        for(int i=16;i<256;i++)
+        {
+            byteToHex[i] = Integer.toHexString(i).toUpperCase();
+        }
+    }
 
     public String valueOf(Object object)
     {
@@ -55,13 +67,25 @@ public class MithraTestDataRowFormatter implements Function<Object, String>
         }
         else if (object instanceof byte[])
         {
-            return QUOTE + DatatypeConverter.printHexBinary((byte[]) object) + QUOTE;
+            return printHexBinaryWithQuotes((byte[]) object);
         }
         else
         {
             return QUOTE + escapedString(object) + QUOTE;
         }
 
+    }
+
+    private String printHexBinaryWithQuotes(byte[] object)
+    {
+        StringBuilder builder = new StringBuilder(object.length*2 + 2);
+        builder.append(QUOTE);
+        for(byte b: object)
+        {
+            builder.append(byteToHex[((int)b) & 0xFF]);
+        }
+        builder.append(QUOTE);
+        return builder.toString();
     }
 
     private String escapedString(Object object)
