@@ -1156,10 +1156,12 @@
     <target name="compile-reladomo-genutil-test" depends="compile-reladomo-test">
         <dependset>
             <srcfileset dir="${root}/reladomogenutil/src/test/java"/>
+            <srcfileset dir="${root}/reladomogen/target/classes">
+                <exclude name="com/gs/fw/common/mithra/generator/mithragen.md5"/>
+            </srcfileset>
             <srcfileset dir="${root}/reladomo/target/classes"/>
             <srcfileset dir="${root}/reladomo/target/test-classes-onheap"/>
             <srcfileset dir="${root}/reladomo/target/test-util-classes"/>
-            <srcfileset dir="${root}/reladomogen/target/classes"/>
             <srcfileset dir="${root}/reladomogenutil/target/classes"/>
             <targetfileset dir="${root}/reladomogenutil/target/test-classes"/>
         </dependset>
