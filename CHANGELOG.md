@@ -1,4 +1,12 @@
 # Change Log
+## 16.6.1 - 2017-10-04
+### Enhancements:
+- JDK9 compatibility: remove use of jigsawed class
+
+### Bug Fixes:
+- Fix NPE in transactional reads of non-dated objects
+- Fix multiple-or-clauses in deep relationships sql generation
+
 ## 16.6.0 - 2017-09-22
 ### Enhancements:
 - Support Sybase IQ native driver 16.1 with bulk insert support
