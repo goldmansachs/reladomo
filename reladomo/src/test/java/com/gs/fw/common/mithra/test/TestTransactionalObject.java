@@ -1870,6 +1870,52 @@ public class TestTransactionalObject extends MithraTestAbstract
                 });
     }
 
+    public void testInClauseCausesFlushMany()
+    {
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(
+                new TransactionalCommand()
+                {
+                    public Object executeTransaction(MithraTransaction tran) throws Throwable
+                    {
+                        Order order = new Order();
+                        order.setOrderId(1000);
+                        order.setState("x");
+                        order.setUserId(1);
+                        order.setOrderDate(new Timestamp(System.currentTimeMillis()));
+                        order.setDescription("t");
+                        order.insert();
+                        IntHashSet set = new IntHashSet();
+                        set.add(1);
+                        set.add(1000);
+                        set.add(1001);
+                        assertEquals(2, OrderFinder.findMany(OrderFinder.orderId().in(set)).size());
+                        return null;
+                    }
+                });
+    }
+
+    public void testInsertThenReadInTransaction()
+    {
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(
+                new TransactionalCommand()
+                {
+                    public Object executeTransaction(MithraTransaction tran) throws Throwable
+                    {
+                        OrderItemWiImpl order = new OrderItemWiImpl();
+                        order.setOrderId(1000);
+                        order.setState("x");
+                        order.setId(7777);
+                        order.insert();
+                        IntHashSet set = new IntHashSet();
+                        set.add(1);
+                        set.add(1000);
+                        set.add(1001);
+                        assertEquals(2, OrderItemWiFinder.findMany(OrderItemWiFinder.orderId().in(set)).size());
+                        return null;
+                    }
+                });
+    }
+
     public void testMultiEqualityWithInClauseCausesFlush()
     {
         MithraManagerProvider.getMithraManager().executeTransactionalCommand(

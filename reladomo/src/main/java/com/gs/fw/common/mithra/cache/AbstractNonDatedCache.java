@@ -1088,7 +1088,7 @@ public abstract class AbstractNonDatedCache extends AbstractCache
                         checkToReindex[i] = false;
                     }
                 }
-                else if (isDirty.value || this.timeToLive > 0)
+                else if ((isDirty.value || this.timeToLive > 0) && result.zGetCurrentData() != null)
                 {
                     if (lock == Boolean.TRUE)
                     {
