@@ -26,6 +26,7 @@ import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.extractor.IdentityExtractor;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.util.ListFactory;
+import com.gs.reladomo.metadata.ReladomoClassMetaData;
 
 import java.util.List;
 
@@ -264,7 +265,7 @@ public abstract class TransactionOperation
         UnderlyingObjectGetter getter = null;
         if (finder.getAsOfAttributes() != null)
         {
-            extractors = finder.getPrimaryKeyAttributes();
+            extractors = ReladomoClassMetaData.fromFinder(finder).getUniqueExtractors();
             getter = new TransactionalUnderlyingObjectGetter();
         }
         FullUniqueIndex index = new FullUniqueIndex(extractors, objects.size());

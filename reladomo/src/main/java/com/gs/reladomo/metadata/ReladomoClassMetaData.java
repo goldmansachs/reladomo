@@ -25,6 +25,7 @@ import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.SourceAttributeType;
 import com.gs.fw.common.mithra.attribute.VersionAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.list.DelegatingList;
 import com.gs.fw.common.mithra.util.ReflectionMethodCache;
@@ -466,6 +467,27 @@ public abstract class ReladomoClassMetaData
         {
             logger.error("Could not invoke method "+methodName+" on class "+classToInvoke, e);
             throw new MithraException("Could not invoke method "+methodName+" on class "+classToInvoke, e);
+        }
+    }
+
+    public Extractor[] getUniqueExtractors() {
+        if (relatedFinder.getAsOfAttributes() == null)
+        {
+            return relatedFinder.getPrimaryKeyAttributes();
+        }
+        else
+        {
+            Extractor[] primKeyAttr = relatedFinder.getPrimaryKeyAttributes();
+            AsOfAttribute[] asOfKeyAttr = relatedFinder.getAsOfAttributes();
+
+            Extractor[] fullKey = new Extractor[primKeyAttr.length + asOfKeyAttr.length];
+            System.arraycopy(primKeyAttr, 0, fullKey, 0, primKeyAttr.length);
+
+            for (int i = 0; i < asOfKeyAttr.length; i++)
+            {
+                fullKey[i + primKeyAttr.length] = asOfKeyAttr[i].getFromAttribute();
+            }
+            return fullKey;
         }
     }
 

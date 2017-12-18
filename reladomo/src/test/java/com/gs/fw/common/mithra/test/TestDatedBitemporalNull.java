@@ -45,7 +45,8 @@ public class  TestDatedBitemporalNull extends TestDatedBitemporal implements Tes
             BitemporalOrderNull.class,
             BitemporalOrderItemNull.class,
             BitemporalOrderStatusNull.class,
-            DatedAllTypesNull.class
+            DatedAllTypesNull.class,
+            ParaProduct.class
         };
     }
 
