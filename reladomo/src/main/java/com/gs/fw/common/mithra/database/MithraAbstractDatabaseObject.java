@@ -50,6 +50,7 @@ import com.gs.fw.common.mithra.transaction.BatchUpdateOperation;
 import com.gs.fw.common.mithra.transaction.MultiUpdateOperation;
 import com.gs.fw.common.mithra.transaction.UpdateOperation;
 import com.gs.fw.common.mithra.util.*;
+import com.gs.reladomo.metadata.ReladomoClassMetaData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1982,24 +1983,7 @@ public abstract class MithraAbstractDatabaseObject
 
     private Extractor[] getPrimaryKeyFor(RelatedFinder finder)
     {
-        if (finder.getAsOfAttributes() == null)
-        {
-            return finder.getPrimaryKeyAttributes();
-        }
-        else
-        {
-            Extractor[] primKeyAttr = finder.getPrimaryKeyAttributes();
-            AsOfAttribute[] asOfKeyAttr = finder.getAsOfAttributes();
-
-            Extractor[] fullKey = new Extractor[primKeyAttr.length + asOfKeyAttr.length];
-            System.arraycopy(primKeyAttr, 0, fullKey, 0, primKeyAttr.length);
-
-            for (int i = 0; i < asOfKeyAttr.length; i++)
-            {
-                fullKey[i + primKeyAttr.length] = asOfKeyAttr[i].getFromAttribute();
-            }
-            return fullKey;
-        }
+       return ReladomoClassMetaData.fromFinder(finder).getUniqueExtractors();
     }
 
     public void loadFullCache()
