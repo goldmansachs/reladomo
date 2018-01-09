@@ -25,10 +25,7 @@ import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.cache.CacheClock;
 import com.gs.fw.common.mithra.finder.*;
 import com.gs.fw.common.mithra.test.domain.*;
-import com.gs.fw.common.mithra.test.glew.LewContract;
-import com.gs.fw.common.mithra.test.glew.LewContractFinder;
-import com.gs.fw.common.mithra.test.glew.LewTransaction;
-import com.gs.fw.common.mithra.test.glew.LewTransactionFinder;
+import com.gs.fw.common.mithra.test.glew.*;
 import com.gs.fw.common.mithra.test.util.Log4JRecordingAppender;
 import com.gs.fw.common.mithra.util.MithraPerformanceData;
 
@@ -60,8 +57,10 @@ public class TestRelationships extends MithraTestAbstract
             Location.class,
             User.class,
             Order.class,
+            BitemporalOrder.class,
             OrderParentToChildren.class,
             OrderItem.class,
+            BitemporalOrderItem.class,
             Product.class,
             ProductSynonym.class,
             OrderStatus.class,
@@ -92,6 +91,29 @@ public class TestRelationships extends MithraTestAbstract
             TestAsOfToTimestampJoinObjectA.class,
             TestAsOfToTimestampJoinObjectB.class
         };
+    }
+
+    public void testNone()
+    {
+        OrderList list = new OrderList(new None(OrderFinder.orderId()));
+        assertEquals(0, list.size());
+        assertEquals(0, list.getItems().size());
+
+        AuditedTreeList atl = new AuditedTreeList(new None(AuditedTreeFinder.name()));
+        assertEquals(0, atl.size());
+        assertEquals(0, atl.getChildren().size());
+
+        LewContractList lct = new LewContractList(new None(LewContractFinder.acctId()));
+        assertEquals(0, lct.size());
+        assertEquals(0, lct.getLewTransactions().size());
+
+        LewContractList lct2 = LewContractFinder.findMany(LewContractFinder.acctId().in(new IntHashSet()));
+        assertEquals(0, lct2.size());
+        assertEquals(0, lct2.getLewTransactions().size());
+
+        BitemporalOrderList bol = new BitemporalOrderList(new None(BitemporalOrderFinder.orderId()));
+        assertEquals(0, bol.size());
+        assertEquals(0, bol.getItems().size());
     }
 
     public void testRecursiveNotExists()
