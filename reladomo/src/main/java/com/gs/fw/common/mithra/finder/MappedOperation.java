@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.MithraBusinessException;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
@@ -99,6 +100,10 @@ public class MappedOperation implements Operation
 
     public List applyOperationToFullCache()
     {
+        if (this.zIsNone())
+        {
+            return new FastList(0);
+        }
         //List joinedList = op.applyOperationToFullCache();
         // we choose to find here (instead of op.applyOperationToFullCache()) because it allows us
         // finer control over how sub-queries are resolved (for example, this sub-query may be
@@ -116,6 +121,10 @@ public class MappedOperation implements Operation
 
     public List applyOperationToPartialCache()
     {
+        if (this.zIsNone())
+        {
+            return new FastList(0);
+        }
         if (mapper.isRightHandPartialCacheResolvable())
         {
             List joinedList = op.getResultObjectPortal().zFindInMemoryWithoutAnalysis(getCombinedOp(), true);
