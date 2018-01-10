@@ -214,6 +214,14 @@ public class UpdateOperation extends TransactionOperation
     {
         first = portal.zChooseDataForMultiupdate((MithraTransactionalObject)first);
         second = portal.zChooseDataForMultiupdate((MithraTransactionalObject)second);
+        Attribute sourceAttribute = portal.getFinder().getSourceAttribute();
+        if (sourceAttribute != null)
+        {
+            if (!sourceAttribute.valueEquals(first, second))
+            {
+                return null;
+            }
+        }
         Attribute[] primaryKeyAttributes = portal.zGetAddressingAttributes();
         Attribute differentPk = primaryKeyAttributes[0];
         if (primaryKeyAttributes.length > 1)
@@ -236,7 +244,7 @@ public class UpdateOperation extends TransactionOperation
                 return null;
             }
         }
-        return differentPk.isSourceAttribute() ? null : differentPk;
+        return differentPk;
     }
 
     private Attribute canBeMultiUpdated(UpdateOperation op)
