@@ -22,7 +22,6 @@ import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.finder.NoOperation;
 import com.gs.fw.common.mithra.finder.Operation;
-import com.gs.fw.common.mithra.finder.orderby.NonPrimitiveOrderBy;
 import com.gs.fw.common.mithra.test.domain.*;
 import com.gs.fw.common.mithra.test.domain.desk.balance.position.PositionQuantity;
 import com.gs.fw.common.mithra.test.domain.desk.balance.position.PositionQuantityFinder;
@@ -5299,6 +5298,73 @@ public class TestDatedBitemporal extends MithraTestAbstract implements TestDated
         clearCache();
         assertEquals(10.0, findTinyBalanceForBusinessDate(1000, businessDate).getQuantity(), 0.0);
         assertEquals(10.0, findTinyBalanceForBusinessDate(2000, businessDate).getQuantity(), 0.0);
+    }
+
+    public void testTwoUpdatesOnDifferentSources()
+    {
+        updateTwoSourceBasedObjects("A", "B");
+    }
+
+    public void testTwoUpdatesOnSameSource()
+    {
+        updateTwoSourceBasedObjects("A", "A");
+    }
+
+    private void updateTwoSourceBasedObjects(final String acmapCode1, final String acmapCode2)
+    {
+        final String accountId1 = "A1";
+        final String accountId2 = "A2";
+        final int productId = 1;
+        final int positionType = 1;
+        final Timestamp past = Timestamp.valueOf("2005-01-23 18:30:00.0");
+        final Timestamp present = Timestamp.valueOf("2005-01-24 18:30:00.0");
+
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand()
+        {
+            public Object executeTransaction(MithraTransaction tx) throws Throwable
+            {
+                final PositionQuantity pastQty1 = createPositionQuantity();
+                pastQty1.setAccountId(accountId1);
+                pastQty1.setQuantity(10);
+                pastQty1.setAcmapCode(acmapCode1);
+                pastQty1.insert();
+                final PositionQuantity pastQty2 = createPositionQuantity();
+                pastQty2.setAccountId(accountId2);
+                pastQty2.setQuantity(10);
+                pastQty2.setAcmapCode(acmapCode2);
+                pastQty2.insert();
+                return null;
+            }
+
+            private PositionQuantity createPositionQuantity()
+            {
+                final PositionQuantity positionQuantity = new PositionQuantity(past, InfinityTimestamp.getParaInfinity());
+                positionQuantity.setProductId(productId);
+                positionQuantity.setPositionType(positionType);
+                return positionQuantity;
+            }
+        });
+
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand()
+        {
+            public Object executeTransaction(MithraTransaction tx) throws Throwable
+            {
+                final PositionQuantity presentQty1 = PositionQuantityFinder.findByPrimaryKey(accountId1, productId, positionType, acmapCode1, present, InfinityTimestamp.getParaInfinity());
+                presentQty1.setQuantity(20);
+                final PositionQuantity presentQty2 = PositionQuantityFinder.findByPrimaryKey(accountId2, productId, positionType, acmapCode2, present, InfinityTimestamp.getParaInfinity());
+                presentQty2.setQuantity(20);
+                return null;
+            }
+        });
+        PositionQuantityFinder.clearQueryCache();
+        final PositionQuantity pastQty1 = PositionQuantityFinder.findByPrimaryKey(accountId1, productId, positionType, acmapCode1, past, InfinityTimestamp.getParaInfinity());
+        assertEquals(10.0, pastQty1.getQuantity(), 0.0);
+        final PositionQuantity pastQty2 = PositionQuantityFinder.findByPrimaryKey(accountId2, productId, positionType, acmapCode2, past, InfinityTimestamp.getParaInfinity());
+        assertEquals(10.0, pastQty2.getQuantity(), 0.0);
+        final PositionQuantity presentQty1 = PositionQuantityFinder.findByPrimaryKey(accountId1, productId, positionType, acmapCode1, present, InfinityTimestamp.getParaInfinity());
+        assertEquals(20.0, presentQty1.getQuantity(), 0.0);
+        final PositionQuantity presentQty2 = PositionQuantityFinder.findByPrimaryKey(accountId2, productId, positionType, acmapCode2, present, InfinityTimestamp.getParaInfinity());
+        assertEquals(20.0, presentQty2.getQuantity(), 0.0);
     }
 
     public void testIncrementPast()
