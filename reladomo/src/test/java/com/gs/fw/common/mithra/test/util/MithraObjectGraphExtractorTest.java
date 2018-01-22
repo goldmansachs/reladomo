@@ -90,7 +90,7 @@ public class MithraObjectGraphExtractorTest extends TestCase implements Extracto
 
     public void testOneToMany() throws Exception
     {
-        testScenario(new MithraObjectGraphExtractor(this, this, this), 13, orderId(3));
+        testScenario(new MithraObjectGraphExtractor(this, this, this), 14, orderId(3));
     }
 
     public void testUnConfiguredRelatedObject() throws Exception
@@ -131,32 +131,32 @@ public class MithraObjectGraphExtractorTest extends TestCase implements Extracto
         this.extractThreshold = 1;
         MithraObjectGraphExtractor extractor = new MithraObjectGraphExtractor(this, this, this);
         extractor.addRelationshipFilter(BitemporalOrderFinder.items(), BitemporalOrderItemFinder.id().in(IntSets.immutable.of(1, 3)));
-        testScenario(extractor, 26, orderId(3), orderId(5));
+        testScenario(extractor, 28, orderId(3), orderId(5));
     }
 
     public void testIgnoreRelationship() throws Exception
     {
         MithraObjectGraphExtractor extractor = new MithraObjectGraphExtractor(this, this, this);
         extractor.ignoreRelationship(BitemporalOrderItemFinder.productInfo());
-        testScenario(extractor, 13, orderId(5));
+        testScenario(extractor, 14, orderId(5));
     }
 
     public void testNoEdgePoints() throws Exception
     {
-        testScenario(new MithraObjectGraphExtractor(this, this, this), 14, orderId(7));
+        testScenario(new MithraObjectGraphExtractor(this, this, this), 15, orderId(7));
     }
 
     public void testProcessingDateEdgePoints() throws Exception
     {
         isFixedProcessingDate = false;
-        testScenario(new MithraObjectGraphExtractor(this, this, this), 14, orderId(7));
+        testScenario(new MithraObjectGraphExtractor(this, this, this), 15, orderId(7));
     }
 
     public void testProcessingDateAndBusinessDateEdgePoints() throws Exception
     {
         this.isFixedBusinessDate = false;
         this.isFixedProcessingDate = false;
-        testScenario(new MithraObjectGraphExtractor(this, this, this), 14, orderId(7));
+        testScenario(new MithraObjectGraphExtractor(this, this, this), 15, orderId(7));
     }
 
     public void testInClauseOperationWithDeepGraph() throws Exception
@@ -184,7 +184,7 @@ public class MithraObjectGraphExtractorTest extends TestCase implements Extracto
     // Sale relationship was added to fix bug where explosion logic was not per-branch
     public void testPreventToManyExplosion() throws Exception
     {
-        testScenario(new MithraObjectGraphExtractor(this, this, this), 22, orderId(9));
+        testScenario(new MithraObjectGraphExtractor(this, this, this), 23, orderId(9));
     }
 
     public void testRelationshipWithFilterObject() throws Exception
@@ -196,12 +196,12 @@ public class MithraObjectGraphExtractorTest extends TestCase implements Extracto
     public void testEdgePointOperationPropagatesCorrectlyThroughGraph() throws Exception
     {
         isFixedProcessingDate = false;
-        testScenario(new MithraObjectGraphExtractor(this, this, this), 12, orderId(11));
+        testScenario(new MithraObjectGraphExtractor(this, this, this), 13, orderId(11));
     }
 
     public void testToManyExplosionLogicIsPerExtractedOperation() throws Exception
     {
-        testScenario(new MithraObjectGraphExtractor(this, this, this), 29, orderId(9), orderId(90));
+        testScenario(new MithraObjectGraphExtractor(this, this, this), 31, orderId(9), orderId(90));
     }
 
     public void testRelationshipWithJoinObject() throws Exception
@@ -242,7 +242,7 @@ public class MithraObjectGraphExtractorTest extends TestCase implements Extracto
     {
         MithraObjectGraphExtractor extractor = new MithraObjectGraphExtractor(this, this, this);
         extractor.addRelationshipFilter(BitemporalOrderItemFinder.getFinderInstance(), BitemporalOrderItemFinder.id().in(IntSets.immutable.of(1, 3)));
-        testScenario(extractor, 26, orderId(3), orderId(5));
+        testScenario(extractor, 28, orderId(3), orderId(5));
     }
 
     public void testAddedFiltersAreCombined() throws Exception
@@ -250,7 +250,7 @@ public class MithraObjectGraphExtractorTest extends TestCase implements Extracto
         MithraObjectGraphExtractor extractor = new MithraObjectGraphExtractor(this, this, this);
         extractor.addRelationshipFilter(BitemporalOrderItemFinder.getFinderInstance(), BitemporalOrderItemFinder.id().eq(1));
         extractor.addRelationshipFilter(BitemporalOrderItemFinder.getFinderInstance(), BitemporalOrderItemFinder.id().eq(3));
-        testScenario(extractor, 26, orderId(3), orderId(5));
+        testScenario(extractor, 28, orderId(3), orderId(5));
     }
 
     public void testTimestampBusinessDateWithFixedProcessingDate() throws Exception
@@ -283,14 +283,14 @@ public class MithraObjectGraphExtractorTest extends TestCase implements Extracto
     public void testExtractThresholdWithFullMilestoning() throws Exception
     {
         this.extractThreshold = 2;
-        testScenario(new MithraObjectGraphExtractor(this, this, this), 13, orderId(14));
+        testScenario(new MithraObjectGraphExtractor(this, this, this), 14, orderId(14));
     }
 
     public void testExtractThresholdWithProcessingEdgePoint() throws Exception
     {
         this.extractThreshold = 2;
         this.isFixedProcessingDate = false;
-        testScenario(new MithraObjectGraphExtractor(this, this, this), 13, orderId(14));
+        testScenario(new MithraObjectGraphExtractor(this, this, this), 14, orderId(14));
     }
 
     public void testExtractThresholdWithBusinessAndProcessingEdgePoint() throws Exception
@@ -298,7 +298,7 @@ public class MithraObjectGraphExtractorTest extends TestCase implements Extracto
         this.extractThreshold = 2;
         this.isFixedProcessingDate = false;
         this.isFixedBusinessDate = false;
-        testScenario(new MithraObjectGraphExtractor(this, this, this), 13, orderId(14));
+        testScenario(new MithraObjectGraphExtractor(this, this, this), 14, orderId(14));
     }
 
     public void testNullOutputFile() throws Exception

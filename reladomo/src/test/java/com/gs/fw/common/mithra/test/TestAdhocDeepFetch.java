@@ -18,15 +18,12 @@ package com.gs.fw.common.mithra.test;
 
 import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
-
 import com.gs.fw.common.mithra.DeepFetchTree;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.domain.*;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.junit.Assert;
 
 import java.sql.Timestamp;
@@ -36,7 +33,6 @@ import java.util.List;
 public class TestAdhocDeepFetch extends MithraTestAbstract
 {
 
-    public static final DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.SSS");
     protected void setUp() throws Exception
     {
         super.setUp();
