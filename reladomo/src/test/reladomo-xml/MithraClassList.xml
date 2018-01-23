@@ -168,6 +168,7 @@
     <MithraObjectResource name="BitemporalOrderStatusNull"/>
     <MithraObjectResource name="BitemporalOrderToOrderStatus"/>
     <MithraObjectResource name="BitemporalOrderStatusFilter"/>
+    <MithraObjectResource name="BitemporalProductCategory"/>
     <MithraObjectResource name="UnconfiguredBitemporalOrderStatus"/>
     <MithraObjectResource name="UnconfiguredBitemporalOrderToOrderStatus"/>
     <MithraObjectResource name="UnconfiguredBitemporalOrderStatusFilter"/>

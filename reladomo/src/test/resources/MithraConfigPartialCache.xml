@@ -175,6 +175,7 @@
         <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderStatusNull" cacheType="partial"/>
         <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderToOrderStatus" cacheType="partial"/>
         <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderStatusFilter" cacheType="partial"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalProductCategory" cacheType="partial"/>
         <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.glew.BitemporalProductSynonym" cacheType="partial"/>
         <!--<MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.CalcDate" cacheType="partial"/>-->
 

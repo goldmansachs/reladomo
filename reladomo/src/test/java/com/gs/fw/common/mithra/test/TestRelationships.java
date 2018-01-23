@@ -61,6 +61,7 @@ public class TestRelationships extends MithraTestAbstract
             OrderParentToChildren.class,
             OrderItem.class,
             BitemporalOrderItem.class,
+            BitemporalProductCategory.class,
             Product.class,
             ProductSynonym.class,
             OrderStatus.class,
@@ -1497,5 +1498,29 @@ public class TestRelationships extends MithraTestAbstract
         MithraManagerProvider.getMithraManager().clearAllQueryCaches();
         assertNotNull(item.getOrderWithOrIsNull("X"));
         assertNotNull(item.getOrderWithOrIsNull("X"));
+    }
+
+    public void testOneToManyToManyToOneOnNonPrimaryAttributes()
+    {
+        final Timestamp businessDate = Timestamp.valueOf("2017-01-17 18:30:00.0");
+        final int orderId = 1000;
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand<Object>() {
+            @Override
+            public Object executeTransaction(MithraTransaction tx) throws Throwable {
+                BitemporalOrder order = new BitemporalOrder(businessDate);
+                order.setOrderId(orderId);
+                order.insert();
+                return null;
+            }
+        });
+        BitemporalOrderFinder.clearQueryCache();
+        BitemporalOrderList orders = BitemporalOrderFinder.findMany(BitemporalOrderFinder.businessDate().eq(businessDate)
+                .and(BitemporalOrderFinder.orderId().eq(orderId)));
+        orders.deepFetch(BitemporalOrderFinder.items().productCategory());
+        BitemporalOrderItemList items = orders.get(0).getItems();
+        BitemporalProductCategoryList productCategories = items.getProductCategories();
+        int retrievalCount = getRetrievalCount();
+        productCategories.forceResolve();
+        assertEquals(retrievalCount, getRetrievalCount());
     }
 }

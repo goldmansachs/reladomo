@@ -1,4 +1,3 @@
-
 /*
  Copyright 2016 Goldman Sachs.
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -134,6 +133,10 @@ public class MappedOperation implements Operation
             }
             if (joinedList != null)
             {
+                if (joinedList.isEmpty())
+                {
+                    return new FastList(0);
+                }
                 return mapper.mapReturnNullIfIncompleteIndexHit(joinedList);
             }
         }

@@ -183,6 +183,7 @@
         <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderStatusNull" cacheType="full" offHeapFullCache="true"/>
         <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderToOrderStatus" cacheType="full" offHeapFullCache="true"/>
         <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalOrderStatusFilter" cacheType="full"/>
+        <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.BitemporalProductCategory" cacheType="full"/>
         <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.domain.AllJavaTypesInPk" cacheType="full" offHeapFullCache="true"/>
         <MithraObjectConfiguration className="com.gs.fw.common.mithra.test.glew.BitemporalProductSynonym" cacheType="full"/>
 

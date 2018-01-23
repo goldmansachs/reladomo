@@ -48,4 +48,5 @@
     <Relationship name="productSpecs" relatedObject="ProductSpecification" cardinality="many-to-one" foreignKey="false">this.productId = ProductSpecification.productId</Relationship>
     <Relationship name="orderItemStatus" relatedObject="BitemporalOrderItemStatus" relatedIsDependent="true" cardinality="one-to-one" reverseRelationshipName="orderItem">this.id = BitemporalOrderItemStatus.itemId</Relationship>
     <Relationship name="orderWithSameIdAsProduct" relatedObject="BitemporalOrder" cardinality="many-to-one">BitemporalOrder.orderId = this.productId</Relationship>
+    <Relationship name="productCategory" relatedObject="BitemporalProductCategory" cardinality="many-to-one">BitemporalProductCategory.productId = this.productId</Relationship>
 </MithraObject>
