@@ -95,7 +95,7 @@ public class MithraNotificationEventManagerImpl implements MithraNotificationEve
                 if (!shutdown)
                 {
                     forceSendNow();
-                    shutdown();
+                    shutdown(true);
                 }
             }
         };
@@ -672,6 +672,11 @@ public class MithraNotificationEventManagerImpl implements MithraNotificationEve
 
     public void shutdown()
     {
+        this.shutdown(false);
+    }
+
+    protected void shutdown(boolean fromShutdownHook)
+    {
         this.shutdown = true;
         if (queuedExecutor != null)
         {
@@ -687,11 +692,11 @@ public class MithraNotificationEventManagerImpl implements MithraNotificationEve
             adapter.shutdown();
         }
         adapterFactory.shutdown();
-        if (this.shutdownHook != null)
+        if (!fromShutdownHook && this.shutdownHook != null)
         {
             Runtime.getRuntime().removeShutdownHook(this.shutdownHook);
-            shutdownHook = null;
         }
+        this.shutdownHook = null;
     }
 
     public boolean isQueuedExecutorChannelEmpty()
