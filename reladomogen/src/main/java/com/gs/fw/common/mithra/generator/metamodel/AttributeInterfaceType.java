@@ -48,7 +48,7 @@ public class AttributeInterfaceType extends AttributeInterfaceTypeAbstract
 
     public String getGetter()
     {
-        return "get" + StringUtility.firstLetterToUpper(this.getName());
+        return this.getType().getGetterPrefix()+StringUtility.firstLetterToUpper(this.getName());
     }
 
     public String getSetter()
