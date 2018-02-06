@@ -1446,7 +1446,7 @@
         <fail message="Release files are missing.">
             <condition>
                 <not>
-                    <resourcecount count="40">
+                    <resourcecount count="48">
                         <fileset dir="${root}/target">
                             <include name="reladomo-${reladomo.version}.pom"/>
                             <include name="reladomo-${reladomo.version}.jar"/>
