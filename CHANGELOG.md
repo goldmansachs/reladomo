@@ -1,4 +1,15 @@
 # Change Log
+## 16.7.0 - 2018-02-06
+### Enhancements:
+- New module: XA integration with a JMS message loop
+
+### Bug Fixes:
+- Fix IllegalStateException when shutdown happens from hook
+- Fix for Deep fetch issue
+- Fix update on objects from different sources
+- Fix navigating through a dated list with None operation
+- Fix for incrementing past data for bitemporal tables
+
 ## 16.6.1 - 2017-10-04
 ### Enhancements:
 - JDK9 compatibility: remove use of jigsawed class

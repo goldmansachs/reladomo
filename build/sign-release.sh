@@ -1,6 +1,6 @@
 #!/bin/bash
 
-RELADOMO_VERSION=16.6.1
+RELADOMO_VERSION=16.7.0
 
 echo Enter passphrase:
 read -s PASSPHRASE
@@ -22,6 +22,10 @@ gpg --batch --yes --passphrase $PASSPHRASE -ab reladomo-serial-$RELADOMO_VERSION
 gpg --batch --yes --passphrase $PASSPHRASE -ab reladomo-serial-$RELADOMO_VERSION-sources.jar
 gpg --batch --yes --passphrase $PASSPHRASE -ab reladomo-serial-$RELADOMO_VERSION.jar
 gpg --batch --yes --passphrase $PASSPHRASE -ab reladomo-serial-$RELADOMO_VERSION.pom
+gpg --batch --yes --passphrase $PASSPHRASE -ab reladomo-xa-$RELADOMO_VERSION-javadoc.jar
+gpg --batch --yes --passphrase $PASSPHRASE -ab reladomo-xa-$RELADOMO_VERSION-sources.jar
+gpg --batch --yes --passphrase $PASSPHRASE -ab reladomo-xa-$RELADOMO_VERSION.jar
+gpg --batch --yes --passphrase $PASSPHRASE -ab reladomo-xa-$RELADOMO_VERSION.pom
 gpg --batch --yes --passphrase $PASSPHRASE -ab reladomogen-$RELADOMO_VERSION-javadoc.jar
 gpg --batch --yes --passphrase $PASSPHRASE -ab reladomogen-$RELADOMO_VERSION-sources.jar
 gpg --batch --yes --passphrase $PASSPHRASE -ab reladomogen-$RELADOMO_VERSION.jar
