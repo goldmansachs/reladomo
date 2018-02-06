@@ -566,6 +566,16 @@
             generateConcreteClasses="${reladomo.generateConcreteClasses}"/>
     </target>
 
+    <target name="generate-reladomo-txid-classes" depends="compile-reladomo-generator">
+        <taskdef name="reladomo-gen" classname="com.gs.fw.common.mithra.generator.MithraGenerator" loaderRef="mithraGenerator">
+            <classpath refid="reladomogen.classpath"/>
+        </taskdef>
+        <reladomo-gen xml="${root}/reladomo/src/main/reladomo-xml/txid/ReladomoTxidClassList.xml"
+            generatedDir="${root}/reladomo/target/generated-src"
+            nonGeneratedDir="${root}/reladomo/src/main/java"
+            generateConcreteClasses="${reladomo.generateConcreteClasses}"/>
+    </target>
+
     <target name="main-dependset" unless="${unsafeCompile}">
         <dependset>
             <srcfileset dir="${root}/reladomo/src/main/java"/>
@@ -574,7 +584,7 @@
         </dependset>
     </target>
 
-    <target name="compile-reladomo" depends="init-reladomo, jarjar-asm, libboot-reladomo, xsd2bean-reladomo-runtime, xsd2bean-reladomo-cacheloader, generate-reladomo-replication-classes, main-dependset">
+    <target name="compile-reladomo" depends="init-reladomo, jarjar-asm, libboot-reladomo, xsd2bean-reladomo-runtime, xsd2bean-reladomo-cacheloader, generate-reladomo-replication-classes, generate-reladomo-txid-classes, main-dependset">
         <unzip src="${root}/reladomo/target/reladomo-asm-4.2.jar" dest="${root}/reladomo/target/classes"/>
         <delete dir="${root}/reladomo/target/classes/META-INF" quiet="true"/>
         <delete dir="${root}/reladomo/target/classes/org" quiet="true"/>
@@ -1400,7 +1410,7 @@
 
     <target name="prep-reladomo-gen-util" depends="gen-reladomo-gen-util-pom, jar-reladomo-gen-util, jar-reladomo-gen-util-src, jar-reladomo-gen-util-javadoc"/>
 
-    <target name="prep-release" depends="prep-reladomo, prep-reladomogen, prep-reladomo-gen-util, prep-reladomo-test-util, prep-reladomo-serial"/>
+    <target name="prep-release" depends="prep-reladomo, prep-reladomogen, prep-reladomo-gen-util, prep-reladomo-test-util, prep-reladomo-serial, prep-reladomo-xa"/>
 
     <target name="bundle-release" >
         <delete quiet="true" file="${root}/target/bundle-${reladomo.version}.jar"/>
@@ -1426,6 +1436,10 @@
                 <include name="reladomo-serial-${reladomo.version}.jar"/>
                 <include name="reladomo-serial-${reladomo.version}-sources.jar"/>
                 <include name="reladomo-serial-${reladomo.version}-javadoc.jar"/>
+                <include name="reladomo-xa-${reladomo.version}.pom"/>
+                <include name="reladomo-xa-${reladomo.version}.jar"/>
+                <include name="reladomo-xa-${reladomo.version}-sources.jar"/>
+                <include name="reladomo-xa-${reladomo.version}-javadoc.jar"/>
             </srcfileset>
             <targetfileset dir="${root}/target" includes="*.asc"/>
         </dependset>
@@ -1454,6 +1468,10 @@
                             <include name="reladomo-serial-${reladomo.version}.jar"/>
                             <include name="reladomo-serial-${reladomo.version}-sources.jar"/>
                             <include name="reladomo-serial-${reladomo.version}-javadoc.jar"/>
+                            <include name="reladomo-xa-${reladomo.version}.pom"/>
+                            <include name="reladomo-xa-${reladomo.version}.jar"/>
+                            <include name="reladomo-xa-${reladomo.version}-sources.jar"/>
+                            <include name="reladomo-xa-${reladomo.version}-javadoc.jar"/>
 
                             <include name="reladomo-${reladomo.version}.pom.asc"/>
                             <include name="reladomo-${reladomo.version}.jar.asc"/>
@@ -1475,6 +1493,10 @@
                             <include name="reladomo-serial-${reladomo.version}.jar.asc"/>
                             <include name="reladomo-serial-${reladomo.version}-sources.jar.asc"/>
                             <include name="reladomo-serial-${reladomo.version}-javadoc.jar.asc"/>
+                            <include name="reladomo-xa-${reladomo.version}.pom.asc"/>
+                            <include name="reladomo-xa-${reladomo.version}.jar.asc"/>
+                            <include name="reladomo-xa-${reladomo.version}-sources.jar.asc"/>
+                            <include name="reladomo-xa-${reladomo.version}-javadoc.jar.asc"/>
                         </fileset>
                     </resourcecount>
                 </not>
@@ -1543,6 +1565,19 @@
                 <include name="reladomo-serial-${reladomo.version}.jar.asc"/>
                 <include name="reladomo-serial-${reladomo.version}-sources.jar.asc"/>
                 <include name="reladomo-serial-${reladomo.version}-javadoc.jar.asc"/>
+            </fileset>
+        </jar>
+        <jar jarfile="${root}/target/bundle-reladomo-xa-${reladomo.version}.jar" index="false">
+            <fileset dir="${root}/target">
+                <include name="reladomo-xa-${reladomo.version}.pom"/>
+                <include name="reladomo-xa-${reladomo.version}.jar"/>
+                <include name="reladomo-xa-${reladomo.version}-sources.jar"/>
+                <include name="reladomo-xa-${reladomo.version}-javadoc.jar"/>
+
+                <include name="reladomo-xa-${reladomo.version}.pom.asc"/>
+                <include name="reladomo-xa-${reladomo.version}.jar.asc"/>
+                <include name="reladomo-xa-${reladomo.version}-sources.jar.asc"/>
+                <include name="reladomo-xa-${reladomo.version}-javadoc.jar.asc"/>
             </fileset>
         </jar>
     </target>
@@ -1679,7 +1714,7 @@
         </junitreport>
     </target>
 
-    <target name="compile-reladomo-gs" depends="compile-reladomo, libboot-reladomogs">
+    <target name="compile-reladomo-gs" depends="compile-reladomo, libboot-reladomogs, compile-reladomo-xa">
         <dependset>
             <srcfileset dir="${root}/reladomogs/src/main/java"/>
             <srcfileset dir="${root}/reladomo/target/classes"/>
@@ -1696,7 +1731,9 @@
             <classpath>
                 <fileset refid="fileset.lib.gsapi"/>
                 <path refid="reladomo.compile.classpath"/>
+                <path refid="reladomo.xa.compile.classpath"/>
                 <pathelement location="${root}/reladomo/target/classes"/>
+                <pathelement location="${root}/reladomoxa/target/classes"/>
             </classpath>
         </javac>
     </target>
@@ -1912,5 +1949,212 @@
 
     <target name="prep-reladomo-serial" depends="gen-reladomo-serial-pom, jar-reladomo-serial, jar-reladomo-serial-src, jar-reladomo-serial-javadoc"/>
     <!-- ************************** /reladomo serial ******************************* -->
+
+    <!-- ************************** reladomo xa ******************************* -->
+    <fileset dir="${root}/lib/xa" id="fileset.lib.xa">
+        <include name="**/*.jar"/>
+    </fileset>
+
+    <path id="reladomo.xa.compile.classpath">
+        <fileset refid="fileset.lib.xa"/>
+        <path refid="reladomo.compile.classpath"/>
+        <pathelement location="${root}/reladomo/target/classes"/>
+    </path>
+
+    <path id="reladomo.xa.test.compile.classpath">
+        <path refid="reladomo.xa.compile.classpath"/>
+        <path refid="reladomo.run.test.classpath"/>
+        <pathelement location="${root}/reladomoxa/src/test/resources"/>
+        <pathelement location="${root}/reladomoxa/target/classes"/>
+        <pathelement location="${root}/reladomo/target/test-classes-onheap"/>
+        <pathelement location="${root}/reladomo/target/test-util-classes"/>
+    </path>
+
+    <target name="init-reladomo-xa">
+        <mkdir dir="${root}/reladomoxa/target"/>
+        <mkdir dir="${root}/reladomoxa/target/classes"/>
+        <mkdir dir="${root}/reladomoxa/target/javadoc"/>
+        <mkdir dir="${root}/reladomoxa/target/test-classes"/>
+        <mkdir dir="${root}/reladomoxa/target/testresult"/>
+    </target>
+
+    <target name="xa-dependset" unless="${unsafeCompile}">
+        <dependset>
+            <srcfileset dir="${root}/reladomoxa/src/main/java"/>
+            <targetfileset dir="${root}/reladomoxa/target/classes"/>
+        </dependset>
+    </target>
+
+    <target name="compile-reladomo-xa" depends="init-reladomo-xa, compile-reladomo, xa-dependset">
+        <javac destdir="${root}/reladomoxa/target/classes"
+               debug="true"
+               source="1.6"
+               target="1.6"
+               nowarn="true"
+               includeAntRuntime="false">
+            <src path="${root}/reladomoxa/src/main/java"/>
+            <compilerarg line="-Xlint:-unchecked -Xlint:-deprecation -XDignore.symbol.file"/>
+            <classpath>
+                <path refid="reladomo.xa.compile.classpath"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="xa-test-dependset" unless="${unsafeCompile}">
+        <dependset>
+            <srcfileset dir="${root}/reladomoxa/src/test/java"/>
+            <srcfileset dir="${root}/reladomoxa/target/classes"/>
+            <targetfileset dir="${root}/reladomoxa/target/test-classes"/>
+        </dependset>
+    </target>
+
+    <target name="compile-reladomo-xa-test" depends="compile-reladomo-xa, compile-reladomo-test, xa-test-dependset">
+        <javac destdir="${root}/reladomoxa/target/test-classes"
+               debug="true"
+               source="1.5"
+               target="1.5"
+               nowarn="true"
+               includeAntRuntime="false">
+            <src path="${root}/reladomoxa/src/test/java"/>
+            <compilerarg line="-Xlint:-unchecked -Xlint:-deprecation -XDignore.symbol.file"/>
+            <classpath>
+                <path refid="reladomo.xa.test.compile.classpath"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <macrodef name="exec-xa-test-suite">
+        <attribute name="mithraxmlconfig" description="mithra.xml.config"/>
+        <attribute name="testclass" description="test class"/>
+        <attribute name="qualifier" description="added to the end of the test name" default=""/>
+        <attribute name="heap" description="either 'onheap' or 'offheap"/>
+        <sequential>
+            <delete dir="${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
+            <mkdir dir="${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
+            <mkdir dir="${root}/reladomoxa/target/testresult"/>
+            <junit printsummary="off" dir="${root}" timeout="3600000" fork="yes" failureproperty="failed.mithra.unit.tests"
+                   includeantruntime="true" showoutput="false">
+                <!--<formatter type="plain" usefile="false"/>-->
+                <formatter type="xml" extension="@{mithraxmlconfig}"/>
+                <formatter classname="com.gs.fw.common.mithra.test.JunitFormatter" extension="@{mithraxmlconfig}.txt"/>
+                <classpath>
+                    <path refid="reladomo.run.test.classpath"/>
+                    <path refid="reladomo.xa.test.compile.classpath"/>
+                    <pathelement location="${root}/reladomo/target/test-classes-@{heap}"/>
+                    <pathelement location="${root}/reladomoxa/target/test-classes"/>
+                </classpath>
+                <jvmarg value="-server"/>
+                <jvmarg value="${jacocovmarg}${root}/reladomoxa/target/coverage/@{mithraxmlconfig}@{testclass}@{heap}.exec"/>
+                <jvmarg value="-XX:MaxPermSize=320m"/>
+                <jvmarg value="-Xmx3048m"/>
+                <jvmarg value="-ea"/>
+                <jvmarg value="-Dlog4j.configuration=file:${root}/reladomo/src/test/resources/log4jWarn.config"/>
+                <jvmarg value="-Djacoco.args=${jacocovmarg}${root}/reladomoxa/target/coverage/@{mithraxmlconfig}@{testclass}@{heap}.exec"/>
+                <test name="@{testclass}" todir="${root}/reladomoxa/target/testresult"/>
+            </junit>
+            <replace casesensitive="true" dir="${root}/reladomoxa/target/testresult" includes="TEST-@{testclass}@{mithraxmlconfig}">
+                <replacefilter token="&quot; tests=" value="@{qualifier}&quot; tests="/>
+            </replace>
+            <replaceregexp file="${root}/reladomoxa/target/testresult/TEST-@{testclass}@{mithraxmlconfig}"
+                           match="classname=&quot;(.*)\.([abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$1234567890]*)&quot; name=&quot;(.*)&quot; time"
+                           replace="classname=&quot;\1.\2&quot; name=&quot;\2.\3@{qualifier}&quot; time"
+                           byline="true"/>
+        </sequential>
+    </macrodef>
+
+    <target name="run-reladomo-xa-test-suite" depends="compile-reladomo-xa-test, get-cores" description="Run JUnit test cases for Reladomo xa code">
+        <property name="jacocovmarg" value="-Dcoverage=none"/>
+        <delete quiet="true" dir="${root}/reladomoxa/target/testresult"/>
+        <mkdir dir="${root}/reladomoxa/target/testresult"/>
+        <tstamp>
+            <format property="TIME_NOW" pattern="hh:mm:ss a z"/>
+        </tstamp>
+        <echo message="JUnit xa suite for Reladomo starting at ${TIME_NOW} on ${TODAY} with ${test.threads} jvms."/>
+        <echo message="Log4j file: ${root}/reladomo/src/test/resources/log4jWarn.config"/>
+        <parallel threadcount="${test.threads}" >
+            <exec-xa-test-suite mithraxmlconfig="MithraConfigPartialCache.xml" qualifier="/partial" testclass="com.gs.reladomo.jms.ReladomoJmsTestSuite" heap="onheap"/>
+        </parallel>
+    </target>
+
+    <target name="gen-reladomo-xa-pom" depends="init-reladomo-xa">
+        <generate-pom module="reladomo-xa"/>
+    </target>
+
+    <target name="reladomo-xa-javadoc">
+        <javadoc packagenames="com.gs.reladomo.*"
+                 sourcepath="${root}/reladomoxa/src/main/java"
+                 defaultexcludes="yes"
+                 access="public"
+                 destdir="${root}/reladomoxa/target/javadoc"
+                 use="true"
+                 windowtitle="Reladomo xa API"
+                 version="yes"
+                 Verbose="true">
+            <classpath>
+                <path refid="reladomogen.classpath"/>
+                <path refid="reladomo.compile.classpath"/>
+                <path refid="reladomo.xa.compile.classpath"/>
+                <pathelement location="${root}/reladomo/target/classes"/>
+                <pathelement location="${root}/reladomoxa/target/classes"/>
+            </classpath>
+        </javadoc>
+    </target>
+
+    <target name="reladomo-xa-junitreport" if="junitHtmlReport" depends="run-reladomo-xa-test-suite">
+        <mkdir dir="${root}/reladomoxa/target/junit-report"/>
+        <junitreport>
+            <fileset dir="${root}/reladomoxa/target/testresult">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="noframes" todir="${root}/reladomoxa/target/junit-report"/>
+        </junitreport>
+    </target>
+
+    <target name="reladomo-xa-test-suite" depends="reladomo-xa-junitreport" description="Run JUnit test cases for Reladomo XA code">
+        <condition property="unitTestFailedAndIsNotSonar">
+            <and>
+                <isset property="failed.mithra.unit.tests"/>
+                <not>
+                    <isset property="isSonar"/>
+                </not>
+            </and>
+        </condition>
+        <fail if="unitTestFailedAndIsNotSonar" message="Reladomo unit tests failed"/>
+    </target>
+
+    <target name="jar-reladomo-xa" depends="compile-reladomo-xa">
+
+        <jar jarfile="${root}/target/reladomo-xa-${reladomo.version}.jar" index="true">
+            <manifest>
+                <attribute name="Reladomo-Version" value="${reladomo.version}"/>
+            </manifest>
+            <fileset dir="${root}/reladomoxa/target/classes">
+                <include name="**/*"/>
+            </fileset>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
+    </target>
+
+    <target name="jar-reladomo-xa-src" depends="compile-reladomo-xa">
+        <jar jarfile="${root}/target/reladomo-xa-${reladomo.version}-sources.jar" index="true">
+            <fileset dir="${root}/reladomoxa/src/main/java">
+                <include name="**/*.java"/>
+            </fileset>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
+    </target>
+
+    <target name="jar-reladomo-xa-javadoc" depends="reladomo-xa-javadoc">
+        <jar jarfile="${root}/target/reladomo-xa-${reladomo.version}-javadoc.jar" index="true">
+            <fileset dir="${root}/reladomoxa/target/javadoc"/>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
+    </target>
+
+    <target name="prep-reladomo-xa" depends="gen-reladomo-xa-pom, jar-reladomo-xa, jar-reladomo-xa-src, jar-reladomo-xa-javadoc"/>
+    <!-- ************************** /reladomo xa ******************************* -->
 
 </project>

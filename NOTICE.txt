@@ -26,6 +26,8 @@ ASM: a very small and fast Java bytecode manipulation framework
 Copyright (c) 2000-2011 INRIA, France Telecom
 Licensed under BSD license
 
+Base64 by Robert Harder rob@harder.net
+Placed in the public domain. http://iharder.net/base64
 
 This product depends on (links to) the following software:
 

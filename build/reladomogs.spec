@@ -23,6 +23,7 @@ privaterepo,com.gs.fw.aig.intgr,gsintegrator-api,1.8.1,jar,lib/gsapi,994C959A0FD
 privaterepo,com.gs.fw.aig.jdbc,jndijdbc,2.5.2,jar,lib/gsapi,99F2A99F2C2A4A06C4067A6DE64AE9DAC1C19D2D
 privaterepo,com.gs.ficc.artifactory,rvjpro,5.3,jar,lib/gsapi,7CA7EE6140FB16101B63B376A8DF38A2FDF6AB5C
 privaterepo,com.gs.train.external.rendezvous7,tibrvnative,7.5.4,jar,lib/gsapi,236EA4D9B9D315B512DA78774F47D29D56E500FE
+privaterepo,com.tibco.tibjms,tibjms,6.3.0,jar,lib/gsapi,7D249FEDECCECB80C187ABD7156516AC51D6855B
 
 
 

@@ -1,5 +1,5 @@
-<!--
-  Copyright 2016 Goldman Sachs.
+/*
+  Copyright 2018 Goldman Sachs.
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
   You may obtain a copy of the License at
@@ -12,8 +12,21 @@
   KIND, either express or implied.  See the License for the
   specific language governing permissions and limitations
   under the License.
-  -->
-<project name="mithra-config" default="determine-jdk">
-    <property name="reladomo.version" value="16.7.0"/>
-    <property name="snapshot" value=""/>
-</project>
+ */
+
+package com.gs.reladomo.jms;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+public class ReladomoJmsTestSuite extends TestSuite
+{
+    public static Test suite()
+    {
+        TestSuite suite = new TestSuite();
+        suite.addTestSuite(BatchJmsMessageLoopTest.class);
+        suite.addTestSuite(OutgoingAsyncTopicTest.class);
+
+        return suite;
+    }
+}

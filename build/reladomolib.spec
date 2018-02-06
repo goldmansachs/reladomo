@@ -68,6 +68,9 @@ central,javax.annotation,javax.annotation-api,1.2,jar,lib/serial,479C1E06DB31C43
 
 central,org.javassist,javassist,3.20.0-GA,jar,lib/serial,A9CBCDFB7E9F86FBC74D3AFAE65F2248BFBF82A0
 
+#xa libs:
+central,org.apache.geronimo.specs,geronimo-jms_1.1_spec,1.1.1,jar,lib/xa,C872B46C601D8DC03633288B81269F9E42762CEA
+
 # Copyright 2016 Goldman Sachs.
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
