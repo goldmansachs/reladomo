@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
@@ -1416,6 +1417,61 @@ public class TestTransactionalList extends MithraTestAbstract
         assertEquals(hash, hashArray[0]);
         hashArray[0] = start;
         list.forEachWithIndex(new ObjectIntProcedure<Order>()
+        {
+            public void value(Order order, int index)
+            {
+                hashArray[0] = HashUtil.combineHashes(hashArray[0], order.getOrderId());
+            }
+        });
+        assertEquals(hash, hashArray[0]);
+    }
+
+    public void testEclipseCollectionsList()
+    {
+        int start = 0xAE4927BE;
+        OrderList list = OrderFinder.findMany(OrderFinder.all());
+        int hash = 0xAE4927BE;
+        for(int i = 0;i<list.size();i++)
+        {
+            hash = HashUtil.combineHashes(hash, list.get(i).getOrderId());
+        }
+        checkForEach(start, OrderFinder.findMany(OrderFinder.all()).asEcList(), hash);
+        checkForEach(start, list.asEcList(), hash);
+        OrderList adhocList = new OrderList(list);
+        checkForEach(start, adhocList.asEcList(), hash);
+        checkForEach(start, list.asEcList(), hash);
+        checkForEach(start, adhocList.asEcList(), hash);
+
+        // non MutableList extras:
+        assertEquals(!adhocList.isEmpty(), adhocList.notEmpty());
+        assertEquals(!list.isEmpty(), list.notEmpty());
+        assertEquals(!list.asGscList().isEmpty(), list.asGscList().notEmpty());
+        assertEquals(!adhocList.asGscList().isEmpty(), adhocList.asGscList().notEmpty());
+    }
+
+    private void checkForEach(int start, org.eclipse.collections.api.list.MutableList list, int hash)
+    {
+        final int[] hashArray = new int[1];
+        hashArray[0] = start;
+        list.forEach(new org.eclipse.collections.api.block.procedure.Procedure<Order>()
+        {
+            public void value(Order order)
+            {
+                hashArray[0] = HashUtil.combineHashes(hashArray[0], order.getOrderId());
+            }
+        });
+        assertEquals(hash, hashArray[0]);
+        hashArray[0] = start;
+        list.forEachWith(new org.eclipse.collections.api.block.procedure.Procedure2<Order, int[]>()
+        {
+            public void value(Order order, int[] argument2)
+            {
+                argument2[0] = HashUtil.combineHashes(argument2[0], order.getOrderId());
+            }
+        }, hashArray);
+        assertEquals(hash, hashArray[0]);
+        hashArray[0] = start;
+        list.forEachWithIndex(new org.eclipse.collections.api.block.procedure.ObjectIntProcedure<Order>()
         {
             public void value(Order order, int index)
             {

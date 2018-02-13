@@ -13,6 +13,7 @@
   specific language governing permissions and limitations
   under the License.
   -->
+<!--Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license-->
 
 <project name="reladomo" default="all" xmlns:jacoco="antlib:org.jacoco.ant">
     <property environment="env"/>
@@ -21,8 +22,10 @@
     <!--todo: remove-->
     <property name="mithra.home" value="${env.RELADOMO_HOME}/reladomo"/>
     <property name="mithra.generateGscListMethod" value="true"/>
+    <property name="mithra.generateEcListMethod" value="true"/>
 
     <property name="gs-collections.version" value="5.0.0"/>
+    <property name="eclipse-collections.version" value="7.1.1"/>
     <property name="junit.version" value="4.11"/>
     <property name="slf4j.version" value="1.6.4"/>
     <property name="jtdsjbcp.version" value="1.2.0.15"/>
@@ -651,12 +654,14 @@
             generatedDir="${root}/reladomo/target/test-generated-onheap-src"
             nonGeneratedDir="${root}/reladomo/src/test/java"
             generateGscListMethod="${mithra.generateGscListMethod}"
+            generateEcListMethod="${mithra.generateEcListMethod}"
             generateConcreteClasses="${reladomo.generateConcreteClasses}">
         </reladomo-gen>
         <reladomo-gen xml="${root}/reladomo/src/test/reladomo-xml/MithraClassList.xml"
             generatedDir="${root}/reladomo/target/test-generated-onheap-src"
             nonGeneratedDir="${root}/reladomo/src/test/java"
             generateGscListMethod="${mithra.generateGscListMethod}"
+            generateEcListMethod="${mithra.generateEcListMethod}"
             generateConcreteClasses="${reladomo.generateConcreteClasses}">
             <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/" fileName="MithraClassListToImport.xml"/>
             <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/testmithraimport" fileName="MithraTestImportClassList.xml"/>
@@ -673,6 +678,7 @@
             generatedDir="${root}/reladomo/target/test-generated-offheap-src"
             nonGeneratedDir="${root}/reladomo/src/test/java"
             generateGscListMethod="${mithra.generateGscListMethod}"
+            generateEcListMethod="${mithra.generateEcListMethod}"
             generateConcreteClasses="${reladomo.generateConcreteClasses}">
         </reladomo-gen>
         <reladomo-gen xml="${root}/reladomo/src/test/reladomo-xml/MithraClassList.xml"
@@ -680,6 +686,7 @@
             generatedDir="${root}/reladomo/target/test-generated-offheap-src"
             nonGeneratedDir="${root}/reladomo/src/test/java"
             generateGscListMethod="${mithra.generateGscListMethod}"
+            generateEcListMethod="${mithra.generateEcListMethod}"
             generateConcreteClasses="${reladomo.generateConcreteClasses}">
             <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/" fileName="MithraClassListToImport.xml"/>
             <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/testmithraimport" fileName="MithraTestImportClassList.xml"/>
@@ -714,6 +721,7 @@
             generatedDir="${root}/reladomo/target/test-generated-onheap-src"
             nonGeneratedDir="${root}/reladomo/src/test/java"
             generateGscListMethod="${mithra.generateGscListMethod}"
+            generateEcListMethod="${mithra.generateEcListMethod}"
             generateConcreteClasses="${reladomo.generateConcreteClasses}"
                       defaultFinalGetters="true">
         </reladomo-gen>
@@ -722,6 +730,7 @@
             generatedDir="${root}/reladomo/target/test-generated-offheap-src"
             nonGeneratedDir="${root}/reladomo/src/test/java"
             generateGscListMethod="${mithra.generateGscListMethod}"
+            generateEcListMethod="${mithra.generateEcListMethod}"
             generateConcreteClasses="${reladomo.generateConcreteClasses}"
                       defaultFinalGetters="true">
         </reladomo-gen>

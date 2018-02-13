@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.extractor;
 
@@ -20,7 +21,7 @@ import com.gs.collections.api.block.function.Function;
 
 
 
-public class ChainedAttributeValueSelector implements Function
+public class ChainedAttributeValueSelector implements Function, org.eclipse.collections.api.block.function.Function
 {
 
     private Function first;

@@ -14,6 +14,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.generator;
 
@@ -59,6 +60,11 @@ public class MithraGenerator extends AbstractMithraGenerator
     public void setGenerateGscListMethod(boolean generateGscListMethod)
     {
         this.coreGenerator.setGenerateGscListMethod(generateGscListMethod);
+    }
+
+    public void setGenerateEcListMethod(boolean generateEcListMethod)
+    {
+        this.coreGenerator.setGenerateEcListMethod(generateEcListMethod);
     }
 
     @Deprecated

@@ -13,13 +13,14 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.extractor;
 
 import com.gs.collections.api.block.function.Function;
 
 
-public interface HashableValueSelector<T, V> extends Function<T, V>
+public interface HashableValueSelector<T, V> extends Function<T, V>, org.eclipse.collections.api.block.function.Function<T, V>
 {
     public int valueHashCode(T object);
 

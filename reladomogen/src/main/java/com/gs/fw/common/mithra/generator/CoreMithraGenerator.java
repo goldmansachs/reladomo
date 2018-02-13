@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.generator;
 
@@ -81,6 +82,7 @@ public class CoreMithraGenerator extends BaseMithraGenerator
     private boolean generateConcreteClasses = true;
     private boolean warnAboutConcreteClasses = true;
     private boolean generateGscListMethod = false;
+    private boolean generateEcListMethod = false;
     private boolean generateLegacyCaramel = false;
     private String format = FORMAT_FAST;
     private boolean generateImported;
@@ -159,6 +161,11 @@ public class CoreMithraGenerator extends BaseMithraGenerator
     public void setGenerateGscListMethod(boolean generateGscListMethod)
     {
         this.generateGscListMethod = generateGscListMethod;
+    }
+
+    public void setGenerateEcListMethod(boolean generateEcListMethod)
+    {
+        this.generateEcListMethod = generateEcListMethod;
     }
 
     @Deprecated
@@ -436,6 +443,7 @@ public class CoreMithraGenerator extends BaseMithraGenerator
                         HttpServletRequest request = new HttpServletRequest();
                         request.setAttribute("mithraWrapper", wrapper);
                         request.setAttribute("generateGscListMethod", Boolean.valueOf(generateGscListMethod));
+                        request.setAttribute("generateEcListMethod", Boolean.valueOf(generateEcListMethod));
                         request.setAttribute("generateLegacyCaramel", Boolean.valueOf(false));
                         HttpServletResponse response = new HttpServletResponse(writer);
                         servlet._jspService(request, response);
