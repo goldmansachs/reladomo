@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
@@ -235,6 +236,11 @@ public class CalculatedFloatAttribute<T> extends FloatAttribute<T>
          return new FloatNotEqOperation(this, other);
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public Operation in(FloatSet floatSet)
     {
@@ -256,7 +262,52 @@ public class CalculatedFloatAttribute<T> extends FloatAttribute<T>
     }
 
     @Override
+    public Operation in(org.eclipse.collections.api.set.primitive.FloatSet floatSet)
+    {
+        Operation op;
+        switch (floatSet.size())
+        {
+            case 0:
+                op = new None(this);
+                break;
+            case 1:
+                op = this.eq(floatSet.floatIterator().next());
+                break;
+            default:
+                op = new FloatInOperation(this, floatSet);
+                break;
+        }
+
+        return op;
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public Operation notIn(FloatSet floatSet)
+    {
+        Operation op;
+        switch (floatSet.size())
+        {
+            case 0:
+                op = new All(this);
+                break;
+            case 1:
+                op = this.notEq(floatSet.floatIterator().next());
+                break;
+            default:
+                op = new FloatNotInOperation(this, floatSet);
+                break;
+        }
+
+        return op;
+    }
+
+    @Override
+    public Operation notIn(org.eclipse.collections.api.set.primitive.FloatSet floatSet)
     {
         Operation op;
         switch (floatSet.size())

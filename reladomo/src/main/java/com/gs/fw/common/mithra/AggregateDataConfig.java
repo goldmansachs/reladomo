@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra;
 
@@ -80,10 +81,28 @@ public class AggregateDataConfig implements Serializable
         return nameToPositionMap.size();
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public void setNameToPositionMap(ObjectIntHashMap<String> map)
     {
         this.nameToPositionMap = new ObjectIntHashMap(map.size());
         map.forEachKeyValue(new ObjectIntProcedure<String>()
+        {
+            @Override
+            public void value(String each, int parameter)
+            {
+                nameToPositionMap.put(each, parameter);
+            }
+        });
+    }
+
+    public void setNameToPositionMap(org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap<String> map)
+    {
+        this.nameToPositionMap = new ObjectIntHashMap(map.size());
+        map.forEachKeyValue(new org.eclipse.collections.api.block.procedure.primitive.ObjectIntProcedure<String>()
         {
             @Override
             public void value(String each, int parameter)

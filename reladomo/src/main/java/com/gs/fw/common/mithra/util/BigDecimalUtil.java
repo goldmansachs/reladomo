@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.util;
 
@@ -36,10 +37,25 @@ public class BigDecimalUtil
         return validateBigDecimalValue(new BigDecimal(doubleValue, new MathContext(expectedPrecision, RoundingMode.HALF_UP)), expectedPrecision, expectedScale);
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public static Set<BigDecimal> createBigDecimalSetFromDoubleSet(DoubleSet doubleSet, int expectedScale, int expectedPrecision)
     {
         Set<BigDecimal> bigDecimalSet = UnifiedSet.newSet(doubleSet.size());
         for (DoubleIterator it = doubleSet.doubleIterator(); it.hasNext();)
+        {
+            bigDecimalSet.add(createBigDecimalFromDouble(it.next(), expectedScale, expectedPrecision));
+        }
+        return bigDecimalSet;
+    }
+
+    public static Set<BigDecimal> createBigDecimalSetFromDoubleSet(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet, int expectedScale, int expectedPrecision)
+    {
+        Set<BigDecimal> bigDecimalSet = UnifiedSet.newSet(doubleSet.size());
+        for (org.eclipse.collections.api.iterator.DoubleIterator it = doubleSet.doubleIterator(); it.hasNext();)
         {
             bigDecimalSet.add(createBigDecimalFromDouble(it.next(), expectedScale, expectedPrecision));
         }

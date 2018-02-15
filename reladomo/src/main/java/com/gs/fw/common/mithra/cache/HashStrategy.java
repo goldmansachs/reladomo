@@ -20,6 +20,6 @@ import com.gs.collections.api.block.HashingStrategy;
 
 
 
-public interface HashStrategy extends HashingStrategy
+public interface HashStrategy extends HashingStrategy, org.eclipse.collections.api.block.HashingStrategy
 {
 }

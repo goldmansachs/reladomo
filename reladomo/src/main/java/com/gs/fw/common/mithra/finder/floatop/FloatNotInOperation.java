@@ -13,11 +13,13 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder.floatop;
 
 import com.gs.collections.api.iterator.FloatIterator;
 import com.gs.collections.api.set.primitive.FloatSet;
+import com.gs.collections.impl.factory.primitive.FloatSets;
 import com.gs.fw.common.mithra.attribute.FloatAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
@@ -42,10 +44,21 @@ public class FloatNotInOperation extends NotInOperation implements SqlParameterS
     private transient volatile float[] copiedArray;
 
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public FloatNotInOperation(FloatAttribute attribute, FloatSet floatSet)
     {
         super(attribute);
         this.set = floatSet.freeze();
+    }
+
+    public FloatNotInOperation(FloatAttribute attribute, org.eclipse.collections.api.set.primitive.FloatSet floatSet)
+    {
+        super(attribute);
+        this.set = FloatSets.immutable.of(floatSet.toArray());
     }
 
     protected int setSqlParameters(PreparedStatement pstmt, int startIndex, TimeZone timeZone, int setStart, int numberToSet, DatabaseType databaseType) throws SQLException

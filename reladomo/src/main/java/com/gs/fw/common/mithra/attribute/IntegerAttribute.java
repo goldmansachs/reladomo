@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
@@ -137,11 +138,27 @@ public abstract class IntegerAttribute<T> extends PrimitiveNumericAttribute<T, I
 
     public abstract Operation notEq(int other);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public abstract Operation in(IntSet intSet);
 
     @Override
+    public abstract Operation in(org.eclipse.collections.api.set.primitive.IntSet intSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public abstract Operation notIn(IntSet intSet);
+
+    @Override
+    public abstract Operation notIn(org.eclipse.collections.api.set.primitive.IntSet intSet);
 
     public abstract Operation greaterThan(int target);
 

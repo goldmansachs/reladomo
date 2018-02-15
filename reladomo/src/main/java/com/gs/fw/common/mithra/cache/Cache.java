@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.cache;
 
@@ -93,21 +94,77 @@ public interface Cache
 
     public List get(int indexRef, ByteArraySet indexValues);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public List get(int indexRef, IntSet intSetIndexValues);
 
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.IntSet intSetIndexValues);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public List get(int indexRef, DoubleSet doubleSetIndexValues);
 
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.DoubleSet doubleSetIndexValues);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public List get(int indexRef, BooleanSet booleanSetIndexValues);
 
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.BooleanSet booleanSetIndexValues);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public List get(int indexRef, LongSet longSetIndexValues);
 
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.LongSet longSetIndexValues);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public List get(int indexRef, ByteSet byteSetIndexValues);
 
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.ByteSet byteSetIndexValues);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public List get(int indexRef, CharSet charSetIndexValues);
 
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.CharSet charSetIndexValues);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public List get(int indexRef, FloatSet floatSetIndexValues);
 
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.FloatSet floatSetIndexValues);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public List get(int indexRef, ShortSet shortSetIndexValues);
+
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.ShortSet shortSetIndexValues);
 
     public List get(int indexRef, Object indexValue);
 

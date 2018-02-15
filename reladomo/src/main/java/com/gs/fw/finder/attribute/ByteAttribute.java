@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.finder.attribute;
 
@@ -34,9 +35,23 @@ public interface ByteAttribute<Owner> extends NumericAttribute<Owner>
 
     public Operation<Owner> lessThanEquals(byte value);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public Operation<Owner> in(ByteSet byteSet);
 
+    public Operation<Owner> in(org.eclipse.collections.api.set.primitive.ByteSet byteSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public Operation<Owner> notIn(ByteSet byteSet);
+
+    public Operation<Owner> notIn(org.eclipse.collections.api.set.primitive.ByteSet byteSet);
 
     public IntegerAttribute<Owner> plus(ByteAttribute addend);
     public IntegerAttribute<Owner> plus(ShortAttribute addend);

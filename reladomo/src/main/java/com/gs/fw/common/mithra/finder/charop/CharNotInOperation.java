@@ -13,11 +13,13 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder.charop;
 
 import com.gs.collections.api.iterator.CharIterator;
 import com.gs.collections.api.set.primitive.CharSet;
+import com.gs.collections.impl.factory.primitive.CharSets;
 import com.gs.fw.common.mithra.attribute.CharAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.CharExtractor;
@@ -42,10 +44,21 @@ public class CharNotInOperation extends NotInOperation implements SqlParameterSe
     private transient volatile char[] copiedArray;
 
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public CharNotInOperation(CharAttribute attribute, CharSet charSet)
     {
         super(attribute);
         this.set = charSet.freeze();
+    }
+
+    public CharNotInOperation(CharAttribute attribute, org.eclipse.collections.api.set.primitive.CharSet charSet)
+    {
+        super(attribute);
+        this.set = CharSets.immutable.of(charSet.toArray());
     }
 
     protected int setSqlParameters(PreparedStatement pstmt, int startIndex, TimeZone timeZone, int setStart, int numberToSet, DatabaseType databaseType) throws SQLException

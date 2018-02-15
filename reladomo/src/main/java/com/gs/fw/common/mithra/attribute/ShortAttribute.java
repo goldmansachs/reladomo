@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
@@ -105,11 +106,27 @@ public abstract class ShortAttribute<T> extends PrimitiveNumericAttribute<T, Sho
 
     public abstract Operation notEq(short other);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public abstract Operation in(ShortSet shortSet);
 
     @Override
+    public abstract Operation in(org.eclipse.collections.api.set.primitive.ShortSet shortSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public abstract Operation notIn(ShortSet shortSet);
+
+    @Override
+    public abstract Operation notIn(org.eclipse.collections.api.set.primitive.ShortSet shortSet);
 
     public abstract Operation greaterThan(short target);
 

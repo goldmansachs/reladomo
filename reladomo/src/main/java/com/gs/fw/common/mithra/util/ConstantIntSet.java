@@ -13,23 +13,24 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.util;
 
-import com.gs.collections.api.IntIterable;
-import com.gs.collections.api.LazyIntIterable;
-import com.gs.collections.api.bag.primitive.MutableIntBag;
-import com.gs.collections.api.block.function.primitive.IntToObjectFunction;
-import com.gs.collections.api.block.function.primitive.ObjectIntToObjectFunction;
-import com.gs.collections.api.block.predicate.primitive.IntPredicate;
-import com.gs.collections.api.block.procedure.primitive.IntProcedure;
-import com.gs.collections.api.iterator.IntIterator;
-import com.gs.collections.api.list.primitive.MutableIntList;
-import com.gs.collections.api.set.SetIterable;
-import com.gs.collections.api.set.primitive.ImmutableIntSet;
-import com.gs.collections.api.set.primitive.IntSet;
-import com.gs.collections.api.set.primitive.MutableIntSet;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
+import org.eclipse.collections.api.IntIterable;
+import org.eclipse.collections.api.LazyIntIterable;
+import org.eclipse.collections.api.bag.primitive.MutableIntBag;
+import org.eclipse.collections.api.block.function.primitive.IntToObjectFunction;
+import org.eclipse.collections.api.block.function.primitive.ObjectIntToObjectFunction;
+import org.eclipse.collections.api.block.predicate.primitive.IntPredicate;
+import org.eclipse.collections.api.block.procedure.primitive.IntProcedure;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.list.primitive.MutableIntList;
+import org.eclipse.collections.api.set.SetIterable;
+import org.eclipse.collections.api.set.primitive.ImmutableIntSet;
+import org.eclipse.collections.api.set.primitive.IntSet;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import java.io.Serializable;
 
 
@@ -119,6 +120,11 @@ public class ConstantIntSet implements IntSet, Serializable
     public boolean containsAll(IntIterable source)
     {
         return delegate.containsAll(source);
+    }
+
+    @Override
+    public void each(IntProcedure procedure) {
+        delegate.each(procedure);
     }
 
     @Override

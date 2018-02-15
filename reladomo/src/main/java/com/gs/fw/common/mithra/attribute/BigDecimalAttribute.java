@@ -13,16 +13,17 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.collections.api.set.primitive.DoubleSet;
 import com.gs.fw.common.mithra.aggregate.attribute.DoubleAggregateAttribute;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.StandardDeviationCalculatorNumeric;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.StandardDeviationPopCalculatorNumeric;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.VarianceCalculatorNumeric;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.VariancePopCalculatorNumeric;
+import com.gs.fw.common.mithra.extractor.Function;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.Mapper;
 import com.gs.fw.common.mithra.finder.DeepRelationshipAttribute;
@@ -163,9 +164,23 @@ public abstract class BigDecimalAttribute<T> extends NonPrimitiveAttribute<T, Bi
 
     public abstract Operation notEq(double other);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public abstract Operation in(DoubleSet doubleSet);
 
+    public abstract Operation in(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public abstract Operation notIn(DoubleSet doubleSet);
+
+    public abstract Operation notIn(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet);
 
     public abstract Operation greaterThan(double target);
 
@@ -351,7 +366,16 @@ public abstract class BigDecimalAttribute<T> extends NonPrimitiveAttribute<T, Bi
         return BigDecimalUtil.createBigDecimalFromDouble(doubleValue, this.getPrecision(), this.getScale());
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
     protected Set<BigDecimal> createBigDecimalSetFromDoubleSet(DoubleSet doubleSet)
+    {
+        return BigDecimalUtil.createBigDecimalSetFromDoubleSet(doubleSet, this.getPrecision(), this.getScale());
+    }
+
+    protected Set<BigDecimal> createBigDecimalSetFromDoubleSet(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet)
     {
         return BigDecimalUtil.createBigDecimalSetFromDoubleSet(doubleSet, this.getPrecision(), this.getScale());
     }

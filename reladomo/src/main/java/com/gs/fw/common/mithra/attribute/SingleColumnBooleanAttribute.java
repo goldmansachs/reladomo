@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
@@ -102,6 +103,11 @@ public abstract class SingleColumnBooleanAttribute<T> extends BooleanAttribute<T
         return new BooleanNotEqOperation(this, other);
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public Operation in(BooleanSet booleanSet)
     {
@@ -121,7 +127,44 @@ public abstract class SingleColumnBooleanAttribute<T> extends BooleanAttribute<T
     }
 
     @Override
+    public Operation in(org.eclipse.collections.api.set.primitive.BooleanSet booleanSet)
+    {
+        if (booleanSet.isEmpty())
+        {
+            return new None(this);
+        }
+        if (booleanSet.size() == 1)
+        {
+            return this.eq(booleanSet.booleanIterator().next());
+        }
+        if (this.isNullable())
+        {
+            return new IsNotNullOperation(this);
+        }
+        return new All(this);
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public Operation notIn(BooleanSet booleanSet)
+    {
+       if (booleanSet.isEmpty())
+        {
+            return new All(this);
+        }
+        if (booleanSet.size() == 1)
+        {
+            return this.notEq(booleanSet.booleanIterator().next());
+        }
+        return new None(this); // notIn implies notNull, so notIn(true, false) means no match at all.
+    }
+
+    @Override
+    public Operation notIn(org.eclipse.collections.api.set.primitive.BooleanSet booleanSet)
     {
        if (booleanSet.isEmpty())
         {

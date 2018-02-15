@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
@@ -104,11 +105,27 @@ public abstract class ByteAttribute<T> extends PrimitiveNumericAttribute<T, Byte
 
     public abstract Operation notEq(byte other);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public abstract Operation in(ByteSet byteSet);
 
     @Override
+    public abstract Operation in(org.eclipse.collections.api.set.primitive.ByteSet byteSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public abstract Operation notIn(ByteSet byteSet);
+
+    @Override
+    public abstract Operation notIn(org.eclipse.collections.api.set.primitive.ByteSet byteSet);
 
     public abstract Operation greaterThan(byte target);
 

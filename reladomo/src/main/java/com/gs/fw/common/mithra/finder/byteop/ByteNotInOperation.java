@@ -13,11 +13,13 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder.byteop;
 
 import com.gs.collections.api.iterator.ByteIterator;
 import com.gs.collections.api.set.primitive.ByteSet;
+import com.gs.collections.impl.factory.primitive.ByteSets;
 import com.gs.fw.common.mithra.attribute.ByteAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.ByteExtractor;
@@ -41,10 +43,21 @@ public class ByteNotInOperation extends NotInOperation implements SqlParameterSe
     private transient volatile byte[] copiedArray;
 
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public ByteNotInOperation(ByteAttribute attribute, ByteSet byteSet)
     {
         super(attribute);
         this.set = byteSet.freeze();
+    }
+
+    public ByteNotInOperation(ByteAttribute attribute, org.eclipse.collections.api.set.primitive.ByteSet byteSet)
+    {
+        super(attribute);
+        this.set = ByteSets.immutable.of(byteSet.toArray());
     }
 
     protected int setSqlParameters(PreparedStatement pstmt, int startIndex, TimeZone timeZone, int setStart, int numberToSet, DatabaseType databaseType) throws SQLException

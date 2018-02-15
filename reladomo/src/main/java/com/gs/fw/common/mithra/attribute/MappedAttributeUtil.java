@@ -14,11 +14,12 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.extractor.Function;
 import com.gs.fw.common.mithra.finder.Mapper;
 import com.gs.fw.common.mithra.finder.DeepRelationshipAttribute;
 import com.gs.fw.common.mithra.attribute.calculator.arithmeticCalculator.AdditionCalculator;
@@ -33,7 +34,7 @@ public class MappedAttributeUtil
 {
 
     public static void forEach(final IntegerProcedure proc, Object o, Object context,
-            Function parentSelector, final NumericAttribute wrappedAttribute)
+                               Function parentSelector, final NumericAttribute wrappedAttribute)
     {
         if (parentSelector == null) proc.execute(0, context);
         else

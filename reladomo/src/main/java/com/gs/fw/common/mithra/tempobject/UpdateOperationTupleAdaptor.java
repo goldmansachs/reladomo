@@ -13,11 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.tempobject;
 
-import com.gs.collections.api.block.function.Function;
-import com.gs.fw.common.mithra.MithraTransactionalObject;
 import com.gs.fw.common.mithra.extractor.*;
 import com.gs.fw.common.mithra.transaction.UpdateOperation;
 import com.gs.fw.common.mithra.util.Time;
@@ -28,7 +27,6 @@ import java.io.ObjectStreamException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
 
 
 public class UpdateOperationTupleAdaptor extends TupleImpl

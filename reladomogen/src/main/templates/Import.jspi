@@ -13,6 +13,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 --%>
+<%-- Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license --%>
 <% for (Iterator iterator = wrapper.getImports().iterator(); iterator.hasNext();)
 	{
 		String classToImport = (String) iterator.next();
@@ -26,7 +27,7 @@ import com.gs.fw.common.mithra.attribute.*;
 import com.gs.fw.common.mithra.util.*;
 
 <%
-    String valueSelectorClassName = "com.gs.collections.api.block.function.Function";
+    String valueSelectorClassName = "com.gs.fw.common.mithra.extractor.Function";
     String valueSelectorSimpleClassName = "Function";
 %>
 import com.gs.fw.common.mithra.notification.*;

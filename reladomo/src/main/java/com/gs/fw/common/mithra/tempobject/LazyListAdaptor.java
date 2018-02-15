@@ -13,10 +13,11 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.tempobject;
 
-import com.gs.collections.api.block.function.Function;
+import com.gs.fw.common.mithra.extractor.Function;
 
 import java.util.AbstractList;
 import java.util.List;

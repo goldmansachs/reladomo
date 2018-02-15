@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
@@ -97,11 +98,27 @@ public abstract class LongAttribute<T> extends PrimitiveNumericAttribute<T, Long
 
     public abstract Operation notEq(long other);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public abstract Operation in(LongSet longSet);
 
     @Override
+    public abstract Operation in(org.eclipse.collections.api.set.primitive.LongSet longSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public abstract Operation notIn(LongSet longSet);
+
+    @Override
+    public abstract Operation notIn(org.eclipse.collections.api.set.primitive.LongSet longSet);
 
     public abstract Operation greaterThan(long target);
 

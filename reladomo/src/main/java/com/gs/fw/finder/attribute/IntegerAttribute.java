@@ -34,9 +34,23 @@ public interface IntegerAttribute<Owner> extends NumericAttribute<Owner>
 
     public Operation<Owner> lessThanEquals(int value);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public Operation<Owner> in(IntSet intSet);
 
+    public Operation<Owner> in(org.eclipse.collections.api.set.primitive.IntSet intSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public Operation<Owner> notIn(IntSet intSet);
+
+    public Operation<Owner> notIn(org.eclipse.collections.api.set.primitive.IntSet intSet);
 
     public IntegerAttribute<Owner> plus(ByteAttribute addend);
     public IntegerAttribute<Owner> plus(ShortAttribute addend);

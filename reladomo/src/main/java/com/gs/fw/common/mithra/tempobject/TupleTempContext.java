@@ -13,10 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.tempobject;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.gs.fw.common.mithra.MithraList;
@@ -27,6 +27,7 @@ import com.gs.fw.common.mithra.cache.ExtractorBasedHashStrategy;
 import com.gs.fw.common.mithra.cache.FullUniqueIndex;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.extractor.Function;
 import com.gs.fw.common.mithra.extractor.OperationParameterExtractor;
 import com.gs.fw.common.mithra.finder.*;
 import com.gs.fw.common.mithra.notification.listener.MithraApplicationClassLevelNotificationListener;

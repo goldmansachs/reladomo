@@ -14,16 +14,17 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.MithraList;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.SourceAttributeType;
 import com.gs.fw.common.mithra.attribute.VersionAttribute;
+import com.gs.fw.common.mithra.extractor.Function;
 import com.gs.fw.common.mithra.notification.listener.MithraApplicationClassLevelNotificationListener;
 import com.gs.fw.finder.Finder;
 import com.gs.fw.finder.Operation;

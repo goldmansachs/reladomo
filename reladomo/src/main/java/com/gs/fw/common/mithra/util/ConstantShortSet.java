@@ -13,23 +13,24 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.util;
 
-import com.gs.collections.api.LazyShortIterable;
-import com.gs.collections.api.ShortIterable;
-import com.gs.collections.api.bag.primitive.MutableShortBag;
-import com.gs.collections.api.block.function.primitive.ObjectShortToObjectFunction;
-import com.gs.collections.api.block.function.primitive.ShortToObjectFunction;
-import com.gs.collections.api.block.predicate.primitive.ShortPredicate;
-import com.gs.collections.api.block.procedure.primitive.ShortProcedure;
-import com.gs.collections.api.iterator.ShortIterator;
-import com.gs.collections.api.list.primitive.MutableShortList;
-import com.gs.collections.api.set.SetIterable;
-import com.gs.collections.api.set.primitive.ImmutableShortSet;
-import com.gs.collections.api.set.primitive.MutableShortSet;
-import com.gs.collections.api.set.primitive.ShortSet;
-import com.gs.collections.impl.set.mutable.primitive.ShortHashSet;
+import org.eclipse.collections.api.LazyShortIterable;
+import org.eclipse.collections.api.ShortIterable;
+import org.eclipse.collections.api.bag.primitive.MutableShortBag;
+import org.eclipse.collections.api.block.function.primitive.ObjectShortToObjectFunction;
+import org.eclipse.collections.api.block.function.primitive.ShortToObjectFunction;
+import org.eclipse.collections.api.block.predicate.primitive.ShortPredicate;
+import org.eclipse.collections.api.block.procedure.primitive.ShortProcedure;
+import org.eclipse.collections.api.iterator.ShortIterator;
+import org.eclipse.collections.api.list.primitive.MutableShortList;
+import org.eclipse.collections.api.set.SetIterable;
+import org.eclipse.collections.api.set.primitive.ImmutableShortSet;
+import org.eclipse.collections.api.set.primitive.MutableShortSet;
+import org.eclipse.collections.api.set.primitive.ShortSet;
+import org.eclipse.collections.impl.set.mutable.primitive.ShortHashSet;
 import java.io.Serializable;
 
 public class ConstantShortSet implements ShortSet, Serializable
@@ -117,6 +118,11 @@ public class ConstantShortSet implements ShortSet, Serializable
     public boolean containsAll(ShortIterable source)
     {
         return delegate.containsAll(source);
+    }
+
+    @Override
+    public void each(ShortProcedure procedure) {
+        delegate.each(procedure);
     }
 
     @Override

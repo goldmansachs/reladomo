@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
@@ -88,11 +89,27 @@ public abstract class CharAttribute<T> extends Attribute<T, Character> implement
 
     public abstract Operation notEq(char other);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public abstract Operation in(CharSet charSet);
 
     @Override
+    public abstract Operation in(org.eclipse.collections.api.set.primitive.CharSet charSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public abstract Operation notIn(CharSet charSet);
+
+    @Override
+    public abstract Operation notIn(org.eclipse.collections.api.set.primitive.CharSet charSet);
 
     public abstract Operation greaterThan(char target);
 

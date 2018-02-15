@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
@@ -221,6 +222,11 @@ public class CalculatedLongAttribute<T> extends LongAttribute<T>
         return new LongNotEqOperation(this, other);
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public Operation in(LongSet longSet)
     {
@@ -242,7 +248,52 @@ public class CalculatedLongAttribute<T> extends LongAttribute<T>
     }
 
     @Override
+    public Operation in(org.eclipse.collections.api.set.primitive.LongSet longSet)
+    {
+        Operation op;
+        switch (longSet.size())
+        {
+            case 0:
+                op = new None(this);
+                break;
+            case 1:
+                op = this.eq(longSet.longIterator().next());
+                break;
+            default:
+                op = new LongInOperation(this, longSet);
+                break;
+        }
+
+        return op;
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public Operation notIn(LongSet set)
+    {
+        Operation op;
+        switch (set.size())
+        {
+            case 0:
+                op = new All(this);
+                break;
+            case 1:
+                op = this.notEq(set.longIterator().next());
+                break;
+            default:
+                op = new LongNotInOperation(this, set);
+                break;
+        }
+
+        return op;
+    }
+
+    @Override
+    public Operation notIn(org.eclipse.collections.api.set.primitive.LongSet set)
     {
         Operation op;
         switch (set.size())

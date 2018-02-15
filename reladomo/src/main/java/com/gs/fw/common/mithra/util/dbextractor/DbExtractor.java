@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.util.dbextractor;
 
@@ -21,12 +22,12 @@ import java.net.URL;
 import java.sql.Timestamp;
 import java.util.*;
 
-import com.gs.collections.api.block.function.*;
 import com.gs.collections.impl.list.mutable.*;
 import com.gs.collections.impl.map.mutable.*;
 import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.attribute.*;
 import com.gs.fw.common.mithra.cache.*;
+import com.gs.fw.common.mithra.extractor.Function;
 import com.gs.fw.common.mithra.finder.*;
 import com.gs.fw.common.mithra.finder.orderby.*;
 import com.gs.fw.common.mithra.util.*;

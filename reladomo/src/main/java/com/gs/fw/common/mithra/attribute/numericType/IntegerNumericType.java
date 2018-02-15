@@ -14,10 +14,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute.numericType;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.attribute.CalculatedIntegerAttribute;
 import com.gs.fw.common.mithra.attribute.IntegerAttribute;
 import com.gs.fw.common.mithra.attribute.MappedIntegerAttribute;
@@ -26,6 +26,7 @@ import com.gs.fw.common.mithra.attribute.calculator.NumericAttributeCalculator;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.AggregateAttributeCalculator;
 import com.gs.fw.common.mithra.attribute.calculator.arithmeticCalculator.*;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.IntegerProcedure;
+import com.gs.fw.common.mithra.extractor.Function;
 import com.gs.fw.common.mithra.finder.Mapper;
 import com.gs.fw.common.mithra.util.MutableIntAverage;
 import com.gs.fw.common.mithra.util.MutableInteger;

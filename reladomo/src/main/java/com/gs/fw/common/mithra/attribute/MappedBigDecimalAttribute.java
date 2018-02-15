@@ -13,11 +13,12 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.collections.api.set.primitive.DoubleSet;
+import com.gs.fw.common.mithra.extractor.Function;
 import com.gs.fw.common.mithra.finder.*;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.*;
@@ -237,6 +238,11 @@ public class MappedBigDecimalAttribute<Owner> extends BigDecimalAttribute<Owner>
         return new MappedOperation(this.mapper, this.wrappedAttribute.notEq(other));
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public Operation in(DoubleSet doubleSet)
     {
@@ -244,7 +250,24 @@ public class MappedBigDecimalAttribute<Owner> extends BigDecimalAttribute<Owner>
     }
 
     @Override
+    public Operation in(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet)
+    {
+        return new MappedOperation(this.mapper, this.wrappedAttribute.in(doubleSet));
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public Operation notIn(DoubleSet doubleSet)
+    {
+        return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(doubleSet));
+    }
+
+    @Override
+    public Operation notIn(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(doubleSet));
     }

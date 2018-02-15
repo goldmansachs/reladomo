@@ -13,15 +13,13 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.cache.offheap;
 
 
 import com.gs.collections.api.IntIterable;
 import com.gs.collections.api.iterator.IntIterator;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
-import com.gs.fw.common.mithra.util.MithraUnsafe;
-import sun.misc.Unsafe;
 
 public class FastUnsafeOffHeapIntList extends OffHeapMemoryReference
 {
@@ -132,9 +130,22 @@ public class FastUnsafeOffHeapIntList extends OffHeapMemoryReference
         this.size = 0;
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public void addAll(IntIterable intIterable)
     {
         for(IntIterator it = intIterable.intIterator(); it.hasNext();)
+        {
+            this.add(it.next());
+        }
+    }
+
+    public void addAll(org.eclipse.collections.api.IntIterable intIterable)
+    {
+        for(org.eclipse.collections.api.iterator.IntIterator it = intIterable.intIterator(); it.hasNext();)
         {
             this.add(it.next());
         }

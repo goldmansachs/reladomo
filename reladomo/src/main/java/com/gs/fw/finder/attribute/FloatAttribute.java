@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.finder.attribute;
 
@@ -34,9 +35,23 @@ public interface FloatAttribute<Owner> extends NumericAttribute<Owner>
 
     public Operation<Owner> lessThanEquals(float value);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public Operation<Owner> in(FloatSet floatSet);
 
+    public Operation<Owner> in(org.eclipse.collections.api.set.primitive.FloatSet floatSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public Operation<Owner> notIn(FloatSet floatSet);
+
+    public Operation<Owner> notIn(org.eclipse.collections.api.set.primitive.FloatSet floatSet);
 
     public FloatAttribute<Owner> plus(ByteAttribute addend);
     public FloatAttribute<Owner> plus(ShortAttribute addend);

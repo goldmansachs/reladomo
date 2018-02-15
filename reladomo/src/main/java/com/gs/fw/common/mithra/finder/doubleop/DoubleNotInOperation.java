@@ -13,11 +13,13 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder.doubleop;
 
 import com.gs.collections.api.iterator.DoubleIterator;
 import com.gs.collections.api.set.primitive.DoubleSet;
+import com.gs.collections.impl.factory.primitive.DoubleSets;
 import com.gs.fw.common.mithra.attribute.DoubleAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.DoubleExtractor;
@@ -42,10 +44,21 @@ public class DoubleNotInOperation extends NotInOperation implements SqlParameter
     private transient volatile double[] copiedArray;
 
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public DoubleNotInOperation(DoubleAttribute attribute, DoubleSet doubleSet)
     {
         super(attribute);
         this.set = doubleSet.freeze();
+    }
+
+    public DoubleNotInOperation(DoubleAttribute attribute, org.eclipse.collections.api.set.primitive.DoubleSet doubleSet)
+    {
+        super(attribute);
+        this.set = DoubleSets.immutable.of(doubleSet.toArray());
     }
 
     protected int setSqlParameters(PreparedStatement pstmt, int startIndex, TimeZone timeZone, int setStart, int numberToSet, DatabaseType databaseType) throws SQLException

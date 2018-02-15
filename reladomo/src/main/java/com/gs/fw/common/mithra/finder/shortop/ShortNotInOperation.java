@@ -13,11 +13,13 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder.shortop;
 
 import com.gs.collections.api.iterator.ShortIterator;
 import com.gs.collections.api.set.primitive.ShortSet;
+import com.gs.collections.impl.factory.primitive.ShortSets;
 import com.gs.fw.common.mithra.attribute.ShortAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
@@ -42,10 +44,21 @@ public class ShortNotInOperation extends NotInOperation implements SqlParameterS
     private transient volatile short[] copiedArray;
 
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public ShortNotInOperation(ShortAttribute attribute, ShortSet shortSet)
     {
         super(attribute);
         this.set = shortSet.freeze();
+    }
+
+    public ShortNotInOperation(ShortAttribute attribute, org.eclipse.collections.api.set.primitive.ShortSet shortSet)
+    {
+        super(attribute);
+        this.set = ShortSets.immutable.of(shortSet.toArray());
     }
 
     protected int setSqlParameters(PreparedStatement pstmt, int startIndex, TimeZone timeZone, int setStart, int numberToSet, DatabaseType databaseType) throws SQLException

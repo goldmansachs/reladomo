@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.cache;
 
@@ -209,6 +210,11 @@ public class TypedCache implements Cache
         return this.filterByType(this.cache.get(indexRef, indexValues));
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public List get(int indexRef, IntSet intSetIndexValues)
     {
@@ -216,11 +222,33 @@ public class TypedCache implements Cache
     }
 
     @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.IntSet intSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, intSetIndexValues));
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public List get(int indexRef, DoubleSet doubleSetIndexValues)
     {
         return this.filterByType(this.cache.get(indexRef, doubleSetIndexValues));
     }
 
+    @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.DoubleSet doubleSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, doubleSetIndexValues));
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public List get(int indexRef, BooleanSet booleanSetIndexValues)
     {
@@ -228,11 +256,33 @@ public class TypedCache implements Cache
     }
 
     @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.BooleanSet booleanSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, booleanSetIndexValues));
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public List get(int indexRef, LongSet longSetIndexValues)
     {
         return this.filterByType(this.cache.get(indexRef, longSetIndexValues));
     }
 
+    @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.LongSet longSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, longSetIndexValues));
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public List get(int indexRef, ByteSet byteSetIndexValues)
     {
@@ -240,11 +290,33 @@ public class TypedCache implements Cache
     }
 
     @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.ByteSet byteSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, byteSetIndexValues));
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public List get(int indexRef, CharSet indexValues)
     {
         return this.filterByType(this.cache.get(indexRef, indexValues));
     }
 
+    @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.CharSet indexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, indexValues));
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public List get(int indexRef, FloatSet floatSetIndexValues)
     {
@@ -252,7 +324,24 @@ public class TypedCache implements Cache
     }
 
     @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.FloatSet floatSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, floatSetIndexValues));
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public List get(int indexRef, ShortSet shortSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, shortSetIndexValues));
+    }
+
+    @Override
+    public List get(int indexRef, org.eclipse.collections.api.set.primitive.ShortSet shortSetIndexValues)
     {
         return this.filterByType(this.cache.get(indexRef, shortSetIndexValues));
     }

@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
@@ -89,11 +90,27 @@ public abstract class FloatAttribute<T> extends PrimitiveNumericAttribute<T, Flo
 
     public abstract Operation notEq(float other);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     @Override
     public abstract Operation in(FloatSet floatSet);
 
     @Override
+    public abstract Operation in(org.eclipse.collections.api.set.primitive.FloatSet floatSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
     public abstract Operation notIn(FloatSet floatSet);
+
+    @Override
+    public abstract Operation notIn(org.eclipse.collections.api.set.primitive.FloatSet floatSet);
 
     public abstract Operation greaterThan(float target);
 
