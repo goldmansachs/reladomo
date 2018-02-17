@@ -14,14 +14,15 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.generator;
 
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.generator.objectxmlgenerator.ForeignKey;
 import com.gs.fw.common.mithra.generator.objectxmlgenerator.TableInfo;
 import junit.framework.Assert;
 import junit.framework.TestCase;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 public class TableInfoTest
         extends TestCase

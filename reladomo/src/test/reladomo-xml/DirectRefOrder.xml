@@ -22,7 +22,7 @@
 
     <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
     <ClassName>DirectRefOrder</ClassName>
-    <Import>com.gs.collections.impl.set.mutable.primitive.IntHashSet</Import>
+    <Import>org.eclipse.collections.impl.set.mutable.primitive.IntHashSet</Import>
     <DefaultTable>DIR_REF_ORDER</DefaultTable>
 
     <Attribute name="orderId" javaType="int" columnName="ORDER_ID" primaryKey="true"/>

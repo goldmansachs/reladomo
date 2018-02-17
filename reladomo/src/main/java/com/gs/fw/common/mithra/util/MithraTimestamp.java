@@ -13,11 +13,12 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.util;
 
-import com.gs.collections.api.block.function.Function0;
-import com.gs.collections.impl.map.mutable.ConcurrentHashMap;
+import org.eclipse.collections.api.block.function.Function0;
+import org.eclipse.collections.impl.map.mutable.ConcurrentHashMap;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.chrono.ISOChronology;

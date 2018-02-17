@@ -13,19 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.mtloader;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.List;
-import java.util.TimeZone;
-
-import com.gs.collections.api.block.function.primitive.IntFunction;
-import com.gs.collections.impl.block.factory.Comparators;
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.MithraTransactionalObject;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.Operation;
@@ -42,9 +33,19 @@ import com.gs.fw.common.mithra.test.domain.BitemporalOrderList;
 import com.gs.fw.common.mithra.util.QueueExecutor;
 import com.gs.fw.common.mithra.util.SingleQueueExecutor;
 import junit.framework.TestCase;
+import org.eclipse.collections.api.block.function.primitive.IntFunction;
+import org.eclipse.collections.impl.block.factory.Comparators;
+import org.eclipse.collections.impl.list.mutable.FastList;
 import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.List;
+import java.util.TimeZone;
 
 
 public abstract class MithraMatcherThreadTestAbstract extends TestCase

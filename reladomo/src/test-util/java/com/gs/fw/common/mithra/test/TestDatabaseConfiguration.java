@@ -14,10 +14,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.MithraDatabaseObject;
 import com.gs.fw.common.mithra.MithraException;
 import com.gs.fw.common.mithra.MithraManagerProvider;
@@ -27,6 +27,7 @@ import com.gs.fw.common.mithra.attribute.SourceAttributeType;
 import com.gs.fw.common.mithra.util.fileparser.BinaryCompressor;
 import com.gs.fw.common.mithra.util.fileparser.MithraDelimitedDataParser;
 import com.gs.fw.common.mithra.util.fileparser.MithraParsedData;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

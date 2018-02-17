@@ -17,8 +17,8 @@
 
 package com.gs.fw.finder.attribute;
 
-import com.gs.collections.api.set.primitive.DoubleSet;
 import com.gs.fw.finder.Operation;
+import org.eclipse.collections.api.set.primitive.DoubleSet;
 
 
 public interface DoubleAttribute<Owner> extends NumericAttribute<Owner>
@@ -40,18 +40,18 @@ public interface DoubleAttribute<Owner> extends NumericAttribute<Owner>
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
-    public Operation<Owner> in(DoubleSet doubleSet);
+    public Operation<Owner> in(com.gs.collections.api.set.primitive.DoubleSet doubleSet);
 
-    public Operation<Owner> in(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet);
+    public Operation<Owner> in(DoubleSet doubleSet);
 
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
-    public Operation<Owner> notIn(DoubleSet doubleSet);
+    public Operation<Owner> notIn(com.gs.collections.api.set.primitive.DoubleSet doubleSet);
 
-    public Operation<Owner> notIn(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet);
+    public Operation<Owner> notIn(DoubleSet doubleSet);
 
     public DoubleAttribute<Owner> plus(ByteAttribute addend);
     public DoubleAttribute<Owner> plus(ShortAttribute addend);

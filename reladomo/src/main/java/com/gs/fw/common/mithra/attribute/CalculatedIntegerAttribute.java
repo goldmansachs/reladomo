@@ -17,25 +17,45 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.IntSet;
 import com.gs.fw.common.mithra.MithraDataObject;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.calculator.NumericAttributeCalculator;
-import com.gs.fw.common.mithra.attribute.calculator.procedure.*;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.FloatProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.IntegerProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.LongProcedure;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.extractor.IntExtractor;
-import com.gs.fw.common.mithra.finder.*;
-import com.gs.fw.common.mithra.finder.integer.*;
+import com.gs.fw.common.mithra.finder.AggregateSqlQuery;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.EqualityMapper;
+import com.gs.fw.common.mithra.finder.None;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.ToStringContext;
+import com.gs.fw.common.mithra.finder.integer.IntegerEqOperation;
+import com.gs.fw.common.mithra.finder.integer.IntegerGreaterThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.integer.IntegerGreaterThanOperation;
+import com.gs.fw.common.mithra.finder.integer.IntegerInOperation;
+import com.gs.fw.common.mithra.finder.integer.IntegerLessThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.integer.IntegerLessThanOperation;
+import com.gs.fw.common.mithra.finder.integer.IntegerNotEqOperation;
+import com.gs.fw.common.mithra.finder.integer.IntegerNotInOperation;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
 import com.gs.fw.common.mithra.util.ColumnInfo;
 import com.gs.fw.common.mithra.util.HashUtil;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarInStream;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarOutStream;
+import org.eclipse.collections.api.set.primitive.IntSet;
 import org.slf4j.Logger;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.OutputStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -248,7 +268,7 @@ public class CalculatedIntegerAttribute<T> extends IntegerAttribute<T> implement
      **/
     @Deprecated
     @Override
-    public Operation in(IntSet set)
+    public Operation in(com.gs.collections.api.set.primitive.IntSet set)
     {
         Operation op;
         switch (set.size())
@@ -268,7 +288,7 @@ public class CalculatedIntegerAttribute<T> extends IntegerAttribute<T> implement
     }
 
     @Override
-    public Operation in(org.eclipse.collections.api.set.primitive.IntSet set)
+    public Operation in(IntSet set)
     {
         Operation op;
         switch (set.size())
@@ -293,7 +313,7 @@ public class CalculatedIntegerAttribute<T> extends IntegerAttribute<T> implement
      **/
     @Deprecated
     @Override
-    public Operation notIn(IntSet set)
+    public Operation notIn(com.gs.collections.api.set.primitive.IntSet set)
     {
         Operation op;
         switch (set.size())
@@ -313,7 +333,7 @@ public class CalculatedIntegerAttribute<T> extends IntegerAttribute<T> implement
     }
 
     @Override
-    public Operation notIn(org.eclipse.collections.api.set.primitive.IntSet set)
+    public Operation notIn(IntSet set)
     {
         Operation op;
         switch (set.size())

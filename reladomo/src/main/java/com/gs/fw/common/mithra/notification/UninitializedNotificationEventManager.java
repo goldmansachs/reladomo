@@ -13,10 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.notification;
 
-import com.gs.collections.impl.map.mutable.ConcurrentHashMap;
 import com.gs.fw.common.mithra.MithraDataObject;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.update.AttributeUpdateWrapper;
@@ -25,6 +25,7 @@ import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.notification.listener.MithraApplicationClassLevelNotificationListener;
 import com.gs.fw.common.mithra.notification.listener.MithraApplicationNotificationListener;
 import com.gs.fw.common.mithra.transaction.MultiUpdateOperation;
+import org.eclipse.collections.impl.map.mutable.ConcurrentHashMap;
 
 import java.util.List;
 import java.util.Map;

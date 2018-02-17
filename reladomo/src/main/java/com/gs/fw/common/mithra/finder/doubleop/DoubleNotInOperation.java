@@ -17,9 +17,6 @@
 
 package com.gs.fw.common.mithra.finder.doubleop;
 
-import com.gs.collections.api.iterator.DoubleIterator;
-import com.gs.collections.api.set.primitive.DoubleSet;
-import com.gs.collections.impl.factory.primitive.DoubleSets;
 import com.gs.fw.common.mithra.attribute.DoubleAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.DoubleExtractor;
@@ -31,6 +28,9 @@ import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
+import org.eclipse.collections.api.iterator.DoubleIterator;
+import org.eclipse.collections.api.set.primitive.DoubleSet;
+import org.eclipse.collections.impl.factory.primitive.DoubleSets;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -49,16 +49,16 @@ public class DoubleNotInOperation extends NotInOperation implements SqlParameter
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    public DoubleNotInOperation(DoubleAttribute attribute, com.gs.collections.api.set.primitive.DoubleSet doubleSet)
+    {
+        super(attribute);
+        this.set = DoubleSets.immutable.of(doubleSet.toArray());
+    }
+
     public DoubleNotInOperation(DoubleAttribute attribute, DoubleSet doubleSet)
     {
         super(attribute);
         this.set = doubleSet.freeze();
-    }
-
-    public DoubleNotInOperation(DoubleAttribute attribute, org.eclipse.collections.api.set.primitive.DoubleSet doubleSet)
-    {
-        super(attribute);
-        this.set = DoubleSets.immutable.of(doubleSet.toArray());
     }
 
     protected int setSqlParameters(PreparedStatement pstmt, int startIndex, TimeZone timeZone, int setStart, int numberToSet, DatabaseType databaseType) throws SQLException

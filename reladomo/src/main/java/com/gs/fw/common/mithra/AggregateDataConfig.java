@@ -18,11 +18,12 @@
 package com.gs.fw.common.mithra;
 
 import com.gs.collections.api.block.procedure.primitive.ObjectIntProcedure;
-import com.gs.collections.impl.map.mutable.primitive.ObjectIntHashMap;
-import com.gs.collections.impl.list.mutable.FastList;
+import com.gs.collections.api.map.primitive.ObjectIntMap;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.AggregateAttributeCalculator;
 import com.gs.fw.common.mithra.util.Nullable;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -42,7 +43,7 @@ import java.util.Set;
 
 public class AggregateDataConfig implements Serializable
 {
-    private ObjectIntHashMap<String> nameToPositionMap;
+    private org.eclipse.collections.api.map.primitive.MutableObjectIntMap<String> nameToPositionMap;
     private List<MithraGroupByAttribute> groupByAttributes;
     private List<MithraAggregateAttribute> aggregateAttributes;
     private static final byte NULL_VALUE = 100;
@@ -86,7 +87,7 @@ public class AggregateDataConfig implements Serializable
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
-    public void setNameToPositionMap(ObjectIntHashMap<String> map)
+    public void setNameToPositionMap(ObjectIntMap<String> map)
     {
         this.nameToPositionMap = new ObjectIntHashMap(map.size());
         map.forEachKeyValue(new ObjectIntProcedure<String>()
@@ -99,7 +100,7 @@ public class AggregateDataConfig implements Serializable
         });
     }
 
-    public void setNameToPositionMap(org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap<String> map)
+    public void setNameToPositionMap(org.eclipse.collections.api.map.primitive.ObjectIntMap<String> map)
     {
         this.nameToPositionMap = new ObjectIntHashMap(map.size());
         map.forEachKeyValue(new org.eclipse.collections.api.block.procedure.primitive.ObjectIntProcedure<String>()

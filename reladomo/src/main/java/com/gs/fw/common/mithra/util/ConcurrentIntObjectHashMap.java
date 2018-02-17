@@ -14,21 +14,31 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.util;
 
-import com.gs.collections.api.block.procedure.Procedure;
-import com.gs.collections.api.block.procedure.primitive.IntObjectProcedure;
-import com.gs.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.api.block.procedure.Procedure;
+import org.eclipse.collections.api.block.procedure.primitive.IntObjectProcedure;
+import org.eclipse.collections.impl.list.mutable.FastList;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.*;
+import java.util.AbstractCollection;
+import java.util.Collection;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.atomic.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicIntegerArray;
+import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
+import java.util.concurrent.atomic.AtomicReferenceArray;
+import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 public final class ConcurrentIntObjectHashMap<V> implements Externalizable
 {

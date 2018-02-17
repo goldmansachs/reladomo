@@ -13,27 +13,34 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.util.fileparser;
 
 
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.map.mutable.primitive.ObjectByteHashMap;
 import com.gs.fw.common.mithra.MithraDataObject;
-import com.gs.fw.common.mithra.attribute.*;
+import com.gs.fw.common.mithra.attribute.Attribute;
+import com.gs.fw.common.mithra.attribute.SingleColumnAttribute;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.util.MithraFastList;
 import com.gs.fw.common.mithra.util.Time;
 import com.gs.fw.common.mithra.util.lz4.LZ4BlockInputStream;
 import com.gs.fw.common.mithra.util.lz4.LZ4BlockOutputStream;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectByteHashMap;
 
-import java.io.*;
-import java.lang.reflect.InvocationTargetException;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.util.List;
 import java.util.TimeZone;
 

@@ -13,12 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.MithraManager;
 import com.gs.fw.common.mithra.test.domain.AccountTransaction;
 import com.gs.fw.common.mithra.test.domain.AccountTransactionFinder;
@@ -28,6 +26,8 @@ import com.gs.fw.common.mithra.test.domain.AccountTransactionIntSrcAttrList;
 import com.gs.fw.common.mithra.test.domain.AccountTransactionList;
 import com.gs.fw.common.mithra.test.mithraTestResource.ConnectionManagerForTestsWithTableManager;
 import com.gs.fw.common.mithra.util.MithraRuntimeCacheController;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 import java.sql.Timestamp;
 import java.util.Set;

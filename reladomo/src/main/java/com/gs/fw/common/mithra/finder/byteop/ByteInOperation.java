@@ -17,9 +17,6 @@
 
 package com.gs.fw.common.mithra.finder.byteop;
 
-import com.gs.collections.api.iterator.ByteIterator;
-import com.gs.collections.api.set.primitive.ByteSet;
-import com.gs.collections.impl.factory.primitive.ByteSets;
 import com.gs.fw.common.mithra.attribute.ByteAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.ByteExtractor;
@@ -33,6 +30,10 @@ import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.util.HashUtil;
+import org.eclipse.collections.api.iterator.ByteIterator;
+import org.eclipse.collections.api.set.primitive.ByteSet;
+import org.eclipse.collections.impl.factory.primitive.ByteSets;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -51,16 +52,16 @@ public class ByteInOperation extends InOperation implements SqlParameterSetter
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    public ByteInOperation(ByteAttribute attribute, com.gs.collections.api.set.primitive.ByteSet byteSet)
+    {
+        super(attribute);
+        this.set = ByteSets.immutable.of(byteSet.toArray());
+    }
+
     public ByteInOperation(ByteAttribute attribute, ByteSet byteSet)
     {
         super(attribute);
         this.set = byteSet.freeze();
-    }
-
-    public ByteInOperation(ByteAttribute attribute, org.eclipse.collections.api.set.primitive.ByteSet byteSet)
-    {
-        super(attribute);
-        this.set = ByteSets.immutable.of(byteSet.toArray());
     }
 
     @Override

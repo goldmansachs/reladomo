@@ -18,8 +18,8 @@
 package com.gs.fw.common.mithra.cache.offheap;
 
 
-import com.gs.collections.api.IntIterable;
-import com.gs.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.IntIterable;
+import org.eclipse.collections.api.iterator.IntIterator;
 
 public class FastUnsafeOffHeapIntList extends OffHeapMemoryReference
 {
@@ -135,17 +135,17 @@ public class FastUnsafeOffHeapIntList extends OffHeapMemoryReference
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
-    public void addAll(IntIterable intIterable)
+    public void addAll(com.gs.collections.api.IntIterable intIterable)
     {
-        for(IntIterator it = intIterable.intIterator(); it.hasNext();)
+        for(com.gs.collections.api.iterator.IntIterator it = intIterable.intIterator(); it.hasNext();)
         {
             this.add(it.next());
         }
     }
 
-    public void addAll(org.eclipse.collections.api.IntIterable intIterable)
+    public void addAll(IntIterable intIterable)
     {
-        for(org.eclipse.collections.api.iterator.IntIterator it = intIterable.intIterator(); it.hasNext();)
+        for(IntIterator it = intIterable.intIterator(); it.hasNext();)
         {
             this.add(it.next());
         }

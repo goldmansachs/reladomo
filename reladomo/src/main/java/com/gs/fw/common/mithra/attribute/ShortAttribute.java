@@ -17,10 +17,10 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.MutableShortSet;
-import com.gs.collections.api.set.primitive.ShortSet;
-import com.gs.collections.impl.set.mutable.primitive.ShortHashSet;
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.AggregateData;
+import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraNullPrimitiveException;
 import com.gs.fw.common.mithra.aggregate.attribute.ShortAggregateAttribute;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.AverageCalculatorNumeric;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.MaxCalculatorNumeric;
@@ -41,9 +41,15 @@ import com.gs.fw.common.mithra.finder.None;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.finder.orderby.ShortOrderBy;
-import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.MutableInteger;
+import com.gs.fw.common.mithra.util.MutableNumber;
+import com.gs.fw.common.mithra.util.Nullable;
 import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
 import com.gs.fw.common.mithra.util.serializer.SerialWriter;
+import org.eclipse.collections.api.set.primitive.MutableShortSet;
+import org.eclipse.collections.api.set.primitive.ShortSet;
+import org.eclipse.collections.impl.set.mutable.primitive.ShortHashSet;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -112,10 +118,10 @@ public abstract class ShortAttribute<T> extends PrimitiveNumericAttribute<T, Sho
      **/
     @Deprecated
     @Override
-    public abstract Operation in(ShortSet shortSet);
+    public abstract Operation in(com.gs.collections.api.set.primitive.ShortSet shortSet);
 
     @Override
-    public abstract Operation in(org.eclipse.collections.api.set.primitive.ShortSet shortSet);
+    public abstract Operation in(ShortSet shortSet);
 
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
@@ -123,10 +129,10 @@ public abstract class ShortAttribute<T> extends PrimitiveNumericAttribute<T, Sho
      **/
     @Deprecated
     @Override
-    public abstract Operation notIn(ShortSet shortSet);
+    public abstract Operation notIn(com.gs.collections.api.set.primitive.ShortSet shortSet);
 
     @Override
-    public abstract Operation notIn(org.eclipse.collections.api.set.primitive.ShortSet shortSet);
+    public abstract Operation notIn(ShortSet shortSet);
 
     public abstract Operation greaterThan(short target);
 

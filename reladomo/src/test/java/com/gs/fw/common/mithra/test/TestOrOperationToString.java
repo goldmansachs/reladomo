@@ -13,16 +13,17 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import com.gs.collections.impl.set.mutable.primitive.LongHashSet;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.domain.InfinityTimestamp;
 import com.gs.fw.common.mithra.test.domain.OrderFinder;
 import com.gs.fw.common.mithra.test.domain.ParaDeskFinder;
 import com.gs.fw.common.mithra.test.domain.UserFinder;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.set.mutable.primitive.LongHashSet;
 
 import java.sql.Timestamp;
 import java.util.SortedSet;

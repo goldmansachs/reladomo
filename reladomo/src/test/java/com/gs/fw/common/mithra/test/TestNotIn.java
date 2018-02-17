@@ -13,17 +13,27 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
+
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.set.mutable.primitive.*;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.AtomicNotEqualityOperation;
 import com.gs.fw.common.mithra.test.domain.InfinityTimestamp;
 import com.gs.fw.common.mithra.test.domain.ParaDesk;
 import com.gs.fw.common.mithra.test.domain.ParaDeskFinder;
 import com.gs.fw.common.mithra.test.domain.ParaDeskList;
-import com.gs.fw.common.mithra.finder.All;
-import com.gs.fw.common.mithra.finder.AtomicNotEqualityOperation;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.primitive.BooleanHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.ByteHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.CharHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.DoubleHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.FloatHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.LongHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.ShortHashSet;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -31,7 +41,6 @@ import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.math.BigDecimal;
 
 public class TestNotIn
 extends TestSqlDatatypes

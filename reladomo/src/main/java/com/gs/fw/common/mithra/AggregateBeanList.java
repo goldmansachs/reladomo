@@ -13,18 +13,24 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra;
 
-import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.gs.fw.common.mithra.aggregate.AggregateBeanOrderBy;
 import com.gs.fw.common.mithra.aggregate.attribute.BeanAggregateAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.finder.OrderBy;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 
 
 

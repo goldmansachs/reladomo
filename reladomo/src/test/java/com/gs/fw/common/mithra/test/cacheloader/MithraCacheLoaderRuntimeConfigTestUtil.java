@@ -13,17 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.cacheloader;
 
-import com.gs.collections.api.RichIterable;
-import com.gs.collections.api.block.function.Function;
-import com.gs.collections.api.multimap.list.MutableListMultimap;
-import com.gs.collections.impl.block.factory.Functions;
-import com.gs.collections.impl.block.factory.Predicates;
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.list.mutable.ListAdapter;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.gs.fw.common.mithra.cacheloader.xmlbinding.CacheLoaderType;
 import com.gs.fw.common.mithra.cacheloader.xmlbinding.DependentLoaderType;
 import com.gs.fw.common.mithra.cacheloader.xmlbinding.MithraCacheLoaderUnmarshaller;
@@ -34,6 +27,14 @@ import com.gs.fw.common.mithra.mithraruntime.MithraRuntimeType;
 import com.gs.fw.common.mithra.mithraruntime.SchemaType;
 import com.gs.fw.common.mithra.util.MithraConfigurationManager;
 import com.gs.fw.common.mithra.util.Pair;
+import org.eclipse.collections.api.RichIterable;
+import org.eclipse.collections.api.block.function.Function;
+import org.eclipse.collections.api.multimap.list.MutableListMultimap;
+import org.eclipse.collections.impl.block.factory.Functions;
+import org.eclipse.collections.impl.block.factory.Predicates;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.list.mutable.ListAdapter;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.junit.Assert;
 
 import java.io.BufferedInputStream;

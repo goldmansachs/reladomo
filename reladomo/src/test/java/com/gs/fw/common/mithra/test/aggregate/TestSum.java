@@ -13,17 +13,36 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.aggregate;
 
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.AggregateData;
 import com.gs.fw.common.mithra.AggregateList;
 import com.gs.fw.common.mithra.MithraAggregateAttribute;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.MithraTestAbstract;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.Account;
+import com.gs.fw.common.mithra.test.domain.BigOrder;
+import com.gs.fw.common.mithra.test.domain.BigOrderItem;
+import com.gs.fw.common.mithra.test.domain.BigOrderItemFinder;
+import com.gs.fw.common.mithra.test.domain.Manufacturer;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItem;
+import com.gs.fw.common.mithra.test.domain.ParaDesk;
+import com.gs.fw.common.mithra.test.domain.ParaDeskFinder;
+import com.gs.fw.common.mithra.test.domain.ProductSpecification;
+import com.gs.fw.common.mithra.test.domain.Sale;
+import com.gs.fw.common.mithra.test.domain.SaleFinder;
+import com.gs.fw.common.mithra.test.domain.SalesLineItem;
+import com.gs.fw.common.mithra.test.domain.SalesLineItemFinder;
+import com.gs.fw.common.mithra.test.domain.Seller;
+import com.gs.fw.common.mithra.test.domain.SellerFinder;
+import com.gs.fw.common.mithra.test.domain.TinyBalance;
+import com.gs.fw.common.mithra.test.domain.WishListItem;
 import com.gs.fw.common.mithra.test.domain.adjustmenthistory.PositionAdjustmentHistory;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 

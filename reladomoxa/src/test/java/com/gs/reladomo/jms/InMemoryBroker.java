@@ -13,10 +13,11 @@
   specific language governing permissions and limitations
   under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.reladomo.jms;
 
-import com.gs.collections.impl.map.mutable.ConcurrentHashMap;
+import org.eclipse.collections.impl.map.mutable.ConcurrentHashMap;
 
 public class InMemoryBroker
 {
@@ -36,7 +37,7 @@ public class InMemoryBroker
 
     public InMemoryTopicState getOrCreateTopicState(InMemoryTopic topic)
     {
-        return this.topicStates.getIfAbsentPut(topic, new com.gs.collections.api.block.function.Function<InMemoryTopic, InMemoryTopicState>()
+        return this.topicStates.getIfAbsentPut(topic, new org.eclipse.collections.api.block.function.Function<InMemoryTopic, InMemoryTopicState>()
                 {
                     @Override
                     public InMemoryTopicState valueOf(InMemoryTopic object)

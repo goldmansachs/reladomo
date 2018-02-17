@@ -17,13 +17,22 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.BooleanSet;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.BooleanProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.ObjectProcedure;
 import com.gs.fw.common.mithra.extractor.ChainedAttributeValueSelector;
 import com.gs.fw.common.mithra.extractor.Function;
-import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.AggregateSqlQuery;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.ChainedMapper;
+import com.gs.fw.common.mithra.finder.DeepRelationshipAttribute;
+import com.gs.fw.common.mithra.finder.MappedOperation;
+import com.gs.fw.common.mithra.finder.Mapper;
+import com.gs.fw.common.mithra.finder.NoOperation;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.ToStringContext;
+import org.eclipse.collections.api.set.primitive.BooleanSet;
 
 
 public class MappedBooleanAttribute<T> extends BooleanAttribute<T> implements MappedAttribute
@@ -168,13 +177,13 @@ public class MappedBooleanAttribute<T> extends BooleanAttribute<T> implements Ma
      **/
     @Deprecated
     @Override
-    public Operation in(BooleanSet set)
+    public Operation in(com.gs.collections.api.set.primitive.BooleanSet set)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.in(set));
     }
 
     @Override
-    public Operation in(org.eclipse.collections.api.set.primitive.BooleanSet set)
+    public Operation in(BooleanSet set)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.in(set));
     }
@@ -185,13 +194,13 @@ public class MappedBooleanAttribute<T> extends BooleanAttribute<T> implements Ma
      **/
     @Deprecated
     @Override
-    public Operation notIn(BooleanSet set)
+    public Operation notIn(com.gs.collections.api.set.primitive.BooleanSet set)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(set));
     }
 
     @Override
-    public Operation notIn(org.eclipse.collections.api.set.primitive.BooleanSet set)
+    public Operation notIn(BooleanSet set)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(set));
     }

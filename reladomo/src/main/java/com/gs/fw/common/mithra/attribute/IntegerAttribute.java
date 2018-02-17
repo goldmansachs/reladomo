@@ -17,10 +17,10 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.IntSet;
-import com.gs.collections.api.set.primitive.MutableIntSet;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.AggregateData;
+import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraNullPrimitiveException;
 import com.gs.fw.common.mithra.aggregate.attribute.IntegerAggregateAttribute;
 import com.gs.fw.common.mithra.attribute.calculator.AbsoluteValueCalculatorInteger;
 import com.gs.fw.common.mithra.attribute.calculator.IntegerToStringCalculator;
@@ -56,9 +56,15 @@ import com.gs.fw.common.mithra.finder.None;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.orderby.IntegerOrderBy;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
-import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.MutableInteger;
+import com.gs.fw.common.mithra.util.MutableNumber;
+import com.gs.fw.common.mithra.util.Nullable;
 import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
 import com.gs.fw.common.mithra.util.serializer.SerialWriter;
+import org.eclipse.collections.api.set.primitive.IntSet;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -144,10 +150,10 @@ public abstract class IntegerAttribute<T> extends PrimitiveNumericAttribute<T, I
      **/
     @Deprecated
     @Override
-    public abstract Operation in(IntSet intSet);
+    public abstract Operation in(com.gs.collections.api.set.primitive.IntSet intSet);
 
     @Override
-    public abstract Operation in(org.eclipse.collections.api.set.primitive.IntSet intSet);
+    public abstract Operation in(IntSet intSet);
 
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
@@ -155,10 +161,10 @@ public abstract class IntegerAttribute<T> extends PrimitiveNumericAttribute<T, I
      **/
     @Deprecated
     @Override
-    public abstract Operation notIn(IntSet intSet);
+    public abstract Operation notIn(com.gs.collections.api.set.primitive.IntSet intSet);
 
     @Override
-    public abstract Operation notIn(org.eclipse.collections.api.set.primitive.IntSet intSet);
+    public abstract Operation notIn(IntSet intSet);
 
     public abstract Operation greaterThan(int target);
 

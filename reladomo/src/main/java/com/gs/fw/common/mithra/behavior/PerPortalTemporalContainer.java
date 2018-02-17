@@ -16,11 +16,15 @@
 
 package com.gs.fw.common.mithra.behavior;
 
+import com.gs.fw.common.mithra.DatedTransactionalState;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraDatedTransactionalObject;
+import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
-import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.behavior.state.DatedPersistenceState;
 import com.gs.fw.common.mithra.util.InternalList;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 
 public class PerPortalTemporalContainer

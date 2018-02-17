@@ -13,13 +13,11 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.connectionmanager;
 
 
-import com.gs.collections.api.block.procedure.Procedure2;
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.gs.fw.common.mithra.MithraDatabaseException;
 import com.gs.fw.common.mithra.bulkloader.BulkLoader;
 import com.gs.fw.common.mithra.bulkloader.BulkLoaderException;
@@ -28,6 +26,9 @@ import com.gs.fw.common.mithra.tempobject.CommonTempContext;
 import com.gs.fw.common.mithra.util.HashUtil;
 import com.gs.fw.common.mithra.util.SmallSet;
 import com.gs.fw.common.mithra.util.WrappedConnection;
+import org.eclipse.collections.api.block.procedure.Procedure2;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.sql.Connection;
 import java.sql.SQLException;

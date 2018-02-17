@@ -17,12 +17,25 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.LongSet;
 import com.gs.fw.common.mithra.MithraObjectPortal;
-import com.gs.fw.common.mithra.attribute.calculator.procedure.*;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.FloatProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.LongProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.ObjectProcedure;
 import com.gs.fw.common.mithra.extractor.ChainedAttributeValueSelector;
 import com.gs.fw.common.mithra.extractor.Function;
-import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.AggregateSqlQuery;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.ChainedMapper;
+import com.gs.fw.common.mithra.finder.DeepRelationshipAttribute;
+import com.gs.fw.common.mithra.finder.MappedOperation;
+import com.gs.fw.common.mithra.finder.Mapper;
+import com.gs.fw.common.mithra.finder.NoOperation;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.ToStringContext;
+import org.eclipse.collections.api.set.primitive.LongSet;
 
 
 public class MappedLongAttribute<T> extends LongAttribute<T> implements MappedAttribute
@@ -166,13 +179,13 @@ public class MappedLongAttribute<T> extends LongAttribute<T> implements MappedAt
      **/
     @Deprecated
     @Override
-    public Operation in(LongSet longSet)
+    public Operation in(com.gs.collections.api.set.primitive.LongSet longSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.in(longSet));
     }
 
     @Override
-    public Operation in(org.eclipse.collections.api.set.primitive.LongSet longSet)
+    public Operation in(LongSet longSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.in(longSet));
     }
@@ -183,13 +196,13 @@ public class MappedLongAttribute<T> extends LongAttribute<T> implements MappedAt
      **/
     @Deprecated
     @Override
-    public Operation notIn(LongSet longSet)
+    public Operation notIn(com.gs.collections.api.set.primitive.LongSet longSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(longSet));
     }
 
     @Override
-    public Operation notIn(org.eclipse.collections.api.set.primitive.LongSet longSet)
+    public Operation notIn(LongSet longSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(longSet));
     }

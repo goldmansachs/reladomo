@@ -13,18 +13,23 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.connectionmanager;
 
 
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.util.DoUntilProcedure;
 import com.gs.fw.common.mithra.util.SynchronizedLruMap;
 import com.gs.fw.common.mithra.util.WrappedConnection;
+import org.eclipse.collections.impl.list.mutable.FastList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 public class PooledConnection extends WrappedConnection

@@ -17,50 +17,67 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.DoubleSet;
+import com.gs.fw.common.mithra.AggregateData;
+import com.gs.fw.common.mithra.MithraAggregateAttribute;
+import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.aggregate.attribute.BigDecimalAggregateAttribute;
 import com.gs.fw.common.mithra.aggregate.attribute.DoubleAggregateAttribute;
+import com.gs.fw.common.mithra.attribute.calculator.AbsoluteValueCalculatorBigDecimal;
+import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.AverageCalculatorNumeric;
+import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.MaxCalculatorNumeric;
+import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.MinCalculatorNumeric;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.StandardDeviationCalculatorNumeric;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.StandardDeviationPopCalculatorNumeric;
+import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.SumCalculatorNumeric;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.VarianceCalculatorNumeric;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.VariancePopCalculatorNumeric;
-import com.gs.fw.common.mithra.extractor.Function;
-import com.gs.fw.common.mithra.finder.Operation;
-import com.gs.fw.common.mithra.finder.Mapper;
-import com.gs.fw.common.mithra.finder.DeepRelationshipAttribute;
-import com.gs.fw.common.mithra.extractor.BigDecimalExtractor;
-import com.gs.fw.common.mithra.databasetype.DatabaseType;
-import com.gs.fw.common.mithra.*;
-import com.gs.fw.common.mithra.aggregate.attribute.BigDecimalAggregateAttribute;
+import com.gs.fw.common.mithra.attribute.calculator.arithmeticCalculator.ConstAdditionCalculatorBigDecimal;
+import com.gs.fw.common.mithra.attribute.calculator.arithmeticCalculator.ConstDivisionCalculatorBigDecimal;
+import com.gs.fw.common.mithra.attribute.calculator.arithmeticCalculator.ConstMultiplicationCalculatorBigDecimal;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.FloatProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.IntegerProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.LongProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.NullHandlingProcedure;
+import com.gs.fw.common.mithra.attribute.numericType.BigDecimalNumericType;
+import com.gs.fw.common.mithra.attribute.numericType.DoubleNumericType;
+import com.gs.fw.common.mithra.attribute.numericType.FloatNumericType;
+import com.gs.fw.common.mithra.attribute.numericType.IntegerNumericType;
+import com.gs.fw.common.mithra.attribute.numericType.LongNumericType;
+import com.gs.fw.common.mithra.attribute.numericType.NumericType;
 import com.gs.fw.common.mithra.attribute.update.AttributeUpdateWrapper;
 import com.gs.fw.common.mithra.attribute.update.BigDecimalUpdateWrapper;
-import com.gs.fw.common.mithra.attribute.numericType.*;
-import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.MinCalculatorNumeric;
-import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.MaxCalculatorNumeric;
-import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.SumCalculatorNumeric;
-import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.AverageCalculatorNumeric;
-import com.gs.fw.common.mithra.attribute.calculator.procedure.*;
-import com.gs.fw.common.mithra.attribute.calculator.AbsoluteValueCalculatorBigDecimal;
-import com.gs.fw.common.mithra.attribute.calculator.arithmeticCalculator.*;
-import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.databasetype.DatabaseType;
+import com.gs.fw.common.mithra.extractor.BigDecimalExtractor;
+import com.gs.fw.common.mithra.extractor.Function;
+import com.gs.fw.common.mithra.finder.DeepRelationshipAttribute;
+import com.gs.fw.common.mithra.finder.Mapper;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.util.BigDecimalUtil;
+import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.MutableBigDecimal;
+import com.gs.fw.common.mithra.util.Nullable;
 import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
 import com.gs.fw.common.mithra.util.serializer.SerialWriter;
+import org.eclipse.collections.api.set.primitive.DoubleSet;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.Format;
+import java.text.ParseException;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.io.ObjectOutput;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.sql.SQLException;
-import java.sql.PreparedStatement;
-import java.sql.Timestamp;
-import java.sql.ResultSet;
-import java.text.Format;
-import java.text.ParseException;
 
 
 public abstract class BigDecimalAttribute<T> extends NonPrimitiveAttribute<T, BigDecimal>
@@ -169,18 +186,18 @@ public abstract class BigDecimalAttribute<T> extends NonPrimitiveAttribute<T, Bi
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
-    public abstract Operation in(DoubleSet doubleSet);
+    public abstract Operation in(com.gs.collections.api.set.primitive.DoubleSet doubleSet);
 
-    public abstract Operation in(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet);
+    public abstract Operation in(DoubleSet doubleSet);
 
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
-    public abstract Operation notIn(DoubleSet doubleSet);
+    public abstract Operation notIn(com.gs.collections.api.set.primitive.DoubleSet doubleSet);
 
-    public abstract Operation notIn(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet);
+    public abstract Operation notIn(DoubleSet doubleSet);
 
     public abstract Operation greaterThan(double target);
 
@@ -370,12 +387,12 @@ public abstract class BigDecimalAttribute<T> extends NonPrimitiveAttribute<T, Bi
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
      * Use Eclipse Collections variant of the same API instead.
      **/
-    protected Set<BigDecimal> createBigDecimalSetFromDoubleSet(DoubleSet doubleSet)
+    protected Set<BigDecimal> createBigDecimalSetFromDoubleSet(com.gs.collections.api.set.primitive.DoubleSet doubleSet)
     {
         return BigDecimalUtil.createBigDecimalSetFromDoubleSet(doubleSet, this.getPrecision(), this.getScale());
     }
 
-    protected Set<BigDecimal> createBigDecimalSetFromDoubleSet(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet)
+    protected Set<BigDecimal> createBigDecimalSetFromDoubleSet(DoubleSet doubleSet)
     {
         return BigDecimalUtil.createBigDecimalSetFromDoubleSet(doubleSet, this.getPrecision(), this.getScale());
     }

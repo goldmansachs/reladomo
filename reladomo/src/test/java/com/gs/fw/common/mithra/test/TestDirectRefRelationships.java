@@ -13,15 +13,24 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.fw.common.mithra.test.domain.*;
-import com.gs.fw.common.mithra.MithraManagerProvider;
-import com.gs.fw.common.mithra.TransactionalCommand;
-import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.MithraBusinessException;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraTransaction;
+import com.gs.fw.common.mithra.TransactionalCommand;
+import com.gs.fw.common.mithra.test.domain.DirectRefOrder;
+import com.gs.fw.common.mithra.test.domain.DirectRefOrderFinder;
+import com.gs.fw.common.mithra.test.domain.DirectRefOrderItem;
+import com.gs.fw.common.mithra.test.domain.DirectRefOrderItemFinder;
+import com.gs.fw.common.mithra.test.domain.DirectRefOrderItemList;
+import com.gs.fw.common.mithra.test.domain.DirectRefOrderList;
+import com.gs.fw.common.mithra.test.domain.DirectRefOrderStatus;
+import com.gs.fw.common.mithra.test.domain.OrderItemStatus;
+import com.gs.fw.common.mithra.test.domain.Product;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 
 public class TestDirectRefRelationships extends MithraTestAbstract

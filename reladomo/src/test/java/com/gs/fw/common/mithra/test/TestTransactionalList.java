@@ -17,20 +17,65 @@
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.api.block.procedure.Procedure;
-import com.gs.collections.api.block.procedure.Procedure2;
-import com.gs.collections.api.block.procedure.primitive.ObjectIntProcedure;
-import com.gs.collections.api.iterator.IntIterator;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
-
-import com.gs.collections.api.list.MutableList;
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.MithraException;
+import com.gs.fw.common.mithra.MithraList;
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraTransaction;
+import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.databasetype.H2DatabaseType;
 import com.gs.fw.common.mithra.finder.Operation;
-import com.gs.fw.common.mithra.test.domain.*;
-import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.test.domain.AuditOnlyBalance;
+import com.gs.fw.common.mithra.test.domain.AuditOnlyBalanceFinder;
+import com.gs.fw.common.mithra.test.domain.AuditOnlyBalanceList;
+import com.gs.fw.common.mithra.test.domain.AuditedOrder;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderFinder;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderList;
+import com.gs.fw.common.mithra.test.domain.BitemporalOrder;
+import com.gs.fw.common.mithra.test.domain.BitemporalOrderFinder;
+import com.gs.fw.common.mithra.test.domain.BitemporalOrderList;
+import com.gs.fw.common.mithra.test.domain.Employee;
+import com.gs.fw.common.mithra.test.domain.EmployeeList;
+import com.gs.fw.common.mithra.test.domain.FileDirectory;
+import com.gs.fw.common.mithra.test.domain.FileDirectoryFinder;
+import com.gs.fw.common.mithra.test.domain.FileDirectoryList;
+import com.gs.fw.common.mithra.test.domain.InfinityTimestamp;
+import com.gs.fw.common.mithra.test.domain.NonAuditedBalance;
+import com.gs.fw.common.mithra.test.domain.NonAuditedBalanceFinder;
+import com.gs.fw.common.mithra.test.domain.NonAuditedBalanceList;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItem;
+import com.gs.fw.common.mithra.test.domain.OrderItemFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItemList;
+import com.gs.fw.common.mithra.test.domain.OrderItemStatus;
+import com.gs.fw.common.mithra.test.domain.OrderItemWi;
+import com.gs.fw.common.mithra.test.domain.OrderList;
+import com.gs.fw.common.mithra.test.domain.OrderParentToChildren;
+import com.gs.fw.common.mithra.test.domain.OrderStatus;
+import com.gs.fw.common.mithra.test.domain.OrderStatusWi;
+import com.gs.fw.common.mithra.test.domain.ParaBalance;
+import com.gs.fw.common.mithra.test.domain.TinyBalance;
+import com.gs.fw.common.mithra.test.domain.TinyBalanceFinder;
+import com.gs.fw.common.mithra.test.domain.TinyBalanceList;
+import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.MithraListQueueItem;
+import com.gs.fw.common.mithra.util.MithraMultiThreadedLoader;
+import com.gs.fw.common.mithra.util.MithraMultiThreadedQueueLoader;
+import com.gs.fw.common.mithra.util.MithraRuntimeCacheController;
+import com.gs.fw.common.mithra.util.RenewedCacheStats;
+import org.eclipse.collections.api.block.procedure.Procedure;
+import org.eclipse.collections.api.block.procedure.Procedure2;
+import org.eclipse.collections.api.block.procedure.primitive.ObjectIntProcedure;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1371,34 +1416,11 @@ public class TestTransactionalList extends MithraTestAbstract
 
     }
 
-    public void testGsCollectionsList()
-    {
-        int start = 0xAE4927BE;
-        OrderList list = OrderFinder.findMany(OrderFinder.all());
-        int hash = 0xAE4927BE;
-        for(int i = 0;i<list.size();i++)
-        {
-            hash = HashUtil.combineHashes(hash, list.get(i).getOrderId());
-        }
-        checkForEach(start, OrderFinder.findMany(OrderFinder.all()).asGscList(), hash);
-        checkForEach(start, list.asGscList(), hash);
-        OrderList adhocList = new OrderList(list);
-        checkForEach(start, adhocList.asGscList(), hash);
-        checkForEach(start, list.asGscList(), hash);
-        checkForEach(start, adhocList.asGscList(), hash);
-
-        // non MutableList extras:
-        assertEquals(!adhocList.isEmpty(), adhocList.notEmpty());
-        assertEquals(!list.isEmpty(), list.notEmpty());
-        assertEquals(!list.asGscList().isEmpty(), list.asGscList().notEmpty());
-        assertEquals(!adhocList.asGscList().isEmpty(), adhocList.asGscList().notEmpty());
-    }
-
-    private void checkForEach(int start, MutableList list, int hash)
+    private void checkForEach(int start, com.gs.collections.api.list.MutableList list, int hash)
     {
         final int[] hashArray = new int[1];
         hashArray[0] = start;
-        list.forEach(new Procedure<Order>()
+        list.forEach(new com.gs.collections.api.block.procedure.Procedure<Order>()
         {
             public void value(Order order)
             {
@@ -1407,7 +1429,7 @@ public class TestTransactionalList extends MithraTestAbstract
         });
         assertEquals(hash, hashArray[0]);
         hashArray[0] = start;
-        list.forEachWith(new Procedure2<Order, int[]>()
+        list.forEachWith(new com.gs.collections.api.block.procedure.Procedure2<Order, int[]>()
         {
             public void value(Order order, int[] argument2)
             {
@@ -1416,7 +1438,7 @@ public class TestTransactionalList extends MithraTestAbstract
         }, hashArray);
         assertEquals(hash, hashArray[0]);
         hashArray[0] = start;
-        list.forEachWithIndex(new ObjectIntProcedure<Order>()
+        list.forEachWithIndex(new com.gs.collections.api.block.procedure.primitive.ObjectIntProcedure<Order>()
         {
             public void value(Order order, int index)
             {
@@ -1445,15 +1467,15 @@ public class TestTransactionalList extends MithraTestAbstract
         // non MutableList extras:
         assertEquals(!adhocList.isEmpty(), adhocList.notEmpty());
         assertEquals(!list.isEmpty(), list.notEmpty());
-        assertEquals(!list.asGscList().isEmpty(), list.asGscList().notEmpty());
-        assertEquals(!adhocList.asGscList().isEmpty(), adhocList.asGscList().notEmpty());
+        assertEquals(!list.asEcList().isEmpty(), list.asEcList().notEmpty());
+        assertEquals(!adhocList.asEcList().isEmpty(), adhocList.asEcList().notEmpty());
     }
 
-    private void checkForEach(int start, org.eclipse.collections.api.list.MutableList list, int hash)
+    private void checkForEach(int start, MutableList list, int hash)
     {
         final int[] hashArray = new int[1];
         hashArray[0] = start;
-        list.forEach(new org.eclipse.collections.api.block.procedure.Procedure<Order>()
+        list.forEach(new Procedure<Order>()
         {
             public void value(Order order)
             {
@@ -1462,7 +1484,7 @@ public class TestTransactionalList extends MithraTestAbstract
         });
         assertEquals(hash, hashArray[0]);
         hashArray[0] = start;
-        list.forEachWith(new org.eclipse.collections.api.block.procedure.Procedure2<Order, int[]>()
+        list.forEachWith(new Procedure2<Order, int[]>()
         {
             public void value(Order order, int[] argument2)
             {
@@ -1471,7 +1493,7 @@ public class TestTransactionalList extends MithraTestAbstract
         }, hashArray);
         assertEquals(hash, hashArray[0]);
         hashArray[0] = start;
-        list.forEachWithIndex(new org.eclipse.collections.api.block.procedure.ObjectIntProcedure<Order>()
+        list.forEachWithIndex(new ObjectIntProcedure<Order>()
         {
             public void value(Order order, int index)
             {
@@ -1700,7 +1722,7 @@ public class TestTransactionalList extends MithraTestAbstract
         OrderList orders = OrderFinder.findMany(OrderFinder.all());
         assertFalse(orders.isEmpty());
 
-        MutableList<Order> mutableList = orders.asGscList();
+        MutableList<Order> mutableList = orders.asEcList();
 
         try
         {

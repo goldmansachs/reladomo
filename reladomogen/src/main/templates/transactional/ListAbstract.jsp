@@ -43,9 +43,9 @@ import com.gs.fw.common.mithra.finder.*;
 import com.gs.fw.common.mithra.list.*;
 import com.gs.fw.common.mithra.list.merge.TopLevelMergeOptions;
 import com.gs.fw.finder.OrderBy;
-<% if (isGenerateGscListMethod) { %>
-import com.gs.collections.api.list.MutableList;
-import com.gs.collections.impl.list.mutable.ListAdapter;
+<% if (isGenerateEcListMethod) { %>
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.impl.list.mutable.ListAdapter;
 <% } %>
 <%@  include file="../Import.jspi" %>
 <%@  include file="../DoNotModifyWarning.jspi" %>
@@ -143,9 +143,9 @@ public class <%= className %> extends DelegatingList<<%= wrapper.getClassName() 
      * so mutating methods will throw a RuntimeException.
      * (Implemented by a light-weight adapter, not a copy)
      */
-    public MutableList<<%= wrapper.getClassName() %>> asGscList()
+    public com.gs.collections.api.list.MutableList<<%= wrapper.getClassName() %>> asGscList()
     {
-        return ListAdapter.adapt(this);
+        return com.gs.collections.impl.list.mutable.ListAdapter.adapt(this);
     }
     <% } %>
 

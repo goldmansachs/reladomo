@@ -13,19 +13,20 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.utility.StringIterate;
 import com.gs.fw.common.mithra.test.domain.bcp.TrailingSpaces;
 import com.gs.fw.common.mithra.test.domain.bcp.TrailingSpacesFinder;
 import com.gs.fw.common.mithra.test.domain.bcp.TrailingSpacesList;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
 import junit.framework.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class SybaseTrailingSpacesTest extends SybaseBcpTestAbstract
 {

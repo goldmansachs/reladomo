@@ -17,25 +17,42 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.LongSet;
 import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.FloatProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.IntegerProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.LongProcedure;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapExtractor;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapLongExtractorWithOffset;
+import com.gs.fw.common.mithra.databasetype.DatabaseType;
+import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.AtomicSelfNotEqualityOperation;
+import com.gs.fw.common.mithra.finder.None;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.longop.LongEqOperation;
+import com.gs.fw.common.mithra.finder.longop.LongGreaterThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.longop.LongGreaterThanOperation;
+import com.gs.fw.common.mithra.finder.longop.LongInOperation;
+import com.gs.fw.common.mithra.finder.longop.LongLessThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.longop.LongLessThanOperation;
+import com.gs.fw.common.mithra.finder.longop.LongNotEqOperation;
+import com.gs.fw.common.mithra.finder.longop.LongNotInOperation;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
 import com.gs.fw.common.mithra.util.ColumnInfo;
-import com.gs.fw.common.mithra.databasetype.DatabaseType;
-import com.gs.fw.common.mithra.attribute.calculator.procedure.*;
-import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
-import com.gs.fw.common.mithra.finder.*;
-import com.gs.fw.common.mithra.finder.longop.*;
 import com.gs.fw.common.mithra.util.fileparser.BitsInBytes;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarInStream;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarOutStream;
+import org.eclipse.collections.api.set.primitive.LongSet;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.ObjectStreamException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,7 +60,6 @@ import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.math.BigDecimal;
 
 
 public abstract class SingleColumnLongAttribute<T> extends LongAttribute<T> implements VersionAttribute<T>, SequenceAttribute<T>
@@ -112,7 +128,7 @@ public abstract class SingleColumnLongAttribute<T> extends LongAttribute<T> impl
      **/
     @Deprecated
     @Override
-    public Operation in(LongSet set)
+    public Operation in(com.gs.collections.api.set.primitive.LongSet set)
     {
         Operation op;
         switch (set.size())
@@ -132,7 +148,7 @@ public abstract class SingleColumnLongAttribute<T> extends LongAttribute<T> impl
     }
 
     @Override
-    public Operation in(org.eclipse.collections.api.set.primitive.LongSet set)
+    public Operation in(LongSet set)
     {
         Operation op;
         switch (set.size())
@@ -157,7 +173,7 @@ public abstract class SingleColumnLongAttribute<T> extends LongAttribute<T> impl
      **/
     @Deprecated
     @Override
-    public Operation notIn(LongSet set)
+    public Operation notIn(com.gs.collections.api.set.primitive.LongSet set)
     {
         Operation op;
         switch (set.size())
@@ -177,7 +193,7 @@ public abstract class SingleColumnLongAttribute<T> extends LongAttribute<T> impl
     }
 
     @Override
-    public Operation notIn(org.eclipse.collections.api.set.primitive.LongSet set)
+    public Operation notIn(LongSet set)
     {
         Operation op;
         switch (set.size())

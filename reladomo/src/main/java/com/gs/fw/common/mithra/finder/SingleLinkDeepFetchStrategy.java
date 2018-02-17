@@ -13,23 +13,28 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder;
 
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.gs.fw.common.mithra.MithraList;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.finder.asofop.AsOfEqOperation;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
-import com.gs.fw.common.mithra.list.DelegatingList;
 import com.gs.fw.common.mithra.querycache.CachedQuery;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
 import com.gs.fw.common.mithra.util.ListFactory;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public abstract class SingleLinkDeepFetchStrategy extends DeepFetchStrategy

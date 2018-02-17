@@ -22,7 +22,7 @@
 
     <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
     <ClassName>AuditedOrder</ClassName>
-    <Import>com.gs.collections.impl.set.mutable.primitive.IntHashSet</Import>
+    <Import>org.eclipse.collections.impl.set.mutable.primitive.IntHashSet</Import>
     <DefaultTable>AUDITED_ORDER</DefaultTable>
 
     <MithraInterface>OrderItemRelationInterface</MithraInterface>

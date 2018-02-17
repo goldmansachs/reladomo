@@ -13,16 +13,29 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
+
 package com.gs.fw.common.mithra.test.util;
 
-import com.gs.collections.impl.factory.Sets;
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.test.MithraTestAbstract;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItem;
+import com.gs.fw.common.mithra.test.domain.OrderItemList;
+import com.gs.fw.common.mithra.test.domain.OrderList;
+import com.gs.fw.common.mithra.test.domain.OrderStatus;
+import com.gs.fw.common.mithra.test.domain.OrderStatusList;
+import com.gs.fw.common.mithra.test.domain.Player;
+import com.gs.fw.common.mithra.test.domain.PlayerList;
+import com.gs.fw.common.mithra.test.domain.Team;
+import com.gs.fw.common.mithra.test.domain.TeamFinder;
+import com.gs.fw.common.mithra.test.domain.TeamList;
 import com.gs.fw.common.mithra.util.MultiThreadedBatchProcessor;
 import com.gs.fw.finder.Navigation;
+import org.eclipse.collections.impl.factory.Sets;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 import java.sql.Timestamp;
 import java.util.List;

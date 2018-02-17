@@ -17,8 +17,8 @@
 
 package com.gs.fw.finder.attribute;
 
-import com.gs.collections.api.set.primitive.FloatSet;
 import com.gs.fw.finder.Operation;
+import org.eclipse.collections.api.set.primitive.FloatSet;
 
 
 public interface FloatAttribute<Owner> extends NumericAttribute<Owner>
@@ -40,18 +40,18 @@ public interface FloatAttribute<Owner> extends NumericAttribute<Owner>
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
-    public Operation<Owner> in(FloatSet floatSet);
+    public Operation<Owner> in(com.gs.collections.api.set.primitive.FloatSet floatSet);
 
-    public Operation<Owner> in(org.eclipse.collections.api.set.primitive.FloatSet floatSet);
+    public Operation<Owner> in(FloatSet floatSet);
 
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
-    public Operation<Owner> notIn(FloatSet floatSet);
+    public Operation<Owner> notIn(com.gs.collections.api.set.primitive.FloatSet floatSet);
 
-    public Operation<Owner> notIn(org.eclipse.collections.api.set.primitive.FloatSet floatSet);
+    public Operation<Owner> notIn(FloatSet floatSet);
 
     public FloatAttribute<Owner> plus(ByteAttribute addend);
     public FloatAttribute<Owner> plus(ShortAttribute addend);

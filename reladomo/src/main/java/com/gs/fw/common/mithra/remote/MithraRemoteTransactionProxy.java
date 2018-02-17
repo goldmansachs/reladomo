@@ -14,14 +14,15 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.remote;
 
-import com.gs.fw.common.mithra.list.DelegatingList;
-import com.gs.fw.common.mithra.util.InternalList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.MithraDatabaseException;
+import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.MithraTransactionException;
+import com.gs.fw.common.mithra.MithraTransactionalObject;
+import com.gs.fw.common.mithra.TransactionLifeCycleListener;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.update.AttributeUpdateWrapper;
 import com.gs.fw.common.mithra.cache.Cache;
@@ -29,7 +30,10 @@ import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.notification.MithraNotificationEvent;
 import com.gs.fw.common.mithra.portal.MithraTransactionalPortal;
 import com.gs.fw.common.mithra.transaction.MithraLocalTransaction;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
+import com.gs.fw.common.mithra.util.InternalList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.transaction.RollbackException;
 import javax.transaction.Status;
@@ -38,7 +42,10 @@ import javax.transaction.SystemException;
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 
 public class MithraRemoteTransactionProxy extends MithraLocalTransaction

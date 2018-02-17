@@ -16,31 +16,51 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.procedure.primitive.ObjectIntProcedure;
-import com.gs.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.TimestampProcedure;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapExtractor;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapTimestampExtractorWithOffset;
+import com.gs.fw.common.mithra.databasetype.DatabaseType;
+import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.AtomicSelfNotEqualityOperation;
+import com.gs.fw.common.mithra.finder.MappedOperation;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.timestamp.TimestampAsOfEqualityMapper;
+import com.gs.fw.common.mithra.finder.timestamp.TimestampEqOperation;
+import com.gs.fw.common.mithra.finder.timestamp.TimestampGreaterThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.timestamp.TimestampGreaterThanOperation;
+import com.gs.fw.common.mithra.finder.timestamp.TimestampInOperation;
+import com.gs.fw.common.mithra.finder.timestamp.TimestampLessThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.timestamp.TimestampLessThanOperation;
+import com.gs.fw.common.mithra.finder.timestamp.TimestampNotEqOperation;
+import com.gs.fw.common.mithra.finder.timestamp.TimestampNotInOperation;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
 import com.gs.fw.common.mithra.util.ColumnInfo;
-import com.gs.fw.common.mithra.databasetype.DatabaseType;
-import com.gs.fw.common.mithra.attribute.calculator.procedure.TimestampProcedure;
-import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
-import com.gs.fw.common.mithra.finder.*;
-import com.gs.fw.common.mithra.finder.timestamp.*;
 import com.gs.fw.common.mithra.util.ImmutableTimestamp;
 import com.gs.fw.common.mithra.util.MithraTimestamp;
 import com.gs.fw.common.mithra.util.fileparser.BitsInBytes;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarInStream;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarOutStream;
+import org.eclipse.collections.api.block.procedure.primitive.ObjectIntProcedure;
+import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.ObjectStreamException;
 import java.io.OutputStream;
-import java.sql.*;
-import java.util.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TimeZone;
 
 
 public abstract class SingleColumnTimestampAttribute<Owner> extends TimestampAttribute<Owner> implements SingleColumnAttribute<Owner>, VersionAttribute<Owner>

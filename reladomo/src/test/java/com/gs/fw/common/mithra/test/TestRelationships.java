@@ -13,32 +13,118 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-
-import com.gs.collections.api.block.function.Function;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.cache.CacheClock;
-import com.gs.fw.common.mithra.finder.*;
-import com.gs.fw.common.mithra.test.domain.*;
-import com.gs.fw.common.mithra.test.glew.*;
+import com.gs.fw.common.mithra.finder.DeepRelationshipAttribute;
+import com.gs.fw.common.mithra.finder.None;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.test.domain.Account;
+import com.gs.fw.common.mithra.test.domain.AccountFinder;
+import com.gs.fw.common.mithra.test.domain.AccountList;
+import com.gs.fw.common.mithra.test.domain.AuditedTree;
+import com.gs.fw.common.mithra.test.domain.AuditedTreeFinder;
+import com.gs.fw.common.mithra.test.domain.AuditedTreeList;
+import com.gs.fw.common.mithra.test.domain.BitemporalOrder;
+import com.gs.fw.common.mithra.test.domain.BitemporalOrderFinder;
+import com.gs.fw.common.mithra.test.domain.BitemporalOrderItem;
+import com.gs.fw.common.mithra.test.domain.BitemporalOrderItemList;
+import com.gs.fw.common.mithra.test.domain.BitemporalOrderList;
+import com.gs.fw.common.mithra.test.domain.BitemporalProductCategory;
+import com.gs.fw.common.mithra.test.domain.BitemporalProductCategoryList;
+import com.gs.fw.common.mithra.test.domain.Book;
+import com.gs.fw.common.mithra.test.domain.BookFinder;
+import com.gs.fw.common.mithra.test.domain.BookList;
+import com.gs.fw.common.mithra.test.domain.ExchangeRate;
+import com.gs.fw.common.mithra.test.domain.ExchangeRateChild;
+import com.gs.fw.common.mithra.test.domain.ExchangeRateFinder;
+import com.gs.fw.common.mithra.test.domain.ExchangeRateList;
+import com.gs.fw.common.mithra.test.domain.Group;
+import com.gs.fw.common.mithra.test.domain.GroupFinder;
+import com.gs.fw.common.mithra.test.domain.GroupList;
+import com.gs.fw.common.mithra.test.domain.GsDesk;
+import com.gs.fw.common.mithra.test.domain.GsDeskFinder;
+import com.gs.fw.common.mithra.test.domain.Location;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItem;
+import com.gs.fw.common.mithra.test.domain.OrderItemFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItemList;
+import com.gs.fw.common.mithra.test.domain.OrderItemStatus;
+import com.gs.fw.common.mithra.test.domain.OrderItemStatusFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItemWi;
+import com.gs.fw.common.mithra.test.domain.OrderItemWiFinder;
+import com.gs.fw.common.mithra.test.domain.OrderList;
+import com.gs.fw.common.mithra.test.domain.OrderParentToChildren;
+import com.gs.fw.common.mithra.test.domain.OrderStatus;
+import com.gs.fw.common.mithra.test.domain.OrderStatusFinder;
+import com.gs.fw.common.mithra.test.domain.OrderStatusList;
+import com.gs.fw.common.mithra.test.domain.OrderStatusWi;
+import com.gs.fw.common.mithra.test.domain.OrderWi;
+import com.gs.fw.common.mithra.test.domain.OrderWiFinder;
+import com.gs.fw.common.mithra.test.domain.Product;
+import com.gs.fw.common.mithra.test.domain.ProductFinder;
+import com.gs.fw.common.mithra.test.domain.ProductList;
+import com.gs.fw.common.mithra.test.domain.ProductSynonym;
+import com.gs.fw.common.mithra.test.domain.Profile;
+import com.gs.fw.common.mithra.test.domain.ProfileFinder;
+import com.gs.fw.common.mithra.test.domain.ProfileList;
+import com.gs.fw.common.mithra.test.domain.SelfJoinConstant;
+import com.gs.fw.common.mithra.test.domain.SelfJoinConstantFinder;
+import com.gs.fw.common.mithra.test.domain.SelfJoinConstantList;
+import com.gs.fw.common.mithra.test.domain.Supplier;
+import com.gs.fw.common.mithra.test.domain.SupplierInventoryItem;
+import com.gs.fw.common.mithra.test.domain.SupplierInventoryItemList;
+import com.gs.fw.common.mithra.test.domain.SupplierList;
+import com.gs.fw.common.mithra.test.domain.TestAsOfToTimestampJoinObjectA;
+import com.gs.fw.common.mithra.test.domain.TestAsOfToTimestampJoinObjectAFinder;
+import com.gs.fw.common.mithra.test.domain.TestAsOfToTimestampJoinObjectB;
+import com.gs.fw.common.mithra.test.domain.TestAsOfToTimestampJoinObjectBFinder;
+import com.gs.fw.common.mithra.test.domain.TestBankingDealDetailImpl;
+import com.gs.fw.common.mithra.test.domain.TestCheckGsDesk;
+import com.gs.fw.common.mithra.test.domain.TestConflictCheckImpl;
+import com.gs.fw.common.mithra.test.domain.TestConflictCheckImplFinder;
+import com.gs.fw.common.mithra.test.domain.TestConflictCheckImplList;
+import com.gs.fw.common.mithra.test.domain.TestNonAcquisitionDealDetail;
+import com.gs.fw.common.mithra.test.domain.TestSecuritiesDealDetailImpl;
+import com.gs.fw.common.mithra.test.domain.TestSecuritiesDealDetailImplFinder;
+import com.gs.fw.common.mithra.test.domain.TestSecuritiesDealDetailImplList;
+import com.gs.fw.common.mithra.test.domain.TestSellSideDealDetail;
+import com.gs.fw.common.mithra.test.domain.Trial;
+import com.gs.fw.common.mithra.test.domain.TrialFinder;
+import com.gs.fw.common.mithra.test.domain.User;
+import com.gs.fw.common.mithra.test.domain.UserFinder;
+import com.gs.fw.common.mithra.test.domain.UserGroup;
+import com.gs.fw.common.mithra.test.domain.UserList;
+import com.gs.fw.common.mithra.test.glew.LewContract;
+import com.gs.fw.common.mithra.test.glew.LewContractFinder;
+import com.gs.fw.common.mithra.test.glew.LewContractList;
+import com.gs.fw.common.mithra.test.glew.LewTransaction;
+import com.gs.fw.common.mithra.test.glew.LewTransactionFinder;
 import com.gs.fw.common.mithra.test.util.Log4JRecordingAppender;
 import com.gs.fw.common.mithra.util.MithraPerformanceData;
+import org.apache.log4j.spi.LoggingEvent;
+import org.eclipse.collections.api.block.function.Function;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
-
-import org.apache.log4j.spi.LoggingEvent;
 
 public class TestRelationships extends MithraTestAbstract
 {

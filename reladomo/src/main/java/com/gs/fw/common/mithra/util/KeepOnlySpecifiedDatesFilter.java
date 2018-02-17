@@ -13,13 +13,14 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.util;
 
-import com.gs.collections.api.block.predicate.primitive.LongPredicate;
-import com.gs.collections.api.set.primitive.MutableLongSet;
-import com.gs.collections.impl.set.mutable.primitive.LongHashSet;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
+import org.eclipse.collections.api.block.predicate.primitive.LongPredicate;
+import org.eclipse.collections.api.set.primitive.MutableLongSet;
+import org.eclipse.collections.impl.set.mutable.primitive.LongHashSet;
 
 import java.sql.Timestamp;
 import java.util.Arrays;

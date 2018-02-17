@@ -13,23 +13,34 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.transaction;
 
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.fw.common.mithra.*;
-import com.gs.fw.common.mithra.attribute.*;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraDatabaseException;
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.MithraTransaction;
+import com.gs.fw.common.mithra.MithraTransactionalObject;
+import com.gs.fw.common.mithra.attribute.AsOfAttribute;
+import com.gs.fw.common.mithra.attribute.Attribute;
+import com.gs.fw.common.mithra.attribute.SingleColumnAttribute;
+import com.gs.fw.common.mithra.attribute.TimestampAttribute;
+import com.gs.fw.common.mithra.attribute.VersionAttribute;
 import com.gs.fw.common.mithra.attribute.update.AttributeUpdateWrapper;
 import com.gs.fw.common.mithra.behavior.txparticipation.MithraOptimisticLockException;
 import com.gs.fw.common.mithra.cache.FullUniqueIndex;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.util.MithraFastList;
+import org.eclipse.collections.impl.list.mutable.FastList;
 import org.slf4j.Logger;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.List;
+import java.util.TimeZone;
 
 public class MultiUpdateOperation extends TransactionOperation
 {

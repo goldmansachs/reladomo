@@ -17,34 +17,46 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.FloatSet;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.FloatProcedure;
-import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapExtractor;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapFloatExtractorWithOffset;
-import com.gs.fw.common.mithra.finder.*;
-import com.gs.fw.common.mithra.finder.floatop.*;
-import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
-import com.gs.fw.common.mithra.util.ColumnInfo;
+import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.AtomicSelfNotEqualityOperation;
+import com.gs.fw.common.mithra.finder.None;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.floatop.FloatEqOperation;
+import com.gs.fw.common.mithra.finder.floatop.FloatGreaterThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.floatop.FloatGreaterThanOperation;
+import com.gs.fw.common.mithra.finder.floatop.FloatInOperation;
+import com.gs.fw.common.mithra.finder.floatop.FloatLessThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.floatop.FloatLessThanOperation;
+import com.gs.fw.common.mithra.finder.floatop.FloatNotEqOperation;
+import com.gs.fw.common.mithra.finder.floatop.FloatNotInOperation;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
+import com.gs.fw.common.mithra.util.ColumnInfo;
 import com.gs.fw.common.mithra.util.fileparser.BitsInBytes;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarInStream;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarOutStream;
+import org.eclipse.collections.api.set.primitive.FloatSet;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.ObjectStreamException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.sql.Types;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.math.BigDecimal;
 
 
 public abstract class SingleColumnFloatAttribute<T> extends FloatAttribute<T> implements SingleColumnAttribute<T>
@@ -112,7 +124,7 @@ public abstract class SingleColumnFloatAttribute<T> extends FloatAttribute<T> im
      **/
     @Deprecated
     @Override
-    public Operation in(FloatSet floatSet)
+    public Operation in(com.gs.collections.api.set.primitive.FloatSet floatSet)
     {
         Operation op;
         switch (floatSet.size())
@@ -131,7 +143,7 @@ public abstract class SingleColumnFloatAttribute<T> extends FloatAttribute<T> im
     }
 
     @Override
-    public Operation in(org.eclipse.collections.api.set.primitive.FloatSet floatSet)
+    public Operation in(FloatSet floatSet)
     {
         Operation op;
         switch (floatSet.size())
@@ -155,7 +167,7 @@ public abstract class SingleColumnFloatAttribute<T> extends FloatAttribute<T> im
      **/
     @Deprecated
     @Override
-    public Operation notIn(FloatSet floatSet)
+    public Operation notIn(com.gs.collections.api.set.primitive.FloatSet floatSet)
     {
         Operation op;
         switch (floatSet.size())
@@ -174,7 +186,7 @@ public abstract class SingleColumnFloatAttribute<T> extends FloatAttribute<T> im
     }
 
     @Override
-    public Operation notIn(org.eclipse.collections.api.set.primitive.FloatSet floatSet)
+    public Operation notIn(FloatSet floatSet)
     {
         Operation op;
         switch (floatSet.size())

@@ -17,19 +17,32 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.FloatSet;
 import com.gs.fw.common.mithra.MithraDataObject;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.calculator.NumericAttributeCalculator;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.FloatProcedure;
-import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.extractor.FloatExtractor;
-import com.gs.fw.common.mithra.finder.*;
-import com.gs.fw.common.mithra.finder.floatop.*;
+import com.gs.fw.common.mithra.finder.AggregateSqlQuery;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.EqualityMapper;
+import com.gs.fw.common.mithra.finder.None;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.ToStringContext;
+import com.gs.fw.common.mithra.finder.floatop.FloatEqOperation;
+import com.gs.fw.common.mithra.finder.floatop.FloatGreaterThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.floatop.FloatGreaterThanOperation;
+import com.gs.fw.common.mithra.finder.floatop.FloatInOperation;
+import com.gs.fw.common.mithra.finder.floatop.FloatLessThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.floatop.FloatLessThanOperation;
+import com.gs.fw.common.mithra.finder.floatop.FloatNotEqOperation;
+import com.gs.fw.common.mithra.finder.floatop.FloatNotInOperation;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.util.HashUtil;
+import org.eclipse.collections.api.set.primitive.FloatSet;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -242,7 +255,7 @@ public class CalculatedFloatAttribute<T> extends FloatAttribute<T>
      **/
     @Deprecated
     @Override
-    public Operation in(FloatSet floatSet)
+    public Operation in(com.gs.collections.api.set.primitive.FloatSet floatSet)
     {
         Operation op;
         switch (floatSet.size())
@@ -262,7 +275,7 @@ public class CalculatedFloatAttribute<T> extends FloatAttribute<T>
     }
 
     @Override
-    public Operation in(org.eclipse.collections.api.set.primitive.FloatSet floatSet)
+    public Operation in(FloatSet floatSet)
     {
         Operation op;
         switch (floatSet.size())
@@ -287,7 +300,7 @@ public class CalculatedFloatAttribute<T> extends FloatAttribute<T>
      **/
     @Deprecated
     @Override
-    public Operation notIn(FloatSet floatSet)
+    public Operation notIn(com.gs.collections.api.set.primitive.FloatSet floatSet)
     {
         Operation op;
         switch (floatSet.size())
@@ -307,7 +320,7 @@ public class CalculatedFloatAttribute<T> extends FloatAttribute<T>
     }
 
     @Override
-    public Operation notIn(org.eclipse.collections.api.set.primitive.FloatSet floatSet)
+    public Operation notIn(FloatSet floatSet)
     {
         Operation op;
         switch (floatSet.size())

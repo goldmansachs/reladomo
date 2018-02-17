@@ -17,31 +17,44 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.DoubleSet;
-import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.FloatProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.IntegerProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.LongProcedure;
+import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
+import com.gs.fw.common.mithra.finder.AtomicSelfNotEqualityOperation;
+import com.gs.fw.common.mithra.finder.NonPrimitiveEqOperation;
+import com.gs.fw.common.mithra.finder.NonPrimitiveNotEqOperation;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.finder.SqlQuery;
 import com.gs.fw.common.mithra.finder.bigdecimal.BigDecimalGreaterThanEqualsOperation;
 import com.gs.fw.common.mithra.finder.bigdecimal.BigDecimalGreaterThanOperation;
 import com.gs.fw.common.mithra.finder.bigdecimal.BigDecimalLessThanEqualsOperation;
 import com.gs.fw.common.mithra.finder.bigdecimal.BigDecimalLessThanOperation;
-import com.gs.fw.common.mithra.util.ColumnInfo;
-import com.gs.fw.common.mithra.databasetype.DatabaseType;
-import com.gs.fw.common.mithra.attribute.calculator.procedure.*;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
+import com.gs.fw.common.mithra.util.ColumnInfo;
 import com.gs.fw.common.mithra.util.fileparser.BitsInBytes;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarInStream;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarOutStream;
+import org.eclipse.collections.api.set.primitive.DoubleSet;
 import org.slf4j.Logger;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.sql.Types;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 
 public abstract class SingleColumnBigDecimalAttribute<T> extends BigDecimalAttribute<T> implements SingleColumnAttribute<T>
@@ -151,13 +164,13 @@ public abstract class SingleColumnBigDecimalAttribute<T> extends BigDecimalAttri
      **/
     @Deprecated
     @Override
-    public Operation in(DoubleSet doubleSet)
+    public Operation in(com.gs.collections.api.set.primitive.DoubleSet doubleSet)
     {
         return this.in(createBigDecimalSetFromDoubleSet(doubleSet));
     }
 
     @Override
-    public Operation in(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet)
+    public Operation in(DoubleSet doubleSet)
     {
         return this.in(createBigDecimalSetFromDoubleSet(doubleSet));
     }
@@ -168,13 +181,13 @@ public abstract class SingleColumnBigDecimalAttribute<T> extends BigDecimalAttri
      **/
     @Deprecated
     @Override
-    public Operation notIn(DoubleSet doubleSet)
+    public Operation notIn(com.gs.collections.api.set.primitive.DoubleSet doubleSet)
     {
         return this.notIn(createBigDecimalSetFromDoubleSet(doubleSet));
     }
 
     @Override
-    public Operation notIn(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet)
+    public Operation notIn(DoubleSet doubleSet)
     {
         return this.notIn(createBigDecimalSetFromDoubleSet(doubleSet));
     }

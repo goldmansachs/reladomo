@@ -17,7 +17,6 @@
 
 package com.gs.reladomo.metadata;
 
-import com.gs.collections.impl.map.mutable.ConcurrentHashMap;
 import com.gs.fw.common.mithra.MithraException;
 import com.gs.fw.common.mithra.MithraList;
 import com.gs.fw.common.mithra.MithraObject;
@@ -30,7 +29,7 @@ import com.gs.fw.common.mithra.extractor.Function;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.list.DelegatingList;
 import com.gs.fw.common.mithra.util.ReflectionMethodCache;
-import com.gs.fw.common.mithra.util.serializer.DeserializationClassMetaData;
+import org.eclipse.collections.impl.map.mutable.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -13,15 +13,30 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.set.mutable.primitive.*;
 import com.gs.fw.common.mithra.MithraManager;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.finder.Operation;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.DifferentDataTypes;
+import com.gs.fw.common.mithra.test.domain.DifferentDataTypesFinder;
+import com.gs.fw.common.mithra.test.domain.DifferentDataTypesList;
+import com.gs.fw.common.mithra.test.domain.MappedDifferentDataTypes;
+import com.gs.fw.common.mithra.test.domain.TamsMithraAccount;
+import com.gs.fw.common.mithra.test.domain.TamsMithraAccountFinder;
+import com.gs.fw.common.mithra.test.domain.VariousTypes;
+import com.gs.fw.common.mithra.test.domain.VariousTypesFinder;
 import com.gs.fw.common.mithra.test.domain.dated.TestTamsMithraTrial;
+import org.eclipse.collections.impl.set.mutable.primitive.BooleanHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.ByteHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.CharHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.DoubleHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.FloatHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.LongHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.ShortHashSet;
 
 import java.sql.SQLException;
 

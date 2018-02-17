@@ -14,12 +14,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.databasetype;
 
-import com.gs.collections.impl.map.mutable.primitive.IntIntHashMap;
-import com.gs.collections.impl.map.mutable.primitive.IntObjectHashMap;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.Attribute;
@@ -35,6 +33,9 @@ import com.gs.fw.common.mithra.util.MithraFastList;
 import com.gs.fw.common.mithra.util.MithraTimestamp;
 import com.gs.fw.common.mithra.util.TableColumnInfo;
 import com.gs.fw.common.mithra.util.Time;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.joda.time.DateTimeZone;
 import org.joda.time.chrono.ISOChronology;
 import org.slf4j.Logger;
@@ -44,8 +45,23 @@ import javax.sql.DataSource;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.TimeZone;
 
 
 public class SybaseDatabaseType extends AbstractDatabaseType

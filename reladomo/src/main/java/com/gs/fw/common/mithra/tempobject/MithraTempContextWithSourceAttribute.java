@@ -13,13 +13,19 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.tempobject;
 
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.MithraTransaction;
+import com.gs.fw.common.mithra.TemporaryContext;
+import com.gs.fw.common.mithra.TransactionLifeCycleListener;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.util.Filter;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 
 public class MithraTempContextWithSourceAttribute extends AbstractMithraTemporaryContext

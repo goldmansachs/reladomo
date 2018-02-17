@@ -13,17 +13,17 @@
   specific language governing permissions and limitations
   under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.reladomo.jms;
 
-import java.util.Arrays;
+import org.eclipse.collections.api.block.procedure.Procedure;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import javax.transaction.xa.XAException;
 import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
-
-import com.gs.collections.api.block.procedure.Procedure;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
+import java.util.Arrays;
 
 public class InMemoryXaResource implements XAResource
 {

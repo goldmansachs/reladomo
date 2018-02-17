@@ -14,16 +14,20 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
 import com.gs.fw.common.mithra.MithraDatabaseObject;
+import com.gs.fw.common.mithra.connectionmanager.XAConnectionManager;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.IOException;
-import java.util.*;
-
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import com.gs.fw.common.mithra.connectionmanager.XAConnectionManager;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 
 public abstract class AbstractMithraTestConnectionManager implements MithraTestConnectionManager
 {

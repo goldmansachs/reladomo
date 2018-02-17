@@ -17,10 +17,10 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.DoubleSet;
-import com.gs.collections.api.set.primitive.MutableDoubleSet;
-import com.gs.collections.impl.set.mutable.primitive.DoubleHashSet;
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.AggregateData;
+import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraNullPrimitiveException;
 import com.gs.fw.common.mithra.aggregate.attribute.DoubleAggregateAttribute;
 import com.gs.fw.common.mithra.attribute.calculator.AbsoluteValueCalculatorDouble;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.AverageCalculatorNumeric;
@@ -47,9 +47,15 @@ import com.gs.fw.common.mithra.finder.None;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.orderby.DoubleOrderBy;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
-import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.MutableDouble;
+import com.gs.fw.common.mithra.util.MutableNumber;
+import com.gs.fw.common.mithra.util.Nullable;
 import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
 import com.gs.fw.common.mithra.util.serializer.SerialWriter;
+import org.eclipse.collections.api.set.primitive.DoubleSet;
+import org.eclipse.collections.api.set.primitive.MutableDoubleSet;
+import org.eclipse.collections.impl.set.mutable.primitive.DoubleHashSet;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -91,10 +97,10 @@ public abstract class DoubleAttribute<T> extends PrimitiveNumericAttribute<T, Do
      **/
     @Deprecated
     @Override
-    public abstract Operation in(DoubleSet doubleSet);
+    public abstract Operation in(com.gs.collections.api.set.primitive.DoubleSet doubleSet);
 
     @Override
-    public abstract Operation in(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet);
+    public abstract Operation in(DoubleSet doubleSet);
 
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
@@ -102,10 +108,10 @@ public abstract class DoubleAttribute<T> extends PrimitiveNumericAttribute<T, Do
      **/
     @Deprecated
     @Override
-    public abstract Operation notIn(DoubleSet doubleSet);
+    public abstract Operation notIn(com.gs.collections.api.set.primitive.DoubleSet doubleSet);
 
     @Override
-    public abstract Operation notIn(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet);
+    public abstract Operation notIn(DoubleSet doubleSet);
 
     public abstract Operation greaterThan(double target);
 

@@ -13,20 +13,19 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder;
 
 import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.util.InternalList;
 import com.gs.fw.common.mithra.util.StatisticCounter;
 import com.gs.fw.finder.Navigation;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.gs.fw.common.mithra.MithraList;
-import com.gs.fw.common.mithra.util.InternalList;
 
-import com.gs.collections.impl.list.mutable.FastList;
 import java.util.List;
+import java.util.Map;
 
 
 

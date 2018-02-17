@@ -17,7 +17,6 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.DoubleSet;
 import com.gs.fw.common.mithra.MithraDataObject;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.calculator.NumericAttributeCalculator;
@@ -25,13 +24,20 @@ import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedur
 import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
 import com.gs.fw.common.mithra.extractor.BigDecimalExtractor;
 import com.gs.fw.common.mithra.extractor.Extractor;
-import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.AggregateSqlQuery;
+import com.gs.fw.common.mithra.finder.EqualityMapper;
+import com.gs.fw.common.mithra.finder.NonPrimitiveEqOperation;
+import com.gs.fw.common.mithra.finder.NonPrimitiveNotEqOperation;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.ToStringContext;
 import com.gs.fw.common.mithra.finder.bigdecimal.BigDecimalGreaterThanEqualsOperation;
 import com.gs.fw.common.mithra.finder.bigdecimal.BigDecimalGreaterThanOperation;
 import com.gs.fw.common.mithra.finder.bigdecimal.BigDecimalLessThanEqualsOperation;
 import com.gs.fw.common.mithra.finder.bigdecimal.BigDecimalLessThanOperation;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.util.HashUtil;
+import org.eclipse.collections.api.set.primitive.DoubleSet;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -272,13 +278,13 @@ public class CalculatedBigDecimalAttribute<T> extends BigDecimalAttribute<T>  im
      **/
     @Deprecated
     @Override
-    public Operation in(DoubleSet doubleSet)
+    public Operation in(com.gs.collections.api.set.primitive.DoubleSet doubleSet)
     {
        return this.in(createBigDecimalSetFromDoubleSet(doubleSet));
     }
 
     @Override
-    public Operation in(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet)
+    public Operation in(DoubleSet doubleSet)
     {
        return this.in(createBigDecimalSetFromDoubleSet(doubleSet));
     }
@@ -289,13 +295,13 @@ public class CalculatedBigDecimalAttribute<T> extends BigDecimalAttribute<T>  im
      **/
     @Deprecated
     @Override
-    public Operation notIn(DoubleSet doubleSet)
+    public Operation notIn(com.gs.collections.api.set.primitive.DoubleSet doubleSet)
     {
         return this.notIn(createBigDecimalSetFromDoubleSet(doubleSet));
     }
 
     @Override
-    public Operation notIn(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet)
+    public Operation notIn(DoubleSet doubleSet)
     {
         return this.notIn(createBigDecimalSetFromDoubleSet(doubleSet));
     }

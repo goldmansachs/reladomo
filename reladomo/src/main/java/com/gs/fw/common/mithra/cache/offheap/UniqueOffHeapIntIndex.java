@@ -13,13 +13,14 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.cache.offheap;
 
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.IntegerProcedure;
 import com.gs.fw.common.mithra.util.DoUntilProcedure;
 import com.gs.fw.common.mithra.util.Filter2;
+import org.eclipse.collections.impl.list.mutable.FastList;
 
 import java.util.List;
 

@@ -13,18 +13,30 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.set.mutable.primitive.DoubleHashSet;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.attribute.IntegerAttribute;
 import com.gs.fw.common.mithra.attribute.StringAttribute;
 import com.gs.fw.common.mithra.finder.MappedOperation;
 import com.gs.fw.common.mithra.finder.Mapper;
 import com.gs.fw.common.mithra.finder.Operation;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.AuditedOrder;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderFinder;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderList;
+import com.gs.fw.common.mithra.test.domain.Book;
+import com.gs.fw.common.mithra.test.domain.BookFinder;
+import com.gs.fw.common.mithra.test.domain.BookList;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItem;
+import com.gs.fw.common.mithra.test.domain.OrderItemFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItemList;
+import com.gs.fw.common.mithra.test.domain.OrderList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.set.mutable.primitive.DoubleHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 import java.util.Set;
 

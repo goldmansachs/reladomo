@@ -13,14 +13,21 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.util;
 
-import com.gs.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.list.mutable.FastList;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 
 public class MithraCompositeList<E>

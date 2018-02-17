@@ -13,19 +13,30 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.notification;
 
-import com.gs.collections.impl.factory.Maps;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraDatabaseObject;
+import com.gs.fw.common.mithra.MithraManager;
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraTransaction;
+import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.notification.replication.ReplicatedTransaction;
 import com.gs.fw.common.mithra.notification.replication.ReplicationNotificationConnectionManager;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.factory.Maps;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;

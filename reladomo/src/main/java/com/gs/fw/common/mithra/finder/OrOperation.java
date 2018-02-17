@@ -14,23 +14,34 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.cache.ConcurrentFullUniqueIndex;
 import com.gs.fw.common.mithra.cache.ExtractorBasedHashStrategy;
 import com.gs.fw.common.mithra.cache.FullUniqueIndex;
-import com.gs.fw.common.mithra.finder.sqcache.*;
+import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchRequiresExactSmr;
+import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
+import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
+import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
-import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.CpuBoundTask;
+import com.gs.fw.common.mithra.util.FixedCountTaskFactory;
+import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.InternalList;
+import com.gs.fw.common.mithra.util.MithraCompositeList;
+import com.gs.fw.common.mithra.util.MithraCpuBoundThreadPool;
+import com.gs.fw.common.mithra.util.MithraFastList;
+import org.eclipse.collections.impl.list.mutable.FastList;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class OrOperation implements Operation
 {

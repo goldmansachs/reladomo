@@ -17,9 +17,6 @@
 
 package com.gs.fw.common.mithra.finder.charop;
 
-import com.gs.collections.api.iterator.CharIterator;
-import com.gs.collections.api.set.primitive.CharSet;
-import com.gs.collections.impl.factory.primitive.CharSets;
 import com.gs.fw.common.mithra.attribute.CharAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.CharExtractor;
@@ -33,6 +30,10 @@ import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.util.HashUtil;
+import org.eclipse.collections.api.iterator.CharIterator;
+import org.eclipse.collections.api.set.primitive.CharSet;
+import org.eclipse.collections.impl.factory.primitive.CharSets;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -51,16 +52,16 @@ public class CharInOperation extends InOperation implements SqlParameterSetter
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
-    public CharInOperation(CharAttribute attribute, CharSet charSet)
+    public CharInOperation(CharAttribute attribute, com.gs.collections.api.set.primitive.CharSet charSet)
     {
         super(attribute);
-        this.set = charSet.freeze();
+        this.set = CharSets.immutable.of(charSet.toArray());
     }
 
     public CharInOperation(CharAttribute attribute, org.eclipse.collections.api.set.primitive.CharSet charSet)
     {
         super(attribute);
-        this.set = CharSets.immutable.of(charSet.toArray());
+        this.set = charSet.freeze();
     }
 
     public List getByIndex()

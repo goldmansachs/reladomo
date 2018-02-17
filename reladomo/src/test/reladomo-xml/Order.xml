@@ -21,7 +21,7 @@
 
     <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
     <ClassName>Order</ClassName>
-    <Import>com.gs.collections.api.set.primitive.IntSet</Import>
+    <Import>org.eclipse.collections.api.set.primitive.IntSet</Import>
     <DefaultTable>ORDERS</DefaultTable>
 
     <MithraInterface>Orderable</MithraInterface>

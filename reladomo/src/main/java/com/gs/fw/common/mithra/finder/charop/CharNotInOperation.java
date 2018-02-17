@@ -17,9 +17,6 @@
 
 package com.gs.fw.common.mithra.finder.charop;
 
-import com.gs.collections.api.iterator.CharIterator;
-import com.gs.collections.api.set.primitive.CharSet;
-import com.gs.collections.impl.factory.primitive.CharSets;
 import com.gs.fw.common.mithra.attribute.CharAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.CharExtractor;
@@ -31,6 +28,9 @@ import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
+import org.eclipse.collections.api.iterator.CharIterator;
+import org.eclipse.collections.api.set.primitive.CharSet;
+import org.eclipse.collections.impl.factory.primitive.CharSets;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -49,16 +49,16 @@ public class CharNotInOperation extends NotInOperation implements SqlParameterSe
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    public CharNotInOperation(CharAttribute attribute, com.gs.collections.api.set.primitive.CharSet charSet)
+    {
+        super(attribute);
+        this.set = CharSets.immutable.of(charSet.toArray());
+    }
+
     public CharNotInOperation(CharAttribute attribute, CharSet charSet)
     {
         super(attribute);
         this.set = charSet.freeze();
-    }
-
-    public CharNotInOperation(CharAttribute attribute, org.eclipse.collections.api.set.primitive.CharSet charSet)
-    {
-        super(attribute);
-        this.set = CharSets.immutable.of(charSet.toArray());
     }
 
     protected int setSqlParameters(PreparedStatement pstmt, int startIndex, TimeZone timeZone, int setStart, int numberToSet, DatabaseType databaseType) throws SQLException

@@ -15,21 +15,49 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.api.block.function.Function;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.MithraBusinessException;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.databasetype.H2DatabaseType;
 import com.gs.fw.common.mithra.finder.NoOperation;
 import com.gs.fw.common.mithra.finder.Operation;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.Account;
+import com.gs.fw.common.mithra.test.domain.AccountFinder;
+import com.gs.fw.common.mithra.test.domain.AccountList;
+import com.gs.fw.common.mithra.test.domain.Book;
+import com.gs.fw.common.mithra.test.domain.BookFinder;
+import com.gs.fw.common.mithra.test.domain.BookList;
+import com.gs.fw.common.mithra.test.domain.Group;
+import com.gs.fw.common.mithra.test.domain.Location;
+import com.gs.fw.common.mithra.test.domain.LocationFinder;
+import com.gs.fw.common.mithra.test.domain.Manufacturer;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItem;
+import com.gs.fw.common.mithra.test.domain.OrderList;
+import com.gs.fw.common.mithra.test.domain.Product;
+import com.gs.fw.common.mithra.test.domain.ProductFinder;
+import com.gs.fw.common.mithra.test.domain.ProductSynonym;
+import com.gs.fw.common.mithra.test.domain.Profile;
+import com.gs.fw.common.mithra.test.domain.Trial;
+import com.gs.fw.common.mithra.test.domain.TrialFinder;
+import com.gs.fw.common.mithra.test.domain.TrialList;
+import com.gs.fw.common.mithra.test.domain.User;
+import com.gs.fw.common.mithra.test.domain.UserFinder;
+import com.gs.fw.common.mithra.test.domain.UserList;
+import org.eclipse.collections.api.block.function.Function;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

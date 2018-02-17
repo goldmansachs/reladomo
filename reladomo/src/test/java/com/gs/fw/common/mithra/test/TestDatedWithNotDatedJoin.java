@@ -14,26 +14,38 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraTransaction;
+import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.domain.DatedEntityDesc;
 import com.gs.fw.common.mithra.test.domain.DatedEntityDescType;
-import com.gs.fw.common.mithra.test.domain.dated.*;
-import com.gs.fw.common.mithra.test.domain.InfinityTimestamp;
-import com.gs.fw.common.mithra.MithraTransaction;
-import com.gs.fw.common.mithra.MithraManagerProvider;
-import com.gs.fw.common.mithra.TransactionalCommand;
+import com.gs.fw.common.mithra.test.domain.dated.DatedTable;
+import com.gs.fw.common.mithra.test.domain.dated.DatedTableFinder;
+import com.gs.fw.common.mithra.test.domain.dated.DatedTableList;
+import com.gs.fw.common.mithra.test.domain.dated.NotDatedTable;
+import com.gs.fw.common.mithra.test.domain.dated.NotDatedTableFinder;
+import com.gs.fw.common.mithra.test.domain.dated.NotDatedTableList;
+import com.gs.fw.common.mithra.test.domain.dated.NotDatedWithBusinessDate;
+import com.gs.fw.common.mithra.test.domain.dated.NotDatedWithBusinessDateFinder;
+import com.gs.fw.common.mithra.test.domain.dated.NotDatedWithTimestampTable;
+import com.gs.fw.common.mithra.test.domain.dated.NotDatedWithTimestampTableFinder;
+import com.gs.fw.common.mithra.test.domain.dated.NotDatedWithTimestampTableList;
+import com.gs.fw.common.mithra.test.domain.dated.TestTamsMithraTrial;
+import com.gs.fw.common.mithra.test.domain.dated.TestTamsMithraTrialFinder;
+import com.gs.fw.common.mithra.test.domain.dated.TestTamsMithraTrialList;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
-import java.util.Date;
-import java.util.Set;
-import java.util.HashSet;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
-
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TestDatedWithNotDatedJoin extends MithraTestAbstract
 {

@@ -17,20 +17,33 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.LongSet;
 import com.gs.fw.common.mithra.MithraDataObject;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.calculator.NumericAttributeCalculator;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.FloatProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.LongProcedure;
-import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.extractor.LongExtractor;
-import com.gs.fw.common.mithra.finder.*;
-import com.gs.fw.common.mithra.finder.longop.*;
+import com.gs.fw.common.mithra.finder.AggregateSqlQuery;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.EqualityMapper;
+import com.gs.fw.common.mithra.finder.None;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.ToStringContext;
+import com.gs.fw.common.mithra.finder.longop.LongEqOperation;
+import com.gs.fw.common.mithra.finder.longop.LongGreaterThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.longop.LongGreaterThanOperation;
+import com.gs.fw.common.mithra.finder.longop.LongInOperation;
+import com.gs.fw.common.mithra.finder.longop.LongLessThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.longop.LongLessThanOperation;
+import com.gs.fw.common.mithra.finder.longop.LongNotEqOperation;
+import com.gs.fw.common.mithra.finder.longop.LongNotInOperation;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.util.HashUtil;
+import org.eclipse.collections.api.set.primitive.LongSet;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -228,7 +241,7 @@ public class CalculatedLongAttribute<T> extends LongAttribute<T>
      **/
     @Deprecated
     @Override
-    public Operation in(LongSet longSet)
+    public Operation in(com.gs.collections.api.set.primitive.LongSet longSet)
     {
         Operation op;
         switch (longSet.size())
@@ -248,7 +261,7 @@ public class CalculatedLongAttribute<T> extends LongAttribute<T>
     }
 
     @Override
-    public Operation in(org.eclipse.collections.api.set.primitive.LongSet longSet)
+    public Operation in(LongSet longSet)
     {
         Operation op;
         switch (longSet.size())
@@ -273,7 +286,7 @@ public class CalculatedLongAttribute<T> extends LongAttribute<T>
      **/
     @Deprecated
     @Override
-    public Operation notIn(LongSet set)
+    public Operation notIn(com.gs.collections.api.set.primitive.LongSet set)
     {
         Operation op;
         switch (set.size())
@@ -293,7 +306,7 @@ public class CalculatedLongAttribute<T> extends LongAttribute<T>
     }
 
     @Override
-    public Operation notIn(org.eclipse.collections.api.set.primitive.LongSet set)
+    public Operation notIn(LongSet set)
     {
         Operation op;
         switch (set.size())

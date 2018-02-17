@@ -17,9 +17,6 @@
 
 package com.gs.fw.common.mithra.finder.floatop;
 
-import com.gs.collections.api.iterator.FloatIterator;
-import com.gs.collections.api.set.primitive.FloatSet;
-import com.gs.collections.impl.factory.primitive.FloatSets;
 import com.gs.fw.common.mithra.attribute.FloatAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
@@ -33,6 +30,10 @@ import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.util.HashUtil;
+import org.eclipse.collections.api.iterator.FloatIterator;
+import org.eclipse.collections.api.set.primitive.FloatSet;
+import org.eclipse.collections.impl.factory.primitive.FloatSets;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -51,16 +52,16 @@ public class FloatInOperation extends InOperation implements SqlParameterSetter
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    public FloatInOperation(FloatAttribute attribute, com.gs.collections.api.set.primitive.FloatSet floatSet)
+    {
+        super(attribute);
+        this.set = FloatSets.immutable.of(floatSet.toArray());
+    }
+
     public FloatInOperation(FloatAttribute attribute, FloatSet floatSet)
     {
         super(attribute);
         this.set = floatSet.freeze();
-    }
-
-    public FloatInOperation(FloatAttribute attribute, org.eclipse.collections.api.set.primitive.FloatSet floatSet)
-    {
-        super(attribute);
-        this.set = FloatSets.immutable.of(floatSet.toArray());
     }
 
     public List getByIndex()

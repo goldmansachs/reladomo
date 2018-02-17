@@ -17,16 +17,22 @@
 
 package com.gs.fw.common.mithra;
 
-import com.gs.collections.api.set.primitive.MutableIntSet;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import com.gs.fw.common.mithra.aggregate.AggregateOrderBy;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.finder.OrderBy;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 
 
 public class AggregateList implements List<AggregateData>
@@ -75,24 +81,9 @@ public class AggregateList implements List<AggregateData>
         return result;
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    public MutableIntSet getAttributeAsGscIntSet(String attributeName)
+    public MutableIntSet getAttributeAsEcIntSet(String attributeName)
     {
         MutableIntSet result = new IntHashSet(this.size());
-        for (int i = 0; i < this.size(); i++)
-        {
-            result.add(this.get(i).getAttributeAsInt(attributeName));
-        }
-        return result;
-    }
-
-    public org.eclipse.collections.api.set.primitive.MutableIntSet getAttributeAsEcIntSet(String attributeName)
-    {
-        org.eclipse.collections.api.set.primitive.MutableIntSet result = new org.eclipse.collections.impl.set.mutable.primitive.IntHashSet(this.size());
         for (int i = 0; i < this.size(); i++)
         {
             result.add(this.get(i).getAttributeAsInt(attributeName));

@@ -15,18 +15,24 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.api.block.function.Function;
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
-import com.gs.collections.impl.utility.Iterate;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.list.cursor.Cursor;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.AccountTransaction;
+import com.gs.fw.common.mithra.test.domain.AccountTransactionFinder;
+import com.gs.fw.common.mithra.test.domain.AccountTransactionList;
+import com.gs.fw.common.mithra.test.domain.ParaDesk;
+import com.gs.fw.common.mithra.test.domain.ParaDeskFinder;
+import com.gs.fw.common.mithra.test.domain.ParaDeskList;
 import com.gs.fw.common.mithra.util.TrueFilter;
+import org.eclipse.collections.api.block.function.Function;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
+import org.eclipse.collections.impl.utility.Iterate;
 
 import java.sql.Timestamp;
 import java.util.Collection;

@@ -14,6 +14,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
@@ -27,9 +28,11 @@ import com.gs.fw.common.mithra.finder.None;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.orderby.NonPrimitiveOrderBy;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
-import com.gs.fw.common.mithra.util.*;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
+import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.MutableComparableReference;
+import com.gs.fw.common.mithra.util.Nullable;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.IOException;
 import java.io.ObjectInput;

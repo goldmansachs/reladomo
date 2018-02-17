@@ -14,12 +14,13 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.databasetype.H2DatabaseType;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.sql.SQLException;
 import java.util.List;

@@ -17,32 +17,38 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.BooleanSet;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.BooleanProcedure;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapBooleanExtractorWithOffset;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapExtractor;
+import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
-import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.AtomicSelfNotEqualityOperation;
+import com.gs.fw.common.mithra.finder.IsNotNullOperation;
+import com.gs.fw.common.mithra.finder.None;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.finder.SqlQuery;
 import com.gs.fw.common.mithra.finder.booleanop.BooleanEqOperation;
 import com.gs.fw.common.mithra.finder.booleanop.BooleanNotEqOperation;
-import com.gs.fw.common.mithra.databasetype.DatabaseType;
-import com.gs.fw.common.mithra.util.ColumnInfo;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
+import com.gs.fw.common.mithra.util.ColumnInfo;
 import com.gs.fw.common.mithra.util.fileparser.BitsInBytes;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarInStream;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarOutStream;
+import org.eclipse.collections.api.set.primitive.BooleanSet;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.ObjectStreamException;
 import java.io.OutputStream;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.sql.Types;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 
 public abstract class SingleColumnBooleanAttribute<T> extends BooleanAttribute<T> implements SingleColumnAttribute<T>
@@ -109,7 +115,7 @@ public abstract class SingleColumnBooleanAttribute<T> extends BooleanAttribute<T
      **/
     @Deprecated
     @Override
-    public Operation in(BooleanSet booleanSet)
+    public Operation in(com.gs.collections.api.set.primitive.BooleanSet booleanSet)
     {
         if (booleanSet.isEmpty())
         {
@@ -127,7 +133,7 @@ public abstract class SingleColumnBooleanAttribute<T> extends BooleanAttribute<T
     }
 
     @Override
-    public Operation in(org.eclipse.collections.api.set.primitive.BooleanSet booleanSet)
+    public Operation in(BooleanSet booleanSet)
     {
         if (booleanSet.isEmpty())
         {
@@ -150,7 +156,7 @@ public abstract class SingleColumnBooleanAttribute<T> extends BooleanAttribute<T
      **/
     @Deprecated
     @Override
-    public Operation notIn(BooleanSet booleanSet)
+    public Operation notIn(com.gs.collections.api.set.primitive.BooleanSet booleanSet)
     {
        if (booleanSet.isEmpty())
         {
@@ -164,7 +170,7 @@ public abstract class SingleColumnBooleanAttribute<T> extends BooleanAttribute<T
     }
 
     @Override
-    public Operation notIn(org.eclipse.collections.api.set.primitive.BooleanSet booleanSet)
+    public Operation notIn(BooleanSet booleanSet)
     {
        if (booleanSet.isEmpty())
         {

@@ -14,31 +14,61 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
-
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import com.gs.fw.common.mithra.MithraBusinessException;
 import com.gs.fw.common.mithra.MithraManager;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.MithraUniqueIndexViolationException;
 import com.gs.fw.common.mithra.TemporaryContext;
 import com.gs.fw.common.mithra.TransactionalCommand;
-import com.gs.fw.common.mithra.connectionmanager.XAConnectionManager;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.aggregate.TestStandardDeviation;
 import com.gs.fw.common.mithra.test.aggregate.TestVariance;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.AllTypes;
+import com.gs.fw.common.mithra.test.domain.AllTypesFinder;
+import com.gs.fw.common.mithra.test.domain.AllTypesList;
+import com.gs.fw.common.mithra.test.domain.BigOrder;
+import com.gs.fw.common.mithra.test.domain.BigOrderFinder;
+import com.gs.fw.common.mithra.test.domain.BigOrderItem;
+import com.gs.fw.common.mithra.test.domain.BigOrderItemFinder;
+import com.gs.fw.common.mithra.test.domain.BigOrderItemList;
+import com.gs.fw.common.mithra.test.domain.BigOrderList;
+import com.gs.fw.common.mithra.test.domain.MultiPkBigDecimal;
+import com.gs.fw.common.mithra.test.domain.MultiPkBigDecimalList;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderDriver;
+import com.gs.fw.common.mithra.test.domain.OrderDriverFinder;
+import com.gs.fw.common.mithra.test.domain.OrderDriverList;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItem;
+import com.gs.fw.common.mithra.test.domain.OrderItemFinder;
+import com.gs.fw.common.mithra.test.domain.OrderList;
+import com.gs.fw.common.mithra.test.domain.OrderStatus;
+import com.gs.fw.common.mithra.test.domain.OrderStatusList;
+import com.gs.fw.common.mithra.test.domain.Product;
+import com.gs.fw.common.mithra.test.domain.ProductFinder;
+import com.gs.fw.common.mithra.test.domain.ProductList;
+import com.gs.fw.common.mithra.test.domain.StringDatedOrder;
+import com.gs.fw.common.mithra.test.domain.StringDatedOrderFinder;
+import com.gs.fw.common.mithra.test.domain.StringDatedOrderList;
+import com.gs.fw.common.mithra.test.domain.TestBalanceNoAcmap;
+import com.gs.fw.common.mithra.test.domain.TestBalanceNoAcmapFinder;
+import com.gs.fw.common.mithra.test.domain.TestBalanceNoAcmapList;
+import com.gs.fw.common.mithra.test.domain.TimestampConversionFinder;
+import com.gs.fw.common.mithra.test.domain.TimestampConversionList;
+import com.gs.fw.common.mithra.test.domain.TimezoneTest;
+import com.gs.fw.common.mithra.test.domain.TimezoneTestFinder;
 import com.gs.fw.common.mithra.util.DoWhileProcedure;
 import com.gs.fw.common.mithra.util.ExceptionHandlingTask;
 import com.gs.fw.common.mithra.util.MithraArrayTupleTupleSet;
 import com.gs.fw.common.mithra.util.TempTableNamer;
 import com.gs.fw.common.mithra.util.TupleSet;
 import junit.framework.Assert;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -48,7 +78,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Exchanger;
 

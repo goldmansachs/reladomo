@@ -13,15 +13,27 @@
   specific language governing permissions and limitations
   under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.list.merge.TopLevelMergeOptions;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.AuditedOrder;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderFinder;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderList;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItem;
+import com.gs.fw.common.mithra.test.domain.OrderItemFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItemList;
+import com.gs.fw.common.mithra.test.domain.OrderItemStatus;
+import com.gs.fw.common.mithra.test.domain.OrderList;
+import com.gs.fw.common.mithra.test.domain.OrderStatus;
+import com.gs.fw.common.mithra.test.domain.OrderStatusFinder;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 import java.sql.Date;
 import java.sql.Timestamp;

@@ -14,25 +14,16 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.bulkloader.BulkLoader;
 import com.gs.fw.common.mithra.bulkloader.BulkLoaderException;
-import com.gs.fw.common.mithra.connectionmanager.SourcelessConnectionManager;
 import com.gs.fw.common.mithra.connectionmanager.XAConnectionManager;
-import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.databasetype.MsSqlDatabaseType;
-import com.gs.fw.common.mithra.databasetype.SybaseDatabaseType;
-import com.gs.fw.common.mithra.util.ListFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.Connection;
-import java.util.Collection;
-import java.util.List;
-import java.util.TimeZone;
 
 public class MsSqlTestConnectionManager extends VendorTestConnectionManager
 {

@@ -17,10 +17,10 @@
 
 package com.gs.fw.common.mithra.util;
 
-import com.gs.collections.api.iterator.DoubleIterator;
-import com.gs.collections.api.set.primitive.DoubleSet;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.MithraBusinessException;
+import org.eclipse.collections.api.iterator.DoubleIterator;
+import org.eclipse.collections.api.set.primitive.DoubleSet;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -42,20 +42,20 @@ public class BigDecimalUtil
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
-    public static Set<BigDecimal> createBigDecimalSetFromDoubleSet(DoubleSet doubleSet, int expectedScale, int expectedPrecision)
+    public static Set<BigDecimal> createBigDecimalSetFromDoubleSet(com.gs.collections.api.set.primitive.DoubleSet doubleSet, int expectedScale, int expectedPrecision)
     {
         Set<BigDecimal> bigDecimalSet = UnifiedSet.newSet(doubleSet.size());
-        for (DoubleIterator it = doubleSet.doubleIterator(); it.hasNext();)
+        for (com.gs.collections.api.iterator.DoubleIterator it = doubleSet.doubleIterator(); it.hasNext();)
         {
             bigDecimalSet.add(createBigDecimalFromDouble(it.next(), expectedScale, expectedPrecision));
         }
         return bigDecimalSet;
     }
 
-    public static Set<BigDecimal> createBigDecimalSetFromDoubleSet(org.eclipse.collections.api.set.primitive.DoubleSet doubleSet, int expectedScale, int expectedPrecision)
+    public static Set<BigDecimal> createBigDecimalSetFromDoubleSet(DoubleSet doubleSet, int expectedScale, int expectedPrecision)
     {
         Set<BigDecimal> bigDecimalSet = UnifiedSet.newSet(doubleSet.size());
-        for (org.eclipse.collections.api.iterator.DoubleIterator it = doubleSet.doubleIterator(); it.hasNext();)
+        for (DoubleIterator it = doubleSet.doubleIterator(); it.hasNext();)
         {
             bigDecimalSet.add(createBigDecimalFromDouble(it.next(), expectedScale, expectedPrecision));
         }

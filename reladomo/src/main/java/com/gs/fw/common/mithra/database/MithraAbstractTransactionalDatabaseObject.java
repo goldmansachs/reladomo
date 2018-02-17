@@ -13,10 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.database;
 
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.MithraDataObject;
 import com.gs.fw.common.mithra.MithraDatabaseException;
 import com.gs.fw.common.mithra.MithraTransactionalDatabaseObject;

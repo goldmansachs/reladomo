@@ -14,18 +14,23 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.databasetype;
 
-import com.gs.collections.impl.map.mutable.primitive.IntIntHashMap;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.finder.SqlQuery;
 import com.gs.fw.common.mithra.util.ImmutableTimestamp;
 import com.gs.fw.common.mithra.util.TableColumnInfo;
+import org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;

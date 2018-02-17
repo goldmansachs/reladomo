@@ -17,9 +17,6 @@
 
 package com.gs.fw.common.mithra.finder.integer;
 
-import com.gs.collections.api.iterator.IntIterator;
-import com.gs.collections.api.set.primitive.IntSet;
-import com.gs.collections.impl.factory.primitive.IntSets;
 import com.gs.fw.common.mithra.attribute.IntegerAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
@@ -31,6 +28,9 @@ import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.api.set.primitive.IntSet;
+import org.eclipse.collections.impl.factory.primitive.IntSets;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -49,16 +49,16 @@ public class IntegerNotInOperation extends NotInOperation implements SqlParamete
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    public IntegerNotInOperation(IntegerAttribute attribute, com.gs.collections.api.set.primitive.IntSet intSet)
+    {
+        super(attribute);
+        this.set = IntSets.immutable.of(intSet.toArray());
+    }
+
     public IntegerNotInOperation(IntegerAttribute attribute, IntSet intSet)
     {
         super(attribute);
         this.set = intSet.freeze();
-    }
-
-    public IntegerNotInOperation(IntegerAttribute attribute, org.eclipse.collections.api.set.primitive.IntSet intSet)
-    {
-        super(attribute);
-        this.set = IntSets.immutable.of(intSet.toArray());
     }
 
     protected int setSqlParameters(PreparedStatement pstmt, int startIndex, TimeZone timeZone, int setStart, int numberToSet, DatabaseType databaseType) throws SQLException

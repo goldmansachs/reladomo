@@ -14,15 +14,16 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.generator;
 
-import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.gs.fw.common.mithra.generator.MithraGeneratorImport;
 import com.gs.fw.common.mithra.generator.objectxmlgenerator.MaxLenValidator;
 import com.gs.fw.common.mithra.test.MithraTestAbstract;
 import junit.framework.Assert;
 import org.apache.tools.ant.BuildException;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.io.File;
 import java.io.IOException;

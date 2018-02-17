@@ -13,10 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder;
 
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.MithraList;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.Attribute;
@@ -25,8 +25,12 @@ import com.gs.fw.common.mithra.querycache.CachedQuery;
 import com.gs.fw.common.mithra.querycache.QueryCache;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
 import com.gs.fw.common.mithra.util.ListFactory;
+import org.eclipse.collections.impl.list.mutable.FastList;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class SimpleToManyDeepFetchStrategy extends SingleLinkDeepFetchStrategy

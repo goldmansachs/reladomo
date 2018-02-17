@@ -13,13 +13,14 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.cache.offheap;
 
 
-import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.util.MithraRuntimeCacheController;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.io.Externalizable;
 import java.io.IOException;

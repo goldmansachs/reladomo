@@ -17,32 +17,48 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.ByteSet;
-import com.gs.fw.common.mithra.attribute.calculator.procedure.*;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.FloatProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.IntegerProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.LongProcedure;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapByteExtractorWithOffset;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapExtractor;
-import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
-import com.gs.fw.common.mithra.finder.*;
-import com.gs.fw.common.mithra.finder.byteop.*;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
-import com.gs.fw.common.mithra.util.ColumnInfo;
+import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.AtomicSelfNotEqualityOperation;
+import com.gs.fw.common.mithra.finder.None;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.byteop.ByteEqOperation;
+import com.gs.fw.common.mithra.finder.byteop.ByteGreaterThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.byteop.ByteGreaterThanOperation;
+import com.gs.fw.common.mithra.finder.byteop.ByteInOperation;
+import com.gs.fw.common.mithra.finder.byteop.ByteLessThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.byteop.ByteLessThanOperation;
+import com.gs.fw.common.mithra.finder.byteop.ByteNotEqOperation;
+import com.gs.fw.common.mithra.finder.byteop.ByteNotInOperation;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
+import com.gs.fw.common.mithra.util.ColumnInfo;
 import com.gs.fw.common.mithra.util.fileparser.BitsInBytes;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarInStream;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarOutStream;
+import org.eclipse.collections.api.set.primitive.ByteSet;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.ObjectStreamException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.sql.Types;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.math.BigDecimal;
 
 
 public abstract class SingleColumnByteAttribute<T> extends ByteAttribute<T> implements SingleColumnAttribute<T>
@@ -110,7 +126,7 @@ public abstract class SingleColumnByteAttribute<T> extends ByteAttribute<T> impl
      **/
     @Deprecated
     @Override
-    public Operation in(ByteSet byteSet)
+    public Operation in(com.gs.collections.api.set.primitive.ByteSet byteSet)
     {
         Operation op;
         switch (byteSet.size())
@@ -129,7 +145,7 @@ public abstract class SingleColumnByteAttribute<T> extends ByteAttribute<T> impl
     }
 
     @Override
-    public Operation in(org.eclipse.collections.api.set.primitive.ByteSet byteSet)
+    public Operation in(ByteSet byteSet)
     {
         Operation op;
         switch (byteSet.size())
@@ -153,7 +169,7 @@ public abstract class SingleColumnByteAttribute<T> extends ByteAttribute<T> impl
      **/
     @Deprecated
     @Override
-    public Operation notIn(ByteSet byteSet)
+    public Operation notIn(com.gs.collections.api.set.primitive.ByteSet byteSet)
     {
         Operation op;
         switch (byteSet.size())
@@ -173,7 +189,7 @@ public abstract class SingleColumnByteAttribute<T> extends ByteAttribute<T> impl
     }
 
     @Override
-    public Operation notIn(org.eclipse.collections.api.set.primitive.ByteSet byteSet)
+    public Operation notIn(ByteSet byteSet)
     {
         Operation op;
         switch (byteSet.size())

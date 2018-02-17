@@ -13,16 +13,30 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.aggregate;
 
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
-
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.AggregateBeanList;
+import com.gs.fw.common.mithra.MithraAggregateAttribute;
+import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.MithraNullPrimitiveException;
 import com.gs.fw.common.mithra.aggregate.attribute.DoubleAggregateAttribute;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.MithraTestAbstract;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.NullTest;
+import com.gs.fw.common.mithra.test.domain.NullTestFinder;
+import com.gs.fw.common.mithra.test.domain.ProductSpecification;
+import com.gs.fw.common.mithra.test.domain.ProductSpecificationFinder;
+import com.gs.fw.common.mithra.test.domain.Sale;
+import com.gs.fw.common.mithra.test.domain.SaleAggregateData;
+import com.gs.fw.common.mithra.test.domain.SaleAggregateDataFinder;
+import com.gs.fw.common.mithra.test.domain.SaleFinder;
+import com.gs.fw.common.mithra.test.domain.SaleList;
+import com.gs.fw.common.mithra.test.domain.SalesLineItem;
+import com.gs.fw.common.mithra.test.domain.SalesLineItemFinder;
+import com.gs.fw.common.mithra.test.domain.Seller;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;

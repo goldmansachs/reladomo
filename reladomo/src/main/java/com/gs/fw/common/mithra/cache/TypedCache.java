@@ -17,9 +17,15 @@
 
 package com.gs.fw.common.mithra.cache;
 
-import com.gs.collections.api.set.primitive.*;
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.DatedTransactionalState;
+import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraDatedObject;
+import com.gs.fw.common.mithra.MithraDatedTransactionalObject;
+import com.gs.fw.common.mithra.MithraObject;
+import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.MithraTransaction;
+import com.gs.fw.common.mithra.MithraTransactionalObject;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.update.AttributeUpdateWrapper;
 import com.gs.fw.common.mithra.behavior.TemporalContainer;
@@ -35,10 +41,23 @@ import com.gs.fw.common.mithra.util.DoUntilProcedure;
 import com.gs.fw.common.mithra.util.Filter;
 import com.gs.fw.common.mithra.util.Filter2;
 import com.gs.fw.common.mithra.util.MithraTupleSet;
+import org.eclipse.collections.api.set.primitive.BooleanSet;
+import org.eclipse.collections.api.set.primitive.ByteSet;
+import org.eclipse.collections.api.set.primitive.CharSet;
+import org.eclipse.collections.api.set.primitive.DoubleSet;
+import org.eclipse.collections.api.set.primitive.FloatSet;
+import org.eclipse.collections.api.set.primitive.IntSet;
+import org.eclipse.collections.api.set.primitive.LongSet;
+import org.eclipse.collections.api.set.primitive.ShortSet;
+import org.eclipse.collections.impl.list.mutable.FastList;
 
 import java.io.ObjectOutput;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.RandomAccess;
+import java.util.Set;
 
 
 public class TypedCache implements Cache
@@ -205,6 +224,7 @@ public class TypedCache implements Cache
         return this.filterByType(this.cache.get(indexRef, indexValues));
     }
 
+    @Override
     public List get(int indexRef, ByteArraySet indexValues)
     {
         return this.filterByType(this.cache.get(indexRef, indexValues));
@@ -216,13 +236,13 @@ public class TypedCache implements Cache
      **/
     @Deprecated
     @Override
-    public List get(int indexRef, IntSet intSetIndexValues)
+    public List get(int indexRef, com.gs.collections.api.set.primitive.IntSet intSetIndexValues)
     {
         return this.filterByType(this.cache.get(indexRef, intSetIndexValues));
     }
 
     @Override
-    public List get(int indexRef, org.eclipse.collections.api.set.primitive.IntSet intSetIndexValues)
+    public List get(int indexRef, IntSet intSetIndexValues)
     {
         return this.filterByType(this.cache.get(indexRef, intSetIndexValues));
     }
@@ -232,116 +252,116 @@ public class TypedCache implements Cache
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    @Override
+    public List get(int indexRef, com.gs.collections.api.set.primitive.DoubleSet doubleSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, doubleSetIndexValues));
+    }
+
     @Override
     public List get(int indexRef, DoubleSet doubleSetIndexValues)
     {
         return this.filterByType(this.cache.get(indexRef, doubleSetIndexValues));
     }
 
-    @Override
-    public List get(int indexRef, org.eclipse.collections.api.set.primitive.DoubleSet doubleSetIndexValues)
-    {
-        return this.filterByType(this.cache.get(indexRef, doubleSetIndexValues));
-    }
-
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    @Override
+    public List get(int indexRef, com.gs.collections.api.set.primitive.BooleanSet booleanSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, booleanSetIndexValues));
+    }
+
     @Override
     public List get(int indexRef, BooleanSet booleanSetIndexValues)
     {
         return this.filterByType(this.cache.get(indexRef, booleanSetIndexValues));
     }
 
-    @Override
-    public List get(int indexRef, org.eclipse.collections.api.set.primitive.BooleanSet booleanSetIndexValues)
-    {
-        return this.filterByType(this.cache.get(indexRef, booleanSetIndexValues));
-    }
-
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    @Override
+    public List get(int indexRef, com.gs.collections.api.set.primitive.LongSet longSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, longSetIndexValues));
+    }
+
     @Override
     public List get(int indexRef, LongSet longSetIndexValues)
     {
         return this.filterByType(this.cache.get(indexRef, longSetIndexValues));
     }
 
-    @Override
-    public List get(int indexRef, org.eclipse.collections.api.set.primitive.LongSet longSetIndexValues)
-    {
-        return this.filterByType(this.cache.get(indexRef, longSetIndexValues));
-    }
-
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    @Override
+    public List get(int indexRef, com.gs.collections.api.set.primitive.ByteSet byteSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, byteSetIndexValues));
+    }
+
     @Override
     public List get(int indexRef, ByteSet byteSetIndexValues)
     {
         return this.filterByType(this.cache.get(indexRef, byteSetIndexValues));
     }
 
-    @Override
-    public List get(int indexRef, org.eclipse.collections.api.set.primitive.ByteSet byteSetIndexValues)
-    {
-        return this.filterByType(this.cache.get(indexRef, byteSetIndexValues));
-    }
-
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    @Override
+    public List get(int indexRef, com.gs.collections.api.set.primitive.CharSet indexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, indexValues));
+    }
+
     @Override
     public List get(int indexRef, CharSet indexValues)
     {
         return this.filterByType(this.cache.get(indexRef, indexValues));
     }
 
-    @Override
-    public List get(int indexRef, org.eclipse.collections.api.set.primitive.CharSet indexValues)
-    {
-        return this.filterByType(this.cache.get(indexRef, indexValues));
-    }
-
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    @Override
+    public List get(int indexRef, com.gs.collections.api.set.primitive.FloatSet floatSetIndexValues)
+    {
+        return this.filterByType(this.cache.get(indexRef, floatSetIndexValues));
+    }
+
     @Override
     public List get(int indexRef, FloatSet floatSetIndexValues)
     {
         return this.filterByType(this.cache.get(indexRef, floatSetIndexValues));
     }
 
-    @Override
-    public List get(int indexRef, org.eclipse.collections.api.set.primitive.FloatSet floatSetIndexValues)
-    {
-        return this.filterByType(this.cache.get(indexRef, floatSetIndexValues));
-    }
-
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
     @Override
-    public List get(int indexRef, ShortSet shortSetIndexValues)
+    public List get(int indexRef, com.gs.collections.api.set.primitive.ShortSet shortSetIndexValues)
     {
         return this.filterByType(this.cache.get(indexRef, shortSetIndexValues));
     }
 
     @Override
-    public List get(int indexRef, org.eclipse.collections.api.set.primitive.ShortSet shortSetIndexValues)
+    public List get(int indexRef, ShortSet shortSetIndexValues)
     {
         return this.filterByType(this.cache.get(indexRef, shortSetIndexValues));
     }

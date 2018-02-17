@@ -13,12 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.cacheloader;
 
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.MithraDataObject;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
@@ -30,6 +28,9 @@ import com.gs.fw.common.mithra.finder.asofop.AsOfExtractor;
 import com.gs.fw.common.mithra.util.AbstractBooleanFilter;
 import com.gs.fw.common.mithra.util.Filter2;
 import com.gs.fw.common.mithra.util.Pair;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

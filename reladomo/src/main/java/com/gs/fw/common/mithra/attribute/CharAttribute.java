@@ -17,10 +17,10 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.CharSet;
-import com.gs.collections.api.set.primitive.MutableCharSet;
-import com.gs.collections.impl.set.mutable.primitive.CharHashSet;
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.AggregateData;
+import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraNullPrimitiveException;
 import com.gs.fw.common.mithra.aggregate.attribute.CharAggregateAttribute;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.MaxCalculatorCharacter;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.MinCalculatorCharacter;
@@ -34,9 +34,14 @@ import com.gs.fw.common.mithra.finder.None;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.orderby.CharOrderBy;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
-import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.MutableCharacter;
+import com.gs.fw.common.mithra.util.Nullable;
 import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
 import com.gs.fw.common.mithra.util.serializer.SerialWriter;
+import org.eclipse.collections.api.set.primitive.CharSet;
+import org.eclipse.collections.api.set.primitive.MutableCharSet;
+import org.eclipse.collections.impl.set.mutable.primitive.CharHashSet;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -95,10 +100,10 @@ public abstract class CharAttribute<T> extends Attribute<T, Character> implement
      **/
     @Deprecated
     @Override
-    public abstract Operation in(CharSet charSet);
+    public abstract Operation in(com.gs.collections.api.set.primitive.CharSet charSet);
 
     @Override
-    public abstract Operation in(org.eclipse.collections.api.set.primitive.CharSet charSet);
+    public abstract Operation in(CharSet charSet);
 
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
@@ -106,10 +111,10 @@ public abstract class CharAttribute<T> extends Attribute<T, Character> implement
      **/
     @Deprecated
     @Override
-    public abstract Operation notIn(CharSet charSet);
+    public abstract Operation notIn(com.gs.collections.api.set.primitive.CharSet charSet);
 
     @Override
-    public abstract Operation notIn(org.eclipse.collections.api.set.primitive.CharSet charSet);
+    public abstract Operation notIn(CharSet charSet);
 
     public abstract Operation greaterThan(char target);
 

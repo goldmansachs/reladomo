@@ -13,28 +13,28 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.block.factory.Comparators;
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.cache.FullUniqueIndex;
 import com.gs.fw.common.mithra.cache.NonUniqueIndex;
+import com.gs.fw.common.mithra.connectionmanager.LruListWithThreadAffinity;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.test.domain.Order;
 import com.gs.fw.common.mithra.test.domain.OrderFinder;
 import com.gs.fw.common.mithra.util.CollectionUtil;
 import com.gs.fw.common.mithra.util.InternalList;
-import com.gs.fw.common.mithra.connectionmanager.LruListWithThreadAffinity;
 import com.gs.fw.common.mithra.util.MithraCompositeList;
 import com.gs.fw.common.mithra.util.MithraFastList;
 import junit.framework.TestCase;
+import org.eclipse.collections.impl.block.factory.Comparators;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 import java.util.Arrays;
 import java.util.Random;
-
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 
 
 public class TestCollections extends TestCase

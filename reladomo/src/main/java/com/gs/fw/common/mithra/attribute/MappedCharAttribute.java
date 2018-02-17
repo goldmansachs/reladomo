@@ -17,13 +17,22 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.CharSet;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.CharacterProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.ObjectProcedure;
 import com.gs.fw.common.mithra.extractor.ChainedAttributeValueSelector;
 import com.gs.fw.common.mithra.extractor.Function;
-import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.AggregateSqlQuery;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.ChainedMapper;
+import com.gs.fw.common.mithra.finder.DeepRelationshipAttribute;
+import com.gs.fw.common.mithra.finder.MappedOperation;
+import com.gs.fw.common.mithra.finder.Mapper;
+import com.gs.fw.common.mithra.finder.NoOperation;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.ToStringContext;
+import org.eclipse.collections.api.set.primitive.CharSet;
 
 
 public class MappedCharAttribute<T> extends CharAttribute<T> implements MappedAttribute
@@ -173,13 +182,13 @@ public class MappedCharAttribute<T> extends CharAttribute<T> implements MappedAt
      **/
     @Deprecated
     @Override
-    public Operation in(CharSet charSet)
+    public Operation in(com.gs.collections.api.set.primitive.CharSet charSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.in(charSet));
     }
 
     @Override
-    public Operation in(org.eclipse.collections.api.set.primitive.CharSet charSet)
+    public Operation in(CharSet charSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.in(charSet));
     }
@@ -190,13 +199,13 @@ public class MappedCharAttribute<T> extends CharAttribute<T> implements MappedAt
      **/
     @Deprecated
     @Override
-    public Operation notIn(CharSet charSet)
+    public Operation notIn(com.gs.collections.api.set.primitive.CharSet charSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(charSet));
     }
 
     @Override
-    public Operation notIn(org.eclipse.collections.api.set.primitive.CharSet charSet)
+    public Operation notIn(CharSet charSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(charSet));
     }

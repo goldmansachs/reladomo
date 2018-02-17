@@ -14,12 +14,13 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder.bytearray;
 
-import com.gs.collections.api.block.HashingStrategy;
-import com.gs.collections.api.block.procedure.Procedure;
-import com.gs.collections.impl.set.strategy.mutable.UnifiedSetWithHashingStrategy;
+import org.eclipse.collections.api.block.HashingStrategy;
+import org.eclipse.collections.api.block.procedure.Procedure;
+import org.eclipse.collections.impl.set.strategy.mutable.UnifiedSetWithHashingStrategy;
 
 import java.util.Arrays;
 

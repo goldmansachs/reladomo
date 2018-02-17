@@ -13,14 +13,15 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.cacheloader;
 
 
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.cache.NonUniqueIdentityIndex;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.util.DoUntilProcedure;
+import org.eclipse.collections.impl.list.mutable.FastList;
 
 import java.util.List;
 

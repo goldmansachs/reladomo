@@ -13,20 +13,17 @@
   specific language governing permissions and limitations
   under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.util.serializer;
 
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.map.mutable.ConcurrentHashMap;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.map.mutable.ConcurrentHashMap;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class DeserializableMethodCache
 {

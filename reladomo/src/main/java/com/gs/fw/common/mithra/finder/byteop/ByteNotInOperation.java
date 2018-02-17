@@ -17,9 +17,6 @@
 
 package com.gs.fw.common.mithra.finder.byteop;
 
-import com.gs.collections.api.iterator.ByteIterator;
-import com.gs.collections.api.set.primitive.ByteSet;
-import com.gs.collections.impl.factory.primitive.ByteSets;
 import com.gs.fw.common.mithra.attribute.ByteAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.ByteExtractor;
@@ -31,6 +28,9 @@ import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
+import org.eclipse.collections.api.iterator.ByteIterator;
+import org.eclipse.collections.api.set.primitive.ByteSet;
+import org.eclipse.collections.impl.factory.primitive.ByteSets;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -48,16 +48,16 @@ public class ByteNotInOperation extends NotInOperation implements SqlParameterSe
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    public ByteNotInOperation(ByteAttribute attribute, com.gs.collections.api.set.primitive.ByteSet byteSet)
+    {
+        super(attribute);
+        this.set = ByteSets.immutable.of(byteSet.toArray());
+    }
+
     public ByteNotInOperation(ByteAttribute attribute, ByteSet byteSet)
     {
         super(attribute);
         this.set = byteSet.freeze();
-    }
-
-    public ByteNotInOperation(ByteAttribute attribute, org.eclipse.collections.api.set.primitive.ByteSet byteSet)
-    {
-        super(attribute);
-        this.set = ByteSets.immutable.of(byteSet.toArray());
     }
 
     protected int setSqlParameters(PreparedStatement pstmt, int startIndex, TimeZone timeZone, int setStart, int numberToSet, DatabaseType databaseType) throws SQLException

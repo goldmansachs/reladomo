@@ -17,25 +17,42 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.IntSet;
 import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.FloatProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.IntegerProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.LongProcedure;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapExtractor;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapIntExtractorWithOffset;
+import com.gs.fw.common.mithra.databasetype.DatabaseType;
+import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.AtomicSelfNotEqualityOperation;
+import com.gs.fw.common.mithra.finder.None;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.integer.IntegerEqOperation;
+import com.gs.fw.common.mithra.finder.integer.IntegerGreaterThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.integer.IntegerGreaterThanOperation;
+import com.gs.fw.common.mithra.finder.integer.IntegerInOperation;
+import com.gs.fw.common.mithra.finder.integer.IntegerLessThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.integer.IntegerLessThanOperation;
+import com.gs.fw.common.mithra.finder.integer.IntegerNotEqOperation;
+import com.gs.fw.common.mithra.finder.integer.IntegerNotInOperation;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
 import com.gs.fw.common.mithra.util.ColumnInfo;
-import com.gs.fw.common.mithra.databasetype.DatabaseType;
-import com.gs.fw.common.mithra.attribute.calculator.procedure.*;
-import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
-import com.gs.fw.common.mithra.finder.*;
-import com.gs.fw.common.mithra.finder.integer.*;
 import com.gs.fw.common.mithra.util.fileparser.BitsInBytes;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarInStream;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarOutStream;
+import org.eclipse.collections.api.set.primitive.IntSet;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.ObjectStreamException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,7 +60,6 @@ import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.math.BigDecimal;
 
 
 public abstract class SingleColumnIntegerAttribute<T> extends IntegerAttribute<T> implements VersionAttribute<T>, SequenceAttribute<T>
@@ -121,7 +137,7 @@ public abstract class SingleColumnIntegerAttribute<T> extends IntegerAttribute<T
      **/
     @Deprecated
     @Override
-    public Operation in(IntSet intSet)
+    public Operation in(com.gs.collections.api.set.primitive.IntSet intSet)
     {
         Operation op;
         switch (intSet.size())
@@ -141,7 +157,7 @@ public abstract class SingleColumnIntegerAttribute<T> extends IntegerAttribute<T
     }
 
     @Override
-    public Operation in(org.eclipse.collections.api.set.primitive.IntSet intSet)
+    public Operation in(IntSet intSet)
     {
         Operation op;
         switch (intSet.size())
@@ -166,7 +182,7 @@ public abstract class SingleColumnIntegerAttribute<T> extends IntegerAttribute<T
      **/
     @Deprecated
     @Override
-    public Operation notIn(IntSet intSet)
+    public Operation notIn(com.gs.collections.api.set.primitive.IntSet intSet)
     {
         Operation op;
         switch (intSet.size())
@@ -186,7 +202,7 @@ public abstract class SingleColumnIntegerAttribute<T> extends IntegerAttribute<T
     }
 
     @Override
-    public Operation notIn(org.eclipse.collections.api.set.primitive.IntSet intSet)
+    public Operation notIn(IntSet intSet)
     {
         Operation op;
         switch (intSet.size())

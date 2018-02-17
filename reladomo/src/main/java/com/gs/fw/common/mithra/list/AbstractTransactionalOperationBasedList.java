@@ -14,24 +14,49 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.list;
 
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraObject;
+import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.MithraTransaction;
+import com.gs.fw.common.mithra.MithraTransactionException;
+import com.gs.fw.common.mithra.MithraTransactionalObject;
+import com.gs.fw.common.mithra.TransactionalCommand;
+import com.gs.fw.common.mithra.attribute.Attribute;
+import com.gs.fw.common.mithra.attribute.BigDecimalAttribute;
+import com.gs.fw.common.mithra.attribute.BooleanAttribute;
+import com.gs.fw.common.mithra.attribute.ByteArrayAttribute;
+import com.gs.fw.common.mithra.attribute.ByteAttribute;
+import com.gs.fw.common.mithra.attribute.CharAttribute;
+import com.gs.fw.common.mithra.attribute.DateAttribute;
+import com.gs.fw.common.mithra.attribute.DoubleAttribute;
+import com.gs.fw.common.mithra.attribute.FloatAttribute;
+import com.gs.fw.common.mithra.attribute.IntegerAttribute;
+import com.gs.fw.common.mithra.attribute.LongAttribute;
+import com.gs.fw.common.mithra.attribute.ShortAttribute;
+import com.gs.fw.common.mithra.attribute.StringAttribute;
+import com.gs.fw.common.mithra.attribute.TimeAttribute;
+import com.gs.fw.common.mithra.attribute.TimestampAttribute;
 import com.gs.fw.common.mithra.extractor.EmbeddedValueExtractor;
-import com.gs.fw.common.mithra.attribute.*;
-import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.MappedOperation;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
+import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.RelationshipMultiEqualityOperation;
 import com.gs.fw.common.mithra.querycache.CachedQuery;
 import com.gs.fw.common.mithra.transaction.MithraTransactionalResource;
 import com.gs.fw.common.mithra.util.Time;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.sql.Timestamp;
-import java.util.*;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class AbstractTransactionalOperationBasedList<E> extends AbstractOperationBasedList<E> implements MithraDelegatedTransactionalList<E>

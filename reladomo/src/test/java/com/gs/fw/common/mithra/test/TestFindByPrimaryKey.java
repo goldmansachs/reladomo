@@ -13,33 +13,30 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
-
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import com.gs.fw.common.mithra.MithraManagerProvider;
-import com.gs.fw.common.mithra.cache.CacheClock;
 import com.gs.fw.common.mithra.cache.bean.I3O3L3;
-import com.gs.fw.common.mithra.finder.DeepRelationshipAttribute;
-import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
-import com.gs.fw.common.mithra.test.domain.*;
-import com.gs.fw.common.mithra.test.glew.LewContract;
-import com.gs.fw.common.mithra.test.glew.LewContractFinder;
-import com.gs.fw.common.mithra.test.glew.LewTransaction;
-import com.gs.fw.common.mithra.test.glew.LewTransactionFinder;
-import com.gs.fw.common.mithra.test.util.Log4JRecordingAppender;
-import com.gs.fw.common.mithra.util.MithraPerformanceData;
-import org.apache.log4j.spi.LoggingEvent;
+import com.gs.fw.common.mithra.test.domain.AuditedOrder;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderFinder;
+import com.gs.fw.common.mithra.test.domain.BitemporalOrder;
+import com.gs.fw.common.mithra.test.domain.BitemporalOrderFinder;
+import com.gs.fw.common.mithra.test.domain.ExchangeRate;
+import com.gs.fw.common.mithra.test.domain.ExchangeRateFinder;
+import com.gs.fw.common.mithra.test.domain.ListEntryContactsImpl;
+import com.gs.fw.common.mithra.test.domain.ListEntryContactsImplFinder;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.TestCheckGsDesk;
+import com.gs.fw.common.mithra.test.domain.TestCheckGsDeskFinder;
+import com.gs.fw.common.mithra.test.domain.UserGroup;
+import com.gs.fw.common.mithra.test.domain.UserGroupFinder;
+import com.gs.fw.common.mithra.test.domain.VariousTypes;
+import com.gs.fw.common.mithra.test.domain.VariousTypesFinder;
 
-import java.sql.*;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.sql.Timestamp;
 
 
 public class TestFindByPrimaryKey extends MithraTestAbstract

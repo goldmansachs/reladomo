@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.transaction;
 
@@ -21,8 +22,8 @@ import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.MithraTransactionalObject;
 import com.gs.fw.common.mithra.cache.FullUniqueIndex;
+import org.eclipse.collections.impl.list.mutable.FastList;
 
-import com.gs.collections.impl.list.mutable.FastList;
 import java.util.List;
 
 

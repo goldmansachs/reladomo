@@ -17,9 +17,6 @@
 
 package com.gs.fw.common.mithra.finder.shortop;
 
-import com.gs.collections.api.iterator.ShortIterator;
-import com.gs.collections.api.set.primitive.ShortSet;
-import com.gs.collections.impl.factory.primitive.ShortSets;
 import com.gs.fw.common.mithra.attribute.ShortAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
@@ -33,6 +30,10 @@ import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.util.HashUtil;
+import org.eclipse.collections.api.iterator.ShortIterator;
+import org.eclipse.collections.api.set.primitive.ShortSet;
+import org.eclipse.collections.impl.factory.primitive.ShortSets;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -51,16 +52,16 @@ public class ShortInOperation extends InOperation implements SqlParameterSetter
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    public ShortInOperation(ShortAttribute attribute, com.gs.collections.api.set.primitive.ShortSet set)
+    {
+        super(attribute);
+        this.set = ShortSets.immutable.of(set.toArray());
+    }
+
     public ShortInOperation(ShortAttribute attribute, ShortSet set)
     {
         super(attribute);
         this.set = set.freeze();
-    }
-
-    public ShortInOperation(ShortAttribute attribute, org.eclipse.collections.api.set.primitive.ShortSet set)
-    {
-        super(attribute);
-        this.set = ShortSets.immutable.of(set.toArray());
     }
 
     @Override

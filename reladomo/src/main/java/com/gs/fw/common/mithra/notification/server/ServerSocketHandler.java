@@ -13,12 +13,13 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.notification.server;
 
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.IOException;
 import java.io.InputStream;

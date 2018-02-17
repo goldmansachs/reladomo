@@ -13,19 +13,29 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.cacheloader;
 
 
-import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.cache.Cache;
 import com.gs.fw.common.mithra.cacheloader.CacheIndexBasedFilter;
 import com.gs.fw.common.mithra.test.ConnectionManagerForTests;
 import com.gs.fw.common.mithra.test.MithraTestResource;
-import com.gs.fw.common.mithra.test.domain.*;
-import com.gs.fw.common.mithra.test.glew.*;
+import com.gs.fw.common.mithra.test.domain.Stock;
+import com.gs.fw.common.mithra.test.domain.StockData;
+import com.gs.fw.common.mithra.test.domain.StockDatabaseObject;
+import com.gs.fw.common.mithra.test.domain.StockFinder;
+import com.gs.fw.common.mithra.test.domain.StockPrice;
+import com.gs.fw.common.mithra.test.domain.StockPriceFinder;
+import com.gs.fw.common.mithra.test.glew.LewContractData;
+import com.gs.fw.common.mithra.test.glew.LewContractDatabaseObject;
+import com.gs.fw.common.mithra.test.glew.LewContractFinder;
+import com.gs.fw.common.mithra.test.glew.LewTransaction;
+import com.gs.fw.common.mithra.test.glew.LewTransactionFinder;
 import junit.framework.TestCase;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.sql.Timestamp;
 import java.util.Map;

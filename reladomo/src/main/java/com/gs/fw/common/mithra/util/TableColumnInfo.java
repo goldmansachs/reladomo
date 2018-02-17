@@ -14,16 +14,27 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.util;
 
+import com.gs.fw.common.mithra.attribute.SingleColumnAttribute;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.gs.fw.common.mithra.attribute.SingleColumnAttribute;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 
 public class TableColumnInfo

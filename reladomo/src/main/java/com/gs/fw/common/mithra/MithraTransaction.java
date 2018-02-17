@@ -13,10 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra;
 
-import com.gs.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.update.AttributeUpdateWrapper;
 import com.gs.fw.common.mithra.behavior.DatedTransactionalBehavior;
@@ -33,6 +33,8 @@ import com.gs.fw.common.mithra.transaction.MithraTransactionalResource;
 import com.gs.fw.common.mithra.transaction.TransactionLocalMap;
 import com.gs.fw.common.mithra.transaction.TransactionStyle;
 import com.gs.fw.common.mithra.util.MithraPerformanceData;
+import org.eclipse.collections.api.map.primitive.MutableIntObjectMap;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +54,7 @@ public abstract class MithraTransaction implements TransactionalBehaviorChooser
     public static final int DEFAULT_TRANSACTION_RETRIES = 10;
 
     private static final Logger logger = LoggerFactory.getLogger(MithraTransaction.class);
-    private static IntObjectHashMap<String> jtaTransactionStatus;
+    private static MutableIntObjectMap<String> jtaTransactionStatus;
 
     static
     {

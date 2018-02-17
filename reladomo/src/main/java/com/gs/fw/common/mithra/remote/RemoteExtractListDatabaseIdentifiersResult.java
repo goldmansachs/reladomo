@@ -13,13 +13,14 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.remote;
 
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.io.IOException;
 import java.io.ObjectInput;

@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
@@ -21,13 +22,20 @@ import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.finder.Operation;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.InfinityTimestamp;
+import com.gs.fw.common.mithra.test.domain.TinyBalance;
+import com.gs.fw.common.mithra.test.domain.TinyBalanceAbstract;
+import com.gs.fw.common.mithra.test.domain.TinyBalanceFinder;
+import com.gs.fw.common.mithra.test.domain.TinyBalanceList;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 
 
 public class TestDatedBitemporalOptimisticLocking extends MithraTestAbstract implements TestDatedBitemporalDatabaseChecker

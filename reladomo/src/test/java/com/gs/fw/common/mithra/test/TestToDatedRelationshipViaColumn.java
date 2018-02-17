@@ -13,16 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-//import com.gs.fw.common.mithra.AggregateList;
-//import com.gs.fw.common.mithra.finder.Operation;
-//import com.gs.fw.common.mithra.test.domain.BitemporalOrder;
-//import com.gs.fw.common.mithra.test.domain.CalcDate;
-//import com.gs.fw.common.mithra.test.domain.CalcDateFinder;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.domain.adjustmenthistory.PositionAdjustmentHistory;
 import com.gs.fw.common.mithra.test.domain.adjustmenthistory.PositionAdjustmentHistoryFinder;
@@ -30,11 +24,20 @@ import com.gs.fw.common.mithra.test.domain.adjustmenthistory.PositionAdjustmentH
 import com.gs.fw.common.mithra.test.domain.desk.balance.position.PositionQuantity;
 import com.gs.fw.common.mithra.test.domain.desk.balance.position.PositionQuantityFinder;
 import com.gs.fw.common.mithra.test.domain.desk.balance.position.PositionQuantityList;
-import com.gs.fw.common.mithra.test.mag.*;
+import com.gs.fw.common.mithra.test.mag.MagEvent;
+import com.gs.fw.common.mithra.test.mag.MagEventFinder;
+import com.gs.fw.common.mithra.test.mag.MagEventList;
+import com.gs.fw.common.mithra.test.mag.MagProductId;
+import com.gs.fw.common.mithra.test.mag.MagReportingAttributes;
+import com.gs.fw.common.mithra.test.mag.MagTrade;
+import com.gs.fw.common.mithra.test.mag.MagTransaction;
+import com.gs.fw.common.mithra.test.mag.MagTransactionPosting;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Set;
 
 

@@ -13,15 +13,26 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.set.mutable.primitive.CharHashSet;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
-import com.gs.collections.impl.set.mutable.primitive.LongHashSet;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.finder.Operation;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.InfinityTimestamp;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItemFinder;
+import com.gs.fw.common.mithra.test.domain.ParaDeskFinder;
+import com.gs.fw.common.mithra.test.domain.ParaDeskList;
+import com.gs.fw.common.mithra.test.domain.Product;
+import com.gs.fw.common.mithra.test.domain.ProductFinder;
+import com.gs.fw.common.mithra.test.domain.User;
+import com.gs.fw.common.mithra.test.domain.UserFinder;
+import com.gs.fw.common.mithra.test.domain.UserList;
+import org.eclipse.collections.impl.set.mutable.primitive.CharHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
+import org.eclipse.collections.impl.set.mutable.primitive.LongHashSet;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -13,16 +13,14 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.util.tinyproxy;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicInteger;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -31,11 +29,13 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.gs.collections.impl.map.mutable.UnifiedMap;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PspServlet implements Servlet
 {

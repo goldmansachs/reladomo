@@ -13,19 +13,37 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.map.mutable.UnifiedMap;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
+import com.gs.fw.common.mithra.test.domain.Book;
+import com.gs.fw.common.mithra.test.domain.BookFinder;
+import com.gs.fw.common.mithra.test.domain.Division;
+import com.gs.fw.common.mithra.test.domain.DivisionFinder;
+import com.gs.fw.common.mithra.test.domain.InventoryItem;
+import com.gs.fw.common.mithra.test.domain.Location;
+import com.gs.fw.common.mithra.test.domain.Manufacturer;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItem;
+import com.gs.fw.common.mithra.test.domain.OrderItemFinder;
+import com.gs.fw.common.mithra.test.domain.Player;
+import com.gs.fw.common.mithra.test.domain.PlayerFinder;
+import com.gs.fw.common.mithra.test.domain.Product;
+import com.gs.fw.common.mithra.test.domain.ProductFinder;
+import com.gs.fw.common.mithra.test.domain.Supplier;
+import com.gs.fw.common.mithra.test.domain.SupplierInventoryItem;
+import com.gs.fw.common.mithra.test.domain.Team;
+import com.gs.fw.common.mithra.test.domain.TeamFinder;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.junit.Assert;
 
 import java.util.Map;
 import java.util.Set;
-
-import com.gs.fw.common.mithra.finder.Operation;
-import com.gs.fw.common.mithra.test.domain.*;
-import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
-import org.junit.Assert;
 
 
 public class TestOperationSourceAttributeExtractor extends MithraTestAbstract

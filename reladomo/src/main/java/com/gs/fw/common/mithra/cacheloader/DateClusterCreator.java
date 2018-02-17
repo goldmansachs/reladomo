@@ -13,11 +13,12 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.cacheloader;
 
 
-import com.gs.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.list.mutable.FastList;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 

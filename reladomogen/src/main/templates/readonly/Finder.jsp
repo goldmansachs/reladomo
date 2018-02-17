@@ -65,10 +65,10 @@ import com.gs.fw.common.mithra.portal.*;
 import com.gs.fw.common.mithra.remote.*;
 import com.gs.fw.common.mithra.transaction.MithraObjectPersister;
 import com.gs.fw.common.mithra.util.TimestampPool;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
 <% if (wrapper.isTemporary()) { %>
 import com.gs.fw.common.mithra.tempobject.*;
 <% } %>
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.io.Serializable;
 

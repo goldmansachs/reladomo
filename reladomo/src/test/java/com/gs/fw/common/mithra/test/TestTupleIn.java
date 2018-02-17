@@ -13,19 +13,33 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import java.sql.Timestamp;
-import java.util.List;
-
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.AggregateList;
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraTransaction;
+import com.gs.fw.common.mithra.TemporaryContext;
+import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.attribute.TupleAttribute;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.Operation;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.OrderList;
+import com.gs.fw.common.mithra.test.domain.ParaProduct;
+import com.gs.fw.common.mithra.test.domain.ParaProductDriver;
+import com.gs.fw.common.mithra.test.domain.ParaProductDriverFinder;
+import com.gs.fw.common.mithra.test.domain.ParaProductDriverList;
+import com.gs.fw.common.mithra.test.domain.ParaProductFinder;
+import com.gs.fw.common.mithra.test.domain.ParaProductList;
+import com.gs.fw.common.mithra.test.domain.PositionDriver;
+import com.gs.fw.common.mithra.test.domain.PositionDriverFinder;
+import com.gs.fw.common.mithra.test.domain.PositionDriverList;
+import com.gs.fw.common.mithra.test.domain.Product;
+import com.gs.fw.common.mithra.test.domain.ProductFinder;
+import com.gs.fw.common.mithra.test.domain.ProductList;
 import com.gs.fw.common.mithra.test.domain.adjustmenthistory.PositionAdjustmentHistory;
 import com.gs.fw.common.mithra.test.domain.adjustmenthistory.PositionAdjustmentHistoryFinder;
 import com.gs.fw.common.mithra.test.domain.adjustmenthistory.PositionAdjustmentHistoryList;
@@ -34,6 +48,11 @@ import com.gs.fw.common.mithra.test.domain.desk.balance.position.PositionQuantit
 import com.gs.fw.common.mithra.test.domain.desk.balance.position.PositionQuantityList;
 import com.gs.fw.common.mithra.util.MithraArrayTupleTupleSet;
 import com.gs.fw.common.mithra.util.TupleSet;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+
+import java.sql.Timestamp;
+import java.util.List;
 
 
 public class TestTupleIn extends MithraTestAbstract

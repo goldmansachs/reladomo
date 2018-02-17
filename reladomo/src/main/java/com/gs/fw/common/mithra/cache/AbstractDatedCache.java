@@ -17,11 +17,17 @@
 
 package com.gs.fw.common.mithra.cache;
 
-import com.gs.collections.api.set.primitive.*;
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.DatedTransactionalState;
+import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraDatedObject;
+import com.gs.fw.common.mithra.MithraDatedObjectFactory;
+import com.gs.fw.common.mithra.MithraDatedTransactionalObject;
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraObject;
+import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.MithraTransaction;
+import com.gs.fw.common.mithra.MithraTransactionalObject;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.update.AttributeUpdateWrapper;
@@ -37,7 +43,36 @@ import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.asofop.AsOfExtractor;
 import com.gs.fw.common.mithra.finder.asofop.AsOfOperation;
 import com.gs.fw.common.mithra.finder.bytearray.ByteArraySet;
-import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.CooperativeCpuTaskFactory;
+import com.gs.fw.common.mithra.util.CpuBoundTask;
+import com.gs.fw.common.mithra.util.CpuTask;
+import com.gs.fw.common.mithra.util.DoProcedure;
+import com.gs.fw.common.mithra.util.DoUntilProcedure;
+import com.gs.fw.common.mithra.util.Filter;
+import com.gs.fw.common.mithra.util.FixedCountTaskFactory;
+import com.gs.fw.common.mithra.util.InternalList;
+import com.gs.fw.common.mithra.util.ListBasedQueue;
+import com.gs.fw.common.mithra.util.ListFactory;
+import com.gs.fw.common.mithra.util.MinExchange;
+import com.gs.fw.common.mithra.util.MithraCompositeList;
+import com.gs.fw.common.mithra.util.MithraCpuBoundThreadPool;
+import com.gs.fw.common.mithra.util.MithraFastList;
+import com.gs.fw.common.mithra.util.MithraTupleSet;
+import com.gs.fw.common.mithra.util.MithraUnsafe;
+import com.gs.fw.common.mithra.util.ParallelIterator;
+import com.gs.fw.common.mithra.util.ThreadChunkSize;
+import com.gs.fw.common.mithra.util.TimestampPool;
+import org.eclipse.collections.api.set.primitive.BooleanSet;
+import org.eclipse.collections.api.set.primitive.ByteSet;
+import org.eclipse.collections.api.set.primitive.CharSet;
+import org.eclipse.collections.api.set.primitive.DoubleSet;
+import org.eclipse.collections.api.set.primitive.FloatSet;
+import org.eclipse.collections.api.set.primitive.IntSet;
+import org.eclipse.collections.api.set.primitive.LongSet;
+import org.eclipse.collections.api.set.primitive.ShortSet;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1843,13 +1878,13 @@ public abstract class AbstractDatedCache extends AbstractCache implements Refere
      **/
     @Deprecated
     @Override
-    public List get(int indexRef, IntSet intSetIndexValues)
+    public List get(int indexRef, com.gs.collections.api.set.primitive.IntSet intSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }
 
     @Override
-    public List get(int indexRef, org.eclipse.collections.api.set.primitive.IntSet intSetIndexValues)
+    public List get(int indexRef, IntSet intSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }
@@ -1859,116 +1894,116 @@ public abstract class AbstractDatedCache extends AbstractCache implements Refere
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    @Override
+    public List get(int indexRef, com.gs.collections.api.set.primitive.DoubleSet doubleSetIndexValues)
+    {
+        throw new RuntimeException("not supported");
+    }
+
     @Override
     public List get(int indexRef, DoubleSet doubleSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }
 
-    @Override
-    public List get(int indexRef, org.eclipse.collections.api.set.primitive.DoubleSet doubleSetIndexValues)
-    {
-        throw new RuntimeException("not supported");
-    }
-
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    @Override
+    public List get(int indexRef, com.gs.collections.api.set.primitive.BooleanSet booleanSetIndexValues)
+    {
+        throw new RuntimeException("not supported");
+    }
+
     @Override
     public List get(int indexRef, BooleanSet booleanSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }
 
-    @Override
-    public List get(int indexRef, org.eclipse.collections.api.set.primitive.BooleanSet booleanSetIndexValues)
-    {
-        throw new RuntimeException("not supported");
-    }
-
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    @Override
+    public List get(int indexRef, com.gs.collections.api.set.primitive.LongSet longSetIndexValues)
+    {
+        throw new RuntimeException("not supported");
+    }
+
     @Override
     public List get(int indexRef, LongSet longSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }
 
-    @Override
-    public List get(int indexRef, org.eclipse.collections.api.set.primitive.LongSet longSetIndexValues)
-    {
-        throw new RuntimeException("not supported");
-    }
-
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    @Override
+    public List get(int indexRef, com.gs.collections.api.set.primitive.ByteSet byteSetIndexValues)
+    {
+        throw new RuntimeException("not supported");
+    }
+
     @Override
     public List get(int indexRef, ByteSet byteSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }
 
-    @Override
-    public List get(int indexRef, org.eclipse.collections.api.set.primitive.ByteSet byteSetIndexValues)
-    {
-        throw new RuntimeException("not supported");
-    }
-
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    @Override
+    public List get(int indexRef, com.gs.collections.api.set.primitive.CharSet charSetIndexValues)
+    {
+        throw new RuntimeException("not supported");
+    }
+
     @Override
     public List get(int indexRef, CharSet charSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }
 
-    @Override
-    public List get(int indexRef, org.eclipse.collections.api.set.primitive.CharSet charSetIndexValues)
-    {
-        throw new RuntimeException("not supported");
-    }
-
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    @Override
+    public List get(int indexRef, com.gs.collections.api.set.primitive.FloatSet floatSetIndexValues)
+    {
+        throw new RuntimeException("not supported");
+    }
+
     @Override
     public List get(int indexRef, FloatSet floatSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }
 
-    @Override
-    public List get(int indexRef, org.eclipse.collections.api.set.primitive.FloatSet floatSetIndexValues)
-    {
-        throw new RuntimeException("not supported");
-    }
-
     /**
      * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
     @Override
-    public List get(int indexRef, ShortSet shortSetIndexValues)
+    public List get(int indexRef, com.gs.collections.api.set.primitive.ShortSet shortSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }
 
     @Override
-    public List get(int indexRef, org.eclipse.collections.api.set.primitive.ShortSet shortSetIndexValues)
+    public List get(int indexRef, ShortSet shortSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }

@@ -17,12 +17,27 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.IntSet;
 import com.gs.fw.common.mithra.MithraObjectPortal;
-import com.gs.fw.common.mithra.attribute.calculator.procedure.*;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.FloatProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.IntegerProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.LongProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.ObjectProcedure;
 import com.gs.fw.common.mithra.extractor.ChainedAttributeValueSelector;
 import com.gs.fw.common.mithra.extractor.Function;
-import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.AggregateSqlQuery;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.ChainedMapper;
+import com.gs.fw.common.mithra.finder.DeepRelationshipAttribute;
+import com.gs.fw.common.mithra.finder.MappedOperation;
+import com.gs.fw.common.mithra.finder.Mapper;
+import com.gs.fw.common.mithra.finder.NoOperation;
+import com.gs.fw.common.mithra.finder.None;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.ToStringContext;
+import org.eclipse.collections.api.set.primitive.IntSet;
 
 import java.math.BigDecimal;
 
@@ -244,13 +259,13 @@ public class MappedIntegerAttribute<T> extends IntegerAttribute<T> implements Ma
      **/
     @Deprecated
     @Override
-    public Operation in(IntSet intSet)
+    public Operation in(com.gs.collections.api.set.primitive.IntSet intSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.in(intSet));
     }
 
     @Override
-    public Operation in(org.eclipse.collections.api.set.primitive.IntSet intSet)
+    public Operation in(IntSet intSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.in(intSet));
     }
@@ -261,13 +276,13 @@ public class MappedIntegerAttribute<T> extends IntegerAttribute<T> implements Ma
      **/
     @Deprecated
     @Override
-    public Operation notIn(IntSet intSet)
+    public Operation notIn(com.gs.collections.api.set.primitive.IntSet intSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(intSet));
     }
 
     @Override
-    public Operation notIn(org.eclipse.collections.api.set.primitive.IntSet intSet)
+    public Operation notIn(IntSet intSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(intSet));
     }

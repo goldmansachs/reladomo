@@ -17,15 +17,24 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.FloatSet;
 import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.FloatProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.ObjectProcedure;
-import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
 import com.gs.fw.common.mithra.extractor.ChainedAttributeValueSelector;
 import com.gs.fw.common.mithra.extractor.Function;
-import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.AggregateSqlQuery;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.ChainedMapper;
+import com.gs.fw.common.mithra.finder.DeepRelationshipAttribute;
+import com.gs.fw.common.mithra.finder.MappedOperation;
+import com.gs.fw.common.mithra.finder.Mapper;
+import com.gs.fw.common.mithra.finder.NoOperation;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.ToStringContext;
+import org.eclipse.collections.api.set.primitive.FloatSet;
 
 
 public class MappedFloatAttribute<T> extends FloatAttribute<T> implements MappedAttribute
@@ -169,13 +178,13 @@ public class MappedFloatAttribute<T> extends FloatAttribute<T> implements Mapped
      **/
     @Deprecated
     @Override
-    public Operation in(FloatSet floatSet)
+    public Operation in(com.gs.collections.api.set.primitive.FloatSet floatSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.in(floatSet));
     }
 
     @Override
-    public Operation in(org.eclipse.collections.api.set.primitive.FloatSet floatSet)
+    public Operation in(FloatSet floatSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.in(floatSet));
     }
@@ -186,13 +195,13 @@ public class MappedFloatAttribute<T> extends FloatAttribute<T> implements Mapped
      **/
     @Deprecated
     @Override
-    public Operation notIn(FloatSet floatSet)
+    public Operation notIn(com.gs.collections.api.set.primitive.FloatSet floatSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(floatSet));
     }
 
     @Override
-    public Operation notIn(org.eclipse.collections.api.set.primitive.FloatSet floatSet)
+    public Operation notIn(FloatSet floatSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(floatSet));
     }

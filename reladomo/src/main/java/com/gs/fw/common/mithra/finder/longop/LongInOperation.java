@@ -17,9 +17,6 @@
 
 package com.gs.fw.common.mithra.finder.longop;
 
-import com.gs.collections.api.iterator.LongIterator;
-import com.gs.collections.api.set.primitive.LongSet;
-import com.gs.collections.impl.factory.primitive.LongSets;
 import com.gs.fw.common.mithra.attribute.LongAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
@@ -33,6 +30,10 @@ import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.util.HashUtil;
+import org.eclipse.collections.api.iterator.LongIterator;
+import org.eclipse.collections.api.set.primitive.LongSet;
+import org.eclipse.collections.impl.factory.primitive.LongSets;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -51,16 +52,16 @@ public class LongInOperation extends InOperation implements SqlParameterSetter
      * Use Eclipse Collections variant of the same API instead.
      **/
     @Deprecated
+    public LongInOperation(LongAttribute attribute, com.gs.collections.api.set.primitive.LongSet longSet)
+    {
+        super(attribute);
+        this.set = LongSets.immutable.of(longSet.toArray());
+    }
+
     public LongInOperation(LongAttribute attribute, LongSet longSet)
     {
         super(attribute);
         this.set = longSet.freeze();
-    }
-
-    public LongInOperation(LongAttribute attribute, org.eclipse.collections.api.set.primitive.LongSet longSet)
-    {
-        super(attribute);
-        this.set = LongSets.immutable.of(longSet.toArray());
     }
 
     @Override

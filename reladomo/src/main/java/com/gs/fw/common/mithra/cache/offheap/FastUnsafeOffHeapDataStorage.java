@@ -13,14 +13,11 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.cache.offheap;
 
 
-import com.gs.collections.api.iterator.IntIterator;
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.map.mutable.primitive.IntLongHashMap;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.SingleColumnStringAttribute;
@@ -28,7 +25,19 @@ import com.gs.fw.common.mithra.cache.AbstractDatedCache;
 import com.gs.fw.common.mithra.cache.ParallelProcedure;
 import com.gs.fw.common.mithra.cache.ReadWriteLock;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
-import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.ArrayBasedQueue;
+import com.gs.fw.common.mithra.util.CpuBoundTask;
+import com.gs.fw.common.mithra.util.DoUntilProcedure;
+import com.gs.fw.common.mithra.util.FixedCountTaskFactory;
+import com.gs.fw.common.mithra.util.MithraCpuBoundThreadPool;
+import com.gs.fw.common.mithra.util.MithraFastList;
+import com.gs.fw.common.mithra.util.MithraUnsafe;
+import com.gs.fw.common.mithra.util.MutableInteger;
+import com.gs.fw.common.mithra.util.ThreadChunkSize;
+import org.eclipse.collections.api.iterator.IntIterator;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.map.mutable.primitive.IntLongHashMap;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.misc.Unsafe;

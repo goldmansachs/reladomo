@@ -14,16 +14,17 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.generator;
 
 
-import java.io.File;
-
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.generator.objectxmlgenerator.DatabaseTableValidator;
 import com.gs.fw.common.mithra.test.MithraTestAbstract;
 import junit.framework.Assert;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+
+import java.io.File;
 
 public class DatabaseTableValidatorTest
     extends MithraTestAbstract

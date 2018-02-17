@@ -13,21 +13,10 @@
   specific language governing permissions and limitations
   under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.reladomo.jms;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-
-import javax.transaction.xa.XAException;
-import javax.transaction.xa.XAResource;
-import javax.transaction.xa.Xid;
-
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.MithraTransactionalList;
@@ -37,13 +26,23 @@ import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.transaction.MultiThreadedTm;
 import com.gs.fw.common.mithra.util.serializer.DeserializationClassMetaData;
 import com.gs.fw.common.mithra.util.serializer.DeserializationException;
-import com.gs.reladomo.metadata.ReladomoClassMetaData;
 import com.gs.reladomo.txid.ReladomoTxIdInterface;
 import com.gs.reladomo.txid.ReladomoTxIdInterfaceFinder;
 import com.gs.reladomo.util.Base64;
 import com.gs.reladomo.util.InterruptableBackoff;
+import org.eclipse.collections.impl.list.mutable.FastList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.transaction.xa.XAException;
+import javax.transaction.xa.XAResource;
+import javax.transaction.xa.Xid;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class TopicResourcesWithTransactionXid
 {

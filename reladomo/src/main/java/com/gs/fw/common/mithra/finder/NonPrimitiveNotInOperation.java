@@ -13,31 +13,36 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder;
 
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.NonPrimitiveAttribute;
 import com.gs.fw.common.mithra.attribute.StringAttribute;
+import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.bytearray.ByteArraySet;
-import com.gs.fw.common.mithra.databasetype.DatabaseType;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.finder.sqcache.ExactMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.util.Time;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.*;
-import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TimeZone;
 
 
 

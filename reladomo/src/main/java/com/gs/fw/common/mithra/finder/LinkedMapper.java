@@ -17,7 +17,6 @@
 
 package com.gs.fw.common.mithra.finder;
 
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.MithraList;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
@@ -30,12 +29,17 @@ import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.util.HashUtil;
 import com.gs.fw.common.mithra.util.InternalList;
 import com.gs.fw.common.mithra.util.ListFactory;
+import org.eclipse.collections.impl.list.mutable.FastList;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 
