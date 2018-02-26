@@ -31,4 +31,6 @@
     <Attribute name="trackingId" javaType="String" columnName="TRACKING_ID" maxLength="15"/>
     <Attribute name="version" javaType="int" columnName="VERSION" useForOptimisticLocking="true"/>
 
+    <Index name="byUserId">userId</Index>
+    <Index name="byState">state</Index>
 </MithraObject>

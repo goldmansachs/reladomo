@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import java.sql.*;
 import java.util.concurrent.Exchanger;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 
@@ -1776,5 +1775,131 @@ public class TestOptimisticTransactionParticipation extends MithraTestAbstract
         {
             // ok
         }
+    }
+
+    public void testNonDatedOptimisticIndexQueryAfterInsert()
+    {
+        // multiple orders by index
+        queryOptimisticOrderBeforeAndAfterInsert(1, 3, 100);
+        // single order by index
+        queryOptimisticOrderBeforeAndAfterInsert(2, 1, 101);
+        // no orders by index
+        queryOptimisticOrderBeforeAndAfterInsert(3, 0, 102);
+    }
+
+    private void queryOptimisticOrderBeforeAndAfterInsert(final int userIdToInsertAndQuery, final int sizeBefore, final int orderIdToInsert) {
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand()
+        {
+            public Object executeTransaction(MithraTransaction tx) throws Throwable
+            {
+                OptimisticOrderFinder.setTransactionModeReadCacheWithOptimisticLocking(tx);
+
+                OptimisticOrderList originalOrders = OptimisticOrderFinder.findMany(OptimisticOrderFinder.userId().eq(userIdToInsertAndQuery));
+                assertEquals(sizeBefore, originalOrders.size());
+
+                OptimisticOrder toInsert = new OptimisticOrder();
+                toInsert.setOrderId(orderIdToInsert);
+                toInsert.setUserId(userIdToInsertAndQuery);
+                toInsert.setDescription("Just Inserted");
+                toInsert.setState("New");
+                toInsert.insert();
+
+                OptimisticOrderList updatedOrders = OptimisticOrderFinder.findMany(OptimisticOrderFinder.userId().eq(userIdToInsertAndQuery));
+                assertEquals(sizeBefore + 1, updatedOrders.size());
+
+                return null;
+            }
+        });
+    }
+
+    public void testDatedOptimisticIndexQueryAfterInsert()
+    {
+        // multiple orders by index
+        queryAuditedOrderBeforeAndAfterInsert(1, 5, 100);
+        // single order by index
+        queryAuditedOrderBeforeAndAfterInsert(2, 1, 101);
+        // no orders by index
+        queryAuditedOrderBeforeAndAfterInsert(3, 0, 102);
+    }
+
+    private void queryAuditedOrderBeforeAndAfterInsert(final int userIdToInsertAndQuery, final int sizeBefore, final int orderIdToInsert) {
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand()
+        {
+            public Object executeTransaction(MithraTransaction tx) throws Throwable
+            {
+                AuditedOrderFinder.setTransactionModeReadCacheWithOptimisticLocking(tx);
+
+                AuditedOrderList originalOrders = AuditedOrderFinder.findMany(AuditedOrderFinder.userId().eq(userIdToInsertAndQuery));
+                assertEquals(sizeBefore, originalOrders.size());
+
+                AuditedOrder toInsert = new AuditedOrder();
+                toInsert.setOrderId(orderIdToInsert);
+                toInsert.setUserId(userIdToInsertAndQuery);
+                toInsert.setDescription("Just Inserted");
+                toInsert.setState("New");
+                toInsert.insert();
+
+                AuditedOrderList updatedOrders = AuditedOrderFinder.findMany(AuditedOrderFinder.userId().eq(userIdToInsertAndQuery));
+                assertEquals(sizeBefore + 1, updatedOrders.size());
+
+                return null;
+            }
+        });
+    }
+
+    public void testNonDatedOptimisticIndexQueryAfterDelete()
+    {
+        // multiple orders by index
+        queryOptimisticOrderBeforeAndAfterDelete(1, 3, 1);
+        // single order by index
+        queryOptimisticOrderBeforeAndAfterDelete(2, 1, 4);
+    }
+
+    private void queryOptimisticOrderBeforeAndAfterDelete(final int userIdToInsertAndQuery, final int sizeBefore, final int orderToDelete) {
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand()
+        {
+            public Object executeTransaction(MithraTransaction tx) throws Throwable
+            {
+                OptimisticOrderFinder.setTransactionModeReadCacheWithOptimisticLocking(tx);
+
+                OptimisticOrderList originalOrders = OptimisticOrderFinder.findMany(OptimisticOrderFinder.userId().eq(userIdToInsertAndQuery));
+                assertEquals(sizeBefore, originalOrders.size());
+
+                OptimisticOrderFinder.findOne(OptimisticOrderFinder.orderId().eq(orderToDelete)).delete();
+
+                OptimisticOrderList updatedOrders = OptimisticOrderFinder.findMany(OptimisticOrderFinder.userId().eq(userIdToInsertAndQuery));
+                assertEquals(sizeBefore - 1, updatedOrders.size());
+
+                return null;
+            }
+        });
+    }
+
+    public void testDatedOptimisticIndexQueryAfterDelete()
+    {
+        // multiple orders by index
+        queryAuditedOrderBeforeAndAfterTerminate(1, 5, 1);
+        // single order by index
+        queryAuditedOrderBeforeAndAfterTerminate(2, 1, 4);
+    }
+
+    private void queryAuditedOrderBeforeAndAfterTerminate(final int userIdToInsertAndQuery, final int sizeBefore, final int orderToTerminate) {
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand()
+        {
+            public Object executeTransaction(MithraTransaction tx) throws Throwable
+            {
+                AuditedOrderFinder.setTransactionModeReadCacheWithOptimisticLocking(tx);
+
+                AuditedOrderList originalOrders = AuditedOrderFinder.findMany(AuditedOrderFinder.userId().eq(userIdToInsertAndQuery));
+                assertEquals(sizeBefore, originalOrders.size());
+
+                AuditedOrderFinder.findOne(AuditedOrderFinder.orderId().eq(orderToTerminate)).terminate();
+
+                AuditedOrderList updatedOrders = AuditedOrderFinder.findMany(AuditedOrderFinder.userId().eq(userIdToInsertAndQuery));
+                assertEquals(sizeBefore - 1, updatedOrders.size());
+
+                return null;
+            }
+        });
     }
 }
