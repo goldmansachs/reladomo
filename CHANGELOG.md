@@ -1,4 +1,8 @@
 # Change Log
+## 16.7.1 - 2018-02-28
+### Bug Fixes:
+- Fix Dated NonUniqueIndex with optimistic locking in a transaction
+
 ## 16.7.0 - 2018-02-06
 ### Enhancements:
 - New module: XA integration with a JMS message loop
