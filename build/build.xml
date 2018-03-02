@@ -1858,7 +1858,6 @@
                 </classpath>
                 <jvmarg value="-server"/>
                 <jvmarg value="${jacocovmarg}${root}/reladomo/target/coverage/@{mithraxmlconfig}@{testclass}@{heap}.exec"/>
-                <jvmarg value="-XX:MaxPermSize=320m"/>
                 <jvmarg value="-Xmx3048m"/>
                 <jvmarg value="-ea"/>
                 <jvmarg value="-Dlog4j.configuration=file:${root}/reladomo/src/test/resources/log4jWarn.config"/>
@@ -1881,7 +1880,12 @@
     </macrodef>
 
     <target name="jdk18-sanity-check">
-        <available property="reladomo.jdk18.sanity.check" file="${env.RELADOMO_JDK_18_HOME}/bin/java"/>
+        <condition property="reladomo.jdk18.sanity.check">
+            <or>
+                <available property="" file="${env.RELADOMO_JDK_18_HOME}/bin/java"/>
+                <available property="" file="${env.RELADOMO_JDK_18_HOME}/bin/java.exe"/>
+            </or>
+        </condition>
         <fail message="Could not find JDK 1.8 for running serial tests in ${env.RELADOMO_JDK_18_HOME}/bin/java. Set the RELADOMO_JDK_18_HOME environment variable!"
               unless="reladomo.jdk18.sanity.check"/>
     </target>

@@ -17,6 +17,8 @@
 
 package com.gs.reladomo.jms;
 
+import javax.jms.*;
+import javax.transaction.xa.XAResource;
 import java.io.Serializable;
 
 public class InMemoryXaSession implements XASession

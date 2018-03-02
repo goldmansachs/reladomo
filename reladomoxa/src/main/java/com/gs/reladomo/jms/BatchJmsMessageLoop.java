@@ -17,6 +17,7 @@
 
 package com.gs.reladomo.jms;
 
+import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.transaction.MultiThreadedTm;
 import com.gs.reladomo.txid.ReladomoTxIdInterface;
 import com.gs.reladomo.txid.ReladomoTxIdInterfaceFinder;

@@ -17,6 +17,7 @@
 
 package com.gs.reladomo.jms;
 
+import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.test.ConnectionManagerForTests;
 import com.gs.fw.common.mithra.test.MithraTestResource;
 import com.gs.fw.common.mithra.transaction.MultiThreadedTm;
