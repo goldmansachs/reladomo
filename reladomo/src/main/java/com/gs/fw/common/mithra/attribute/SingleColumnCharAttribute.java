@@ -13,34 +13,47 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.CharSet;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.CharacterProcedure;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapCharExtractorWithOffset;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapExtractor;
-import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
-import com.gs.fw.common.mithra.finder.*;
-import com.gs.fw.common.mithra.finder.charop.*;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
-import com.gs.fw.common.mithra.util.ColumnInfo;
+import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.AtomicSelfNotEqualityOperation;
+import com.gs.fw.common.mithra.finder.None;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.charop.CharEqOperation;
+import com.gs.fw.common.mithra.finder.charop.CharGreaterThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.charop.CharGreaterThanOperation;
+import com.gs.fw.common.mithra.finder.charop.CharInOperation;
+import com.gs.fw.common.mithra.finder.charop.CharLessThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.charop.CharLessThanOperation;
+import com.gs.fw.common.mithra.finder.charop.CharNotEqOperation;
+import com.gs.fw.common.mithra.finder.charop.CharNotInOperation;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
+import com.gs.fw.common.mithra.util.ColumnInfo;
 import com.gs.fw.common.mithra.util.fileparser.BitsInBytes;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarInStream;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarOutStream;
+import org.eclipse.collections.api.set.primitive.CharSet;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.ObjectStreamException;
 import java.io.OutputStream;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.sql.Types;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 
 public abstract class SingleColumnCharAttribute<T> extends CharAttribute<T> implements SingleColumnAttribute<T>
@@ -102,6 +115,25 @@ public abstract class SingleColumnCharAttribute<T> extends CharAttribute<T> impl
         return new CharNotEqOperation(this, other);
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public Operation in(com.gs.collections.api.set.primitive.CharSet charSet)
+    {
+        if (charSet.isEmpty())
+        {
+            return new None(this);
+        }
+        if (charSet.size() == 1)
+        {
+            return this.eq(charSet.charIterator().next());
+        }
+        return new CharInOperation(this, charSet);
+    }
+
     @Override
     public Operation in(CharSet charSet)
     {
@@ -114,6 +146,25 @@ public abstract class SingleColumnCharAttribute<T> extends CharAttribute<T> impl
             return this.eq(charSet.charIterator().next());
         }
         return new CharInOperation(this, charSet);
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public Operation notIn(com.gs.collections.api.set.primitive.CharSet charSet)
+    {
+        if (charSet.isEmpty())
+        {
+            return new All(this);
+        }
+        if (charSet.size() == 1)
+        {
+            return this.notEq(charSet.charIterator().next());
+        }
+        return new CharNotInOperation(this, charSet);
     }
 
     @Override

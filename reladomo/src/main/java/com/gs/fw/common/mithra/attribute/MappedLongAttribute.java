@@ -13,15 +13,29 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.function.Function;
-import com.gs.collections.api.set.primitive.LongSet;
 import com.gs.fw.common.mithra.MithraObjectPortal;
-import com.gs.fw.common.mithra.attribute.calculator.procedure.*;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.FloatProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.LongProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.ObjectProcedure;
 import com.gs.fw.common.mithra.extractor.ChainedAttributeValueSelector;
-import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.extractor.Function;
+import com.gs.fw.common.mithra.finder.AggregateSqlQuery;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.ChainedMapper;
+import com.gs.fw.common.mithra.finder.DeepRelationshipAttribute;
+import com.gs.fw.common.mithra.finder.MappedOperation;
+import com.gs.fw.common.mithra.finder.Mapper;
+import com.gs.fw.common.mithra.finder.NoOperation;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.ToStringContext;
+import org.eclipse.collections.api.set.primitive.LongSet;
 
 
 public class MappedLongAttribute<T> extends LongAttribute<T> implements MappedAttribute
@@ -159,10 +173,32 @@ public class MappedLongAttribute<T> extends LongAttribute<T> implements MappedAt
         return new MappedOperation(this.mapper, this.wrappedAttribute.notEq(other));
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public Operation in(com.gs.collections.api.set.primitive.LongSet longSet)
+    {
+        return new MappedOperation(this.mapper, this.wrappedAttribute.in(longSet));
+    }
+
     @Override
     public Operation in(LongSet longSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.in(longSet));
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public Operation notIn(com.gs.collections.api.set.primitive.LongSet longSet)
+    {
+        return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(longSet));
     }
 
     @Override

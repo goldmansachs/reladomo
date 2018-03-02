@@ -13,11 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder;
 
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.DeepFetchTree;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraObjectPortal;
@@ -28,12 +27,27 @@ import com.gs.fw.common.mithra.extractor.IdentityExtractor;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.querycache.CachedQuery;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
-import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.ExecutorWithFinish;
+import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.InternalList;
+import com.gs.fw.common.mithra.util.ListFactory;
+import com.gs.fw.common.mithra.util.MithraFastList;
+import com.gs.fw.common.mithra.util.MultiHashMap;
+import com.gs.fw.common.mithra.util.PersisterId;
+import com.gs.fw.common.mithra.util.ThreadConservingExecutor;
 import com.gs.fw.finder.Navigation;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.Serializable;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executor;
 
 
 public class DeepFetchNode implements Serializable, DeepFetchTree

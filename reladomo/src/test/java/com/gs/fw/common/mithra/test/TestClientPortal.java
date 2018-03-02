@@ -13,10 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.integer.IntegerResultSetParser;
@@ -36,9 +36,51 @@ import com.gs.fw.common.mithra.test.aggregate.TestMax;
 import com.gs.fw.common.mithra.test.aggregate.TestMin;
 import com.gs.fw.common.mithra.test.aggregate.TestNumericAttribute;
 import com.gs.fw.common.mithra.test.aggregate.TestSum;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.Account;
+import com.gs.fw.common.mithra.test.domain.AccountTransactionException;
+import com.gs.fw.common.mithra.test.domain.AccountTransactionExceptionFinder;
+import com.gs.fw.common.mithra.test.domain.AuditedOrder;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderItem;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderStatus;
+import com.gs.fw.common.mithra.test.domain.Book;
+import com.gs.fw.common.mithra.test.domain.BookFinder;
+import com.gs.fw.common.mithra.test.domain.BookList;
+import com.gs.fw.common.mithra.test.domain.DatedEntity;
+import com.gs.fw.common.mithra.test.domain.FullyCachedTinyBalance;
+import com.gs.fw.common.mithra.test.domain.Group;
+import com.gs.fw.common.mithra.test.domain.GroupFinder;
+import com.gs.fw.common.mithra.test.domain.GroupList;
+import com.gs.fw.common.mithra.test.domain.InfinityTimestamp;
+import com.gs.fw.common.mithra.test.domain.Manufacturer;
+import com.gs.fw.common.mithra.test.domain.NoExportTestObject;
+import com.gs.fw.common.mithra.test.domain.NoExportTestObjectFinder;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItem;
+import com.gs.fw.common.mithra.test.domain.OrderItemList;
+import com.gs.fw.common.mithra.test.domain.OrderList;
+import com.gs.fw.common.mithra.test.domain.ParaBalance;
+import com.gs.fw.common.mithra.test.domain.ParaDesk;
+import com.gs.fw.common.mithra.test.domain.ParaDeskFinder;
+import com.gs.fw.common.mithra.test.domain.ParaDeskList;
+import com.gs.fw.common.mithra.test.domain.Profile;
+import com.gs.fw.common.mithra.test.domain.ProfileFinder;
+import com.gs.fw.common.mithra.test.domain.ProfileList;
+import com.gs.fw.common.mithra.test.domain.SpecialAccount;
+import com.gs.fw.common.mithra.test.domain.SpecialAccountFinder;
+import com.gs.fw.common.mithra.test.domain.TamsAccount;
+import com.gs.fw.common.mithra.test.domain.TamsAccountFinder;
+import com.gs.fw.common.mithra.test.domain.TamsAccountList;
+import com.gs.fw.common.mithra.test.domain.Trial;
+import com.gs.fw.common.mithra.test.domain.TrialFinder;
+import com.gs.fw.common.mithra.test.domain.User;
+import com.gs.fw.common.mithra.test.domain.UserFinder;
+import com.gs.fw.common.mithra.test.domain.UserGroup;
+import com.gs.fw.common.mithra.test.domain.UserList;
 import com.gs.fw.common.mithra.test.domain.dated.AuditedOrderStatusTwo;
 import com.gs.fw.common.mithra.test.inherited.TestReadOnlyInherited;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

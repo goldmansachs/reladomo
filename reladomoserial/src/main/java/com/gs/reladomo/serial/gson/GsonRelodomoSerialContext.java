@@ -13,6 +13,7 @@
   specific language governing permissions and limitations
   under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.reladomo.serial.gson;
 
@@ -20,10 +21,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
 import com.gs.fw.common.mithra.util.serializer.SerialWriter;
 import com.gs.fw.common.mithra.util.serializer.SerializationConfig;
+import org.eclipse.collections.impl.list.mutable.FastList;
 
 import java.util.List;
 

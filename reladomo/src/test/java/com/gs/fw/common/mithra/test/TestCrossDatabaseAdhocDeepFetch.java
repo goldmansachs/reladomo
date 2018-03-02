@@ -13,19 +13,24 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import java.sql.Timestamp;
-
-import com.gs.collections.api.block.procedure.Procedure;
-import com.gs.collections.api.block.procedure.Procedure2;
-import com.gs.collections.api.block.procedure.primitive.ObjectIntProcedure;
-import com.gs.fw.common.mithra.test.domain.*;
-import junit.framework.TestCase;
-
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.test.domain.InfinityTimestamp;
+import com.gs.fw.common.mithra.test.domain.ParaPosition;
+import com.gs.fw.common.mithra.test.domain.ParaPositionFinder;
+import com.gs.fw.common.mithra.test.domain.ParaPositionList;
+import com.gs.fw.common.mithra.test.domain.Product;
+import com.gs.fw.common.mithra.test.domain.ProductFinder;
+import com.gs.fw.common.mithra.test.domain.ProductList;
+import org.eclipse.collections.api.block.procedure.Procedure;
+import org.eclipse.collections.api.block.procedure.Procedure2;
+import org.eclipse.collections.api.block.procedure.primitive.ObjectIntProcedure;
+
+import java.sql.Timestamp;
 
 
 
@@ -47,7 +52,7 @@ public class TestCrossDatabaseAdhocDeepFetch extends MithraTestAbstract
     {
         ParaPositionList nonOpList = getDeepFetchedNonOpList();
         int count = MithraManagerProvider.getMithraManager().getDatabaseRetrieveCount();
-        nonOpList.asGscList().forEach(new Procedure<ParaPosition>()
+        nonOpList.asEcList().forEach(new Procedure<ParaPosition>()
         {
             @Override
             public void value(ParaPosition paraPosition)
@@ -63,7 +68,7 @@ public class TestCrossDatabaseAdhocDeepFetch extends MithraTestAbstract
     {
         ParaPositionList nonOpList = getDeepFetchedNonOpList();
         int count = MithraManagerProvider.getMithraManager().getDatabaseRetrieveCount();
-        nonOpList.asGscList().forEachWithIndex(new ObjectIntProcedure<ParaPosition>()
+        nonOpList.asEcList().forEachWithIndex(new ObjectIntProcedure<ParaPosition>()
         {
             @Override
             public void value(ParaPosition paraPosition, int index)
@@ -79,7 +84,7 @@ public class TestCrossDatabaseAdhocDeepFetch extends MithraTestAbstract
     {
         ParaPositionList nonOpList = getDeepFetchedNonOpList();
         int count = MithraManagerProvider.getMithraManager().getDatabaseRetrieveCount();
-        nonOpList.asGscList().forEachWith(new Procedure2<ParaPosition, Object>()
+        nonOpList.asEcList().forEachWith(new Procedure2<ParaPosition, Object>()
         {
             @Override
             public void value(ParaPosition paraPosition, Object o)

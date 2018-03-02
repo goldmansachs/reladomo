@@ -13,24 +13,31 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.cache;
+
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.extractor.BooleanExtractor;
+import com.gs.fw.common.mithra.extractor.CharExtractor;
+import com.gs.fw.common.mithra.extractor.DoubleExtractor;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.extractor.FloatExtractor;
+import com.gs.fw.common.mithra.extractor.IntExtractor;
+import com.gs.fw.common.mithra.extractor.LongExtractor;
+import com.gs.fw.common.mithra.extractor.RelationshipHashStrategy;
+import com.gs.fw.common.mithra.util.DoUntilProcedure;
+import com.gs.fw.common.mithra.util.Filter;
+import com.gs.fw.common.mithra.util.Filter2;
+import com.gs.fw.common.mithra.util.HashUtil;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.slf4j.Logger;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.SoftReference;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
-
-import com.gs.fw.common.mithra.util.DoUntilProcedure;
-import com.gs.fw.common.mithra.util.Filter2;
-
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.fw.common.mithra.MithraDataObject;
-import com.gs.fw.common.mithra.extractor.*;
-import com.gs.fw.common.mithra.util.Filter;
-import com.gs.fw.common.mithra.util.HashUtil;
-import org.slf4j.Logger;
 
 
 

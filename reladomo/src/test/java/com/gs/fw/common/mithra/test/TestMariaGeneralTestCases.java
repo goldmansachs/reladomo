@@ -14,32 +14,16 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.Exchanger;
-
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
-import com.gs.fw.common.mithra.MithraBusinessException;
 import com.gs.fw.common.mithra.MithraManager;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.MithraUniqueIndexViolationException;
 import com.gs.fw.common.mithra.TemporaryContext;
 import com.gs.fw.common.mithra.TransactionalCommand;
-import com.gs.fw.common.mithra.connectionmanager.XAConnectionManager;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.aggregate.TestStandardDeviation;
 import com.gs.fw.common.mithra.test.aggregate.TestVariance;
@@ -83,6 +67,19 @@ import com.gs.fw.common.mithra.util.MithraArrayTupleTupleSet;
 import com.gs.fw.common.mithra.util.TempTableNamer;
 import com.gs.fw.common.mithra.util.TupleSet;
 import junit.framework.Assert;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
+
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Random;
+import java.util.concurrent.Exchanger;
 
 public class TestMariaGeneralTestCases extends MithraMariaTestAbstract
 {

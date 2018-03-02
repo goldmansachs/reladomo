@@ -13,11 +13,10 @@
   specific language governing permissions and limitations
   under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.util.serializer;
 
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.DeepFetchTree;
 import com.gs.fw.common.mithra.MithraList;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
@@ -29,6 +28,8 @@ import com.gs.fw.common.mithra.finder.Mapper;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.util.ListFactory;
 import com.gs.reladomo.metadata.ReladomoClassMetaData;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.Arrays;
 import java.util.Comparator;

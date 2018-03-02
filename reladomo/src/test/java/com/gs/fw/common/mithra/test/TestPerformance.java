@@ -13,47 +13,69 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.api.list.primitive.IntList;
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraTransaction;
+import com.gs.fw.common.mithra.TransactionalCommand;
+import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.TupleAttribute;
 import com.gs.fw.common.mithra.attribute.update.AttributeUpdateWrapper;
+import com.gs.fw.common.mithra.behavior.state.PersistenceState;
 import com.gs.fw.common.mithra.cache.ExtractorBasedHashStrategy;
 import com.gs.fw.common.mithra.cache.FullSemiUniqueDatedIndex;
-import com.gs.fw.common.mithra.cache.MithraReferenceThread;
+import com.gs.fw.common.mithra.cache.ReadWriteLock;
 import com.gs.fw.common.mithra.cache.bean.I3O3L3;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapCleaner;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapMemoryReference;
 import com.gs.fw.common.mithra.extractor.Extractor;
-import com.gs.fw.common.mithra.attribute.Attribute;
-import com.gs.fw.common.mithra.behavior.state.PersistenceState;
-import com.gs.fw.common.mithra.cache.ReadWriteLock;
 import com.gs.fw.common.mithra.finder.AtomicOperation;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.querycache.CachedQuery;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.AuditedOrder;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderFinder;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderList;
+import com.gs.fw.common.mithra.test.domain.BitemporalOrder;
+import com.gs.fw.common.mithra.test.domain.BitemporalOrderFinder;
+import com.gs.fw.common.mithra.test.domain.BitemporalOrderList;
+import com.gs.fw.common.mithra.test.domain.NullTestFinder;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderAsTxReadOnly;
+import com.gs.fw.common.mithra.test.domain.OrderData;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItem;
+import com.gs.fw.common.mithra.test.domain.OrderItemFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItemList;
+import com.gs.fw.common.mithra.test.domain.OrderList;
+import com.gs.fw.common.mithra.test.domain.Player;
+import com.gs.fw.common.mithra.test.domain.PlayerFinder;
+import com.gs.fw.common.mithra.test.domain.TinyBalance;
+import com.gs.fw.common.mithra.test.domain.TinyBalanceFinder;
+import com.gs.fw.common.mithra.test.domain.User;
+import com.gs.fw.common.mithra.test.domain.UserFinder;
 import com.gs.fw.common.mithra.test.glew.LewContract;
 import com.gs.fw.common.mithra.test.glew.LewContractFinder;
 import com.gs.fw.common.mithra.util.HashUtil;
-import com.gs.fw.common.mithra.MithraManagerProvider;
-import com.gs.fw.common.mithra.TransactionalCommand;
-import com.gs.fw.common.mithra.MithraTransaction;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import junit.framework.Assert;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.lang.ref.ReferenceQueue;
-import java.lang.ref.WeakReference;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 public class TestPerformance
 extends MithraTestAbstract

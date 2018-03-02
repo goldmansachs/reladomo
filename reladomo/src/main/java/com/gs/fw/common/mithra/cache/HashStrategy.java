@@ -13,13 +13,14 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.cache;
 
-import com.gs.collections.api.block.HashingStrategy;
+import org.eclipse.collections.api.block.HashingStrategy;
 
 
 
-public interface HashStrategy extends HashingStrategy
+public interface HashStrategy extends com.gs.collections.api.block.HashingStrategy, HashingStrategy
 {
 }

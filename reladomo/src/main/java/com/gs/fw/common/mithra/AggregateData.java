@@ -14,19 +14,25 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra;
 
-import com.gs.collections.impl.map.mutable.primitive.ObjectIntHashMap;
-import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.MutableBoolean;
+import com.gs.fw.common.mithra.util.MutableCharacter;
+import com.gs.fw.common.mithra.util.MutableComparableReference;
+import com.gs.fw.common.mithra.util.MutableNumber;
+import com.gs.fw.common.mithra.util.Nullable;
+import com.gs.fw.common.mithra.util.Time;
+import org.eclipse.collections.api.map.primitive.ObjectIntMap;
 
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.math.BigDecimal;
 
 public class AggregateData implements Externalizable
 {
@@ -72,7 +78,21 @@ public class AggregateData implements Externalizable
         this.values = values;
     }
 
-    public void setNameToPositionMap(ObjectIntHashMap map)
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public void setNameToPositionMap(com.gs.collections.api.map.primitive.ObjectIntMap map)
+    {
+        if (this.config == null)
+        {
+            this.config = new AggregateDataConfig();
+        }
+        this.config.setNameToPositionMap(map);
+    }
+
+    public void setNameToPositionMap(ObjectIntMap map)
     {
         if (this.config == null)
         {

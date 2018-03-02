@@ -14,17 +14,22 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.map.mutable.ConcurrentHashMap;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.bulkloader.BulkLoader;
 import com.gs.fw.common.mithra.bulkloader.BulkLoaderException;
-import com.gs.fw.common.mithra.connectionmanager.*;
+import com.gs.fw.common.mithra.connectionmanager.IntSourceConnectionManager;
+import com.gs.fw.common.mithra.connectionmanager.ObjectSourceConnectionManager;
+import com.gs.fw.common.mithra.connectionmanager.SchemaManager;
+import com.gs.fw.common.mithra.connectionmanager.SourcelessConnectionManager;
+import com.gs.fw.common.mithra.connectionmanager.XAConnectionManager;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.databasetype.DerbyDatabaseType;
 import com.gs.fw.common.mithra.databasetype.H2DatabaseType;
+import org.eclipse.collections.impl.map.mutable.ConcurrentHashMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +39,12 @@ import java.lang.management.ThreadMXBean;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TimeZone;
 
 public class ConnectionManagerForTests extends AbstractMithraTestConnectionManager
         implements SourcelessConnectionManager, IntSourceConnectionManager, ObjectSourceConnectionManager, SchemaManager

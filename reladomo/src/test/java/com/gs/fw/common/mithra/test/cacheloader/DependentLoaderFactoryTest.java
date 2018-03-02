@@ -13,12 +13,17 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.cacheloader;
 
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import com.gs.fw.common.mithra.cacheloader.*;
+import com.gs.fw.common.mithra.cacheloader.AdditionalOperationBuilder;
+import com.gs.fw.common.mithra.cacheloader.CacheLoaderManagerImpl;
+import com.gs.fw.common.mithra.cacheloader.CacheLoaderMonitor;
+import com.gs.fw.common.mithra.cacheloader.DependentLoaderFactory;
+import com.gs.fw.common.mithra.cacheloader.DependentLoaderFactoryImpl;
+import com.gs.fw.common.mithra.cacheloader.FullyMilestonedTopLevelLoaderFactory;
+import com.gs.fw.common.mithra.cacheloader.RefreshInterval;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.test.ConnectionManagerForTests;
@@ -28,6 +33,8 @@ import com.gs.fw.common.mithra.test.glew.LewContract;
 import com.gs.fw.common.mithra.test.glew.LewContractFinder;
 import com.gs.fw.common.mithra.test.glew.LewProduct;
 import junit.framework.TestCase;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.ByteArrayInputStream;
 import java.sql.Timestamp;

@@ -13,19 +13,19 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.connectionmanager;
 
-import com.gs.collections.impl.list.mutable.FastList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.gs.fw.common.mithra.MithraBusinessException;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.transaction.LocalTm;
 import com.gs.fw.common.mithra.transaction.TransactionLocal;
 import com.gs.fw.common.mithra.util.WrappedConnection;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import javax.transaction.RollbackException;

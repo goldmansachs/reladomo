@@ -13,17 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.MithraBusinessException;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
@@ -38,8 +31,25 @@ import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.querycache.CachedQuery;
 import com.gs.fw.common.mithra.querycache.CompactUpdateCountOperation;
-import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.CooperativeCpuTaskFactory;
+import com.gs.fw.common.mithra.util.CpuTask;
+import com.gs.fw.common.mithra.util.InternalList;
+import com.gs.fw.common.mithra.util.ListBasedQueue;
+import com.gs.fw.common.mithra.util.ListFactory;
+import com.gs.fw.common.mithra.util.MinExchange;
+import com.gs.fw.common.mithra.util.MithraCompositeList;
+import com.gs.fw.common.mithra.util.MithraCpuBoundThreadPool;
+import com.gs.fw.common.mithra.util.MithraFastList;
+import com.gs.fw.common.mithra.util.ThreadChunkSize;
 import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
+import org.eclipse.collections.impl.list.mutable.FastList;
+
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class MappedOperation implements Operation
 {

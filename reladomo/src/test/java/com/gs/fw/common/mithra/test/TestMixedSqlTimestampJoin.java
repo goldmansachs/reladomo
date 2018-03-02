@@ -13,13 +13,24 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
 
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.finder.Operation;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.BitemporalWithDateJoin;
+import com.gs.fw.common.mithra.test.domain.BitemporalWithDateJoinFinder;
+import com.gs.fw.common.mithra.test.domain.BitemporalWithDateJoinList;
+import com.gs.fw.common.mithra.test.domain.InfinityTimestamp;
+import com.gs.fw.common.mithra.test.domain.NontemporalWithDateJoin;
+import com.gs.fw.common.mithra.test.domain.NontemporalWithDateJoinFinder;
+import com.gs.fw.common.mithra.test.domain.NontemporalWithDateJoinList;
+import com.gs.fw.common.mithra.test.domain.ProcessingTemporalWithDateJoin;
+import com.gs.fw.common.mithra.test.domain.ProcessingTemporalWithDateJoinFinder;
+import com.gs.fw.common.mithra.test.domain.ProcessingTemporalWithDateJoinList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+
 import java.sql.Timestamp;
 
 public class TestMixedSqlTimestampJoin extends MithraTestAbstract

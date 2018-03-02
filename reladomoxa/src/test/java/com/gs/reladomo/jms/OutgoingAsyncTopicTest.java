@@ -13,20 +13,10 @@
   specific language governing permissions and limitations
   under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.reladomo.jms;
 
-import java.util.concurrent.Future;
-
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.naming.NamingException;
-import javax.transaction.RollbackException;
-import javax.transaction.TransactionManager;
-import javax.transaction.xa.XAException;
-
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.gs.fw.common.mithra.JtaProvider;
 import com.gs.fw.common.mithra.MithraManager;
 import com.gs.fw.common.mithra.MithraManagerProvider;
@@ -36,9 +26,19 @@ import com.gs.fw.common.mithra.test.MithraTestResource;
 import com.gs.fw.common.mithra.transaction.MultiThreadedTm;
 import com.gs.reladomo.txid.ReladomoTxIdFinder;
 import junit.framework.TestCase;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.naming.NamingException;
+import javax.transaction.RollbackException;
+import javax.transaction.TransactionManager;
+import javax.transaction.xa.XAException;
+import java.util.concurrent.Future;
 
 import static org.junit.Assert.*;
 

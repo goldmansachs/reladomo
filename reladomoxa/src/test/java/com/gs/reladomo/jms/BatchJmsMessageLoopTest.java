@@ -13,12 +13,10 @@
   specific language governing permissions and limitations
   under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.reladomo.jms;
 
-import com.gs.collections.api.list.MutableList;
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.test.ConnectionManagerForTests;
 import com.gs.fw.common.mithra.test.MithraTestResource;
@@ -26,8 +24,11 @@ import com.gs.fw.common.mithra.transaction.MultiThreadedTm;
 import com.gs.fw.common.mithra.transaction.TransactionStyle;
 import com.gs.reladomo.txid.ReladomoTxIdFinder;
 import junit.framework.TestCase;
-import org.junit.Assert;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -39,7 +40,6 @@ import javax.jms.Message;
 import javax.naming.NamingException;
 import javax.transaction.TransactionManager;
 import javax.transaction.xa.XAException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;

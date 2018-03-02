@@ -17,7 +17,6 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.function.Function;
 import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.aggregate.attribute.IntegerAggregateAttribute;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.CountCalculator;
@@ -26,6 +25,7 @@ import com.gs.fw.common.mithra.attribute.update.AttributeUpdateWrapper;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapExtractor;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.extractor.Function;
 import com.gs.fw.common.mithra.extractor.OffHeapableExtractor;
 import com.gs.fw.common.mithra.finder.*;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;

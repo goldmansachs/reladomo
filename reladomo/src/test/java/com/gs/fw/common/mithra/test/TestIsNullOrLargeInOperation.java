@@ -13,10 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.TransactionalCommand;
@@ -25,6 +25,7 @@ import com.gs.fw.common.mithra.test.tax.Address;
 import com.gs.fw.common.mithra.test.tax.AddressFinder;
 import com.gs.fw.common.mithra.test.tax.AddressList;
 import com.gs.fw.common.mithra.util.DefaultInfinityTimestamp;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.util.Set;
 

@@ -13,15 +13,16 @@
   specific language governing permissions and limitations
   under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.reladomo.jms;
 
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.transaction.MultiThreadedTm;
 import com.gs.reladomo.txid.ReladomoTxIdInterface;
 import com.gs.reladomo.txid.ReladomoTxIdInterfaceFinder;
 import com.gs.reladomo.util.InterruptableBackoff;
+import org.eclipse.collections.impl.list.mutable.FastList;
 import org.slf4j.Logger;
 
 import javax.jms.JMSException;

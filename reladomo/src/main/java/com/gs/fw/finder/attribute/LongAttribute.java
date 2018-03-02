@@ -13,11 +13,13 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.finder.attribute;
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
-import com.gs.collections.api.set.primitive.LongSet;
 import com.gs.fw.finder.Operation;
+import org.eclipse.collections.api.set.primitive.LongSet;
 
 
 public interface LongAttribute<Owner> extends NumericAttribute<Owner>
@@ -34,7 +36,21 @@ public interface LongAttribute<Owner> extends NumericAttribute<Owner>
 
     public Operation<Owner> lessThanEquals(long value);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public Operation<Owner> in(com.gs.collections.api.set.primitive.LongSet longSet);
+
     public Operation<Owner> in(LongSet longSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public Operation<Owner> notIn(com.gs.collections.api.set.primitive.LongSet longSet);
 
     public Operation<Owner> notIn(LongSet longSet);
 

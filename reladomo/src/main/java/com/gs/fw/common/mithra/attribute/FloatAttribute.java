@@ -13,13 +13,14 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.FloatSet;
-import com.gs.collections.api.set.primitive.MutableFloatSet;
-import com.gs.collections.impl.set.mutable.primitive.FloatHashSet;
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.AggregateData;
+import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraNullPrimitiveException;
 import com.gs.fw.common.mithra.aggregate.attribute.FloatAggregateAttribute;
 import com.gs.fw.common.mithra.attribute.calculator.AbsoluteValueCalculatorFloat;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.AverageCalculatorNumeric;
@@ -38,9 +39,15 @@ import com.gs.fw.common.mithra.finder.None;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.orderby.FloatOrderBy;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
-import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.MutableFloat;
+import com.gs.fw.common.mithra.util.MutableNumber;
+import com.gs.fw.common.mithra.util.Nullable;
 import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
 import com.gs.fw.common.mithra.util.serializer.SerialWriter;
+import org.eclipse.collections.api.set.primitive.FloatSet;
+import org.eclipse.collections.api.set.primitive.MutableFloatSet;
+import org.eclipse.collections.impl.set.mutable.primitive.FloatHashSet;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -89,8 +96,24 @@ public abstract class FloatAttribute<T> extends PrimitiveNumericAttribute<T, Flo
 
     public abstract Operation notEq(float other);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public abstract Operation in(com.gs.collections.api.set.primitive.FloatSet floatSet);
+
     @Override
     public abstract Operation in(FloatSet floatSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public abstract Operation notIn(com.gs.collections.api.set.primitive.FloatSet floatSet);
 
     @Override
     public abstract Operation notIn(FloatSet floatSet);

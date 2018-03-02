@@ -13,15 +13,19 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.offheap;
 
-import com.gs.collections.api.block.predicate.Predicate;
-import com.gs.collections.impl.utility.Iterate;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.cache.offheap.FastUnsafeOffHeapDataStorage;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapFullDatedCache;
-import com.gs.fw.common.mithra.cacheloader.*;
+import com.gs.fw.common.mithra.cacheloader.DateCluster;
+import com.gs.fw.common.mithra.cacheloader.DualCapacityBlockingQueue;
+import com.gs.fw.common.mithra.cacheloader.ExternalQueueThreadExecutor;
+import com.gs.fw.common.mithra.cacheloader.LoadOperationBuilder;
+import com.gs.fw.common.mithra.cacheloader.LoadingTaskImpl;
+import com.gs.fw.common.mithra.cacheloader.PostLoadFilterBuilder;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.MithraTestAbstract;
 import com.gs.fw.common.mithra.test.domain.alarm.AlarmDatedNonTransactional;
@@ -30,6 +34,8 @@ import com.gs.fw.common.mithra.test.domain.alarm.AlarmDatedNonTransactionalFinde
 import com.gs.fw.common.mithra.test.domain.alarm.AlarmDatedNonTransactionalList;
 import com.gs.fw.common.mithra.util.MithraRuntimeCacheController;
 import com.gs.fw.common.mithra.util.OperationBasedFilter;
+import org.eclipse.collections.api.block.predicate.Predicate;
+import org.eclipse.collections.impl.utility.Iterate;
 import org.slf4j.Logger;
 
 import java.sql.Connection;

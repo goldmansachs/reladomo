@@ -13,13 +13,14 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.util.tinyproxy;
 
-import java.lang.reflect.Method;
+import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
-import com.gs.collections.api.map.MutableMap;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
+import java.lang.reflect.Method;
 
 public class MethodResolverFactory
 {

@@ -14,14 +14,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
@@ -29,6 +25,11 @@ import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.util.InternalList;
+import org.eclipse.collections.impl.list.mutable.FastList;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class None implements Operation
 {

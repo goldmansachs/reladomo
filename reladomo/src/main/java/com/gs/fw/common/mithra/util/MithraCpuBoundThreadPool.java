@@ -13,22 +13,17 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.util;
 
-import java.util.List;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReferenceArray;
-
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import org.eclipse.collections.impl.list.mutable.FastList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.fw.common.mithra.MithraManagerProvider;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class MithraCpuBoundThreadPool

@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 /*
  *
@@ -22,19 +23,23 @@
  */
 package com.gs.fw.common.mithra.util.dbextractor;
 
-import java.util.*;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraObject;
+import com.gs.fw.common.mithra.attribute.AsOfAttribute;
+import com.gs.fw.common.mithra.attribute.Attribute;
+import com.gs.fw.common.mithra.cache.FullUniqueIndex;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.Pair;
+import org.eclipse.collections.api.block.HashingStrategy;
+import org.eclipse.collections.api.block.function.Function0;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.map.strategy.mutable.UnifiedMapWithHashingStrategy;
 
-import com.gs.collections.api.block.*;
-import com.gs.collections.api.block.function.*;
-import com.gs.collections.impl.list.mutable.*;
-import com.gs.collections.impl.map.mutable.*;
-import com.gs.collections.impl.map.strategy.mutable.*;
-import com.gs.fw.common.mithra.*;
-import com.gs.fw.common.mithra.attribute.*;
-import com.gs.fw.common.mithra.cache.*;
-import com.gs.fw.common.mithra.extractor.*;
-import com.gs.fw.common.mithra.finder.*;
-import com.gs.fw.common.mithra.util.*;
+import java.util.List;
+import java.util.Map;
 
 public class ExtractResult
 {

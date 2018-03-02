@@ -21,7 +21,16 @@ import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.bytearray.ByteArraySet;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.DisplayText;
+import com.gs.fw.common.mithra.test.domain.DisplayTextFinder;
+import com.gs.fw.common.mithra.test.domain.ListEntryContactsImpl;
+import com.gs.fw.common.mithra.test.domain.ListEntryContactsImplFinder;
+import com.gs.fw.common.mithra.test.domain.ListEntryContactsImplList;
+import com.gs.fw.common.mithra.test.domain.TestBinaryArray;
+import com.gs.fw.common.mithra.test.domain.TestBinaryArrayFinder;
+import com.gs.fw.common.mithra.test.domain.WallCrossImpl;
+import com.gs.fw.common.mithra.test.domain.WallCrossImplFinder;
+import com.gs.fw.common.mithra.test.domain.WallCrossImplList;
 
 import java.sql.Timestamp;
 

@@ -13,12 +13,13 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.finder.attribute;
 
-import com.gs.collections.api.set.primitive.BooleanSet;
 import com.gs.fw.finder.Attribute;
 import com.gs.fw.finder.Operation;
+import org.eclipse.collections.api.set.primitive.BooleanSet;
 
 
 public interface BooleanAttribute<Owner> extends Attribute<Owner>
@@ -27,7 +28,21 @@ public interface BooleanAttribute<Owner> extends Attribute<Owner>
 
     public Operation<Owner> notEq(boolean value);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public Operation<Owner> in(com.gs.collections.api.set.primitive.BooleanSet booleanSet);
+
     public Operation<Owner> in(BooleanSet booleanSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public Operation<Owner> notIn(com.gs.collections.api.set.primitive.BooleanSet booleanSet);
 
     public Operation<Owner> notIn(BooleanSet booleanSet);
 }

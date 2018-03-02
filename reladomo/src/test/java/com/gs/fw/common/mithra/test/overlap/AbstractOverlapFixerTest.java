@@ -13,27 +13,46 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.overlap;
 
 
-import java.io.*;
-import java.sql.*;
-import java.util.*;
-
-import com.gs.collections.impl.list.mutable.*;
-import com.gs.fw.common.mithra.*;
-import com.gs.fw.common.mithra.attribute.*;
-import com.gs.fw.common.mithra.connectionmanager.*;
-import com.gs.fw.common.mithra.database.*;
-import com.gs.fw.common.mithra.mithraruntime.*;
-import com.gs.fw.common.mithra.overlap.*;
-import com.gs.fw.common.mithra.test.*;
-import com.gs.fw.common.mithra.test.domain.*;
-import com.gs.fw.common.mithra.util.*;
-import com.gs.fw.common.mithra.util.fileparser.*;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraList;
+import com.gs.fw.common.mithra.MithraObject;
+import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.attribute.Attribute;
+import com.gs.fw.common.mithra.attribute.TimestampAttribute;
+import com.gs.fw.common.mithra.connectionmanager.SourcelessConnectionManager;
+import com.gs.fw.common.mithra.database.MithraAbstractDatabaseObject;
 import com.gs.fw.common.mithra.finder.Operation;
-import junit.framework.*;
+import com.gs.fw.common.mithra.mithraruntime.CacheType;
+import com.gs.fw.common.mithra.mithraruntime.ConnectionManagerType;
+import com.gs.fw.common.mithra.mithraruntime.MithraObjectConfigurationType;
+import com.gs.fw.common.mithra.mithraruntime.MithraRuntimeType;
+import com.gs.fw.common.mithra.overlap.OverlapFixer;
+import com.gs.fw.common.mithra.overlap.OverlapHandler;
+import com.gs.fw.common.mithra.overlap.OverlapProcessor;
+import com.gs.fw.common.mithra.test.ConnectionManagerForTests;
+import com.gs.fw.common.mithra.test.MithraTestDataParser;
+import com.gs.fw.common.mithra.test.MithraTestResource;
+import com.gs.fw.common.mithra.test.domain.TestOverlapBusinessDateMilestoned;
+import com.gs.fw.common.mithra.test.domain.TestOverlapFullyMilestoned;
+import com.gs.fw.common.mithra.test.domain.TestOverlapProcessingDateMilestoned;
+import com.gs.fw.common.mithra.util.DefaultInfinityTimestamp;
+import com.gs.fw.common.mithra.util.ImmutableTimestamp;
+import com.gs.fw.common.mithra.util.fileparser.MithraParsedData;
+import junit.framework.TestCase;
+import org.eclipse.collections.impl.list.mutable.FastList;
+
+import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.TimeZone;
 
 public abstract class AbstractOverlapFixerTest extends TestCase
 {

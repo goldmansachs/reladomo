@@ -13,11 +13,18 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.cache;
 
-import com.gs.collections.api.set.primitive.*;
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.DatedTransactionalState;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraDatedObject;
+import com.gs.fw.common.mithra.MithraDatedTransactionalObject;
+import com.gs.fw.common.mithra.MithraObject;
+import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.MithraTransaction;
+import com.gs.fw.common.mithra.MithraTransactionalObject;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.update.AttributeUpdateWrapper;
 import com.gs.fw.common.mithra.behavior.TemporalContainer;
@@ -33,6 +40,14 @@ import com.gs.fw.common.mithra.util.DoUntilProcedure;
 import com.gs.fw.common.mithra.util.Filter;
 import com.gs.fw.common.mithra.util.Filter2;
 import com.gs.fw.common.mithra.util.MithraTupleSet;
+import org.eclipse.collections.api.set.primitive.BooleanSet;
+import org.eclipse.collections.api.set.primitive.ByteSet;
+import org.eclipse.collections.api.set.primitive.CharSet;
+import org.eclipse.collections.api.set.primitive.DoubleSet;
+import org.eclipse.collections.api.set.primitive.FloatSet;
+import org.eclipse.collections.api.set.primitive.IntSet;
+import org.eclipse.collections.api.set.primitive.LongSet;
+import org.eclipse.collections.api.set.primitive.ShortSet;
 
 import java.io.ObjectOutput;
 import java.sql.Timestamp;
@@ -93,19 +108,75 @@ public interface Cache
 
     public List get(int indexRef, ByteArraySet indexValues);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public List get(int indexRef, com.gs.collections.api.set.primitive.IntSet intSetIndexValues);
+
     public List get(int indexRef, IntSet intSetIndexValues);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public List get(int indexRef, com.gs.collections.api.set.primitive.DoubleSet doubleSetIndexValues);
 
     public List get(int indexRef, DoubleSet doubleSetIndexValues);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public List get(int indexRef, com.gs.collections.api.set.primitive.BooleanSet booleanSetIndexValues);
+
     public List get(int indexRef, BooleanSet booleanSetIndexValues);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public List get(int indexRef, com.gs.collections.api.set.primitive.LongSet longSetIndexValues);
 
     public List get(int indexRef, LongSet longSetIndexValues);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public List get(int indexRef, com.gs.collections.api.set.primitive.ByteSet byteSetIndexValues);
+
     public List get(int indexRef, ByteSet byteSetIndexValues);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public List get(int indexRef, com.gs.collections.api.set.primitive.CharSet charSetIndexValues);
 
     public List get(int indexRef, CharSet charSetIndexValues);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public List get(int indexRef, com.gs.collections.api.set.primitive.FloatSet floatSetIndexValues);
+
     public List get(int indexRef, FloatSet floatSetIndexValues);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public List get(int indexRef, com.gs.collections.api.set.primitive.ShortSet shortSetIndexValues);
 
     public List get(int indexRef, ShortSet shortSetIndexValues);
 

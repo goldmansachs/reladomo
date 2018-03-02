@@ -13,18 +13,23 @@
   specific language governing permissions and limitations
   under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.reladomo.jms;
 
-import com.gs.collections.impl.map.mutable.UnifiedMap;
+import com.tibco.tibjms.TibjmsTopic;
+import com.tibco.tibjms.TibjmsXAConnectionFactory;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jms.*;
+import javax.jms.JMSException;
+import javax.jms.Session;
+import javax.jms.Topic;
+import javax.jms.XAConnection;
+import javax.jms.XAConnectionFactory;
 import javax.naming.NamingException;
 import java.util.concurrent.atomic.AtomicInteger;
-import com.tibco.tibjms.TibjmsTopic;
-import com.tibco.tibjms.TibjmsXAConnectionFactory;
 
 public class TibJmsTopicConfig extends JmsTopicConfig
 {

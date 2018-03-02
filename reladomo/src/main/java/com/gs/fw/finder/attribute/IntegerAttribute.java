@@ -13,11 +13,12 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.finder.attribute;
 
-import com.gs.collections.api.set.primitive.IntSet;
 import com.gs.fw.finder.Operation;
+import org.eclipse.collections.api.set.primitive.IntSet;
 
 
 public interface IntegerAttribute<Owner> extends NumericAttribute<Owner>
@@ -34,7 +35,21 @@ public interface IntegerAttribute<Owner> extends NumericAttribute<Owner>
 
     public Operation<Owner> lessThanEquals(int value);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public Operation<Owner> in(com.gs.collections.api.set.primitive.IntSet intSet);
+
     public Operation<Owner> in(IntSet intSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public Operation<Owner> notIn(com.gs.collections.api.set.primitive.IntSet intSet);
 
     public Operation<Owner> notIn(IntSet intSet);
 

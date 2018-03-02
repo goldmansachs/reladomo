@@ -16,20 +16,20 @@
 
 package com.gs.fw.common.mithra.notification.server;
 
-import com.gs.collections.api.block.procedure.Procedure;
 import com.gs.fw.common.mithra.util.ConcurrentIntObjectHashMap;
+import org.eclipse.collections.api.block.procedure.Procedure;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.lang.management.ManagementFactory;
-import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 public class NotificationServer extends Thread

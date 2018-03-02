@@ -13,15 +13,18 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.aggregate;
 
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
-
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.AggregateBeanList;
+import com.gs.fw.common.mithra.MithraAggregateAttribute;
+import com.gs.fw.common.mithra.MithraBusinessException;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.MithraTestAbstract;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.Sale;
+import com.gs.fw.common.mithra.test.domain.SaleFinder;
+import com.gs.fw.common.mithra.test.domain.SalesLineItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;

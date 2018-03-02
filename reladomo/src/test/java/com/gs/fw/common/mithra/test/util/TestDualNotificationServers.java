@@ -13,23 +13,25 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.util;
 
 
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.notification.server.ClientNotificationHandler;
 import com.gs.fw.common.mithra.notification.server.DualNotificationClient;
 import com.gs.fw.common.mithra.notification.server.NotificationServer;
 import com.gs.fw.common.mithra.notification.server.ServerSocketHandler;
 import com.gs.fw.common.mithra.test.MithraTestAbstract;
+import junit.framework.TestCase;
+import org.eclipse.collections.impl.list.mutable.FastList;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-import junit.framework.TestCase;
 
 public class TestDualNotificationServers extends TestCase
 {

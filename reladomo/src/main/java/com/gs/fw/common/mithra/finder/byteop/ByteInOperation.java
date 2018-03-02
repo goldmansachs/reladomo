@@ -13,11 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder.byteop;
 
-import com.gs.collections.api.iterator.ByteIterator;
-import com.gs.collections.api.set.primitive.ByteSet;
 import com.gs.fw.common.mithra.attribute.ByteAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.ByteExtractor;
@@ -31,6 +30,10 @@ import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.util.HashUtil;
+import org.eclipse.collections.api.iterator.ByteIterator;
+import org.eclipse.collections.api.set.primitive.ByteSet;
+import org.eclipse.collections.impl.factory.primitive.ByteSets;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -43,6 +46,17 @@ public class ByteInOperation extends InOperation implements SqlParameterSetter
     private ByteSet set;
     private transient volatile byte[] copiedArray;
 
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public ByteInOperation(ByteAttribute attribute, com.gs.collections.api.set.primitive.ByteSet byteSet)
+    {
+        super(attribute);
+        this.set = ByteSets.immutable.of(byteSet.toArray());
+    }
 
     public ByteInOperation(ByteAttribute attribute, ByteSet byteSet)
     {

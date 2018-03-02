@@ -13,27 +13,26 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.notification.server;
 
 import com.gs.fw.common.mithra.util.ConcurrentIntObjectHashMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.Socket;
-import java.net.SocketException;
-import java.io.OutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Iterator;
-import java.util.ArrayList;
-
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import com.gs.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class NotificationClient extends SocketHandler implements Runnable

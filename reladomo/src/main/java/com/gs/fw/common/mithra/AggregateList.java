@@ -13,19 +13,26 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra;
 
-import com.gs.collections.api.set.primitive.MutableIntSet;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import com.gs.fw.common.mithra.aggregate.AggregateOrderBy;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.finder.OrderBy;
+import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 
 
 public class AggregateList implements List<AggregateData>
@@ -74,7 +81,7 @@ public class AggregateList implements List<AggregateData>
         return result;
     }
 
-    public MutableIntSet getAttributeAsGscIntSet(String attributeName)
+    public MutableIntSet getAttributeAsEcIntSet(String attributeName)
     {
         MutableIntSet result = new IntHashSet(this.size());
         for (int i = 0; i < this.size(); i++)

@@ -13,8 +13,13 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.util.tinyproxy;
+
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -23,10 +28,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.gs.collections.impl.map.mutable.UnifiedMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public final class ThankYouWriter implements Runnable
 {

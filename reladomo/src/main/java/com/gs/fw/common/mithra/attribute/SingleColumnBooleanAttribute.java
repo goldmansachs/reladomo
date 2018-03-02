@@ -13,35 +13,42 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.BooleanSet;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.BooleanProcedure;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapBooleanExtractorWithOffset;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapExtractor;
+import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
-import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.AtomicSelfNotEqualityOperation;
+import com.gs.fw.common.mithra.finder.IsNotNullOperation;
+import com.gs.fw.common.mithra.finder.None;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.finder.SqlQuery;
 import com.gs.fw.common.mithra.finder.booleanop.BooleanEqOperation;
 import com.gs.fw.common.mithra.finder.booleanop.BooleanNotEqOperation;
-import com.gs.fw.common.mithra.databasetype.DatabaseType;
-import com.gs.fw.common.mithra.util.ColumnInfo;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
+import com.gs.fw.common.mithra.util.ColumnInfo;
 import com.gs.fw.common.mithra.util.fileparser.BitsInBytes;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarInStream;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarOutStream;
+import org.eclipse.collections.api.set.primitive.BooleanSet;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.ObjectStreamException;
 import java.io.OutputStream;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.sql.Types;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 
 public abstract class SingleColumnBooleanAttribute<T> extends BooleanAttribute<T> implements SingleColumnAttribute<T>
@@ -102,6 +109,29 @@ public abstract class SingleColumnBooleanAttribute<T> extends BooleanAttribute<T
         return new BooleanNotEqOperation(this, other);
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public Operation in(com.gs.collections.api.set.primitive.BooleanSet booleanSet)
+    {
+        if (booleanSet.isEmpty())
+        {
+            return new None(this);
+        }
+        if (booleanSet.size() == 1)
+        {
+            return this.eq(booleanSet.booleanIterator().next());
+        }
+        if (this.isNullable())
+        {
+            return new IsNotNullOperation(this);
+        }
+        return new All(this);
+    }
+
     @Override
     public Operation in(BooleanSet booleanSet)
     {
@@ -118,6 +148,25 @@ public abstract class SingleColumnBooleanAttribute<T> extends BooleanAttribute<T
             return new IsNotNullOperation(this);
         }
         return new All(this);
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public Operation notIn(com.gs.collections.api.set.primitive.BooleanSet booleanSet)
+    {
+       if (booleanSet.isEmpty())
+        {
+            return new All(this);
+        }
+        if (booleanSet.size() == 1)
+        {
+            return this.notEq(booleanSet.booleanIterator().next());
+        }
+        return new None(this); // notIn implies notNull, so notIn(true, false) means no match at all.
     }
 
     @Override

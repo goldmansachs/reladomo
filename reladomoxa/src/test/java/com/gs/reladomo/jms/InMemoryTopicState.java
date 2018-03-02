@@ -13,19 +13,19 @@
   specific language governing permissions and limitations
   under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.reladomo.jms;
 
-import java.util.List;
-
-import com.gs.collections.api.block.function.Function0;
-import com.gs.collections.api.block.procedure.Procedure;
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.map.mutable.ConcurrentHashMap;
+import org.eclipse.collections.api.block.function.Function0;
+import org.eclipse.collections.api.block.procedure.Procedure;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.map.mutable.ConcurrentHashMap;
 
 import javax.jms.Message;
 import javax.jms.TopicSubscriber;
 import javax.transaction.xa.Xid;
+import java.util.List;
 
 public class InMemoryTopicState
 {

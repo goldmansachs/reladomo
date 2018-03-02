@@ -13,17 +13,47 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import com.gs.fw.common.mithra.DeepFetchTree;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.finder.Operation;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.AuditedOrder;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderFinder;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderItem;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderItemFinder;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderItemList;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderList;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderStatus;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderStatusFinder;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderStatusList;
+import com.gs.fw.common.mithra.test.domain.ExchangeRate;
+import com.gs.fw.common.mithra.test.domain.ExchangeRateChild;
+import com.gs.fw.common.mithra.test.domain.ExchangeRateChildFinder;
+import com.gs.fw.common.mithra.test.domain.ExchangeRateChildList;
+import com.gs.fw.common.mithra.test.domain.ExchangeRateList;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItem;
+import com.gs.fw.common.mithra.test.domain.OrderItemFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItemList;
+import com.gs.fw.common.mithra.test.domain.OrderList;
+import com.gs.fw.common.mithra.test.domain.OrderStatus;
+import com.gs.fw.common.mithra.test.domain.OrderStatusList;
+import com.gs.fw.common.mithra.test.domain.ProductWithSourceAttribute;
+import com.gs.fw.common.mithra.test.domain.ProductWithSourceAttributeFinder;
+import com.gs.fw.common.mithra.test.domain.ProductWithSourceAttributeList;
+import com.gs.fw.common.mithra.test.domain.TinyBalance;
+import com.gs.fw.common.mithra.test.domain.TinyBalanceFinder;
+import com.gs.fw.common.mithra.test.domain.TinyBalanceList;
+import com.gs.fw.common.mithra.test.domain.UserFinder;
+import com.gs.fw.common.mithra.test.domain.UserList;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.junit.Assert;
 
 import java.sql.Timestamp;

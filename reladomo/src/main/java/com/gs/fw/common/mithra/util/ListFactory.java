@@ -13,13 +13,13 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.util;
 
 
-import com.gs.collections.api.factory.list.FixedSizeListFactory;
-import com.gs.collections.api.list.FixedSizeList;
-import com.gs.collections.impl.factory.Lists;
+import org.eclipse.collections.api.list.FixedSizeList;
+import org.eclipse.collections.impl.factory.Lists;
 
 import java.util.List;
 

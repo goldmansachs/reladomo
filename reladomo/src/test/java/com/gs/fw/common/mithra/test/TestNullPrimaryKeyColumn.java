@@ -13,10 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import com.gs.fw.common.mithra.MithraDatedTransactionalList;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraTransaction;
@@ -30,6 +30,7 @@ import com.gs.fw.common.mithra.test.domain.NotDatedWithNullablePKList;
 import com.gs.fw.common.mithra.test.domain.Synonym;
 import com.gs.fw.common.mithra.test.domain.SynonymFinder;
 import com.gs.fw.common.mithra.test.domain.SynonymList;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 import java.sql.Timestamp;
 import java.util.List;

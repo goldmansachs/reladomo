@@ -13,28 +13,39 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.cache;
 
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import com.gs.fw.common.mithra.*;
-import com.gs.fw.common.mithra.behavior.state.DatedPersistenceState;
-import com.gs.fw.common.mithra.cache.offheap.OffHeapDataStorage;
-import com.gs.fw.common.mithra.extractor.Extractor;
-import com.gs.fw.common.mithra.finder.ObjectWithMapperStack;
-import com.gs.fw.common.mithra.finder.asofop.AsOfOperation;
+import com.gs.fw.common.mithra.DatedTransactionalState;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraDatedObject;
+import com.gs.fw.common.mithra.MithraDatedObjectFactory;
+import com.gs.fw.common.mithra.MithraDatedTransactionalObject;
+import com.gs.fw.common.mithra.MithraDatedTransactionalObjectFactory;
+import com.gs.fw.common.mithra.MithraDeletedException;
+import com.gs.fw.common.mithra.MithraManager;
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraObject;
+import com.gs.fw.common.mithra.MithraTransaction;
+import com.gs.fw.common.mithra.MithraTransactionalObject;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.update.AttributeUpdateWrapper;
 import com.gs.fw.common.mithra.behavior.TemporalContainer;
+import com.gs.fw.common.mithra.behavior.state.DatedPersistenceState;
 import com.gs.fw.common.mithra.behavior.txparticipation.TxParticipationMode;
+import com.gs.fw.common.mithra.cache.offheap.OffHeapDataStorage;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.finder.ObjectWithMapperStack;
+import com.gs.fw.common.mithra.finder.asofop.AsOfOperation;
 import com.gs.fw.common.mithra.transaction.MithraDatedObjectPersister;
 import com.gs.fw.common.mithra.transaction.TransactionLocal;
+import com.gs.fw.common.mithra.util.ListFactory;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.sql.Timestamp;
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.fw.common.mithra.util.ListFactory;
-
 import java.util.Iterator;
 import java.util.List;
 

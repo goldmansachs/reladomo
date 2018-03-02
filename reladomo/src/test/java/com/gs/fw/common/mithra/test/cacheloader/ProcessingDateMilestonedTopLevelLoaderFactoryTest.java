@@ -13,13 +13,22 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.cacheloader;
 
 
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.attribute.IntegerAttribute;
-import com.gs.fw.common.mithra.cacheloader.*;
+import com.gs.fw.common.mithra.cacheloader.AdditionalOperationBuilder;
+import com.gs.fw.common.mithra.cacheloader.CacheLoaderConfig;
+import com.gs.fw.common.mithra.cacheloader.CacheLoaderContext;
+import com.gs.fw.common.mithra.cacheloader.CacheLoaderManagerImpl;
+import com.gs.fw.common.mithra.cacheloader.CacheLoaderMonitor;
+import com.gs.fw.common.mithra.cacheloader.ConfigParameter;
+import com.gs.fw.common.mithra.cacheloader.DateCluster;
+import com.gs.fw.common.mithra.cacheloader.LoadOperationBuilder;
+import com.gs.fw.common.mithra.cacheloader.ProcessingDateMilestonedTopLevelLoaderFactory;
+import com.gs.fw.common.mithra.cacheloader.RefreshInterval;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
 import com.gs.fw.common.mithra.test.ConnectionManagerForTests;
@@ -27,6 +36,7 @@ import com.gs.fw.common.mithra.test.MithraTestResource;
 import com.gs.fw.common.mithra.test.domain.DatedEntity;
 import com.gs.fw.common.mithra.test.domain.DatedEntityFinder;
 import junit.framework.TestCase;
+import org.eclipse.collections.impl.list.mutable.FastList;
 
 import java.sql.Timestamp;
 import java.util.List;

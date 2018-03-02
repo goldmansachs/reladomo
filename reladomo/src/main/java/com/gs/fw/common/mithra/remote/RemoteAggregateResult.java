@@ -13,21 +13,28 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.remote;
 
+import com.gs.fw.common.mithra.AggregateData;
+import com.gs.fw.common.mithra.HavingOperation;
+import com.gs.fw.common.mithra.MithraAggregateAttribute;
+import com.gs.fw.common.mithra.MithraGroupByAttribute;
+import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
-import com.gs.fw.common.mithra.*;
-import com.gs.fw.common.mithra.HavingOperation;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
-import java.io.ObjectOutput;
 import java.io.IOException;
 import java.io.ObjectInput;
-import java.util.*;
-
-import com.gs.collections.impl.map.mutable.UnifiedMap;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 public class RemoteAggregateResult  extends MithraRemoteResult

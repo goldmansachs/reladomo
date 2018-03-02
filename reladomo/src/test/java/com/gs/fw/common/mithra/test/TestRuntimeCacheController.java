@@ -11,22 +11,33 @@
  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  KIND, either express or implied.  See the License for the
  specific language governing permissions and limitations
- under the License.
+ under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
+
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.cache.AbstractDatedCache;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.OrderList;
+import com.gs.fw.common.mithra.test.domain.TinyBalance;
+import com.gs.fw.common.mithra.test.domain.TinyBalanceFinder;
+import com.gs.fw.common.mithra.test.domain.TinyBalanceList;
 import com.gs.fw.common.mithra.util.Filter;
 import com.gs.fw.common.mithra.util.KeepOnlySpecifiedDatesFilter;
 import com.gs.fw.common.mithra.util.MithraRuntimeCacheController;
+import org.eclipse.collections.impl.list.mutable.FastList;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class TestRuntimeCacheController
 extends MithraTestAbstract

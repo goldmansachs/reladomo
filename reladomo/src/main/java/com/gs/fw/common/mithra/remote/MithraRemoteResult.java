@@ -13,20 +13,21 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.remote;
 
-import com.gs.collections.impl.map.mutable.UnifiedMap;
-import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.gs.fw.common.mithra.MithraDataObject;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.MithraTransactionalObject;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.VersionAttribute;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.transaction.InTransactionDatedTransactionalObject;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Externalizable;
 import java.io.IOException;

@@ -13,36 +13,49 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.DoubleSet;
-import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapDoubleExtractorWithOffset;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapExtractor;
-import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
-import com.gs.fw.common.mithra.finder.*;
-import com.gs.fw.common.mithra.finder.doubleop.*;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
-import com.gs.fw.common.mithra.util.ColumnInfo;
+import com.gs.fw.common.mithra.extractor.asm.ExtractorWriter;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.AtomicSelfNotEqualityOperation;
+import com.gs.fw.common.mithra.finder.None;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.doubleop.DoubleEqOperation;
+import com.gs.fw.common.mithra.finder.doubleop.DoubleGreaterThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.doubleop.DoubleGreaterThanOperation;
+import com.gs.fw.common.mithra.finder.doubleop.DoubleInOperation;
+import com.gs.fw.common.mithra.finder.doubleop.DoubleLessThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.doubleop.DoubleLessThanOperation;
+import com.gs.fw.common.mithra.finder.doubleop.DoubleNotEqOperation;
+import com.gs.fw.common.mithra.finder.doubleop.DoubleNotInOperation;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
+import com.gs.fw.common.mithra.util.ColumnInfo;
 import com.gs.fw.common.mithra.util.fileparser.BitsInBytes;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarInStream;
 import com.gs.fw.common.mithra.util.fileparser.ColumnarOutStream;
+import org.eclipse.collections.api.set.primitive.DoubleSet;
 import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.ObjectStreamException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.sql.Types;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.math.BigDecimal;
 
 
 public abstract class SingleColumnDoubleAttribute<T> extends DoubleAttribute<T> implements SingleColumnAttribute<T>
@@ -104,6 +117,31 @@ public abstract class SingleColumnDoubleAttribute<T> extends DoubleAttribute<T> 
         return new DoubleNotEqOperation(this, other);
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public Operation in(com.gs.collections.api.set.primitive.DoubleSet doubleSet)
+    {
+        Operation op;
+        switch (doubleSet.size())
+        {
+            case 0:
+                op = new None(this);
+                break;
+            case 1:
+                op = this.eq(doubleSet.doubleIterator().next());
+                break;
+            default:
+                op = new DoubleInOperation(this, doubleSet);
+                break;
+        }
+
+        return op;
+    }
+
     @Override
     public Operation in(DoubleSet doubleSet)
     {
@@ -118,6 +156,31 @@ public abstract class SingleColumnDoubleAttribute<T> extends DoubleAttribute<T> 
                 break;
             default:
                 op = new DoubleInOperation(this, doubleSet);
+                break;
+        }
+
+        return op;
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public Operation notIn(com.gs.collections.api.set.primitive.DoubleSet doubleSet)
+    {
+        Operation op;
+        switch (doubleSet.size())
+        {
+            case 0:
+                op = new All(this);
+                break;
+            case 1:
+                op = this.notEq(doubleSet.doubleIterator().next());
+                break;
+            default:
+                op = new DoubleNotInOperation(this, doubleSet);
                 break;
         }
 

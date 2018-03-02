@@ -13,10 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.cache.FullSemiUniqueDatedIndex;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.extractor.IntExtractor;
@@ -28,6 +28,7 @@ import com.gs.fw.common.mithra.test.domain.TinyBalanceFinder;
 import com.gs.fw.common.mithra.util.DoProcedure;
 import com.gs.fw.common.mithra.util.Filter;
 import junit.framework.TestCase;
+import org.eclipse.collections.impl.list.mutable.FastList;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;

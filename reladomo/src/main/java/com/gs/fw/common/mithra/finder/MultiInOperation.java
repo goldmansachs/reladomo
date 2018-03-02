@@ -14,24 +14,20 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.SingleColumnAttribute;
 import com.gs.fw.common.mithra.attribute.TimestampAttribute;
-import com.gs.fw.common.mithra.cache.*;
+import com.gs.fw.common.mithra.cache.Cache;
+import com.gs.fw.common.mithra.cache.ExtractorBasedHashStrategy;
+import com.gs.fw.common.mithra.cache.FullUniqueIndex;
+import com.gs.fw.common.mithra.cache.IndexReference;
+import com.gs.fw.common.mithra.cache.NonUniqueIndex;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.extractor.TimestampExtractor;
 import com.gs.fw.common.mithra.finder.asofop.AsOfTimestampEqualityMapper;
@@ -40,7 +36,21 @@ import com.gs.fw.common.mithra.finder.sqcache.NoMatchRequiresExactSmr;
 import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
-import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.DoUntilProcedure;
+import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.InternalList;
+import com.gs.fw.common.mithra.util.MithraDataHolderTupleSet;
+import com.gs.fw.common.mithra.util.MithraFastList;
+import com.gs.fw.common.mithra.util.MithraTupleSet;
+import org.eclipse.collections.impl.list.mutable.FastList;
+
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class MultiInOperation implements Operation, SqlParameterSetter
 {

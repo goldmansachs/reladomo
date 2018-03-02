@@ -13,31 +13,66 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.util;
 
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.map.mutable.ConcurrentHashMap;
+import com.gs.fw.common.mithra.LoadOperationProvider;
+import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.MithraDatabaseObject;
+import com.gs.fw.common.mithra.MithraException;
+import com.gs.fw.common.mithra.MithraManager;
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraObjectDeserializer;
+import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.MithraPrimaryKeyGenerator;
+import com.gs.fw.common.mithra.MithraPureObjectFactory;
+import com.gs.fw.common.mithra.MithraRuntimeConfig;
+import com.gs.fw.common.mithra.SimulatedSequenceInitValues;
 import com.gs.fw.common.mithra.cache.offheap.MasterCacheService;
 import com.gs.fw.common.mithra.cache.offheap.MasterCacheUplink;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.gs.fw.common.mithra.*;
-import com.gs.fw.common.mithra.connectionmanager.*;
+import com.gs.fw.common.mithra.connectionmanager.ConnectionManagerWrapper;
+import com.gs.fw.common.mithra.connectionmanager.IntSourceSchemaManager;
+import com.gs.fw.common.mithra.connectionmanager.IntSourceTablePartitionManager;
+import com.gs.fw.common.mithra.connectionmanager.ObjectSourceSchemaManager;
+import com.gs.fw.common.mithra.connectionmanager.ObjectSourceTablePartitionManager;
+import com.gs.fw.common.mithra.connectionmanager.SchemaManager;
+import com.gs.fw.common.mithra.connectionmanager.TablePartitionManager;
 import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.mithraruntime.ConnectionManagerType;
+import com.gs.fw.common.mithra.mithraruntime.MasterCacheReplicationServerType;
+import com.gs.fw.common.mithra.mithraruntime.MithraObjectConfigurationType;
+import com.gs.fw.common.mithra.mithraruntime.MithraPureObjectConfigurationType;
+import com.gs.fw.common.mithra.mithraruntime.MithraRuntimeType;
+import com.gs.fw.common.mithra.mithraruntime.MithraRuntimeUnmarshaller;
+import com.gs.fw.common.mithra.mithraruntime.MithraTemporaryObjectConfigurationType;
+import com.gs.fw.common.mithra.mithraruntime.PropertyType;
+import com.gs.fw.common.mithra.mithraruntime.PureObjectsType;
+import com.gs.fw.common.mithra.mithraruntime.RemoteServerType;
+import com.gs.fw.common.mithra.mithraruntime.SchemaType;
 import com.gs.fw.common.mithra.notification.MithraReplicationNotificationManager;
 import com.gs.fw.common.mithra.notification.replication.ReplicationNotificationConnectionManager;
 import com.gs.fw.common.mithra.remote.RemoteMithraObjectConfig;
 import com.gs.fw.common.mithra.remote.RemoteMithraService;
-import com.gs.fw.common.mithra.mithraruntime.*;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.map.mutable.ConcurrentHashMap;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 

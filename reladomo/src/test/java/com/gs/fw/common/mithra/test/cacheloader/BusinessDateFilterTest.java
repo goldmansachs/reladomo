@@ -13,19 +13,26 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.cacheloader;
 
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.cacheloader.CacheLoaderManagerImpl;
 import com.gs.fw.common.mithra.cacheloader.FullyMilestonedTopLevelLoaderFactory;
 import com.gs.fw.common.mithra.test.MithraTestResource;
-import com.gs.fw.common.mithra.test.glew.*;
+import com.gs.fw.common.mithra.test.glew.GlewScrp;
+import com.gs.fw.common.mithra.test.glew.GlewScrpData;
+import com.gs.fw.common.mithra.test.glew.GlewScrpDatabaseObject;
+import com.gs.fw.common.mithra.test.glew.LewContract;
+import com.gs.fw.common.mithra.test.glew.LewContractData;
+import com.gs.fw.common.mithra.test.glew.LewContractDatabaseObject;
+import com.gs.fw.common.mithra.test.glew.LewContractFinder;
 import com.gs.fw.common.mithra.util.BooleanFilter;
 import com.gs.fw.common.mithra.util.DefaultInfinityTimestamp;
 import com.gs.fw.common.mithra.util.Filter;
 import com.gs.fw.common.mithra.util.KeepOnlySpecifiedDatesFilter;
 import junit.framework.TestCase;
+import org.eclipse.collections.impl.list.mutable.FastList;
 
 import java.io.ByteArrayInputStream;
 import java.sql.Timestamp;

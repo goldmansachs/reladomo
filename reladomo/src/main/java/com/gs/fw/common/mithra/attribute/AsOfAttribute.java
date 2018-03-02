@@ -14,21 +14,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.ObjectStreamException;
-import java.sql.Timestamp;
-import java.text.Format;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.gs.fw.common.mithra.AggregateAttribute;
 import com.gs.fw.common.mithra.MithraDataObject;
 import com.gs.fw.common.mithra.aggregate.attribute.IntegerAggregateAttribute;
@@ -53,7 +42,18 @@ import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.util.ImmutableTimestamp;
 import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
 import com.gs.fw.common.mithra.util.serializer.SerialWriter;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.ObjectStreamException;
+import java.sql.Timestamp;
+import java.text.Format;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public abstract class AsOfAttribute<T> extends Attribute<T, Timestamp> implements com.gs.fw.finder.attribute.AsOfAttribute<T>, AsOfExtractor<T>, TemporalAttribute

@@ -13,17 +13,18 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.remote;
 
-import com.gs.collections.impl.set.mutable.UnifiedSet;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.Externalizable;
-import java.io.ObjectInput;
 import java.io.IOException;
+import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Set;
 import java.util.Iterator;
+import java.util.Set;
 
 
 

@@ -13,6 +13,7 @@ KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
 --%>
+<%-- Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license --%>
 <%@ page import="java.util.*" %>
 <%@ page import="com.gs.fw.common.mithra.generator.*" %>
 <%@ page import="com.gs.fw.common.mithra.generator.mapper.*" %>
@@ -64,10 +65,10 @@ import com.gs.fw.common.mithra.portal.*;
 import com.gs.fw.common.mithra.remote.*;
 import com.gs.fw.common.mithra.transaction.MithraObjectPersister;
 import com.gs.fw.common.mithra.util.TimestampPool;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
 <% if (wrapper.isTemporary()) { %>
 import com.gs.fw.common.mithra.tempobject.*;
 <% } %>
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 
 import java.io.Serializable;
 
@@ -335,13 +336,13 @@ public class <%= className %>
         public static class <%= attributeClassName %> extends <%= evo.getQualifiedAttributeClassName() %>
         {
             private final <%= wrapper.getClassName() %>RelatedFinder finder;
-            private final com.gs.collections.api.block.function.Function parentSelector;
+            private final com.gs.fw.common.mithra.extractor.Function parentSelector;
             <% for (RelationshipAttribute rel: evo.getRelationshipAttributes()) { %>
                 <% if (!rel.hasParameters()) { %>
                 private final Extractor<Object, <%=rel.getTypeAsString()%>> <%= rel.getName() %>;
                 <% } %>
             <% } %>
-            public <%= attributeClassName %>(<%= wrapper.getClassName() %>RelatedFinder finder, com.gs.collections.api.block.function.Function parentSelector)
+            public <%= attributeClassName %>(<%= wrapper.getClassName() %>RelatedFinder finder, com.gs.fw.common.mithra.extractor.Function parentSelector)
             {
                 this.finder = finder;
                 this.parentSelector = parentSelector;
@@ -431,12 +432,12 @@ public class <%= className %>
     <% for (RelationshipAttribute rel: evo.getRelationshipAttributes()) { %>
         public static class <%= attributeClassName %><%= StringUtility.firstLetterToUpper(rel.getName())%>Extractor extends NonPrimitiveExtractor
         {
-            private final com.gs.collections.api.block.function.Function parentSelector;
+            private final com.gs.fw.common.mithra.extractor.Function parentSelector;
             <% for (int j = 0; j < rel.getParameterCount(); j++) { %>
                 private <%= rel.getParameterTypeAt(j) %> <%= rel.getParameterVariableAt(j) %>;
             <% } %>
 
-            public <%= attributeClassName %><%= StringUtility.firstLetterToUpper(rel.getName())%>Extractor(com.gs.collections.api.block.function.Function parentSelector <%= rel.getParametersWithComma() %>)
+            public <%= attributeClassName %><%= StringUtility.firstLetterToUpper(rel.getName())%>Extractor(com.gs.fw.common.mithra.extractor.Function parentSelector <%= rel.getParametersWithComma() %>)
             {
                 this.parentSelector = parentSelector;
                 <% for (int j = 0; j < rel.getParameterCount(); j++) { %>

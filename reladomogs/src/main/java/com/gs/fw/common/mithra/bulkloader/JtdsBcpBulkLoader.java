@@ -15,21 +15,19 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.bulkloader;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.*;
-
-import com.gs.collections.impl.map.mutable.ConcurrentHashMap;
 import com.gs.fw.common.mithra.MithraDataObject;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.MithraTransactionalObject;
-import com.gs.fw.common.mithra.attribute.*;
+import com.gs.fw.common.mithra.attribute.Attribute;
+import com.gs.fw.common.mithra.attribute.DateAttribute;
+import com.gs.fw.common.mithra.attribute.SingleColumnIntegerAttribute;
+import com.gs.fw.common.mithra.attribute.SingleColumnStringAttribute;
+import com.gs.fw.common.mithra.attribute.StringAttribute;
+import com.gs.fw.common.mithra.attribute.TimestampAttribute;
 import com.gs.fw.common.mithra.connectionmanager.AbstractConnectionManager;
 import com.gs.fw.common.mithra.connectionmanager.ConnectionFactory;
 import com.gs.fw.common.mithra.connectionmanager.MithraPoolableConnectionFactory;
@@ -39,8 +37,20 @@ import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.databasetype.SybaseDatabaseType;
 import com.gs.fw.common.mithra.util.ColumnInfo;
 import net.sourceforge.jtds.jdbc.BCP;
+import org.eclipse.collections.impl.map.mutable.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.TimeZone;
 
 public class JtdsBcpBulkLoader implements BulkLoader, ConnectionFactory
 {

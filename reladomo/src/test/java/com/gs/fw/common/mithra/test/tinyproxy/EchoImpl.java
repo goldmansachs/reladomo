@@ -13,16 +13,18 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.tinyproxy;
 
-import java.lang.reflect.Method;
-
-import com.gs.collections.api.map.ImmutableMap;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
-import com.gs.collections.impl.utility.MapIterate;
+import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.UnsortedMapIterable;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.utility.MapIterate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Method;
 
 public class EchoImpl implements Echo
 {
@@ -88,7 +90,7 @@ public class EchoImpl implements Echo
         /**
          * Mapping of primitive wrapper classes to primitive types
          */
-        private static final ImmutableMap<Class<?>, Class<?>> WRAPPER_TO_PRIMATIVES = UnifiedMap.<Class<?>, Class<?>>newMap()
+        private static final ImmutableMap<Class<?>, Class<?>> WRAPPER_TO_PRIMATIVES = ((UnsortedMapIterable<Class<?>, Class<?>>)UnifiedMap.<Class<?>, Class<?>>newMap()
                 .withKeyValue(Short.class, short.class)
                 .withKeyValue(Boolean.class, boolean.class)
                 .withKeyValue(Byte.class, byte.class)
@@ -96,10 +98,10 @@ public class EchoImpl implements Echo
                 .withKeyValue(Integer.class, int.class)
                 .withKeyValue(Float.class, float.class)
                 .withKeyValue(Long.class, long.class)
-                .withKeyValue(Double.class, double.class)
+                .withKeyValue(Double.class, double.class))
                 .toImmutable();
 
-        private static final ImmutableMap<Class<?>, Class<?>> PRIMITIVES_TO_WRAPPERS = MapIterate.reverseMapping(WRAPPER_TO_PRIMATIVES.castToMap()).toImmutable();
+        private static final ImmutableMap<Class<?>, Class<?>> PRIMITIVES_TO_WRAPPERS = ((UnsortedMapIterable<Class<?>, Class<?>>)MapIterate.reverseMapping(WRAPPER_TO_PRIMATIVES.castToMap())).toImmutable();
 
         private ReflectionHelper()
         {

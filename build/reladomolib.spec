@@ -1,7 +1,8 @@
 # <repo>, <groupId>, <artifactId>, <version>, <extension>, <destDir>, <checksum>
 # central,org.apache.ant,ant,1.9.6,jar,build/lib,80E2063B01BAB3C79C2D84E4ED5E73868394C85A
 central,com.goldmansachs,gs-collections-api,5.1.0,jar,lib/compile,EA605CDF64CAB5FC7B48C99F061D4C8DB05B6FF1
-central,com.goldmansachs,gs-collections,5.1.0,jar,lib/compile,07114C5349C816EA645B1EA3FFCC21FA073CBABC
+central,org.eclipse.collections,eclipse-collections-api,7.1.1,jar,lib/compile,806C2B3BEF5364D1A1668F25CE70100FA2C6B919
+central,org.eclipse.collections,eclipse-collections,7.1.1,jar,lib/compile,83ECA9F03F1F2D055DF453D72036C5CE2E82896B
 central,joda-time,joda-time,2.9.4,jar,lib/compile,1C295B462F16702EBE720BBB08F62E1BA80DA41B
 central,org.apache.geronimo.specs,geronimo-jta_1.1_spec,1.1.1,jar,lib/compile,AABAB3165B8EA936B9360ABBF448459C0D04A5A4
 central,org.slf4j,slf4j-api,1.7.21,jar,lib/compile,139535A69A4239DB087DE9BAB0BEE568BF8E0B70
@@ -84,3 +85,5 @@ central,org.apache.geronimo.specs,geronimo-jms_1.1_spec,1.1.1,jar,lib/xa,C872B46
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
+
+# Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license

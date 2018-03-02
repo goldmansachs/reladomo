@@ -14,21 +14,13 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.util.Collection;
-import java.util.Properties;
-import java.util.TimeZone;
-
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.bulkloader.BulkLoader;
 import com.gs.fw.common.mithra.bulkloader.BulkLoaderException;
-import com.gs.fw.common.mithra.connectionmanager.SourcelessConnectionManager;
 import com.gs.fw.common.mithra.connectionmanager.XAConnectionManager;
-import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.databasetype.MariaDatabaseType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

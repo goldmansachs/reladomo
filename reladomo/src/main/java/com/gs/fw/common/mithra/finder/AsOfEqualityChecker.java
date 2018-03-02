@@ -13,25 +13,29 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder;
 
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.MithraBusinessException;
-import com.gs.fw.common.mithra.attribute.TemporalAttribute;
-import com.gs.fw.common.mithra.tempobject.TupleTempContext;
-import com.gs.fw.common.mithra.util.CollectionUtil;
-import com.gs.fw.common.mithra.util.InternalList;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
+import com.gs.fw.common.mithra.attribute.TemporalAttribute;
 import com.gs.fw.common.mithra.finder.asofop.AsOfEdgePointOperation;
 import com.gs.fw.common.mithra.finder.asofop.AsOfEqOperation;
 import com.gs.fw.common.mithra.finder.asofop.AsOfOperation;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import com.gs.collections.impl.map.mutable.UnifiedMap;
+import com.gs.fw.common.mithra.tempobject.TupleTempContext;
+import com.gs.fw.common.mithra.util.CollectionUtil;
+import com.gs.fw.common.mithra.util.InternalList;
 import com.gs.fw.common.mithra.util.Pair;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.Set;
 
 
 

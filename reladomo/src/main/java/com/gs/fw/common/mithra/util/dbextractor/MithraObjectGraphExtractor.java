@@ -13,26 +13,56 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.util.dbextractor;
 
 
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.*;
+import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.MithraConfigurationException;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraList;
+import com.gs.fw.common.mithra.MithraObject;
+import com.gs.fw.common.mithra.attribute.Attribute;
+import com.gs.fw.common.mithra.attribute.TupleAttribute;
+import com.gs.fw.common.mithra.attribute.TupleAttributeImpl;
+import com.gs.fw.common.mithra.cache.FullUniqueIndex;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.finder.AbstractRelatedFinder;
+import com.gs.fw.common.mithra.finder.EqualityMapper;
+import com.gs.fw.common.mithra.finder.FilteredMapper;
+import com.gs.fw.common.mithra.finder.MappedOperation;
+import com.gs.fw.common.mithra.finder.Mapper;
+import com.gs.fw.common.mithra.finder.MultiEqualityMapper;
+import com.gs.fw.common.mithra.finder.None;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.util.InternalList;
+import com.gs.fw.common.mithra.util.MithraArrayTupleTupleSet;
+import com.gs.fw.common.mithra.util.Pair;
+import org.eclipse.collections.impl.block.factory.HashingStrategies;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+import org.eclipse.collections.impl.map.strategy.mutable.UnifiedMapWithHashingStrategy;
+import org.eclipse.collections.impl.set.strategy.mutable.UnifiedSetWithHashingStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.gs.collections.impl.block.factory.*;
-import com.gs.collections.impl.list.mutable.*;
-import com.gs.collections.impl.map.mutable.*;
-import com.gs.collections.impl.map.strategy.mutable.*;
-import com.gs.collections.impl.set.strategy.mutable.*;
-import com.gs.fw.common.mithra.*;
-import com.gs.fw.common.mithra.attribute.*;
-import com.gs.fw.common.mithra.cache.*;
-import com.gs.fw.common.mithra.extractor.*;
-import com.gs.fw.common.mithra.finder.*;
-import com.gs.fw.common.mithra.util.*;
-import org.slf4j.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * MithraObjectGraphExtractor takes one or more root operations and extracts the data returned by those operations, and

@@ -13,11 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder.longop;
 
-import com.gs.collections.api.iterator.LongIterator;
-import com.gs.collections.api.set.primitive.LongSet;
 import com.gs.fw.common.mithra.attribute.LongAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
@@ -31,6 +30,10 @@ import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.util.HashUtil;
+import org.eclipse.collections.api.iterator.LongIterator;
+import org.eclipse.collections.api.set.primitive.LongSet;
+import org.eclipse.collections.impl.factory.primitive.LongSets;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -43,6 +46,17 @@ public class LongInOperation extends InOperation implements SqlParameterSetter
     private LongSet set;
     private transient volatile long[] copiedArray;
 
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public LongInOperation(LongAttribute attribute, com.gs.collections.api.set.primitive.LongSet longSet)
+    {
+        super(attribute);
+        this.set = LongSets.immutable.of(longSet.toArray());
+    }
 
     public LongInOperation(LongAttribute attribute, LongSet longSet)
     {

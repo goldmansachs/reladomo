@@ -22,7 +22,7 @@
 
     <PackageName>com.gs.fw.common.mithra.test.domain</PackageName>
     <ClassName>BitemporalOrderNull</ClassName>
-    <Import>com.gs.collections.impl.set.mutable.primitive.IntHashSet</Import>
+    <Import>org.eclipse.collections.impl.set.mutable.primitive.IntHashSet</Import>
     <Import>com.gs.fw.common.mithra.test.domain.InfinityTimestamp</Import>
     <DefaultTable>BITEMPORAL_ORDER_NULL</DefaultTable>
 

@@ -13,11 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder.doubleop;
 
-import com.gs.collections.api.iterator.DoubleIterator;
-import com.gs.collections.api.set.primitive.DoubleSet;
 import com.gs.fw.common.mithra.attribute.DoubleAttribute;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.DoubleExtractor;
@@ -31,6 +30,10 @@ import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.util.HashUtil;
+import org.eclipse.collections.api.iterator.DoubleIterator;
+import org.eclipse.collections.api.set.primitive.DoubleSet;
+import org.eclipse.collections.impl.factory.primitive.DoubleSets;
+
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -43,6 +46,17 @@ public class DoubleInOperation extends InOperation implements SqlParameterSetter
     private DoubleSet set;
     private transient volatile double[] copiedArray;
 
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public DoubleInOperation(DoubleAttribute attribute, com.gs.collections.api.set.primitive.DoubleSet doubleSet)
+    {
+        super(attribute);
+        this.set = DoubleSets.immutable.of(doubleSet.toArray());
+    }
 
     public DoubleInOperation(DoubleAttribute attribute, DoubleSet doubleSet)
     {

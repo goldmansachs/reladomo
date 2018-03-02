@@ -13,23 +13,37 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.LongSet;
 import com.gs.fw.common.mithra.MithraDataObject;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.calculator.NumericAttributeCalculator;
+import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.DoubleProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.FloatProcedure;
 import com.gs.fw.common.mithra.attribute.calculator.procedure.LongProcedure;
-import com.gs.fw.common.mithra.attribute.calculator.procedure.BigDecimalProcedure;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.extractor.LongExtractor;
-import com.gs.fw.common.mithra.finder.*;
-import com.gs.fw.common.mithra.finder.longop.*;
+import com.gs.fw.common.mithra.finder.AggregateSqlQuery;
+import com.gs.fw.common.mithra.finder.All;
+import com.gs.fw.common.mithra.finder.EqualityMapper;
+import com.gs.fw.common.mithra.finder.None;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.SqlQuery;
+import com.gs.fw.common.mithra.finder.ToStringContext;
+import com.gs.fw.common.mithra.finder.longop.LongEqOperation;
+import com.gs.fw.common.mithra.finder.longop.LongGreaterThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.longop.LongGreaterThanOperation;
+import com.gs.fw.common.mithra.finder.longop.LongInOperation;
+import com.gs.fw.common.mithra.finder.longop.LongLessThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.longop.LongLessThanOperation;
+import com.gs.fw.common.mithra.finder.longop.LongNotEqOperation;
+import com.gs.fw.common.mithra.finder.longop.LongNotInOperation;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.util.HashUtil;
+import org.eclipse.collections.api.set.primitive.LongSet;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -221,6 +235,31 @@ public class CalculatedLongAttribute<T> extends LongAttribute<T>
         return new LongNotEqOperation(this, other);
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public Operation in(com.gs.collections.api.set.primitive.LongSet longSet)
+    {
+        Operation op;
+        switch (longSet.size())
+        {
+            case 0:
+                op = new None(this);
+                break;
+            case 1:
+                op = this.eq(longSet.longIterator().next());
+                break;
+            default:
+                op = new LongInOperation(this, longSet);
+                break;
+        }
+
+        return op;
+    }
+
     @Override
     public Operation in(LongSet longSet)
     {
@@ -235,6 +274,31 @@ public class CalculatedLongAttribute<T> extends LongAttribute<T>
                 break;
             default:
                 op = new LongInOperation(this, longSet);
+                break;
+        }
+
+        return op;
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public Operation notIn(com.gs.collections.api.set.primitive.LongSet set)
+    {
+        Operation op;
+        switch (set.size())
+        {
+            case 0:
+                op = new All(this);
+                break;
+            case 1:
+                op = this.notEq(set.longIterator().next());
+                break;
+            default:
+                op = new LongNotInOperation(this, set);
                 break;
         }
 

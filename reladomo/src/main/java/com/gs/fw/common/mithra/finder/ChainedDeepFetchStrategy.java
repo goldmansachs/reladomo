@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.finder;
 
@@ -20,9 +21,8 @@ import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
 import com.gs.fw.common.mithra.util.InternalList;
-
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.util.ListFactory;
+import org.eclipse.collections.impl.list.mutable.FastList;
 
 import java.util.List;
 

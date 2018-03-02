@@ -13,15 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
-import com.gs.collections.api.block.function.primitive.IntFunction;
-import com.gs.collections.api.block.predicate.Predicate;
-import com.gs.collections.api.list.MutableList;
-import com.gs.collections.impl.factory.Sets;
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.attribute.Attribute;
@@ -29,7 +24,28 @@ import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.notification.MithraNotificationEvent;
 import com.gs.fw.common.mithra.notification.listener.MithraApplicationClassLevelNotificationListener;
 import com.gs.fw.common.mithra.notification.listener.MithraApplicationNotificationListener;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.Division;
+import com.gs.fw.common.mithra.test.domain.Employee;
+import com.gs.fw.common.mithra.test.domain.EmployeeFinder;
+import com.gs.fw.common.mithra.test.domain.EmployeeList;
+import com.gs.fw.common.mithra.test.domain.FullyCachedTinyBalance;
+import com.gs.fw.common.mithra.test.domain.Order;
+import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.domain.OrderItem;
+import com.gs.fw.common.mithra.test.domain.OrderItemList;
+import com.gs.fw.common.mithra.test.domain.OrderList;
+import com.gs.fw.common.mithra.test.domain.Player;
+import com.gs.fw.common.mithra.test.domain.PlayerFinder;
+import com.gs.fw.common.mithra.test.domain.SpecialAccount;
+import com.gs.fw.common.mithra.test.domain.Team;
+import com.gs.fw.common.mithra.test.domain.TeamFinder;
+import com.gs.fw.common.mithra.test.domain.TeamList;
+import org.eclipse.collections.api.block.function.primitive.IntFunction;
+import org.eclipse.collections.api.block.predicate.Predicate;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.impl.factory.Sets;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

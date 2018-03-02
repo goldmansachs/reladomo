@@ -13,10 +13,9 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.aggregate;
-
-import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 
 import com.gs.fw.common.mithra.AggregateData;
 import com.gs.fw.common.mithra.AggregateList;
@@ -27,7 +26,20 @@ import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.MithraTestAbstract;
-import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.AuditedOrder;
+import com.gs.fw.common.mithra.test.domain.AuditedOrderFinder;
+import com.gs.fw.common.mithra.test.domain.BitemporalOrder;
+import com.gs.fw.common.mithra.test.domain.BitemporalOrderStatus;
+import com.gs.fw.common.mithra.test.domain.BitemporalOrderStatusFinder;
+import com.gs.fw.common.mithra.test.domain.ParaBalance;
+import com.gs.fw.common.mithra.test.domain.Sale;
+import com.gs.fw.common.mithra.test.domain.SaleFinder;
+import com.gs.fw.common.mithra.test.domain.SaleList;
+import com.gs.fw.common.mithra.test.domain.SalesLineItem;
+import com.gs.fw.common.mithra.test.domain.SalesLineItemFinder;
+import com.gs.fw.common.mithra.test.domain.TinyBalance;
+import com.gs.fw.common.mithra.test.domain.TinyBalanceFinder;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;

@@ -13,15 +13,10 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.notification;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import com.gs.collections.impl.map.mutable.UnifiedMap;
 import com.gs.fw.common.mithra.MithraBusinessException;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.Attribute;
@@ -29,8 +24,23 @@ import com.gs.fw.common.mithra.attribute.SourceAttributeType;
 import com.gs.fw.common.mithra.connectionmanager.IntSourceConnectionManager;
 import com.gs.fw.common.mithra.connectionmanager.ObjectSourceConnectionManager;
 import com.gs.fw.common.mithra.connectionmanager.SourcelessConnectionManager;
-import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.ExplicitJoinClause;
+import com.gs.fw.common.mithra.finder.ImplicitJoinClause;
+import com.gs.fw.common.mithra.finder.JoinClause;
+import com.gs.fw.common.mithra.finder.Mapper;
+import com.gs.fw.common.mithra.finder.MapperStack;
+import com.gs.fw.common.mithra.finder.MapperStackImpl;
+import com.gs.fw.common.mithra.finder.ObjectWithMapperStack;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.finder.SourceOperation;
 import com.gs.fw.common.mithra.util.InternalList;
+import org.eclipse.collections.impl.map.mutable.UnifiedMap;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 
 

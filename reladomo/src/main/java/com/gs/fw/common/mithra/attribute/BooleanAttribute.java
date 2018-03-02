@@ -16,10 +16,10 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.set.primitive.BooleanSet;
-import com.gs.collections.api.set.primitive.MutableBooleanSet;
-import com.gs.collections.impl.set.mutable.primitive.BooleanHashSet;
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.AggregateData;
+import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraNullPrimitiveException;
 import com.gs.fw.common.mithra.aggregate.attribute.BooleanAggregateAttribute;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.MaxCalculatorBoolean;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.MinCalculatorBoolean;
@@ -32,9 +32,14 @@ import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.orderby.BooleanOrderBy;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
-import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.MutableBoolean;
+import com.gs.fw.common.mithra.util.Nullable;
 import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
 import com.gs.fw.common.mithra.util.serializer.SerialWriter;
+import org.eclipse.collections.api.set.primitive.BooleanSet;
+import org.eclipse.collections.api.set.primitive.MutableBooleanSet;
+import org.eclipse.collections.impl.set.mutable.primitive.BooleanHashSet;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -125,8 +130,24 @@ public abstract class BooleanAttribute<T> extends Attribute<T, Boolean> implemen
 
     public abstract Operation notEq(boolean other);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public abstract Operation in(com.gs.collections.api.set.primitive.BooleanSet booleanSet);
+
     @Override
     public abstract Operation in(BooleanSet booleanSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public abstract Operation notIn(com.gs.collections.api.set.primitive.BooleanSet booleanSet);
 
     @Override
     public abstract Operation notIn(BooleanSet booleanSet);

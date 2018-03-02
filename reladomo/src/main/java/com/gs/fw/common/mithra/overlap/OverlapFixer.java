@@ -13,15 +13,11 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.overlap;
 
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import com.gs.collections.impl.set.mutable.UnifiedSet;
 import com.gs.fw.common.mithra.MithraDataObject;
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraObjectPortal;
@@ -36,8 +32,13 @@ import com.gs.fw.common.mithra.transaction.BatchDeleteOperation;
 import com.gs.fw.common.mithra.transaction.BatchInsertOperation;
 import com.gs.fw.common.mithra.transaction.InTransactionDatedTransactionalObject;
 import com.gs.fw.common.mithra.util.dbextractor.MilestoneRectangle;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 public class OverlapFixer implements OverlapHandler
 {

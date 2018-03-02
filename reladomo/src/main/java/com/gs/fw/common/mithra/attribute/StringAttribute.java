@@ -17,7 +17,6 @@
 
 package com.gs.fw.common.mithra.attribute;
 
-import com.gs.collections.api.block.procedure.primitive.IntObjectProcedure;
 import com.gs.fw.common.mithra.AggregateData;
 import com.gs.fw.common.mithra.MithraBusinessException;
 import com.gs.fw.common.mithra.MithraDataObject;
@@ -33,12 +32,32 @@ import com.gs.fw.common.mithra.attribute.update.StringUpdateWrapper;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.extractor.StringExtractor;
-import com.gs.fw.common.mithra.finder.*;
-import com.gs.fw.common.mithra.finder.string.*;
-import com.gs.fw.common.mithra.util.*;
-import com.gs.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import com.gs.fw.common.mithra.finder.NoOperation;
+import com.gs.fw.common.mithra.finder.NonPrimitiveEqOperation;
+import com.gs.fw.common.mithra.finder.NonPrimitiveGreaterThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.NonPrimitiveGreaterThanOperation;
+import com.gs.fw.common.mithra.finder.NonPrimitiveLessThanEqualsOperation;
+import com.gs.fw.common.mithra.finder.NonPrimitiveLessThanOperation;
+import com.gs.fw.common.mithra.finder.NonPrimitiveNotEqOperation;
+import com.gs.fw.common.mithra.finder.None;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.string.StringContainsOperation;
+import com.gs.fw.common.mithra.finder.string.StringEndsWithOperation;
+import com.gs.fw.common.mithra.finder.string.StringNotContainsOperation;
+import com.gs.fw.common.mithra.finder.string.StringNotEndsWithOperation;
+import com.gs.fw.common.mithra.finder.string.StringNotStartsWithOperation;
+import com.gs.fw.common.mithra.finder.string.StringStartsWithOperation;
+import com.gs.fw.common.mithra.finder.string.StringWildCardEqOperation;
+import com.gs.fw.common.mithra.finder.string.StringWildCardNotEqOperation;
+import com.gs.fw.common.mithra.util.AnalyzedWildcardPattern;
+import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.MutableComparableReference;
+import com.gs.fw.common.mithra.util.StringPool;
+import com.gs.fw.common.mithra.util.WildcardParser;
 import com.gs.fw.common.mithra.util.serializer.ReladomoSerializationContext;
 import com.gs.fw.common.mithra.util.serializer.SerialWriter;
+import org.eclipse.collections.api.block.procedure.primitive.IntObjectProcedure;
+import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

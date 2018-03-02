@@ -13,15 +13,23 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test;
 
 
-import com.gs.collections.impl.list.mutable.FastList;
 import com.gs.fw.common.mithra.LoadOperationProvider;
 import com.gs.fw.common.mithra.MithraManager;
-import com.gs.fw.common.mithra.mithraruntime.*;
+import com.gs.fw.common.mithra.mithraruntime.ConnectionManagerType;
+import com.gs.fw.common.mithra.mithraruntime.MithraObjectConfigurationType;
+import com.gs.fw.common.mithra.mithraruntime.MithraPureObjectConfigurationType;
+import com.gs.fw.common.mithra.mithraruntime.MithraRuntime;
+import com.gs.fw.common.mithra.mithraruntime.MithraRuntimeUnmarshaller;
+import com.gs.fw.common.mithra.mithraruntime.MithraTemporaryObjectConfigurationType;
+import com.gs.fw.common.mithra.mithraruntime.RemoteServerType;
+import com.gs.fw.common.mithra.mithraruntime.SchemaType;
 import junit.framework.Assert;
+import org.eclipse.collections.impl.list.mutable.FastList;
 
 import java.io.IOException;
 import java.io.InputStream;
