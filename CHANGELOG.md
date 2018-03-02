@@ -1,4 +1,10 @@
 # Change Log
+## 17.0.0 - 2018-03-02
+### Enhancements:
+- Eclipse Collections integration. Please see [migration documentation](https://github.com/goldmansachs/reladomo/blob/master/reladomo/src/doc/GSC_TO_EC_MIGRATION_GUIDE.md)
+    - GS collections supported until March 2019
+    - Minor backward breaking changes that should not affect most users
+
 ## 16.7.1 - 2018-02-28
 ### Bug Fixes:
 - Fix Dated NonUniqueIndex with optimistic locking in a transaction
