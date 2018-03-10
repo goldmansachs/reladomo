@@ -83,11 +83,13 @@ public class SybaseIqDatabaseType extends SybaseDatabaseType
 
     public SybaseIqDatabaseType()
     {
+        this.setUpdateViaInsertAndJoinThreshold(10);
     }
 
     public SybaseIqDatabaseType(boolean supportsSharedTempTables)
     {
         this.supportsSharedTempTables = supportsSharedTempTables;
+        this.setUpdateViaInsertAndJoinThreshold(10);
     }
 
     @Override
