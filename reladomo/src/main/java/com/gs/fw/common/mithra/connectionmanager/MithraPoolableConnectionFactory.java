@@ -23,11 +23,18 @@ public class MithraPoolableConnectionFactory implements PoolableObjectFactory<Co
 {
     protected final ConnectionFactory connectionFactory;
     protected final int statementsToPool;
+    protected final long connectionMaxLifeTimeAfterStartMillis;
+
+    public MithraPoolableConnectionFactory(ConnectionFactory connectionFactory, int statementsToPool, long connectionMaxLifeTimeAfterStartMillis)
+    {
+        this.connectionFactory = connectionFactory;
+        this.statementsToPool = statementsToPool;
+        this.connectionMaxLifeTimeAfterStartMillis = connectionMaxLifeTimeAfterStartMillis;
+    }
 
     public MithraPoolableConnectionFactory(ConnectionFactory connFactory, int statementsToPool)
     {
-        connectionFactory = connFactory;
-        this.statementsToPool = statementsToPool;
+        this(connFactory, statementsToPool, 0);
     }
 
     // overriding to remove synchronized. We never mutate any state that affects this method

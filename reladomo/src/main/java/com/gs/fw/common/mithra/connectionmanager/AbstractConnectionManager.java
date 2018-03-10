@@ -84,6 +84,8 @@ public abstract class AbstractConnectionManager
 
     private boolean useStatementPooling;
 
+    private long connectionMaxLifeTimeAfterStartMillis = 0;
+
     private static Logger logger = LoggerFactory.getLogger(AbstractConnectionManager.class.getName());
 
     public AbstractConnectionManager()
@@ -133,6 +135,17 @@ public abstract class AbstractConnectionManager
         }
     }
 
+    /**
+     * Setting this value forces connections to close if they've been active for longer than this value.
+     * It's advisable to use this with pool eviction times.
+     * Default is 0, meaning infinite time.
+     * @param connectionMaxLifeTimeAfterStartMillis value in millis. zero means infinite lifetime.
+     */
+    public void setConnectionMaxLifeTimeAfterStartMillis(long connectionMaxLifeTimeAfterStartMillis)
+    {
+        this.connectionMaxLifeTimeAfterStartMillis = connectionMaxLifeTimeAfterStartMillis;
+    }
+
     protected Properties createLoginProperties()
     {
         Properties loginProperties = this.getDriverProperties();
@@ -156,7 +169,7 @@ public abstract class AbstractConnectionManager
 
         try
         {
-            poolableConnectionFactory = new MithraPoolableConnectionFactory(connectionFactory, 5);
+            poolableConnectionFactory = new MithraPoolableConnectionFactory(connectionFactory, 5, this.connectionMaxLifeTimeAfterStartMillis);
         }
         catch (Exception e)
         {
