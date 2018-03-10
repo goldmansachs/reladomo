@@ -291,6 +291,7 @@
                 <jvmarg value="-Dderby.storage.tempDirectory=${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
                 <jvmarg value="-Dderby.system.home=${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
                 <jvmarg value="-Dderby.system.durability=test"/>
+                <jvmarg value="-Duser.timezone=America/New_York"/>
                 <test name="@{testclass}" todir="${root}/reladomo/target/testresult"/>
             </junit>
             <replace casesensitive="true" dir="${root}/reladomo/target/testresult" includes="TEST-@{testclass}@{mithraxmlconfig}">
@@ -1867,6 +1868,7 @@
                 <jvmarg value="-Dderby.storage.tempDirectory=${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
                 <jvmarg value="-Dderby.system.home=${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
                 <jvmarg value="-Dderby.system.durability=test"/>
+                <jvmarg value="-Duser.timezone=America/New_York"/>
                 <test name="@{testclass}" todir="${root}/reladomoserial/target/testresult"/>
             </junit>
             <replace casesensitive="true" dir="${root}/reladomoserial/target/testresult" includes="TEST-@{testclass}@{mithraxmlconfig}">
@@ -2063,6 +2065,7 @@
                 <jvmarg value="-ea"/>
                 <jvmarg value="-Dlog4j.configuration=file:${root}/reladomo/src/test/resources/log4jWarn.config"/>
                 <jvmarg value="-Djacoco.args=${jacocovmarg}${root}/reladomoxa/target/coverage/@{mithraxmlconfig}@{testclass}@{heap}.exec"/>
+                <jvmarg value="-Duser.timezone=America/New_York"/>
                 <test name="@{testclass}" todir="${root}/reladomoxa/target/testresult"/>
             </junit>
             <replace casesensitive="true" dir="${root}/reladomoxa/target/testresult" includes="TEST-@{testclass}@{mithraxmlconfig}">
