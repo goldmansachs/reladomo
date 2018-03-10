@@ -3955,8 +3955,9 @@ public abstract class MithraAbstractDatabaseObject
             tempContext = new TupleTempContext(prototypeArray, false);
 
             tempContext.setPrefersMultiThreadedDataAccess(false);
+            int bulkInsertThreshold = MithraManagerProvider.getMithraManager().getCurrentTransaction().getBulkInsertThreshold();
             this.getMithraObjectPortal().getMithraTuplePersister().insertTuplesForSameSource(tempContext,
-                    new LazyListAdaptor(dataObjects, LazyTuple.createFactory(prototypeArray)), 0, source);
+                    new LazyListAdaptor(dataObjects, LazyTuple.createFactory(prototypeArray)), bulkInsertThreshold, source);
 
             StringBuilder builder = new StringBuilder("delete from " + this.getFullyQualifiedTableNameGenericSource(source));
             appendTempTableUpdateDeleteJoin(source, prototypeArray, nullAttributes, pkAttributeCount, tempContext, builder);
@@ -3998,8 +3999,9 @@ public abstract class MithraAbstractDatabaseObject
         try
         {
             tempContext = new TupleTempContext(prototypeArray, false);
+            int bulkInsertThreshold = MithraManagerProvider.getMithraManager().getCurrentTransaction().getBulkInsertThreshold();
             this.getMithraObjectPortal().getMithraTuplePersister().insertTuplesForSameSource(
-                    tempContext, new LazyListAdaptor(updateOperations, UpdateOperationTupleAdaptor.createFactory(prototypeArray)), 0, source);
+                    tempContext, new LazyListAdaptor(updateOperations, UpdateOperationTupleAdaptor.createFactory(prototypeArray)), bulkInsertThreshold, source);
 
             StringBuilder builder = new StringBuilder(30 + firstUpdates.size() * 12);
 
