@@ -570,7 +570,7 @@ public class TestDatedAuditOnly extends MithraTestAbstract implements TestDatedA
                 return null;
             }
         });
-
+        sleep(100);
         MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand<Object>() {
             @Override
             public Object executeTransaction(MithraTransaction tx) throws Throwable {

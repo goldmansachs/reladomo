@@ -1,4 +1,14 @@
 # Change Log
+## 17.0.1 - 2018-03-12
+Note: this releases fixes a serious regression introduced in 16.7.0
+### Enhancements:
+- Add connection max lifetime after start to connection pool
+
+### Bug Fixes:
+- Fix transaction batching/reordering (introduced in 16.7.0)
+- Fix default Sybase IQ update via insert threshold
+- Fix running tests in different timezones
+
 ## 17.0.0 - 2018-03-02
 ### Enhancements:
 - Eclipse Collections integration. Please see [migration documentation](https://github.com/goldmansachs/reladomo/blob/master/reladomo/src/doc/GSC_TO_EC_MIGRATION_GUIDE.md)
