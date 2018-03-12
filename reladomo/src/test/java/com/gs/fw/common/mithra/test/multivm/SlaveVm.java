@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.test.multivm;
 
@@ -143,6 +144,7 @@ public class SlaveVm
         cmdList.add(SYSTEM_CLASSPATH);
         cmdList.add("-server");
         cmdList.add("-XX:MaxPermSize=256m");
+        cmdList.add("-Duser.timezone=America/New_York");
         addProperties(cmdList);
         cmdList.add(this.getClass().getName());
         cmdList.add(""+port);
