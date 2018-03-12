@@ -24,6 +24,7 @@ import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.domain.*;
 import com.gs.fw.common.mithra.test.domain.dated.AuditedOrderStatusTwo;
 import com.gs.fw.common.mithra.util.MithraPerformanceData;
+import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 import java.sql.*;
 import java.text.ParseException;
@@ -544,6 +545,63 @@ public class TestDatedAuditOnly extends MithraTestAbstract implements TestDatedA
         assertNull(fromCache);
         // test the database:
         this.checker.checkDatedAuditOnlyTerminated(balanceId);
+    }
+
+    public void testLargeUpdate()
+    {
+        final int balanceTypeIdStart = 100000;
+        final IntHashSet balanceTypeIds = new IntHashSet();
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand<Object>() {
+            @Override
+            public Object executeTransaction(MithraTransaction tx) throws Throwable {
+                AuditOnlyBalanceList balanceList = new AuditOnlyBalanceList();
+                for(int i = 0; i< 102; i++)
+                {
+                    AuditOnlyBalance newBalance = new AuditOnlyBalance(InfinityTimestamp.getParaInfinity());
+                    newBalance.setAcmapCode("A");
+                    int currentBalanceTypeId = balanceTypeIdStart + i;
+                    newBalance.setBalanceId(currentBalanceTypeId);
+                    newBalance.setInterest(10000);
+                    newBalance.setQuantity(20000);
+                    balanceList.add(newBalance);
+                    balanceTypeIds.add(currentBalanceTypeId);
+                }
+                balanceList.insertAll();
+                return null;
+            }
+        });
+
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand<Object>() {
+            @Override
+            public Object executeTransaction(MithraTransaction tx) throws Throwable {
+                AuditOnlyBalanceList balanceList = AuditOnlyBalanceFinder.findMany(
+                        AuditOnlyBalanceFinder.acmapCode().eq("A").and(AuditOnlyBalanceFinder.balanceId().in(balanceTypeIds)));
+                balanceList.setOrderBy(AuditOnlyBalanceFinder.balanceId().ascendingOrderBy());
+                int i = 0;
+                for(; i< 100; i++)
+                {
+                    balanceList.get(i).terminate();
+                }
+                balanceList.get(i).setQuantity(50);
+                i++;
+                balanceList.get(i).terminate();
+
+                return null;
+            }
+        });
+
+        AuditOnlyBalanceList liveBalanceList = AuditOnlyBalanceFinder.findMany(
+                AuditOnlyBalanceFinder.acmapCode().eq("A").and(AuditOnlyBalanceFinder.balanceId().in(balanceTypeIds)));
+        assertEquals("Only 1 balance should be live.", 1, liveBalanceList.size());
+        assertEquals("Incorrect quantity.", 50, liveBalanceList.get(0).getQuantity(), 0.001);
+        assertEquals("Incorrent interest", 10000, liveBalanceList.get(0).getInterest(), 0.001);
+
+        AuditOnlyBalanceList allBalanceList = AuditOnlyBalanceFinder.findMany(
+                AuditOnlyBalanceFinder.acmapCode().eq("A").and(
+                        AuditOnlyBalanceFinder.balanceId().in(balanceTypeIds)).and(
+                        AuditOnlyBalanceFinder.processingDate().equalsEdgePoint()
+                ));
+        assertEquals("There should be 102 out_zied records and 1 live record", 103, allBalanceList.size());
     }
 
     public void testPurge() throws SQLException, ParseException

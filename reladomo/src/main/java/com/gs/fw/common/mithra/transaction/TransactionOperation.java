@@ -19,6 +19,8 @@ package com.gs.fw.common.mithra.transaction;
 import com.gs.fw.common.mithra.MithraDatabaseException;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.MithraTransactionalObject;
+import com.gs.fw.common.mithra.attribute.AsOfAttribute;
+import com.gs.fw.common.mithra.attribute.TimestampAttribute;
 import com.gs.fw.common.mithra.cache.FullUniqueIndex;
 import com.gs.fw.common.mithra.cache.TransactionalUnderlyingObjectGetter;
 import com.gs.fw.common.mithra.cache.UnderlyingObjectGetter;
@@ -265,7 +267,7 @@ public abstract class TransactionOperation
         UnderlyingObjectGetter getter = null;
         if (finder.getAsOfAttributes() != null)
         {
-            extractors = ReladomoClassMetaData.fromFinder(finder).getUniqueExtractors();
+            extractors = getObjectSamenessKeyAttributes(finder);
             getter = new TransactionalUnderlyingObjectGetter();
         }
         FullUniqueIndex index = new FullUniqueIndex(extractors, objects.size());
@@ -279,6 +281,35 @@ public abstract class TransactionOperation
         }
         return index;
     }
+
+    private Extractor[] getObjectSamenessKeyAttributes(RelatedFinder finder) {
+        AsOfAttribute[] asOfAttributes = finder.getAsOfAttributes();
+        Extractor nonProcessingDateAttribute = null;
+        if(asOfAttributes != null)
+        {
+            for (int i = 0; i < asOfAttributes.length; i++)
+            {
+                if(!asOfAttributes[i].isProcessingDate())
+                {
+                    nonProcessingDateAttribute = asOfAttributes[i].getFromAttribute();
+                    break;
+                }
+            }
+        }
+        Extractor[] primaryKeyAttributes = finder.getPrimaryKeyAttributes();
+        if(nonProcessingDateAttribute == null)
+        {
+            return primaryKeyAttributes;
+        }
+        else
+        {
+            Extractor[] fullKey = new Extractor[primaryKeyAttributes.length + 1];
+            System.arraycopy(primaryKeyAttributes, 0, fullKey, 0, primaryKeyAttributes.length);
+            fullKey[primaryKeyAttributes.length] = nonProcessingDateAttribute;
+            return fullKey;
+        }
+    }
+
 
     private boolean indexCompare(FullUniqueIndex index, List large)
     {
