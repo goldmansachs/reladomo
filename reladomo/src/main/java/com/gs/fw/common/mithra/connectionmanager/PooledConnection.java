@@ -46,6 +46,8 @@ public class PooledConnection extends WrappedConnection
     private final List<Statement> allStatements = FastList.newList();
 
     private int state = STATE_ACTIVE;
+    private long connectionStartTime;
+    private long maxLifeTimeAfterStartMillis = 0;
 
     public PooledConnection(Connection c, ObjectPoolWithThreadAffinity<? extends Connection> pool, int statementsToPool)
     {
@@ -59,6 +61,12 @@ public class PooledConnection extends WrappedConnection
         {
             statementPool = new SynchronizedLruMap(8, statementsToPool, DESTROY_ACTION);
         }
+        this.connectionStartTime = System.currentTimeMillis();
+    }
+
+    public void setMaxLifeTimeAfterStartMillis(long maxLifeTimeAfterStartMillis)
+    {
+        this.maxLifeTimeAfterStartMillis = maxLifeTimeAfterStartMillis;
     }
 
     public synchronized void activate() throws SQLException
@@ -88,7 +96,7 @@ public class PooledConnection extends WrappedConnection
             invalidateIfNotDead();
             throw new SQLException("Cannot close connection (isClosed check failed)", e);
         }
-        if (isClosed)
+        if (isClosed || (this.maxLifeTimeAfterStartMillis > 0 && this.maxLifeTimeAfterStartMillis + this.connectionStartTime < System.currentTimeMillis()))
         {
             invalidateIfNotDead();
         }
