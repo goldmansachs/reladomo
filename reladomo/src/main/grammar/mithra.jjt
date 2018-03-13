@@ -2,7 +2,7 @@
  * This grammar files is used to generate the parser for Mithra relationship queries. The code generated is checked into
  * cvs in package com.gs.fw.common.mithra.generator.queryparser. Care should be taken when regenerating code because we have
  * custom code in SimpleNode, ASTLiteral, and ASTAttributeName
- *    
+ *
  */
 options {
   MULTI=true;
@@ -72,6 +72,9 @@ TOKEN:  /* Separators and operators */
   | < LESSER_THAN: "<" >
   | < GREATER_THAN_EQUAL: ">=" >
   | < LESSER_THAN_EQUAL: "<=" >
+  | < CONTAINS: "contains" >
+  | < STARTS_WITH: "startsWith" >
+  | < ENDS_WITH: "endsWith" >
   | < OPEN_PAREN: "(" >
   | < CLOSE_PAREN: ")" >
   | < COMMA: "," >
@@ -168,6 +171,12 @@ void RelationalOperator() :
 	<GREATER_THAN_EQUAL> {jjtThis.setGreaterThanOrEqualTo(true); jjtThis.setString(">=");}
 	|
 	<LESSER_THAN_EQUAL> {jjtThis.setLesserThanOrEqualTo(true); jjtThis.setString("<=");}
+    |
+    <CONTAINS> {jjtThis.setContains(true); jjtThis.setString("contains");}
+    |
+    <STARTS_WITH> {jjtThis.setStartsWith(true); jjtThis.setString("startsWith");}
+    |
+    <ENDS_WITH> {jjtThis.setEndsWith(true); jjtThis.setString("endsWith");}
 }
 
 void InOperator() :

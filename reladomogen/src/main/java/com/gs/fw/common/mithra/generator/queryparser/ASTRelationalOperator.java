@@ -27,6 +27,9 @@ public class ASTRelationalOperator extends SimpleNode implements Operator
     private boolean lesserThan;
     private boolean greaterThanOrEqualTo;
     private boolean lesserThanOrEqualTo;
+    private boolean contains;
+    private boolean startsWith;
+    private boolean endsWith;
     private String string;
 
 	public boolean isIsNullOrIsNotNull()
@@ -78,6 +81,36 @@ public class ASTRelationalOperator extends SimpleNode implements Operator
     public void setLesserThanOrEqualTo(boolean lesserThanOrEqualTo)
     {
         this.lesserThanOrEqualTo = lesserThanOrEqualTo;
+    }
+
+    public boolean isContains()
+    {
+        return contains;
+    }
+
+    public void setContains(boolean contains)
+    {
+        this.contains = contains;
+    }
+
+    public boolean isStartsWith()
+    {
+        return startsWith;
+    }
+
+    public void setStartsWith(boolean startsWith)
+    {
+        this.startsWith = startsWith;
+    }
+
+    public boolean isEndsWith()
+    {
+        return endsWith;
+    }
+
+    public void setEndsWith(boolean endsWith)
+    {
+        this.endsWith = endsWith;
     }
 
     public ASTRelationalOperator(int id) {
@@ -150,6 +183,18 @@ public class ASTRelationalOperator extends SimpleNode implements Operator
         {
             return " != ";
         }
+        else if (this.isContains())
+        {
+            return " contains ";
+        }
+        else if (this.isStartsWith())
+        {
+            return " startsWith ";
+        }
+        else if (this.isEndsWith())
+        {
+            return " endsWith ";
+        }
         throw new RuntimeException("relational operator '" + this.toString() + "' not implemented");
     }
 
@@ -178,6 +223,18 @@ public class ASTRelationalOperator extends SimpleNode implements Operator
         else if (this.isNotEqual())
         {
             return "notEq";
+        }
+        else if (this.isContains())
+        {
+            return "contains";
+        }
+        else if (this.isStartsWith())
+        {
+            return "startsWith";
+        }
+        else if (this.isEndsWith())
+        {
+            return "endsWith";
         }
         throw new RuntimeException("relational operator '" + this.toString() + "' not implemented");
     }
@@ -238,6 +295,18 @@ public class ASTRelationalOperator extends SimpleNode implements Operator
         else if (this.isNotEqual())
         {
             result +=  "!"+left+".equals("+right+")";
+        }
+        else if (this.isContains())
+        {
+            result += left+".contains("+right+")";
+        }
+        else if (this.isStartsWith())
+        {
+            result += left+".startsWith("+right+")";
+        }
+        else if (this.isEndsWith())
+        {
+            result += left+".endsWith("+right+")";
         }
         else
         {
