@@ -26,7 +26,7 @@
     <version>0.0.1-SNAPSHOT</version>
 
     <properties>
-        <reladomo.version>16.0.0</reladomo.version>
+        <reladomo.version>17.0.1</reladomo.version>
     </properties>
 
     <dependencies>
@@ -126,7 +126,7 @@
                                 <taskdef name="gen-reladomo" classpath="plugin_classpath"
                                     classname="com.gs.fw.common.mithra.generator.MithraGenerator"/>
                                 <gen-reladomo xml="${project.basedir}/src/main/resources/reladomo/models/ReladomoClassList.xml"
-                                            generateGscListMethod="true"
+                                            generateEcListMethod="true"
                                             generatedDir="${project.build.directory}/generated-sources/reladomo"
                                             nonGeneratedDir="${project.basedir}/src/main/java"/>
 
