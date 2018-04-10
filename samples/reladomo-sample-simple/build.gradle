@@ -32,7 +32,7 @@ task wrapper(type: Wrapper) {
     gradleVersion = '3.0'
 }
 
-ext.reladomoVersion = '16.0.0'
+ext.reladomoVersion = '17.0.1'
 
 dependencies {
     compile "com.goldmansachs.reladomo:reladomo:$reladomoVersion"
@@ -56,7 +56,7 @@ task genReladomo << {
             classpath: configurations.reladomoGenTask.asPath,
             classname: "com.gs.fw.common.mithra.generator.MithraGenerator")
     ant.genReladomo(xml: "$projectDir/src/main/resources/reladomo/models/ReladomoClassList.xml",
-            generateGscListMethod: "true",
+            generateEcListMethod: "true",
             generatedDir: "$buildDir/generated-sources/reladomo",
             nonGeneratedDir: "$projectDir/src/main/java")
 }
