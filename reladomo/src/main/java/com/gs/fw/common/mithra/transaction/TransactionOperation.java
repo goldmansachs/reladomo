@@ -236,23 +236,52 @@ public abstract class TransactionOperation
     protected abstract int getCombineDirectionForParent();
     protected abstract int getCombineDirectionForChild();
 
-    protected boolean touchesSameObject(TransactionOperation otherOp)
+    private boolean touchesSameObject(TransactionOperation otherOp)
     {
-        int otherSize = otherOp.getTotalOperationsSize();
-        int localSize = this.getTotalOperationsSize();
+        int otherSize = otherOp.getAllObjects().size();
+        int localSize = this.getAllObjects().size();
         if (otherSize == 1 && localSize == 1)
         {
             return this.getMithraObject().zIsSameObjectWithoutAsOfAttributes(otherOp.getMithraObject());
         }
-        if (otherSize > 100 && localSize <= otherSize)
+        if (localSize <= 8 || otherSize <= 8)
         {
-            return indexCompare(otherOp.getIndexedObjects(), this.getAllObjects());
+            return loopCompare(this.getAllObjects(), otherOp.getAllObjects());
         }
-        if (localSize > 100 && otherSize <= localSize)
+        return touchesSameObjectUsingIndex(otherOp);
+    }
+
+    private boolean touchesSameObjectUsingIndex(TransactionOperation otherOp)
+    {
+        int otherSize = otherOp.getAllObjects().size();
+        int localSize = this.getAllObjects().size();
+        TransactionOperation biggerOp;
+        TransactionOperation smallerOp;
+        if(localSize > otherSize)
         {
-            return indexCompare(this.getIndexedObjects(), otherOp.getAllObjects());
+            biggerOp = this;
+            smallerOp = otherOp;
         }
-        return loopCompare(this.getAllObjects(), otherOp.getAllObjects());
+        else
+        {
+            biggerOp = otherOp;
+            smallerOp = this;
+        }
+        RelatedFinder finder = this.getPortal().getFinder();
+        if (finder.getAsOfAttributes() == null)
+        {
+            return indexCompare(smallerOp.getIndexedObjects(), biggerOp.getAllObjects());
+        }
+        //for temporal objects can't use the unique index with as-of attributes
+        Extractor[] extractors = finder.getPrimaryKeyAttributes();
+        List objectsFromSmallerOp = smallerOp.getAllObjects();
+        FullUniqueIndex index = new FullUniqueIndex(extractors, objectsFromSmallerOp.size());
+        index.setUnderlyingObjectGetter(new TransactionalUnderlyingObjectGetter());
+        for (int i =0 ; i < objectsFromSmallerOp.size(); i++)
+        {
+            index.put(objectsFromSmallerOp.get(i));
+        }
+        return indexCompare(index, biggerOp.getAllObjects());
     }
 
     public int getTotalOperationsSize()
