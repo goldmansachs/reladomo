@@ -446,4 +446,14 @@ public class TestDatedRelationship extends MithraTestAbstract
         Operation eqEpOp = AuditedOrderStatusFinder.processingDate().equalsEdgePoint();
         assertEquals(2, AuditedOrderStatusFinder.findMany(op2.and(eqEpOp)).size());
     }
+
+    public void testDeepFetchWithEqualsEdgePoint()
+    {
+        Operation op = AuditedOrderFinder.processingDate().equalsInfinity();
+        AuditedOrderList list = AuditedOrderFinder.findMany(op);
+        list.deepFetch(AuditedOrderFinder.items());
+        list.deepFetch(AuditedOrderFinder.itemsForAllTime());
+
+        list.forceResolve();
+    }
 }
