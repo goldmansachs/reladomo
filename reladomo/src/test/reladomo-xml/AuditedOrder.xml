@@ -39,6 +39,7 @@
     <Attribute name="trackingId" javaType="String" columnName="TRACKING_ID" maxLength="15"/>
 
     <Relationship name="items" relatedObject="AuditedOrderItem" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-many">AuditedOrderItem.orderId = this.orderId</Relationship>
+    <Relationship name="itemsForAllTime" relatedObject="AuditedOrderItem" cardinality="one-to-many">AuditedOrderItem.orderId = this.orderId and AuditedOrderItem.processingDate equalsEdgePoint</Relationship>
     <Relationship name="directRefitems" relatedObject="AuditedOrderItem" reverseRelationshipName="directRefOrder" cardinality="one-to-many" directReference="true">AuditedOrderItem.orderId = this.orderId</Relationship>
     <Relationship name="orderStatus" relatedObject="AuditedOrderStatus" relatedIsDependent="true" reverseRelationshipName="order" cardinality="one-to-one" >AuditedOrderStatus.orderId = this.orderId</Relationship>
     <Relationship name="itemForProduct" relatedObject="AuditedOrderItem" cardinality="one-to-one" parameters="int productId">AuditedOrderItem.orderId = this.orderId and AuditedOrderItem.productId = {productId}</Relationship>
