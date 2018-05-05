@@ -22,6 +22,7 @@ import com.gs.fw.common.mithra.test.domain.OrderFinder;
 import com.gs.fw.common.mithra.test.domain.SerialView;
 import com.gs.fw.common.mithra.util.serializer.SerializationConfig;
 import com.gs.fw.common.mithra.util.serializer.Serialized;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestTrivialJson extends MithraTestAbstract
@@ -139,6 +140,17 @@ public class TestTrivialJson extends MithraTestAbstract
         String sb = toJson(new Serialized((OrderFinder.findOne(OrderFinder.orderId().eq(1))), config));
 
         assertFalse(sb.contains("_rdoClassName"));
+    }
+
+    @Test
+    public void testSerilizationConfig() throws Exception
+    {
+        SerializationConfig serializationConfig = SerializationConfig
+                .shallowWithDefaultAttributes(OrderFinder.getFinderInstance())
+                .withoutMetaData()
+                .withDeepFetches(OrderFinder.items());
+
+        Assert.assertFalse(serializationConfig.serializeMetaData());
     }
     
     protected String toJson(Serialized serialized) throws Exception

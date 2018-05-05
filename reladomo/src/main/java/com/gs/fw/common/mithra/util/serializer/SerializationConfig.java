@@ -85,6 +85,7 @@ public class SerializationConfig
         config.rootNode = this.rootNode.withoutTheseAttributes(attributes);
         config.annotatedContextNames = this.annotatedContextNames;
         config.excludedMethods = this.excludedMethods;
+        config.serializeMetaData = this.serializeMetaData;
         return config;
     }
 
@@ -94,6 +95,7 @@ public class SerializationConfig
         config.rootNode = this.rootNode.withDeepFetches(deepFetches);
         config.annotatedContextNames = this.annotatedContextNames;
         config.excludedMethods = this.excludedMethods;
+        config.serializeMetaData = this.serializeMetaData;
         return config;
     }
 
@@ -109,6 +111,7 @@ public class SerializationConfig
         }
         while (viewClass != null && viewClass != Object.class);
         config.excludedMethods = this.excludedMethods;
+        config.serializeMetaData = this.serializeMetaData;
         return config;
     }
 
@@ -118,6 +121,7 @@ public class SerializationConfig
         config.rootNode = this.rootNode.withLinks();
         config.annotatedContextNames = this.annotatedContextNames;
         config.excludedMethods = this.excludedMethods;
+        config.serializeMetaData = this.serializeMetaData;
         return config;
     }
 
@@ -132,6 +136,7 @@ public class SerializationConfig
             newMethods.addAll(this.excludedMethods);
         }
         config.excludedMethods = newMethods;
+        config.serializeMetaData = this.serializeMetaData;
         return config;
     }
 
@@ -157,6 +162,7 @@ public class SerializationConfig
         config.rootNode = this.rootNode.withDeepDependents();
         config.annotatedContextNames = this.annotatedContextNames;
         config.excludedMethods = this.excludedMethods;
+        config.serializeMetaData = this.serializeMetaData;
         return config;
     }
 
