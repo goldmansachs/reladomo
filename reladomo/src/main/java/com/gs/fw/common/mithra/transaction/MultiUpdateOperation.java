@@ -286,12 +286,7 @@ public class MultiUpdateOperation extends TransactionOperation
                 {
                     return null;
                 }
-                AttributeUpdateWrapper newWrapper = left.combineForSameAttribute(right);
-                if (newWrapper == null)
-                {
-                    return null;
-                }
-                updates.set(i, newWrapper);
+                updates.set(i, left);
             }
             this.mithraObjects.addAll(other.mithraObjects);
             if (index != null)

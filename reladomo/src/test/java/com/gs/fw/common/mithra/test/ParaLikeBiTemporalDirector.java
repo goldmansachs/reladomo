@@ -28,6 +28,7 @@ import java.util.Calendar;
 
 public class ParaLikeBiTemporalDirector extends GenericBiTemporalDirector
 {
+    private static Timestamp cbdDate = null;
 
     public ParaLikeBiTemporalDirector(AsOfAttribute businessDateAttribute, AsOfAttribute processingDateAttribute,
             DoubleAttribute[] doubleAttributes, BigDecimalAttribute[] bigDecimalAttributes)
@@ -65,6 +66,23 @@ public class ParaLikeBiTemporalDirector extends GenericBiTemporalDirector
 
     protected Timestamp getCurrentBusinessDate()
     {
-        return this.getDateWith1830(new Timestamp(System.currentTimeMillis()));
+        if (cbdDate != null)
+        {
+            return cbdDate;
+        }
+        else
+        {
+            return this.getDateWith1830(new Timestamp(System.currentTimeMillis()));
+        }
+    }
+
+    public static void setCbdDate(Timestamp cbdDate)
+    {
+        ParaLikeBiTemporalDirector.cbdDate = cbdDate;
+    }
+
+    public static Timestamp getStoredCbdDate()
+    {
+        return cbdDate;
     }
 }
