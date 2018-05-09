@@ -286,7 +286,6 @@ public class MultiUpdateOperation extends TransactionOperation
                 {
                     return null;
                 }
-                updates.set(i, left);
             }
             this.mithraObjects.addAll(other.mithraObjects);
             if (index != null)
