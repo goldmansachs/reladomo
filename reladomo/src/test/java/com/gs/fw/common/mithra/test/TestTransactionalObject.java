@@ -27,51 +27,15 @@ import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.MithraUniqueIndexViolationException;
 import com.gs.fw.common.mithra.TransactionalCommand;
 import com.gs.fw.common.mithra.finder.Operation;
-import com.gs.fw.common.mithra.test.domain.Book;
-import com.gs.fw.common.mithra.test.domain.BookFinder;
-import com.gs.fw.common.mithra.test.domain.Employee;
-import com.gs.fw.common.mithra.test.domain.EmployeeFinder;
-import com.gs.fw.common.mithra.test.domain.FileDirectory;
-import com.gs.fw.common.mithra.test.domain.FileDirectoryFinder;
-import com.gs.fw.common.mithra.test.domain.GsDesk;
-import com.gs.fw.common.mithra.test.domain.GsDeskFinder;
-import com.gs.fw.common.mithra.test.domain.GsDeskList;
-import com.gs.fw.common.mithra.test.domain.InfinityTimestamp;
-import com.gs.fw.common.mithra.test.domain.Order;
-import com.gs.fw.common.mithra.test.domain.OrderFinder;
-import com.gs.fw.common.mithra.test.domain.OrderItem;
-import com.gs.fw.common.mithra.test.domain.OrderItemFinder;
-import com.gs.fw.common.mithra.test.domain.OrderItemStatus;
-import com.gs.fw.common.mithra.test.domain.OrderItemWi;
-import com.gs.fw.common.mithra.test.domain.OrderItemWiFinder;
-import com.gs.fw.common.mithra.test.domain.OrderItemWiImpl;
-import com.gs.fw.common.mithra.test.domain.OrderList;
-import com.gs.fw.common.mithra.test.domain.OrderParentToChildren;
-import com.gs.fw.common.mithra.test.domain.OrderStatus;
-import com.gs.fw.common.mithra.test.domain.OrderStatusWi;
-import com.gs.fw.common.mithra.test.domain.OrderWi;
-import com.gs.fw.common.mithra.test.domain.Sale;
-import com.gs.fw.common.mithra.test.domain.SaleFinder;
-import com.gs.fw.common.mithra.test.domain.SaleList;
-import com.gs.fw.common.mithra.test.domain.Seller;
-import com.gs.fw.common.mithra.test.domain.SellerFinder;
-import com.gs.fw.common.mithra.test.domain.SellerList;
-import com.gs.fw.common.mithra.test.domain.StringDatedOrder;
-import com.gs.fw.common.mithra.test.domain.StringDatedOrderFinder;
-import com.gs.fw.common.mithra.test.domain.StringDatedOrderList;
-import com.gs.fw.common.mithra.test.domain.TestAgeBalanceSheetRunRate;
-import com.gs.fw.common.mithra.test.domain.TestAgeBalanceSheetRunRateFinder;
-import com.gs.fw.common.mithra.test.domain.TestAgeBalanceSheetRunRateList;
-import com.gs.fw.common.mithra.test.domain.TestCheckGsDesk;
-import com.gs.fw.common.mithra.test.domain.TestCheckGsDeskFinder;
-import com.gs.fw.common.mithra.test.domain.TinyBalance;
-import com.gs.fw.common.mithra.test.domain.TinyBalanceFinder;
-import com.gs.fw.common.mithra.test.domain.TinyBalanceList;
+import com.gs.fw.common.mithra.test.domain.*;
+import com.gs.fw.common.mithra.test.domain.desk.balance.position.PositionQuantity;
+import com.gs.fw.common.mithra.test.domain.desk.balance.position.PositionQuantityFinder;
 import com.gs.fw.common.mithra.transaction.TransactionStyle;
 import com.gs.fw.common.mithra.util.ExceptionCatchingThread;
 import com.gs.fw.common.mithra.util.MithraPerformanceData;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.joda.time.DateTime;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,6 +52,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -102,11 +67,26 @@ public class TestTransactionalObject extends MithraTestAbstract
     static private Logger logger = LoggerFactory.getLogger(TestTransactionalObject.class.getName());
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private Timestamp businessDate = null;
+    private Timestamp originalBiTemporalDirectoryDate = null;
 
     protected void setUp() throws Exception
     {
         super.setUp();
         this.setMithraTestObjectToResultSetComparator(new OrderTestResultSetComparator());
+
+        final Calendar cal = Calendar.getInstance();
+        cal.set(2004, Calendar.SEPTEMBER, 19, 18, 30, 0);
+        businessDate = new Timestamp(cal.getTimeInMillis());
+        originalBiTemporalDirectoryDate = ParaLikeBiTemporalDirector.getStoredCbdDate();
+        ParaLikeBiTemporalDirector.setCbdDate(businessDate);
+    }
+
+    @Override
+    protected void tearDown() throws Exception
+    {
+        ParaLikeBiTemporalDirector.setCbdDate(originalBiTemporalDirectoryDate);
+        super.tearDown();
     }
 
     public Class[] getRestrictedClassList()
@@ -130,7 +110,8 @@ public class TestTransactionalObject extends MithraTestAbstract
             TestCheckGsDesk.class,
             GsDesk.class,
             Seller.class,
-            StringDatedOrder.class
+            StringDatedOrder.class,
+            PositionQuantity.class
         };
     }
 
@@ -2451,7 +2432,7 @@ public class TestTransactionalObject extends MithraTestAbstract
         {
             public void run()
             {
-                
+
                 assertEquals("ABC", resource.getValue("XYZ"));
                 assertEquals("Bar", resource.getValue("Foo"));
                 assertNull(resource.getValue("gonzra"));
@@ -2536,6 +2517,74 @@ public class TestTransactionalObject extends MithraTestAbstract
         assertEquals(new Timestamp(now + 100), orderA.getOrderDate());
         assertEquals("barfoo", orderB.getState());
         assertEquals("barfoo2", orderA.getState());
+    }
+
+    public void testMultiUpdateCombineForIncrementDouble()
+    {
+        final PositionQuantity quantity1 = this.createQuantity(businessDate, "1", 1, 100);
+        final PositionQuantity quantity2 = this.createQuantity(businessDate, "1", 2, 100);
+        final PositionQuantity quantity3 = this.createQuantity(businessDate, "2", 3, 100);
+        final PositionQuantity quantity4 = this.createQuantity(businessDate, "2", 4, 100);
+        final PositionQuantity quantity5 = this.createQuantity(businessDate, "1", 5, 100);
+        final PositionQuantity quantity6 = this.createQuantity(businessDate, "1", 6, 100);
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand() {
+            @Override
+            public Object executeTransaction(MithraTransaction tx) throws Throwable {
+                quantity1.insert();
+                quantity2.insert();
+                quantity3.insert();
+                quantity4.insert();
+                quantity5.insert();
+                quantity6.insert();
+                return null;
+            }
+        });
+
+        MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand() {
+            public Object executeTransaction(MithraTransaction tx) throws Throwable {
+                quantity1.incrementQuantity(100);
+                quantity2.incrementQuantity(100);
+                quantity3.incrementQuantity(100);
+                quantity4.incrementQuantity(100);
+                quantity5.incrementQuantity(100);
+                quantity6.incrementQuantity(100);
+                return null;
+            }
+        });
+
+        PositionQuantity retrievedQuantity1 = findQuantity("1", 1);
+        PositionQuantity retrievedQuantity2 = findQuantity("1", 2);
+        PositionQuantity retrievedQuantity3 = findQuantity("2", 3);
+        PositionQuantity retrievedQuantity4 = findQuantity("2", 4);
+        PositionQuantity retrievedQuantity5 = findQuantity("1", 5);
+        PositionQuantity retrievedQuantity6 = findQuantity("1", 6);
+
+        Assert.assertEquals(200, retrievedQuantity1.getQuantity(), 0.01);
+        Assert.assertEquals(200, retrievedQuantity2.getQuantity(), 0.01);
+        Assert.assertEquals(200, retrievedQuantity3.getQuantity(), 0.01);
+        Assert.assertEquals(200, retrievedQuantity4.getQuantity(), 0.01);
+        Assert.assertEquals(200, retrievedQuantity5.getQuantity(), 0.01);
+        Assert.assertEquals(200, retrievedQuantity6.getQuantity(), 0.01);
+    }
+
+    private PositionQuantity createQuantity(Timestamp date, String account, int product, double quantity)
+    {
+        PositionQuantity positionQuantity = new PositionQuantity(date, InfinityTimestamp.getParaInfinity());
+        positionQuantity.setAcmapCode("A");
+        positionQuantity.setAccountId(account);
+        positionQuantity.setProductId(product);
+        positionQuantity.setPositionType(10);
+        positionQuantity.setQuantity(quantity);
+        return positionQuantity;
+    }
+
+    private PositionQuantity findQuantity(String account, int product)
+    {
+        Operation op = PositionQuantityFinder.acmapCode().eq("A");
+        op = op.and(PositionQuantityFinder.businessDate().eq(businessDate));
+        op = op.and(PositionQuantityFinder.accountId().eq(account));
+        op = op.and(PositionQuantityFinder.productId().eq(product));
+        return PositionQuantityFinder.findOneBypassCache(op);
     }
 
     public void testConsecutiveTransactions()
