@@ -1,6 +1,6 @@
 setlocal
 
-set VER=17.0.1
+set VER=17.0.2
 
 cd ../target
 gpg -ab reladomo-%VER%-javadoc.jar

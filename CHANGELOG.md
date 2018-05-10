@@ -1,4 +1,12 @@
 # Change Log
+## 17.0.2 - 2018-05-10
+### Bug Fixes:
+- Fix MultiUpdateOperation combine method for increment
+- Preserve SerializationConfig's metadata status across builder calls.
+- Ignore as-of attributes when determining pass through direction for operations
+- Upgrade sample project to use Reladomo 17.0.1.
+
+# Change Log
 ## 17.0.1 - 2018-03-12
 Note: this releases fixes a serious regression introduced in 16.7.0
 ### Enhancements:
