@@ -342,12 +342,6 @@
                         any must be specified.
                     </xsd:documentation></xsd:annotation>
                 </xsd:attribute>
-                <xsd:attribute name="finalGetter" type="xsd:boolean" default="false">
-                    <xsd:annotation><xsd:documentation xml:lang="en">
-                        Generate a final method for this embedded value to prevent overriding. Default is false for
-                        backwards compatibility.
-                    </xsd:documentation></xsd:annotation>
-                </xsd:attribute>
             </xsd:extension>
         </xsd:complexContent>
     </xsd:complexType>
