@@ -737,6 +737,10 @@ public class RelationshipAttribute implements CommonAttribute
 
     public boolean dependsOnlyOnFromToObjects()
     {
+        if (this.parsedQuery == null)
+        {
+            return false;
+        }
         HashSet set = new HashSet();
         this.parsedQuery.addDependentClassesToSet(set);
         return set.size() <= 1;
