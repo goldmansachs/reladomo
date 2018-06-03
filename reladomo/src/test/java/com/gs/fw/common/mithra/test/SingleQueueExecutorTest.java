@@ -16,11 +16,14 @@
 
 package com.gs.fw.common.mithra.test;
 
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraTransaction;
+import com.gs.fw.common.mithra.MithraUniqueIndexViolationException;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.domain.*;
-import org.slf4j.Logger;
 import com.gs.fw.common.mithra.util.ExecutorErrorHandler;
 import com.gs.fw.common.mithra.util.SingleQueueExecutor;
+import org.slf4j.Logger;
 
 import java.sql.Timestamp;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -34,10 +37,11 @@ public class SingleQueueExecutorTest extends MithraTestAbstract
     public Class[] getRestrictedClassList()
     {
         return new Class[]
-        {
-            ParaBalance.class,
-            ParaPosition.class,
-        };
+                {
+                        ParaBalance.class,
+                        ParaPosition.class,
+                        TinyBalance.class
+                };
     }
 
     public void testSingleQueueExecutorSingleThread() throws Exception
@@ -49,9 +53,9 @@ public class SingleQueueExecutorTest extends MithraTestAbstract
         executor.setUseBulkInsert();
 
         Operation op = ParaPositionFinder.productIdentifier().eq("TSWAP:1000000001").
-                       and(ParaPositionFinder.accountNumber().eq("76095661")).
-                       and(ParaPositionFinder.accountSubtype().eq("01")).
-                       and(ParaPositionFinder.businessDate().eq(businessDate));
+                and(ParaPositionFinder.accountNumber().eq("76095661")).
+                and(ParaPositionFinder.accountSubtype().eq("01")).
+                and(ParaPositionFinder.businessDate().eq(businessDate));
         ParaPosition paraPositionDB = ParaPositionFinder.findOne(op);
 
         ParaPosition paraPosition = new ParaPosition(InfinityTimestamp.getParaInfinity());
@@ -71,6 +75,59 @@ public class SingleQueueExecutorTest extends MithraTestAbstract
 
         executor.addForUpdate(paraPositionDB,paraPosition);
         executor.waitUntilFinished();
+    }
+
+    public void testWithCorruptedOptimisticLock() throws Exception
+    {
+        Timestamp businessDate = new Timestamp(timestampFormat.parse("2004-08-27 23:59:00.0").getTime());
+
+
+        MithraTransaction tx = MithraManagerProvider.getMithraManager().startOrContinueTransaction();
+        TinyBalance bal = new TinyBalance(businessDate);
+        bal.setAcmapCode ("B");
+        bal.setBalanceId (8866);
+        bal.setQuantity (30);
+        bal.setBusinessDateFrom (Timestamp.valueOf("2004-08-25 23:59:00.0"));
+        bal.setBusinessDateTo (Timestamp.valueOf("2004-08-28 23:59:00.0"));
+        bal.insert ();
+        tx.commit ();
+
+        tx = MithraManagerProvider.getMithraManager().startOrContinueTransaction();
+        bal = new TinyBalance(businessDate);
+        bal.setAcmapCode ("B");
+        bal.setBalanceId (8866);
+        bal.setQuantity (700);
+        bal.setBusinessDateFrom (Timestamp.valueOf("2004-08-16 23:59:00.0"));
+        bal.setBusinessDateTo (Timestamp.valueOf("2004-10-13 23:59:00.0"));
+        bal.insert ();
+        tx.commit ();
+
+
+        Operation op = TinyBalanceFinder.acmapCode ().eq("B").and(TinyBalanceFinder.balanceId ().eq(8866)).
+                and(TinyBalanceFinder.businessDate().eq(businessDate));
+        TinyBalance tinyBalanceDB = TinyBalanceFinder.findOne(op);
+
+        SingleQueueExecutor executor = new SingleQueueExecutor(1, TinyBalanceFinder.balanceId ().ascendingOrderBy(), 10,
+                TinyBalanceFinder.getFinderInstance(), 0);
+
+        executor.setUseBulkInsert();
+
+        op = TinyBalanceFinder.acmapCode ().eq("B").and(TinyBalanceFinder.balanceId ().eq(8866)).
+                and(TinyBalanceFinder.businessDate().eq(businessDate));
+        tinyBalanceDB = TinyBalanceFinder.findOne(op);
+
+        TinyBalance tinyBalance = new TinyBalance(InfinityTimestamp.getParaInfinity());
+
+        executor.addForUpdate(tinyBalanceDB, tinyBalance);
+        try
+        {
+            executor.waitUntilFinished ();
+            fail("exception expected");
+        } catch (Exception e)
+        {
+            assertTrue(e.getMessage (), e.getMessage().contains("2004-08-25 23:59:00.0") && e.getMessage().contains("2004-08-16 23:59:00.0"));
+        }
+
     }
 
     public void testSingleQueueExecutorErrorHandler()

@@ -48,7 +48,6 @@ import junit.framework.TestSuite;
 public class MithraTestSuite
         extends TestSuite
 {
-
     public static Test suite()
     {
         String xmlFile = System.getProperty("mithra.xml.config");

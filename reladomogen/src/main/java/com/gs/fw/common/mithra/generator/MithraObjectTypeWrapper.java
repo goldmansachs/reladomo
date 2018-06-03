@@ -1962,52 +1962,59 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
                 {
                     errorMessages.add("relationship query does not have any relational expression involving the related object: " + relationshipAttribute.getRelatedObject().getClassName());
                 }
+                if (!hasThisInPredicate(relationshipAttribute))
+                {
+                    errorMessages.add("relationship query does not have any relational expression involving 'this'");
+                }
 
                 String query = relationshipAttribute.getQuery();
-                MithraQL mithraQL = new MithraQL(new StringReader(query));
-
-                try
+                if (errorMessages.isEmpty())
                 {
-                    ASTCompilationUnit compilationUnit = mithraQL.CompilationUnit();
-                    compilationUnit.childrenAccept(new AttributeValidationVisitor(allObjects, errorMessages, this), null);
-                    if (compilationUnit.jjtGetNumChildren() > 1)
-                    {
-                        errorMessages.add("can't handle more than one expression");
-                        compilationUnit.dump("\t");
-                    }
-                    else
-                    {
-                        relationshipAttribute.setParsedQueryNode((SimpleNode) compilationUnit.jjtGetChild(0));
-                        mithraQL = new MithraQL(new StringReader(relationshipAttribute.getReverseQuery()));
-                        compilationUnit = mithraQL.CompilationUnit();
-                        compilationUnit.childrenAccept(new AttributeValidationVisitor(allObjects, errorMessages, relationshipAttribute.getRelatedObject()), null);
-                        relationshipAttribute.setReverseParsedQuery((SimpleNode) compilationUnit.jjtGetChild(0));
-                        relationshipAttribute.resolveOwningRelationships();
+                    MithraQL mithraQL = new MithraQL(new StringReader(query));
 
-                        relationshipAttribute.addIndicies();
-                        relationshipAttribute.addImports(this, allObjects, errorMessages);
-                        if (relationshipAttribute.isBidirectional())
+                    try
+                    {
+                        ASTCompilationUnit compilationUnit = mithraQL.CompilationUnit();
+                        compilationUnit.childrenAccept(new AttributeValidationVisitor(allObjects, errorMessages, this), null);
+                        if (compilationUnit.jjtGetNumChildren() > 1)
                         {
-                            MithraObjectTypeWrapper relatedObject = relationshipAttribute.getRelatedObject();
-                            if(!this.isTablePerClassSubClass())
+                            errorMessages.add("can't handle more than one expression");
+                            compilationUnit.dump("\t");
+                        }
+                        else
+                        {
+                            relationshipAttribute.setParsedQueryNode((SimpleNode) compilationUnit.jjtGetChild(0));
+                            mithraQL = new MithraQL(new StringReader(relationshipAttribute.getReverseQuery()));
+                            compilationUnit = mithraQL.CompilationUnit();
+                            compilationUnit.childrenAccept(new AttributeValidationVisitor(allObjects, errorMessages, relationshipAttribute.getRelatedObject()), null);
+                            relationshipAttribute.setReverseParsedQuery((SimpleNode) compilationUnit.jjtGetChild(0));
+                            relationshipAttribute.resolveOwningRelationships();
+
+                            relationshipAttribute.addIndicies();
+                            relationshipAttribute.addImports(this, allObjects, errorMessages);
+                            if (relationshipAttribute.isBidirectional())
                             {
-                                addReverseRelationship(allObjects, relationshipAttribute, errorMessages, compilationUnit, relatedObject);
-                            }
-                            else
-                            {
-                                RelationshipAttribute exisitingRelationship = relatedObject.getRelationshipAttributeByName(relationshipAttribute.getName());
-                                if(!relationshipAttribute.isInhereted() && exisitingRelationship == null)
+                                MithraObjectTypeWrapper relatedObject = relationshipAttribute.getRelatedObject();
+                                if (!this.isTablePerClassSubClass())
                                 {
                                     addReverseRelationship(allObjects, relationshipAttribute, errorMessages, compilationUnit, relatedObject);
+                                }
+                                else
+                                {
+                                    RelationshipAttribute exisitingRelationship = relatedObject.getRelationshipAttributeByName(relationshipAttribute.getName());
+                                    if (!relationshipAttribute.isInhereted() && exisitingRelationship == null)
+                                    {
+                                        addReverseRelationship(allObjects, relationshipAttribute, errorMessages, compilationUnit, relatedObject);
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                catch (Throwable e)
-                {
-                    errorMessages.add(e.getClass().getName() + " : " + e.getMessage());
-                    e.printStackTrace();
+                    catch (Throwable e)
+                    {
+                        errorMessages.add(e.getClass().getName() + " : " + e.getMessage());
+                        e.printStackTrace();
+                    }
                 }
 
                 checkAndExtractOrderByForRelationship(relationshipAttribute, errorMessages);
@@ -2050,9 +2057,18 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
 
     private boolean hasRelatedObjectInPredicate(RelationshipAttribute relationshipAttribute)
     {
-        String query = relationshipAttribute.getQuery();
-        query = query.replace('\t',' ');
         String relatedObjectPrefix = relationshipAttribute.getRelatedObject().getClassName() + ".";
+        return containsWholeWord(relationshipAttribute.getQuery(), relatedObjectPrefix);
+    }
+
+    private boolean hasThisInPredicate(RelationshipAttribute relationshipAttribute)
+    {
+        return containsWholeWord(relationshipAttribute.getQuery(), "this.");
+    }
+
+    private boolean containsWholeWord(String query, String relatedObjectPrefix)
+    {
+        query = query.replace('\t',' ');
         int index = query.indexOf(relatedObjectPrefix);
         if (index == 0) return true;
         while (index > 0)
