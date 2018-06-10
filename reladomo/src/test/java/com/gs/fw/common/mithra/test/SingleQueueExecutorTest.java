@@ -16,6 +16,7 @@
 
 package com.gs.fw.common.mithra.test;
 
+import com.gs.fw.common.mithra.behavior.txparticipation.MithraOptimisticLockException;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.domain.*;
 import org.slf4j.Logger;
@@ -34,10 +35,11 @@ public class SingleQueueExecutorTest extends MithraTestAbstract
     public Class[] getRestrictedClassList()
     {
         return new Class[]
-        {
-            ParaBalance.class,
-            ParaPosition.class,
-        };
+                {
+                        ParaBalance.class,
+                        ParaPosition.class,
+                        TinyBalance.class
+                };
     }
 
     public void testSingleQueueExecutorSingleThread() throws Exception
@@ -49,9 +51,9 @@ public class SingleQueueExecutorTest extends MithraTestAbstract
         executor.setUseBulkInsert();
 
         Operation op = ParaPositionFinder.productIdentifier().eq("TSWAP:1000000001").
-                       and(ParaPositionFinder.accountNumber().eq("76095661")).
-                       and(ParaPositionFinder.accountSubtype().eq("01")).
-                       and(ParaPositionFinder.businessDate().eq(businessDate));
+                and(ParaPositionFinder.accountNumber().eq("76095661")).
+                and(ParaPositionFinder.accountSubtype().eq("01")).
+                and(ParaPositionFinder.businessDate().eq(businessDate));
         ParaPosition paraPositionDB = ParaPositionFinder.findOne(op);
 
         ParaPosition paraPosition = new ParaPosition(InfinityTimestamp.getParaInfinity());
@@ -71,6 +73,38 @@ public class SingleQueueExecutorTest extends MithraTestAbstract
 
         executor.addForUpdate(paraPositionDB,paraPosition);
         executor.waitUntilFinished();
+    }
+
+    public void testWithCorruptedOptimisticLock() throws Exception
+    {
+        Timestamp businessDate = new Timestamp(timestampFormat.parse("2004-08-27 23:59:00.0").getTime());
+        SingleQueueExecutor executor = new SingleQueueExecutor(1, TinyBalanceFinder.balanceId ().ascendingOrderBy(), 10,
+                TinyBalanceFinder.getFinderInstance(), 0)
+        {
+            public void logResults()
+            {
+                throw new MithraOptimisticLockException ("simulated exception on the corrupted milestone", true);
+            }
+        };
+
+        executor.setUseBulkInsert();
+
+        Operation op = TinyBalanceFinder.acmapCode ().eq("B").and(TinyBalanceFinder.balanceId ().eq(8866)).
+                and(TinyBalanceFinder.businessDate().eq(businessDate));
+        TinyBalance tinyBalanceDB = TinyBalanceFinder.findOne(op);
+
+        TinyBalance tinyBalance = new TinyBalance(InfinityTimestamp.getParaInfinity());
+
+        executor.addForUpdate(tinyBalanceDB, tinyBalance);
+        try
+        {
+            executor.waitUntilFinished ();
+            fail("exception expected");
+        } catch (Exception e)
+        {
+            assertTrue(e.getMessage ().contains ("simulated exception on the corrupted milestone"));
+        }
+
     }
 
     public void testSingleQueueExecutorErrorHandler()

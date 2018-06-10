@@ -107,6 +107,7 @@ public class SingleQueueExecutor implements QueueExecutor
     private TransactionStyle transactionStyle;
 
     private final int batchSize;
+    private int batchRetryCount = 5;
     private int maxRetriesBeforeRequeue = 3;
     private SyslogChecker syslogChecker = new SyslogChecker(110.0, -1); // ignore
 
@@ -122,8 +123,8 @@ public class SingleQueueExecutor implements QueueExecutor
      *
      */
     public SingleQueueExecutor(int numberOfThreads, Comparator orderBy,
-            int batchSize, RelatedFinder finder, int insertThreads,
-            double sysLogPercentThreshold, long sysLogMaxWaitTimeMillis)
+                               int batchSize, RelatedFinder finder, int insertThreads,
+                               double sysLogPercentThreshold, long sysLogMaxWaitTimeMillis)
     {
         this(numberOfThreads, orderBy, batchSize, finder, insertThreads);
         this.syslogChecker = new SyslogChecker(sysLogPercentThreshold, sysLogMaxWaitTimeMillis);
@@ -139,7 +140,7 @@ public class SingleQueueExecutor implements QueueExecutor
      *
      */
     public SingleQueueExecutor(int numberOfThreads, Comparator orderBy,
-            int batchSize, RelatedFinder finder, int insertThreads)
+                               int batchSize, RelatedFinder finder, int insertThreads)
     {
         this.batchSize = batchSize;
         this.insertBatchSize = 2000;
@@ -150,7 +151,7 @@ public class SingleQueueExecutor implements QueueExecutor
         VersionAttribute versionAttribute = finder.getVersionAttribute();
 
         hasOptimisticLocking = versionAttribute != null || ((asOfAttributes != null) &&
-                               ((asOfAttributes.length == 2 || asOfAttributes[0].isProcessingDate())));
+                ((asOfAttributes.length == 2 || asOfAttributes[0].isProcessingDate())));
 
 
         this.numberOfUpdateThreads = numberOfThreads;
@@ -162,8 +163,8 @@ public class SingleQueueExecutor implements QueueExecutor
         {
             lastUpdateQueue = new LinkedBlockingQueue();
             lastExecutor = new ThreadPoolExecutor(1, 1,
-                                        0L, TimeUnit.MILLISECONDS,
-                                        lastUpdateQueue);
+                    0L, TimeUnit.MILLISECONDS,
+                    lastUpdateQueue);
             this.executor[i] = lastExecutor;
         }
         if (insertThreads == 0)
@@ -179,8 +180,8 @@ public class SingleQueueExecutor implements QueueExecutor
         else
         {
             this.insertExecutor = new ThreadPoolExecutor(numberOfInsertThreads, numberOfInsertThreads,
-                                    0L, TimeUnit.MILLISECONDS,
-                                    insertQueue);
+                    0L, TimeUnit.MILLISECONDS,
+                    insertQueue);
         }
         this.orderBy = orderBy;
         insertList = new MithraFastList(insertBatchSize);
@@ -260,9 +261,14 @@ public class SingleQueueExecutor implements QueueExecutor
         this.transactionStyle = new TransactionStyle(MithraManagerProvider.getMithraManager().getTransactionTimeout(), maxRetriesBeforeRequeue, this.retryOnTimeout);
     }
 
+    public void setBatchRetryCount (int batchRetryCount)
+    {
+        this.batchRetryCount = batchRetryCount;
+    }
+
     /**
      * set the interval in milliseconds that the queue prints to the log at INFO level
-     * @param logIntervalInMilliseconds in millisecons
+     * @param logIntervalInMilliseconds in milliseconds
      */
     public void setLogInterval(int logIntervalInMilliseconds)
     {
@@ -782,9 +788,10 @@ public class SingleQueueExecutor implements QueueExecutor
         private final AtomicInteger counter;
         private final ThreadPoolExecutor executor;
         private boolean retryOnTimeout = true;
+        private int retryCount = 5;
 
         public CallableWrapper(CallableTask callable, SingleQueueExecutor sqe, AtomicInteger counter,
-                ThreadPoolExecutor executor)
+                               ThreadPoolExecutor executor)
         {
             this.callable = callable;
             this.sqe = sqe;
@@ -799,6 +806,7 @@ public class SingleQueueExecutor implements QueueExecutor
             this.counter = counter;
             this.executor = executor;
             this.retryOnTimeout = retryOnTimeout;
+            this.retryCount = sqe.batchRetryCount;
         }
 
         public void run()
@@ -816,9 +824,11 @@ public class SingleQueueExecutor implements QueueExecutor
             }
             catch (MithraBusinessException e)
             {
-                if (e.isRetriable() || (this.retryOnTimeout && e.isTimedOut() ))
+                boolean timedOut = this.retryOnTimeout && e.isTimedOut();
+                if ((e.isRetriable() || timedOut) && retryCount > 0)
                 {
-                    logger.warn("too many retries for this batch, putting it in the back of the queue");
+                    retryCount--;
+                    logger.warn((timedOut ? "Batch is timed out" : "Too many retries for this batch") + ". Putting it in the back of the queue. " + retryCount + " attempts left.");
                     this.executor.getQueue().add(this);
                 }
                 else
@@ -867,20 +877,20 @@ public class SingleQueueExecutor implements QueueExecutor
     protected CallableTask createInsertTask(final List<TransactionOperation> operations)
     {
         final TransactionalCommand command =  new TransactionalCommand()
+        {
+            public Object executeTransaction(MithraTransaction tx) throws Throwable
             {
-                public Object executeTransaction(MithraTransaction tx) throws Throwable
+                if (getBulkInsertThreshold() >= 0)
                 {
-                    if (getBulkInsertThreshold() >= 0)
-                    {
-                        tx.setBulkInsertThreshold(getBulkInsertThreshold());
-                    }
-                    for(int i=0;i<operations.size();i++)
-                    {
-                        operations.get(i).performOperation(useBulkInsert, exclusiveUntil);
-                    }
-                    return null;
+                    tx.setBulkInsertThreshold(getBulkInsertThreshold());
                 }
-            };
+                for(int i=0;i<operations.size();i++)
+                {
+                    operations.get(i).performOperation(useBulkInsert, exclusiveUntil);
+                }
+                return null;
+            }
+        };
         return new InsertTask(operations, command);
     }
 
@@ -896,18 +906,18 @@ public class SingleQueueExecutor implements QueueExecutor
     protected CallableTask createUpdateAndTerminateTask(final List operations)
     {
         final TransactionalCommand command =  new TransactionalCommand()
+        {
+            public Object executeTransaction(MithraTransaction tx) throws Throwable
             {
-                public Object executeTransaction(MithraTransaction tx) throws Throwable
+                setTransactionOptions(tx);
+                for(int i=0;i<operations.size();i++)
                 {
-                    setTransactionOptions(tx);
-                    for(int i=0;i<operations.size();i++)
-                    {
-                        TransactionOperation op = (TransactionOperation) operations.get(i);
-                        op.performOperation(useUpdateWithTerminateAndInsert(), exclusiveUntil);
-                    }
-                    return null;
+                    TransactionOperation op = (TransactionOperation) operations.get(i);
+                    op.performOperation(useUpdateWithTerminateAndInsert(), exclusiveUntil);
                 }
-            };
+                return null;
+            }
+        };
         return new UpdateAndTerminateTask(operations, command);
     }
 
