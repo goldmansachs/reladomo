@@ -31,6 +31,7 @@ public class DefaultInfinityTimestamp
 
     private static final MithraTimestamp DEFAULT_SMALL_INFINITY;
 
+    private static final MithraTimestamp IQ_SMALLDATE_INFINITY;
     static
     {
         Calendar cal = Calendar.getInstance();
@@ -76,6 +77,17 @@ public class DefaultInfinityTimestamp
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         DEFAULT_SMALL_INFINITY = new MithraTimestamp(cal.getTime().getTime(), false);
+
+        cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, 9999);
+        cal.set(Calendar.MONTH, 11);
+        cal.set(Calendar.DAY_OF_MONTH, 30);
+        cal.set(Calendar.AM_PM, Calendar.AM);
+        cal.set(Calendar.HOUR_OF_DAY, 12);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        IQ_SMALLDATE_INFINITY = new MithraTimestamp(cal.getTime().getTime(), false);
     }
 
     public static MithraTimestamp getDefaultInfinity()
@@ -96,5 +108,10 @@ public class DefaultInfinityTimestamp
     public static MithraTimestamp getSybaseIqInfinity()
     {
         return SYBASE_IQ_INFINITY;
+    }
+
+    public static MithraTimestamp getIqSmalldateInfinity()
+    {
+        return IQ_SMALLDATE_INFINITY;
     }
 }

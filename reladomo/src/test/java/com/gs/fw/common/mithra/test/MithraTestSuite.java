@@ -162,6 +162,7 @@ public class MithraTestSuite
 
         suite.addTestSuite(TestTimezoneConversionNewYork.class);
         suite.addTestSuite(TestTimezoneConversionTokyo.class);
+        suite.addTestSuite(DefaultInfinityTimestampTest.class);
 
         // test relationship between nondated to dated to dated
         suite.addTestSuite(TestDatedRelationship.class);
