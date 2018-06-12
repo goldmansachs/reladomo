@@ -26,8 +26,6 @@ import com.gs.fw.common.mithra.util.SingleQueueExecutor;
 import java.sql.Timestamp;
 import java.util.concurrent.ThreadPoolExecutor;
 
-
-
 public class SingleQueueExecutorTest extends MithraTestAbstract
 {
     private boolean errorCaught = false;

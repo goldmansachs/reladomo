@@ -437,7 +437,6 @@ public class SingleQueueExecutor implements QueueExecutor
 
     private void checkForUpdateSubmission()
     {
-//        if (processedUpdatesAndTerminates.get() + 2*numberOfUpdateThreads >= this.updatesAndTerminatesQueued)
         {
             if (updateAndTerminateList.size() >= minBatchesBeforeQueuing*batchSize)
             {
