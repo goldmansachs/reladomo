@@ -3708,13 +3708,20 @@ public abstract class MithraAbstractDatabaseObject
             if (this.getMithraObjectPortal().getTxParticipationMode(tx).isOptimisticLocking())
             {
                 this.getMithraObjectPortal().getCache().markDirtyForReload(data, tx);
-                MithraOptimisticLockException mithraOptimisticLockException = new MithraOptimisticLockException("optimistic lock failed on instance of " + getDomainClassName() + " with data " +
-                        data.zGetPrintablePrimaryKey());
-                if (tx.retryOnOptimisticLockFailure())
+                String printableKey = getDomainClassName () + " with data " + data.zGetPrintablePrimaryKey ();
+                if(updatedRows > 1)
                 {
-                    mithraOptimisticLockException.setRetriable(true);
+                    throw new MithraUniqueIndexViolationException("Found duplicate records for " + printableKey);
                 }
-                throw mithraOptimisticLockException;
+                else
+                {
+                    MithraOptimisticLockException mithraOptimisticLockException = new MithraOptimisticLockException ("optimistic lock failed on instance of " + printableKey);
+                    if (tx.retryOnOptimisticLockFailure ())
+                    {
+                        mithraOptimisticLockException.setRetriable (true);
+                    }
+                    throw mithraOptimisticLockException;
+                }
             }
             throw new MithraDatabaseException("in trying to update instance of " + getDomainClassName() + " with primary key " +
                     data.zGetPrintablePrimaryKey() + ' ' + updatedRows + " were updated!");
@@ -3781,13 +3788,20 @@ public abstract class MithraAbstractDatabaseObject
         if (deletedRows != 1 && this.getMithraObjectPortal().getTxParticipationMode(tx).isOptimisticLocking())
         {
             this.getMithraObjectPortal().getCache().markDirtyForReload(data, tx);
-            MithraOptimisticLockException mithraOptimisticLockException = new MithraOptimisticLockException("optimistic lock failed on data " +
-                    data.zGetPrintablePrimaryKey());
-            if (tx.retryOnOptimisticLockFailure())
+            if(deletedRows > 1)
             {
-                mithraOptimisticLockException.setRetriable(true);
+                throw new MithraUniqueIndexViolationException("Found duplicate records for " + data.zGetPrintablePrimaryKey ());
             }
-            throw mithraOptimisticLockException;
+            else
+            {
+                MithraOptimisticLockException mithraOptimisticLockException = new MithraOptimisticLockException ("optimistic lock failed on data " +
+                        data.zGetPrintablePrimaryKey ());
+                if (tx.retryOnOptimisticLockFailure ())
+                {
+                    mithraOptimisticLockException.setRetriable (true);
+                }
+                throw mithraOptimisticLockException;
+            }
         }
     }
 
@@ -4898,18 +4912,16 @@ public abstract class MithraAbstractDatabaseObject
     {
         int[] results = executeBatchAndHandleBatchException(stm);
         boolean optimistic = this.getMithraObjectPortal().getTxParticipationMode().isOptimisticLocking();
-        boolean throwOptimisticException = false;
         if (optimistic)
         {
-            throwOptimisticException = checkOptimisticResults(results, updateOperations, start, throwOptimisticException);
+            if (checkOptimisticResults(results, updateOperations, start))
+            {
+                throwOptimisticLockException();
+            }
         }
         else
         {
             this.checkUpdateCount(results);
-        }
-        if (throwOptimisticException)
-        {
-            throwOptimisticLockException();
         }
         stm.clearBatch();
     }
@@ -4944,9 +4956,11 @@ public abstract class MithraAbstractDatabaseObject
         throw mithraOptimisticLockException;
     }
 
-    private boolean checkOptimisticResults(int[] results, List updateOperations, int start, boolean throwOptimisticException)
+    private boolean checkOptimisticResults(int[] results, List updateOperations, int start)
     {
         MithraTransaction tx = MithraManagerProvider.getMithraManager().getCurrentTransaction();
+        boolean throwOptimisticException = false;
+        int throwDuplicateException = 0;
         for (int i = 0; i < results.length; i++)
         {
             if (results[i] != 1)
@@ -4958,10 +4972,23 @@ public abstract class MithraAbstractDatabaseObject
                 {
                     data = mithraObject.zGetTxDataForRead();
                 }
-                this.getSqlLogger().error("Optimistic lock failed on " + PrintablePrimaryKeyMessageBuilder.createMessage(mithraObject, data));
-                this.getMithraObjectPortal().getCache().markDirtyForReload(data, tx);
-                throwOptimisticException = true;
+                String printableKey = PrintablePrimaryKeyMessageBuilder.createMessage (mithraObject, data);
+                if (results[i] > 1)
+                {
+                    this.getSqlLogger ().error ("Duplicate records found on " + printableKey);
+                    throwDuplicateException++;
+                }
+                else
+                {
+                    this.getSqlLogger ().error ("Optimistic lock failed on " + printableKey);
+                    throwOptimisticException = true;
+                }
+                this.getMithraObjectPortal ().getCache ().markDirtyForReload (data, tx);
             }
+        }
+        if (throwDuplicateException > 0)
+        {
+            throw new MithraUniqueIndexViolationException("Found duplicate records in " + throwDuplicateException + " records. See logs above for details.");
         }
         return throwOptimisticException;
     }

@@ -107,7 +107,6 @@ public class SingleQueueExecutor implements QueueExecutor
     private TransactionStyle transactionStyle;
 
     private final int batchSize;
-    private int batchRetryCount = 5;
     private int maxRetriesBeforeRequeue = 3;
     private SyslogChecker syslogChecker = new SyslogChecker(110.0, -1); // ignore
 
@@ -261,14 +260,9 @@ public class SingleQueueExecutor implements QueueExecutor
         this.transactionStyle = new TransactionStyle(MithraManagerProvider.getMithraManager().getTransactionTimeout(), maxRetriesBeforeRequeue, this.retryOnTimeout);
     }
 
-    public void setBatchRetryCount (int batchRetryCount)
-    {
-        this.batchRetryCount = batchRetryCount;
-    }
-
     /**
      * set the interval in milliseconds that the queue prints to the log at INFO level
-     * @param logIntervalInMilliseconds in milliseconds
+     * @param logIntervalInMilliseconds in millisecons
      */
     public void setLogInterval(int logIntervalInMilliseconds)
     {
@@ -437,6 +431,7 @@ public class SingleQueueExecutor implements QueueExecutor
 
     private void checkForUpdateSubmission()
     {
+//        if (processedUpdatesAndTerminates.get() + 2*numberOfUpdateThreads >= this.updatesAndTerminatesQueued)
         {
             if (updateAndTerminateList.size() >= minBatchesBeforeQueuing*batchSize)
             {
@@ -787,7 +782,6 @@ public class SingleQueueExecutor implements QueueExecutor
         private final AtomicInteger counter;
         private final ThreadPoolExecutor executor;
         private boolean retryOnTimeout = true;
-        private int retryCount = 5;
 
         public CallableWrapper(CallableTask callable, SingleQueueExecutor sqe, AtomicInteger counter,
                                ThreadPoolExecutor executor)
@@ -805,7 +799,6 @@ public class SingleQueueExecutor implements QueueExecutor
             this.counter = counter;
             this.executor = executor;
             this.retryOnTimeout = retryOnTimeout;
-            this.retryCount = sqe.batchRetryCount;
         }
 
         public void run()
@@ -823,11 +816,9 @@ public class SingleQueueExecutor implements QueueExecutor
             }
             catch (MithraBusinessException e)
             {
-                boolean timedOut = this.retryOnTimeout && e.isTimedOut();
-                if ((e.isRetriable() || timedOut) && retryCount > 0)
+                if (e.isRetriable() || (this.retryOnTimeout && e.isTimedOut() ))
                 {
-                    retryCount--;
-                    logger.warn((timedOut ? "Batch is timed out" : "Too many retries for this batch") + ". Putting it in the back of the queue. " + retryCount + " attempts left.");
+                    logger.warn("too many retries for this batch, putting it in the back of the queue");
                     this.executor.getQueue().add(this);
                 }
                 else
