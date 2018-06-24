@@ -13,13 +13,32 @@
  specific language governing permissions and limitations
  under the License.
  */
+// Portions copyright Hiroshi Ito. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.database;
 
-import com.gs.collections.api.block.function.Function;
-import com.gs.collections.impl.list.mutable.FastList;
-import com.gs.collections.impl.set.mutable.UnifiedSet;
-import com.gs.fw.common.mithra.*;
+import com.gs.fw.common.mithra.AggregateData;
+import com.gs.fw.common.mithra.AggregateDataConfig;
+import com.gs.fw.common.mithra.GroupByAttribute;
+import com.gs.fw.common.mithra.HavingOperation;
+import com.gs.fw.common.mithra.LoadOperationProvider;
+import com.gs.fw.common.mithra.MithraAggregateAttribute;
+import com.gs.fw.common.mithra.MithraBusinessException;
+import com.gs.fw.common.mithra.MithraDataObject;
+import com.gs.fw.common.mithra.MithraDatabaseException;
+import com.gs.fw.common.mithra.MithraDatabaseObject;
+import com.gs.fw.common.mithra.MithraDatedObject;
+import com.gs.fw.common.mithra.MithraGroupByAttribute;
+import com.gs.fw.common.mithra.MithraList;
+import com.gs.fw.common.mithra.MithraManager;
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraObject;
+import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.MithraTransaction;
+import com.gs.fw.common.mithra.MithraTransactionalObject;
+import com.gs.fw.common.mithra.MithraUniqueIndexViolationException;
+import com.gs.fw.common.mithra.ReladomoCorruptMilestoneException;
+import com.gs.fw.common.mithra.PrintablePrimaryKeyMessageBuilder;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.SingleColumnAttribute;
@@ -33,11 +52,24 @@ import com.gs.fw.common.mithra.cache.Cache;
 import com.gs.fw.common.mithra.cache.ExtractorBasedHashStrategy;
 import com.gs.fw.common.mithra.cache.FullUniqueIndex;
 import com.gs.fw.common.mithra.cache.PrimaryKeyIndex;
-import com.gs.fw.common.mithra.connectionmanager.*;
+import com.gs.fw.common.mithra.connectionmanager.AbstractConnectionManager;
+import com.gs.fw.common.mithra.connectionmanager.ClosableConnection;
+import com.gs.fw.common.mithra.connectionmanager.ConnectionManagerWrapper;
+import com.gs.fw.common.mithra.connectionmanager.PostTransactionAction;
+import com.gs.fw.common.mithra.connectionmanager.PostTransactionExecutor;
 import com.gs.fw.common.mithra.databasetype.DatabaseType;
 import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.extractor.Function;
 import com.gs.fw.common.mithra.extractor.IdentityExtractor;
-import com.gs.fw.common.mithra.finder.*;
+import com.gs.fw.common.mithra.finder.AggregateSqlQuery;
+import com.gs.fw.common.mithra.finder.AnalyzedOperation;
+import com.gs.fw.common.mithra.finder.MapperStackImpl;
+import com.gs.fw.common.mithra.finder.ObjectWithMapperStack;
+import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.PrintablePreparedStatement;
+import com.gs.fw.common.mithra.finder.RelatedFinder;
+import com.gs.fw.common.mithra.finder.ResultSetParser;
+import com.gs.fw.common.mithra.finder.SqlQuery;
 import com.gs.fw.common.mithra.finder.integer.IntegerResultSetParser;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.list.cursor.Cursor;
@@ -45,11 +77,33 @@ import com.gs.fw.common.mithra.notification.MithraDatabaseIdentifierExtractor;
 import com.gs.fw.common.mithra.notification.MithraNotificationEvent;
 import com.gs.fw.common.mithra.notification.MithraNotificationEventManager;
 import com.gs.fw.common.mithra.querycache.CachedQuery;
-import com.gs.fw.common.mithra.tempobject.*;
+import com.gs.fw.common.mithra.tempobject.LazyListAdaptor;
+import com.gs.fw.common.mithra.tempobject.LazyTuple;
+import com.gs.fw.common.mithra.tempobject.MithraTuplePersister;
+import com.gs.fw.common.mithra.tempobject.Tuple;
+import com.gs.fw.common.mithra.tempobject.TupleTempContext;
+import com.gs.fw.common.mithra.tempobject.UpdateOperationTupleAdaptor;
 import com.gs.fw.common.mithra.transaction.BatchUpdateOperation;
 import com.gs.fw.common.mithra.transaction.MultiUpdateOperation;
 import com.gs.fw.common.mithra.transaction.UpdateOperation;
-import com.gs.fw.common.mithra.util.*;
+import com.gs.fw.common.mithra.util.AutoShutdownThreadExecutor;
+import com.gs.fw.common.mithra.util.DoUntilProcedure;
+import com.gs.fw.common.mithra.util.ExceptionCatchingThread;
+import com.gs.fw.common.mithra.util.ExceptionHandlingTask;
+import com.gs.fw.common.mithra.util.Filter;
+import com.gs.fw.common.mithra.util.ListFactory;
+import com.gs.fw.common.mithra.util.MithraFastList;
+import com.gs.fw.common.mithra.util.MithraPerformanceData;
+import com.gs.fw.common.mithra.util.MultiHashMap;
+import com.gs.fw.common.mithra.util.NullDataTimestamp;
+import com.gs.fw.common.mithra.util.PersisterId;
+import com.gs.fw.common.mithra.util.RenewedCacheStats;
+import com.gs.fw.common.mithra.util.SmallSet;
+import com.gs.fw.common.mithra.util.TableColumnInfo;
+import com.gs.fw.common.mithra.util.TempTableNamer;
+import com.gs.reladomo.metadata.ReladomoClassMetaData;
+import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,8 +111,23 @@ import javax.transaction.Status;
 import javax.transaction.Synchronization;
 import java.io.IOException;
 import java.io.ObjectInput;
-import java.sql.*;
-import java.util.*;
+import java.sql.BatchUpdateException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -115,9 +184,9 @@ public abstract class MithraAbstractDatabaseObject
 
 
     protected MithraAbstractDatabaseObject(String loggerClassName, String fullyQualifiedFinderClassName,
-            int totalColumnsInResultSet, int totalColumnsInInsert, String columnListWithoutPK,
-            String columnListWithoutPkWithAlias, boolean hasOptimisticLocking, boolean hasNullablePrimaryKeys,
-            boolean hasSourceAttribute, String primaryKeyWhereSqlWithDefaultAlias, String primaryKeyIndexColumns)
+                                           int totalColumnsInResultSet, int totalColumnsInInsert, String columnListWithoutPK,
+                                           String columnListWithoutPkWithAlias, boolean hasOptimisticLocking, boolean hasNullablePrimaryKeys,
+                                           boolean hasSourceAttribute, String primaryKeyWhereSqlWithDefaultAlias, String primaryKeyIndexColumns)
     {
         if (MithraAbstractDatabaseObject.statsListenerFactory != null)
         {
@@ -187,7 +256,7 @@ public abstract class MithraAbstractDatabaseObject
 
     public boolean hasOptimisticLocking()
     {
-      return hasOptimisticLocking;
+        return hasOptimisticLocking;
     }
 
     public boolean hasNullablePrimaryKeys()
@@ -544,8 +613,8 @@ public abstract class MithraAbstractDatabaseObject
     }
 
     protected String createNonSharedTempTable(final Object genericSource, String nominalName,
-            SingleColumnAttribute[] persistentAttributes, SingleColumnAttribute[] pkAttributes,
-            boolean forceOnSameThread, final boolean isForQuery)
+                                              SingleColumnAttribute[] persistentAttributes, SingleColumnAttribute[] pkAttributes,
+                                              boolean forceOnSameThread, final boolean isForQuery)
     {
         DatabaseType dt = this.getDatabaseTypeGenericSource(genericSource);
         StringBuilder sb = new StringBuilder(50);
@@ -564,7 +633,7 @@ public abstract class MithraAbstractDatabaseObject
         else
         {
             int retry = 10;
-            while (retry > 0)
+            while (true)
             {
                 try
                 {
@@ -576,20 +645,11 @@ public abstract class MithraAbstractDatabaseObject
                             executeCreateTable(genericSource, sql, indexSql, isForQuery);
                         }
                     });
-                    retry = 0;
+                    break;
                 }
                 catch (MithraBusinessException e)
                 {
-                    if (e.isRetriable())
-                    {
-                        retry--;
-                        if (retry > 0)
-                        {
-                            this.getSqlLogger().warn("create table failed with retriable exception, will retry " + retry + " more times");
-                            continue;
-                        }
-                    }
-                    throw e;
+                    retry = e.ifRetriableWaitElseThrow("create table failed with retriable exception, will retry", retry, this.getSqlLogger());
                 }
             }
         }
@@ -637,7 +697,7 @@ public abstract class MithraAbstractDatabaseObject
     }
 
     protected String createSharedTempTable(Object genericSource, String nominalName,
-            SingleColumnAttribute[] persistentAttributes, SingleColumnAttribute[] pkAttributes, boolean isForQuery)
+                                           SingleColumnAttribute[] persistentAttributes, SingleColumnAttribute[] pkAttributes, boolean isForQuery)
     {
         DatabaseType dt = this.getDatabaseTypeGenericSource(genericSource);
         StringBuilder sb = new StringBuilder(50);
@@ -650,25 +710,16 @@ public abstract class MithraAbstractDatabaseObject
         String sql = sb.toString();
         String indexSql = this.createSharedIndexSql(fullTableName, pkAttributes, dt);
         int retry = 10;
-        while (retry > 0)
+        while (true)
         {
             try
             {
                 executeCreateTable(genericSource, sql, indexSql, isForQuery);
-                retry = 0;
+                break;
             }
             catch (MithraBusinessException e)
             {
-                if (e.isRetriable())
-                {
-                    retry--;
-                    if (retry > 0)
-                    {
-                        this.getSqlLogger().warn("create table failed with retriable exception, will retry " + retry + " more times");
-                        continue;
-                    }
-                }
-                throw e;
+                retry = e.ifRetriableWaitElseThrow("create table failed with retriable exception, will retry", retry, this.getSqlLogger());
             }
         }
         return fullTableName;
@@ -850,16 +901,8 @@ public abstract class MithraAbstractDatabaseObject
                 catch (MithraBusinessException e)
                 {
                     this.cleanUpDbConnections(true);
-                    if (e.isRetriable() && --retriesLeft > 0)
-                    {
-                        logger.warn("cursor failed with retriable error. retrying. " + e.getMessage());
-                        if (logger.isDebugEnabled())
-                        {
-                            logger.debug("cursor failed with retriable error. retrying.", e);
-                        }
-                        e.waitBeforeRetrying();
-                        this.currentQueryNumber = -1;
-                    } else throw e;
+                    retriesLeft = e.ifRetriableWaitElseThrow("cursor failed with retriable error. retrying.", retriesLeft, logger);
+                    this.currentQueryNumber = -1;
                 }
             }
         }
@@ -1008,7 +1051,7 @@ public abstract class MithraAbstractDatabaseObject
             if (statsListener != null)
             {
                 statsListener.processRetrieval(this.source, new PrintableStatementBuilder(this.statement, this.query),
-                                               this.rowCount, this.startTime, MithraAbstractDatabaseObject.this.getClass());
+                        this.rowCount, this.startTime, MithraAbstractDatabaseObject.this.getClass());
             }
             getPerformanceData().recordTimeForFind(this.rowCount, this.startTime);
         }
@@ -2008,24 +2051,7 @@ public abstract class MithraAbstractDatabaseObject
 
     private Extractor[] getPrimaryKeyFor(RelatedFinder finder)
     {
-        if (finder.getAsOfAttributes() == null)
-        {
-            return finder.getPrimaryKeyAttributes();
-        }
-        else
-        {
-            Extractor[] primKeyAttr = finder.getPrimaryKeyAttributes();
-            AsOfAttribute[] asOfKeyAttr = finder.getAsOfAttributes();
-
-            Extractor[] fullKey = new Extractor[primKeyAttr.length + asOfKeyAttr.length];
-            System.arraycopy(primKeyAttr, 0, fullKey, 0, primKeyAttr.length);
-
-            for (int i = 0; i < asOfKeyAttr.length; i++)
-            {
-                fullKey[i + primKeyAttr.length] = asOfKeyAttr[i].getFromAttribute();
-            }
-            return fullKey;
-        }
+        return ReladomoClassMetaData.fromFinder(finder).getUniqueExtractors();
     }
 
     public void loadFullCache()
@@ -2450,7 +2476,7 @@ public abstract class MithraAbstractDatabaseObject
         DatabaseType databaseType = this.getDatabaseTypeGenericSource(source);
         if (mithraObjectList != null && databaseType.violatesUniqueIndex(e))
         {
-            msg = this.getUniqueIndexViolationMessage(mithraObjectList, msg);
+            msg = this.addPrintableKeysToMessage (mithraObjectList, msg);
             dbe = new MithraUniqueIndexViolationException(msg + "(SQL code: " + e.getErrorCode() + " SQL State: " + e.getSQLState() + ')', e);
         }
         dbe.setRetriable(databaseType.loopNestedExceptionForFlagAndDetermineState(DatabaseType.RETRIABLE_FLAG, e));
@@ -2470,6 +2496,7 @@ public abstract class MithraAbstractDatabaseObject
                 this.getSqlLogger().warn("Connection is dead, but underlying pool is not closable. " + con.getClass().getName());
             }
             dbe.setRetriable(!(databaseType.isKilledConnection(e) && isNoRetries()));
+            this.getConnectionManagerWrapper().cleanupDeadConnection(dbe, con);
         }
         throw dbe;
     }
@@ -2487,14 +2514,14 @@ public abstract class MithraAbstractDatabaseObject
         }
     }
 
-    private String getUniqueIndexViolationMessage(List mithraObjectList, String msg)
+    private String addPrintableKeysToMessage (List mithraDataObjects, String msg)
     {
-        int mithraDataObjectListSize = mithraObjectList.size();
+        int mithraDataObjectListSize = mithraDataObjects.size();
         if (mithraDataObjectListSize > 1)
         {
             for (int i = 0; i < mithraDataObjectListSize; i++)
             {
-                MithraObject o = (MithraObject) mithraObjectList.get(i);
+                MithraObject o = (MithraObject) mithraDataObjects.get(i);
                 MithraDataObject data = o.zGetCurrentData();
                 if (data == null && o instanceof MithraTransactionalObject)
                 {
@@ -2508,7 +2535,7 @@ public abstract class MithraAbstractDatabaseObject
         }
         else
         {
-            msg += " Primary Key: " + ((MithraDataObject) mithraObjectList.get(0)).zGetPrintablePrimaryKey();
+            msg += " Primary Key: " + ((MithraDataObject) mithraDataObjects.get(0)).zGetPrintablePrimaryKey();
         }
         return msg;
     }
@@ -3054,25 +3081,7 @@ public abstract class MithraAbstractDatabaseObject
     {
         TimeZone databaseTimeZone = this.getDatabaseTimeZoneGenericSource(source);
 
-        String schema = this.getSchemaGenericSource(source);
-        if (schema == null)
-        {
-            Connection con = null;
-            try
-            {
-                con = this.getConnectionForReadGenericSource(source);
-                schema = con.getCatalog();
-            }
-            catch (SQLException e)
-            {
-                throw new MithraDatabaseException("could not determine schema for bulk insert ", e);
-            }
-            finally
-            {
-                this.closeConnection(con);
-            }
-
-        }
+        String schema = getSchemaForBulkInsert(databaseType, source);
         String tableName = getOrCreateTupleTempTable(context, source);
 
         BulkLoader bulkLoader = null;
@@ -3704,27 +3713,21 @@ public abstract class MithraAbstractDatabaseObject
     {
         if (updatedRows != 1)
         {
+            String printableKey = getDomainClassName () + " with data " + data.zGetPrintablePrimaryKey ();
             MithraTransaction tx = MithraManagerProvider.getMithraManager().getCurrentTransaction();
             if (this.getMithraObjectPortal().getTxParticipationMode(tx).isOptimisticLocking())
             {
                 this.getMithraObjectPortal().getCache().markDirtyForReload(data, tx);
-                String printableKey = getDomainClassName () + " with data " + data.zGetPrintablePrimaryKey ();
-                if(updatedRows > 1)
+                if(updatedRows < 1)
                 {
-                    throw new MithraUniqueIndexViolationException("Found duplicate records for " + printableKey);
+                    throwOptimisticLockException("on instance of " + printableKey);
                 }
                 else
                 {
-                    MithraOptimisticLockException mithraOptimisticLockException = new MithraOptimisticLockException ("optimistic lock failed on instance of " + printableKey);
-                    if (tx.retryOnOptimisticLockFailure ())
-                    {
-                        mithraOptimisticLockException.setRetriable (true);
-                    }
-                    throw mithraOptimisticLockException;
+                    throw new ReladomoCorruptMilestoneException("on instance of " + printableKey);
                 }
             }
-            throw new MithraDatabaseException("in trying to update instance of " + getDomainClassName() + " with primary key " +
-                    data.zGetPrintablePrimaryKey() + ' ' + updatedRows + " were updated!");
+            throw new MithraDatabaseException("in trying to update instance of " + printableKey + ' ' + updatedRows + " were updated!");
         }
     }
 
@@ -3788,19 +3791,13 @@ public abstract class MithraAbstractDatabaseObject
         if (deletedRows != 1 && this.getMithraObjectPortal().getTxParticipationMode(tx).isOptimisticLocking())
         {
             this.getMithraObjectPortal().getCache().markDirtyForReload(data, tx);
-            if(deletedRows > 1)
+            if (deletedRows < 1)
             {
-                throw new MithraUniqueIndexViolationException("Found duplicate records for " + data.zGetPrintablePrimaryKey ());
+                this.throwOptimisticLockException (" Primary Key: " + data.zGetPrintablePrimaryKey ());
             }
             else
             {
-                MithraOptimisticLockException mithraOptimisticLockException = new MithraOptimisticLockException ("optimistic lock failed on data " +
-                        data.zGetPrintablePrimaryKey ());
-                if (tx.retryOnOptimisticLockFailure ())
-                {
-                    mithraOptimisticLockException.setRetriable (true);
-                }
-                throw mithraOptimisticLockException;
+                throw new ReladomoCorruptMilestoneException (" Primary Key: " + data.zGetPrintablePrimaryKey ());
             }
         }
     }
@@ -3814,8 +3811,8 @@ public abstract class MithraAbstractDatabaseObject
         UpdateOperation firstOperation = updateOperations.get(0);
         MithraDataObject firstData = this.getDataForUpdate(firstOperation);
         Object source = this.getSourceAttributeValueFromObjectGeneric(firstData);
-
         DatabaseType databaseType = this.getDatabaseTypeGenericSource(source);
+
         if (databaseType.getUpdateViaInsertAndJoinThreshold() > 0 &&
                 databaseType.getUpdateViaInsertAndJoinThreshold() < updateOperations.size() &&
                 this.getFinder().getVersionAttribute() == null &&
@@ -3825,6 +3822,21 @@ public abstract class MithraAbstractDatabaseObject
             zBatchUpdateViaInsertAndJoin(updateOperations, source, databaseType);
             return;
         }
+        if (this.hasOptimisticLocking())
+        {
+            if (this.getMithraObjectPortal().getTxParticipationMode().isOptimisticLocking() && !databaseType.canCombineOptimisticWithBatchUpdates())
+            {
+                //we'll do single updates
+                for(int i=0;i<updateOperations.size();i++)
+                {
+                    UpdateOperation updateOperation = updateOperations.get(i);
+                    zUpdate(updateOperation.getMithraObject(), updateOperation.getUpdates());
+                }
+
+                return;
+            }
+        }
+
         List firstUpdateWrappers = firstOperation.getUpdates();
         StringBuilder builder = new StringBuilder(30 + firstUpdateWrappers.size() * 12);
         builder.append("update ");
@@ -3918,7 +3930,7 @@ public abstract class MithraAbstractDatabaseObject
         @Override
         public MithraDataObject valueOf(UpdateOperation updateOperation)
         {
-             return getDataForUpdate(updateOperation);
+            return getDataForUpdate(updateOperation);
         }
     };
 
@@ -3946,8 +3958,9 @@ public abstract class MithraAbstractDatabaseObject
             tempContext = new TupleTempContext(prototypeArray, false);
 
             tempContext.setPrefersMultiThreadedDataAccess(false);
+            int bulkInsertThreshold = MithraManagerProvider.getMithraManager().getCurrentTransaction().getBulkInsertThreshold();
             this.getMithraObjectPortal().getMithraTuplePersister().insertTuplesForSameSource(tempContext,
-                    new LazyListAdaptor(dataObjects, LazyTuple.createFactory(prototypeArray)), 0, source);
+                    new LazyListAdaptor(dataObjects, LazyTuple.createFactory(prototypeArray)), bulkInsertThreshold, source);
 
             StringBuilder builder = new StringBuilder("delete from " + this.getFullyQualifiedTableNameGenericSource(source));
             appendTempTableUpdateDeleteJoin(source, prototypeArray, nullAttributes, pkAttributeCount, tempContext, builder);
@@ -3989,8 +4002,9 @@ public abstract class MithraAbstractDatabaseObject
         try
         {
             tempContext = new TupleTempContext(prototypeArray, false);
+            int bulkInsertThreshold = MithraManagerProvider.getMithraManager().getCurrentTransaction().getBulkInsertThreshold();
             this.getMithraObjectPortal().getMithraTuplePersister().insertTuplesForSameSource(
-                    tempContext, new LazyListAdaptor(updateOperations, UpdateOperationTupleAdaptor.createFactory(prototypeArray)), 0, source);
+                    tempContext, new LazyListAdaptor(updateOperations, UpdateOperationTupleAdaptor.createFactory(prototypeArray)), bulkInsertThreshold, source);
 
             StringBuilder builder = new StringBuilder(30 + firstUpdates.size() * 12);
 
@@ -4048,14 +4062,20 @@ public abstract class MithraAbstractDatabaseObject
             int updated = stm.executeUpdate();
             stm.close();
             stm = null;
-            boolean throwOptimisticException = false;
             if (optimistic)
             {
                 if (updated != dataList.size())
                 {
-                    throwOptimisticException = true;
                     determineDirtyData(source, tempContext, prototypeArray, nullAttributes, pkAttributeCount, con, databaseType,
                             dataList, databaseTimeZone, updates, isMultiUpdate);
+                    if(updated < dataList.size())
+                    {
+                        throwOptimisticLockException(", see above log for record details.");
+                    }
+                    else
+                    {
+                        throw new ReladomoCorruptMilestoneException(addPrintableKeysToMessage(dataList, "batch update failed "));
+                    }
                 }
             }
             else
@@ -4065,11 +4085,6 @@ public abstract class MithraAbstractDatabaseObject
                     this.getSqlLogger().warn("batch command did not update the correct number of rows. Expecting " + dataList.size() + " but got " + updated);
                 }
             }
-            if (throwOptimisticException)
-            {
-                throwOptimisticLockException();
-            }
-
         }
         catch (SQLException e)
         {
@@ -4444,25 +4459,7 @@ public abstract class MithraAbstractDatabaseObject
     {
         TimeZone databaseTimeZone = this.getDatabaseTimeZoneGenericSource(source);
 
-        String schema = this.getSchemaGenericSource(source);
-        if (schema == null)
-        {
-            Connection con = null;
-            try
-            {
-                con = this.getConnectionForReadGenericSource(source);
-                schema = con.getCatalog();
-            }
-            catch (SQLException e)
-            {
-                throw new MithraDatabaseException("could not determine schema for bulk insert ", e);
-            }
-            finally
-            {
-                this.closeConnection(con);
-            }
-
-        }
+        String schema = getSchemaForBulkInsert(databaseType, source);
 
         BulkLoader bulkLoader = null;
 
@@ -4532,6 +4529,29 @@ public abstract class MithraAbstractDatabaseObject
             if (bulkLoader != null) bulkLoader.destroy();
             this.closeStatementAndConnection(con, stm);
         }
+    }
+
+    private String getSchemaForBulkInsert(DatabaseType databaseType, Object source)
+    {
+        String schema = this.getSchemaGenericSource(source);
+        if (schema == null)
+        {
+            Connection con = null;
+            try
+            {
+                con = this.getConnectionForReadGenericSource(source);
+                schema = databaseType.getCurrentSchema(con);
+            }
+            catch (SQLException e)
+            {
+                throw new MithraDatabaseException("could not determine schema for bulk insert ", e);
+            }
+            finally
+            {
+                this.closeConnection(con);
+            }
+        }
+        return schema;
     }
 
     protected void zBatchUpdate(BatchUpdateOperation batchUpdateOperation)
@@ -4916,7 +4936,7 @@ public abstract class MithraAbstractDatabaseObject
         {
             if (checkOptimisticResults(results, updateOperations, start))
             {
-                throwOptimisticLockException();
+                throwOptimisticLockException(", see above log for record details.");
             }
         }
         else
@@ -4930,25 +4950,20 @@ public abstract class MithraAbstractDatabaseObject
     {
         int[] results = executeBatchAndHandleBatchException(stm);
         boolean optimistic = this.getMithraObjectPortal().getTxParticipationMode().isOptimisticLocking();
-        boolean throwOptimisticException = false;
         if (optimistic)
         {
-            throwOptimisticException = checkOptimisticResultsForObjects(results, mithraObjects, start, throwOptimisticException);
+            checkOptimisticResultsForObjects(results, mithraObjects, start);
         }
         else if (checkCount)
         {
             this.checkUpdateCount(results);
         }
-        if (throwOptimisticException)
-        {
-            throwOptimisticLockException();
-        }
         stm.clearBatch();
     }
 
-    private void throwOptimisticLockException()
+    private void throwOptimisticLockException(String message)
     {
-        MithraOptimisticLockException mithraOptimisticLockException = new MithraOptimisticLockException("Optimistic lock failed, see above log for specific objects.");
+        MithraOptimisticLockException mithraOptimisticLockException = new MithraOptimisticLockException("Optimistic lock failed " + message);
         if (MithraManagerProvider.getMithraManager().getCurrentTransaction().retryOnOptimisticLockFailure())
         {
             mithraOptimisticLockException.setRetriable(true);
@@ -4960,7 +4975,6 @@ public abstract class MithraAbstractDatabaseObject
     {
         MithraTransaction tx = MithraManagerProvider.getMithraManager().getCurrentTransaction();
         boolean throwOptimisticException = false;
-        int throwDuplicateException = 0;
         for (int i = 0; i < results.length; i++)
         {
             if (results[i] != 1)
@@ -4975,8 +4989,7 @@ public abstract class MithraAbstractDatabaseObject
                 String printableKey = PrintablePrimaryKeyMessageBuilder.createMessage (mithraObject, data);
                 if (results[i] > 1)
                 {
-                    this.getSqlLogger ().error ("Duplicate records found on " + printableKey);
-                    throwDuplicateException++;
+                    throw new ReladomoCorruptMilestoneException("Primary Key: " + printableKey);
                 }
                 else
                 {
@@ -4986,15 +4999,13 @@ public abstract class MithraAbstractDatabaseObject
                 this.getMithraObjectPortal ().getCache ().markDirtyForReload (data, tx);
             }
         }
-        if (throwDuplicateException > 0)
-        {
-            throw new MithraUniqueIndexViolationException("Found duplicate records in " + throwDuplicateException + " records. See logs above for details.");
-        }
         return throwOptimisticException;
     }
 
-    private boolean checkOptimisticResultsForObjects(int[] results, List mithraObjects, int start, boolean throwOptimisticException)
+    private void checkOptimisticResultsForObjects(int[] results, List mithraObjects, int start)
     {
+        boolean throwOptimisticException = false;
+        boolean throwCorruptMilestoneException = false;
         MithraTransaction tx = MithraManagerProvider.getMithraManager().getCurrentTransaction();
         for (int i = 0; i < results.length; i++)
         {
@@ -5002,12 +5013,28 @@ public abstract class MithraAbstractDatabaseObject
             {
                 MithraTransactionalObject mithraObject = (MithraTransactionalObject) mithraObjects.get(start + i);
                 MithraDataObject data = mithraObject.zGetTxDataForRead();
-                this.getSqlLogger().error("Optimistic lock failed on " + PrintablePrimaryKeyMessageBuilder.createMessage(mithraObject, data));
+                if (results[i] < 1)
+                {
+                    throwOptimisticException = true;
+                    this.getSqlLogger().error("Optimistic lock failed on " + PrintablePrimaryKeyMessageBuilder.createMessage(mithraObject, data));
+                }
+                else
+                {
+                    throwCorruptMilestoneException = true;
+                    this.getSqlLogger().error("Found duplicate records for  " + PrintablePrimaryKeyMessageBuilder.createMessage(mithraObject, data));
+                }
                 this.getMithraObjectPortal().getCache().markDirtyForReload(data, tx);
-                throwOptimisticException = true;
             }
         }
-        return throwOptimisticException;
+        if (throwCorruptMilestoneException)
+        {
+            throw new ReladomoCorruptMilestoneException ("See above log for specific objects.");
+        }
+
+        if (throwOptimisticException)
+        {
+            throwOptimisticLockException(", see above log for specific objects.");
+        }
     }
 
 
@@ -5179,6 +5206,7 @@ public abstract class MithraAbstractDatabaseObject
         try
         {
             tempContext = new TupleTempContext(prototypeArray, false);
+            //we only get here in transactions. no need for special retry handling
             tempContext.insert(dataList, this.getMithraObjectPortal(), databaseType.getUpdateViaInsertAndJoinThreshold(), false);
 
             StringBuilder builder = new StringBuilder(30 + updates.size() * 12);
