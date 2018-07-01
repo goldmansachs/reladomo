@@ -564,7 +564,7 @@ public class MithraTestResource
         MithraManager mithra = MithraManagerProvider.getMithraManager();
         try
         {
-            if (mithra.isInTransaction())
+            while (mithra.isInTransaction())
             {
                 logger.error("incomplete transaction. attempting rollback");
                 mithra.getCurrentTransaction().rollback();
