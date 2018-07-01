@@ -78,20 +78,41 @@ public class SingleQueueExecutorTest extends MithraTestAbstract
     public void testWithCorruptedOptimisticLock() throws Exception
     {
         Timestamp businessDate = new Timestamp(timestampFormat.parse("2004-08-27 23:59:00.0").getTime());
-        SingleQueueExecutor executor = new SingleQueueExecutor(1, TinyBalanceFinder.balanceId ().ascendingOrderBy(), 10,
-                TinyBalanceFinder.getFinderInstance(), 0)
-        {
-            public void logResults()
-            {
-                throw new MithraOptimisticLockException ("simulated exception on the corrupted milestone", true);
-            }
-        };
 
-        executor.setUseBulkInsert();
+
+        MithraTransaction tx = MithraManagerProvider.getMithraManager().startOrContinueTransaction();
+        TinyBalance bal = new TinyBalance(businessDate);
+        bal.setAcmapCode ("B");
+        bal.setBalanceId (8866);
+        bal.setQuantity (30);
+        bal.setBusinessDateFrom (Timestamp.valueOf("2004-08-25 23:59:00.0"));
+        bal.setBusinessDateTo (Timestamp.valueOf("2004-08-28 23:59:00.0"));
+        bal.insert ();
+        tx.commit ();
+
+        tx = MithraManagerProvider.getMithraManager().startOrContinueTransaction();
+        bal = new TinyBalance(businessDate);
+        bal.setAcmapCode ("B");
+        bal.setBalanceId (8866);
+        bal.setQuantity (700);
+        bal.setBusinessDateFrom (Timestamp.valueOf("2004-08-16 23:59:00.0"));
+        bal.setBusinessDateTo (Timestamp.valueOf("2004-10-13 23:59:00.0"));
+        bal.insert ();
+        tx.commit ();
+
 
         Operation op = TinyBalanceFinder.acmapCode ().eq("B").and(TinyBalanceFinder.balanceId ().eq(8866)).
                 and(TinyBalanceFinder.businessDate().eq(businessDate));
         TinyBalance tinyBalanceDB = TinyBalanceFinder.findOne(op);
+
+        SingleQueueExecutor executor = new SingleQueueExecutor(1, TinyBalanceFinder.balanceId ().ascendingOrderBy(), 10,
+                TinyBalanceFinder.getFinderInstance(), 0);
+
+        executor.setUseBulkInsert();
+
+        op = TinyBalanceFinder.acmapCode ().eq("B").and(TinyBalanceFinder.balanceId ().eq(8866)).
+                and(TinyBalanceFinder.businessDate().eq(businessDate));
+        tinyBalanceDB = TinyBalanceFinder.findOne(op);
 
         TinyBalance tinyBalance = new TinyBalance(InfinityTimestamp.getParaInfinity());
 
@@ -102,7 +123,7 @@ public class SingleQueueExecutorTest extends MithraTestAbstract
             fail("exception expected");
         } catch (Exception e)
         {
-            assertTrue(e.getMessage ().contains ("simulated exception on the corrupted milestone"));
+            assertTrue(e.getMessage (), e.getMessage ().contains("Primary Key: acmapCode: 'B' / balanceId: 8866"));
         }
 
     }
