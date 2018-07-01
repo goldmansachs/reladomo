@@ -16,6 +16,8 @@
 
 package com.gs.fw.common.mithra.test;
 
+import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.test.domain.*;
 import org.slf4j.Logger;
