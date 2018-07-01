@@ -44,6 +44,7 @@ import com.gs.fw.common.mithra.attribute.SingleColumnAttribute;
 import com.gs.fw.common.mithra.attribute.TimestampAttribute;
 import com.gs.fw.common.mithra.attribute.update.AttributeUpdateWrapper;
 import com.gs.fw.common.mithra.behavior.txparticipation.MithraOptimisticLockException;
+import com.gs.fw.common.mithra.ReladomoCorruptMilestoneException;
 import com.gs.fw.common.mithra.behavior.txparticipation.TxParticipationMode;
 import com.gs.fw.common.mithra.bulkloader.BulkLoader;
 import com.gs.fw.common.mithra.bulkloader.BulkLoaderException;
@@ -255,7 +256,7 @@ public abstract class MithraAbstractDatabaseObject
 
     public boolean hasOptimisticLocking()
     {
-      return hasOptimisticLocking;
+        return hasOptimisticLocking;
     }
 
     public boolean hasNullablePrimaryKeys()
@@ -2475,7 +2476,7 @@ public abstract class MithraAbstractDatabaseObject
         DatabaseType databaseType = this.getDatabaseTypeGenericSource(source);
         if (mithraObjectList != null && databaseType.violatesUniqueIndex(e))
         {
-            msg = this.getUniqueIndexViolationMessage(mithraObjectList, msg);
+            msg = this.addPrintableKeysToMessage (mithraObjectList, msg);
             dbe = new MithraUniqueIndexViolationException(msg + "(SQL code: " + e.getErrorCode() + " SQL State: " + e.getSQLState() + ')', e);
         }
         dbe.setRetriable(databaseType.loopNestedExceptionForFlagAndDetermineState(DatabaseType.RETRIABLE_FLAG, e));
@@ -2513,14 +2514,14 @@ public abstract class MithraAbstractDatabaseObject
         }
     }
 
-    private String getUniqueIndexViolationMessage(List mithraObjectList, String msg)
+    private String addPrintableKeysToMessage (List mithraDataObjects, String msg)
     {
-        int mithraDataObjectListSize = mithraObjectList.size();
+        int mithraDataObjectListSize = mithraDataObjects.size();
         if (mithraDataObjectListSize > 1)
         {
             for (int i = 0; i < mithraDataObjectListSize; i++)
             {
-                MithraObject o = (MithraObject) mithraObjectList.get(i);
+                MithraObject o = (MithraObject) mithraDataObjects.get(i);
                 MithraDataObject data = o.zGetCurrentData();
                 if (data == null && o instanceof MithraTransactionalObject)
                 {
@@ -2534,7 +2535,7 @@ public abstract class MithraAbstractDatabaseObject
         }
         else
         {
-            msg += " Primary Key: " + ((MithraDataObject) mithraObjectList.get(0)).zGetPrintablePrimaryKey();
+            msg += " Primary Key: " + ((MithraDataObject) mithraDataObjects.get(0)).zGetPrintablePrimaryKey();
         }
         return msg;
     }
@@ -3712,20 +3713,21 @@ public abstract class MithraAbstractDatabaseObject
     {
         if (updatedRows != 1)
         {
+            String printableKey = getDomainClassName () + " with data " + data.zGetPrintablePrimaryKey ();
             MithraTransaction tx = MithraManagerProvider.getMithraManager().getCurrentTransaction();
             if (this.getMithraObjectPortal().getTxParticipationMode(tx).isOptimisticLocking())
             {
                 this.getMithraObjectPortal().getCache().markDirtyForReload(data, tx);
-                MithraOptimisticLockException mithraOptimisticLockException = new MithraOptimisticLockException("optimistic lock failed on instance of " + getDomainClassName() + " with data " +
-                        data.zGetPrintablePrimaryKey());
-                if (tx.retryOnOptimisticLockFailure())
+                if(updatedRows < 1)
                 {
-                    mithraOptimisticLockException.setRetriable(true);
+                    throwOptimisticLockException("on instance of " + printableKey);
                 }
-                throw mithraOptimisticLockException;
+                else
+                {
+                    throw new ReladomoCorruptMilestoneException("on instance of " + printableKey);
+                }
             }
-            throw new MithraDatabaseException("in trying to update instance of " + getDomainClassName() + " with primary key " +
-                    data.zGetPrintablePrimaryKey() + ' ' + updatedRows + " were updated!");
+            throw new MithraDatabaseException("in trying to update instance of " + printableKey + ' ' + updatedRows + " were updated!");
         }
     }
 
@@ -3789,13 +3791,14 @@ public abstract class MithraAbstractDatabaseObject
         if (deletedRows != 1 && this.getMithraObjectPortal().getTxParticipationMode(tx).isOptimisticLocking())
         {
             this.getMithraObjectPortal().getCache().markDirtyForReload(data, tx);
-            MithraOptimisticLockException mithraOptimisticLockException = new MithraOptimisticLockException("optimistic lock failed on data " +
-                    data.zGetPrintablePrimaryKey());
-            if (tx.retryOnOptimisticLockFailure())
+            if (deletedRows < 1)
             {
-                mithraOptimisticLockException.setRetriable(true);
+                this.throwOptimisticLockException (" Primary Key: " + data.zGetPrintablePrimaryKey ());
             }
-            throw mithraOptimisticLockException;
+            else
+            {
+                throw new ReladomoCorruptMilestoneException (" Primary Key: " + data.zGetPrintablePrimaryKey ());
+            }
         }
     }
 
@@ -4059,14 +4062,20 @@ public abstract class MithraAbstractDatabaseObject
             int updated = stm.executeUpdate();
             stm.close();
             stm = null;
-            boolean throwOptimisticException = false;
             if (optimistic)
             {
                 if (updated != dataList.size())
                 {
-                    throwOptimisticException = true;
                     determineDirtyData(source, tempContext, prototypeArray, nullAttributes, pkAttributeCount, con, databaseType,
                             dataList, databaseTimeZone, updates, isMultiUpdate);
+                    if(updated < dataList.size())
+                    {
+                        throwOptimisticLockException(", see above log for record details.");
+                    }
+                    else
+                    {
+                        throw new ReladomoCorruptMilestoneException(addPrintableKeysToMessage(dataList, "batch update failed "));
+                    }
                 }
             }
             else
@@ -4076,11 +4085,6 @@ public abstract class MithraAbstractDatabaseObject
                     this.getSqlLogger().warn("batch command did not update the correct number of rows. Expecting " + dataList.size() + " but got " + updated);
                 }
             }
-            if (throwOptimisticException)
-            {
-                throwOptimisticLockException();
-            }
-
         }
         catch (SQLException e)
         {
@@ -4928,18 +4932,16 @@ public abstract class MithraAbstractDatabaseObject
     {
         int[] results = executeBatchAndHandleBatchException(stm);
         boolean optimistic = this.getMithraObjectPortal().getTxParticipationMode().isOptimisticLocking();
-        boolean throwOptimisticException = false;
         if (optimistic)
         {
-            throwOptimisticException = checkOptimisticResults(results, updateOperations, start, throwOptimisticException);
+            if (checkOptimisticResults(results, updateOperations, start))
+            {
+                throwOptimisticLockException(", see above log for record details.");
+            }
         }
         else
         {
             this.checkUpdateCount(results);
-        }
-        if (throwOptimisticException)
-        {
-            throwOptimisticLockException();
         }
         stm.clearBatch();
     }
@@ -4948,25 +4950,20 @@ public abstract class MithraAbstractDatabaseObject
     {
         int[] results = executeBatchAndHandleBatchException(stm);
         boolean optimistic = this.getMithraObjectPortal().getTxParticipationMode().isOptimisticLocking();
-        boolean throwOptimisticException = false;
         if (optimistic)
         {
-            throwOptimisticException = checkOptimisticResultsForObjects(results, mithraObjects, start, throwOptimisticException);
+            checkOptimisticResultsForObjects(results, mithraObjects, start);
         }
         else if (checkCount)
         {
             this.checkUpdateCount(results);
         }
-        if (throwOptimisticException)
-        {
-            throwOptimisticLockException();
-        }
         stm.clearBatch();
     }
 
-    private void throwOptimisticLockException()
+    private void throwOptimisticLockException(String message)
     {
-        MithraOptimisticLockException mithraOptimisticLockException = new MithraOptimisticLockException("Optimistic lock failed, see above log for specific objects.");
+        MithraOptimisticLockException mithraOptimisticLockException = new MithraOptimisticLockException("Optimistic lock failed " + message);
         if (MithraManagerProvider.getMithraManager().getCurrentTransaction().retryOnOptimisticLockFailure())
         {
             mithraOptimisticLockException.setRetriable(true);
@@ -4974,9 +4971,10 @@ public abstract class MithraAbstractDatabaseObject
         throw mithraOptimisticLockException;
     }
 
-    private boolean checkOptimisticResults(int[] results, List updateOperations, int start, boolean throwOptimisticException)
+    private boolean checkOptimisticResults(int[] results, List updateOperations, int start)
     {
         MithraTransaction tx = MithraManagerProvider.getMithraManager().getCurrentTransaction();
+        boolean throwOptimisticException = false;
         for (int i = 0; i < results.length; i++)
         {
             if (results[i] != 1)
@@ -4988,16 +4986,26 @@ public abstract class MithraAbstractDatabaseObject
                 {
                     data = mithraObject.zGetTxDataForRead();
                 }
-                this.getSqlLogger().error("Optimistic lock failed on " + PrintablePrimaryKeyMessageBuilder.createMessage(mithraObject, data));
-                this.getMithraObjectPortal().getCache().markDirtyForReload(data, tx);
-                throwOptimisticException = true;
+                String printableKey = PrintablePrimaryKeyMessageBuilder.createMessage (mithraObject, data);
+                if (results[i] > 1)
+                {
+                    throw new ReladomoCorruptMilestoneException("Primary Key: " + printableKey);
+                }
+                else
+                {
+                    this.getSqlLogger ().error ("Optimistic lock failed on " + printableKey);
+                    throwOptimisticException = true;
+                }
+                this.getMithraObjectPortal ().getCache ().markDirtyForReload (data, tx);
             }
         }
         return throwOptimisticException;
     }
 
-    private boolean checkOptimisticResultsForObjects(int[] results, List mithraObjects, int start, boolean throwOptimisticException)
+    private void checkOptimisticResultsForObjects(int[] results, List mithraObjects, int start)
     {
+        boolean throwOptimisticException = false;
+        boolean throwCorruptMilestoneException = false;
         MithraTransaction tx = MithraManagerProvider.getMithraManager().getCurrentTransaction();
         for (int i = 0; i < results.length; i++)
         {
@@ -5005,12 +5013,28 @@ public abstract class MithraAbstractDatabaseObject
             {
                 MithraTransactionalObject mithraObject = (MithraTransactionalObject) mithraObjects.get(start + i);
                 MithraDataObject data = mithraObject.zGetTxDataForRead();
-                this.getSqlLogger().error("Optimistic lock failed on " + PrintablePrimaryKeyMessageBuilder.createMessage(mithraObject, data));
+                if (results[i] < 1)
+                {
+                    throwOptimisticException = true;
+                    this.getSqlLogger().error("Optimistic lock failed on " + PrintablePrimaryKeyMessageBuilder.createMessage(mithraObject, data));
+                }
+                else
+                {
+                    throwCorruptMilestoneException = true;
+                    this.getSqlLogger().error("Found duplicate records for  " + PrintablePrimaryKeyMessageBuilder.createMessage(mithraObject, data));
+                }
                 this.getMithraObjectPortal().getCache().markDirtyForReload(data, tx);
-                throwOptimisticException = true;
             }
         }
-        return throwOptimisticException;
+        if (throwCorruptMilestoneException)
+        {
+            throw new ReladomoCorruptMilestoneException ("See above log for specific objects.");
+        }
+
+        if (throwOptimisticException)
+        {
+            throwOptimisticLockException(", see above log for specific objects.");
+        }
     }
 
 
