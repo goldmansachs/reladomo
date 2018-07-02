@@ -1,5 +1,5 @@
 # repoName, urlPattern
-central, https://repo.maven.apache.org/maven2/{groupIdWithSlashes}/{artifactId}/{version}/{artifactId}-{version}{dotUnlessExtensionDotted}{ext}
+central, http://repo.maven.apache.org/maven2/{groupIdWithSlashes}/{artifactId}/{version}/{artifactId}-{version}{dotUnlessExtensionDotted}{ext}
 privaterepo, http://repo.example.com/repo/{groupIdWithSlashes}/{artifactId}/{version}/{artifactId}-{version}{dotUnlessExtensionDotted}{ext}
 staging, https://oss.sonatype.org/content/groups/staging/{groupIdWithSlashes}/{artifactId}/{version}/{artifactId}-{version}{dotUnlessExtensionDotted}{ext}
 
