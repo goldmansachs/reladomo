@@ -222,7 +222,7 @@ public class ExtractorWriter
     public Class createClass(String attributeName, boolean isNullable, boolean hasBusinessDate, String businessClassNameWithDots,
             String businessClassName, boolean isOptimistic, int offHeapFieldOffset, int offHeapNullBitsOffset, int offHeapNullBitsPosition, String superClass, boolean hasSequence, boolean isShadowAttribute)
     {
-        String className = createClassName();
+        String className = createClassName(attributeName, businessClassName);
         ClassWriter cw = createClassWriterWithConstructor(className, superClass);
         String attrName = attributeName.substring(0,1).toUpperCase() + attributeName.substring(1);
         StringBuilder builder = new StringBuilder(businessClassNameWithDots.length()+4);
@@ -376,9 +376,21 @@ public class ExtractorWriter
         return cw;
     }
 
-    public static String createClassName()
+//    private static void addToStringMethod(ClassWriter cw, String str)
+//    {
+//        MethodVisitor mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "toString", "()Ljava/lang/String;", null, null);
+//        mv.visitCode();
+//
+//        mv.visitLdcInsn (str);
+//        mv.visitInsn(Opcodes.ARETURN);
+//        mv.visitMaxs(1, 2);
+//        mv.visitEnd();
+//    }
+
+    protected static String createClassName(String attributeName, String businessClassName)
     {
-        return "mithra/gen/Attribute" + count.incrementAndGet();
+        int ptr = businessClassName.lastIndexOf ('/');
+        return "mithra/gen/Attribute" + count.incrementAndGet() + '_' + (ptr < 0 ? businessClassName : businessClassName.substring (ptr+1)) + '_' + attributeName;
     }
 
     private static void addConstructor(ClassWriter cw, String superClass)

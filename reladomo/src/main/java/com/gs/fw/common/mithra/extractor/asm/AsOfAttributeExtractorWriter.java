@@ -26,8 +26,7 @@ public class AsOfAttributeExtractorWriter
 
     public Class createClass(String attributeName, String businessClassName, boolean isInfinityNull)
     {
-        String interfaceName = "com/gs/fw/common/mithra/extractor/JustAsOfAttributeExtractor";
-        String className = ExtractorWriter.createClassName();
+        String className = ExtractorWriter.createClassName(attributeName, businessClassName);
         ClassWriter cw;
         if (isInfinityNull)
         {

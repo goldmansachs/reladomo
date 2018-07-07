@@ -21,6 +21,7 @@ import com.gs.fw.common.mithra.test.aggregate.AggregateTestSuite;
 import com.gs.fw.common.mithra.test.database.SyslogCheckerTest;
 import com.gs.fw.common.mithra.test.domain.inherited.TestIndexCreation;
 import com.gs.fw.common.mithra.test.evo.TestEmbeddedValueObjects;
+import com.gs.fw.common.mithra.test.extractor.ExtractorWriterTest;
 import com.gs.fw.common.mithra.test.finalgetter.TestFinalGetters;
 import com.gs.fw.common.mithra.test.h2batch.TestH2DefaultBatchSizeTestCases;
 import com.gs.fw.common.mithra.test.h2batch.TestH2LargeBatchSizeTestCases;
@@ -295,6 +296,8 @@ public class MithraTestSuite
 
         //SubQuery
         suite.addTestSuite(TestSubQueryCache.class);
+
+        suite.addTestSuite(ExtractorWriterTest.class);
 
         return suite;
     }
