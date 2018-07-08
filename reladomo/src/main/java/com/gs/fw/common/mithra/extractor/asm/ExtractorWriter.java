@@ -376,17 +376,6 @@ public class ExtractorWriter
         return cw;
     }
 
-//    private static void addToStringMethod(ClassWriter cw, String str)
-//    {
-//        MethodVisitor mv = cw.visitMethod(Opcodes.ACC_PUBLIC, "toString", "()Ljava/lang/String;", null, null);
-//        mv.visitCode();
-//
-//        mv.visitLdcInsn (str);
-//        mv.visitInsn(Opcodes.ARETURN);
-//        mv.visitMaxs(1, 2);
-//        mv.visitEnd();
-//    }
-
     protected static String createClassName(String attributeName, String businessClassName)
     {
         int ptr = businessClassName.lastIndexOf ('/');
