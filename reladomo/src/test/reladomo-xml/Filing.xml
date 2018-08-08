@@ -81,7 +81,7 @@
     <Attribute name="changedBy" javaType="String" columnName="CHANGED_BY" nullable="false"/>
     <Attribute name="statusId" javaType="int" columnName="STATUS_ID"/>
     <Attribute name="payingEntityId" javaType="long" columnName="PAYING_ENTITY_ID"/>
-    <Attribute name="attahcmentRecieved" javaType="String" columnName="ATTACHMENT_RECIEVED"/>
+    <Attribute name="attahcmentRecieved" javaType="String" columnName="ATTACHMENT_RECEIVED"/>
     <Attribute name="totalLiabilityAtExtension" javaType="double" columnName="LIABILITY_AT_EXT_AMT"/>
     <Attribute name="estimatedPaymentAmountIncome" javaType="double" columnName="EST_PAYMT_INC_AMT"/>
     <Attribute name="estimatedPaymentAmountNonIncome" javaType="double" columnName="EST_PAYMT_NON_INC_AMT"/>

@@ -231,7 +231,7 @@ public class DependentLoaderFactoryTest extends TestCase
         }
         catch (RuntimeException e)
         {
-            assertTrue(e.getMessage().contains("cannnot handle"));
+            assertTrue(e.getMessage().contains("cannot handle"));
         }
     }
 

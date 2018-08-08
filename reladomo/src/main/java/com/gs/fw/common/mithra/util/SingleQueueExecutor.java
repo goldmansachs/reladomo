@@ -45,7 +45,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * the first column in the unique database index be used for hashing. All Mithra object attributes can be used
  * for hashing.
  *
- * This class is not synchronized. It expects to be called from a single thread or be extrenally synchronized.
+ * This class is not synchronized. It expects to be called from a single thread or be externally synchronized.
  *
  * The typical usage of this class is as follows:
  *

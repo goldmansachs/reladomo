@@ -36,7 +36,7 @@ import java.util.TimeZone;
 
 public interface MithraCodeGeneratedDatabaseObject
 {
-    // retreive source attribute
+    // retrieve source attribute
     public Object getSourceAttributeValueForSelectedObjectGeneric(SqlQuery query, int queryNumber);
 
     public Object getSourceAttributeValueGeneric(SqlQuery query, MapperStackImpl mapperStack, int sourceNumber);

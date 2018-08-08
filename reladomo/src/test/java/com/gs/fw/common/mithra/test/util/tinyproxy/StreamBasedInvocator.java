@@ -112,7 +112,7 @@ public class StreamBasedInvocator
                     {
                         e = ((InvocationTargetException) e).getTargetException();
                     }
-                    LOGGER.error("an exception occured while invoking {}", method.getName(), e);
+                    LOGGER.error("an exception occurred while invoking {}", method.getName(), e);
                     context.setReturnValue(e, true);
 
                 }

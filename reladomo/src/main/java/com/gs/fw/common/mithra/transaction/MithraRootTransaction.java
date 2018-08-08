@@ -786,7 +786,7 @@ public class MithraRootTransaction extends MithraLocalTransaction implements Syn
     {
         this.asyncRollback = true;
         super.asyncRollback();
-        // this is a desparate attempt at rolling back, so handle as much of the errors as possible
+        // this is a desperate attempt at rolling back, so handle as much of the errors as possible
         for (Iterator iterator = this.enlistedResources.iterator(); iterator.hasNext();)
         {
             XAResource xaResource = (XAResource) iterator.next();
@@ -927,7 +927,7 @@ public class MithraRootTransaction extends MithraLocalTransaction implements Syn
     {
         if (this.txStatus == MITHRA_STATUS_COMMITTED)
         {
-            throw new MithraTransactionException("cannot rollback commited transaction.");
+            throw new MithraTransactionException("cannot rollback committed transaction.");
         }
 
         this.expectRollback = true;

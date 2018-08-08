@@ -36,11 +36,11 @@ public class Udb82DatabaseType extends AbstractDatabaseType
     private static final String DEADLOCK_OR_TIMEOUT2 = "40001";
     private static final int DEADLOCK_OR_TIMEOUT_ERROR_CODE = -911;
     private static final int DISCONNECT_ERROR_CODE = -4499;
-    private static final int CONNECTION_NON_EXISTANT_ERROR_CODE = -1024;
+    private static final int CONNECTION_NON_EXISTENT_ERROR_CODE = -1024;
     private static final int DUPLICATE_INSERT_UPDATE = -803;
-    private static final int CONNECTION_NON_EXISTANT_ERROR_CODE2 = -900;
-    private static final int CONNECTION_NON_EXISTANT_ERROR_CODE3 = -4470;
-    private static final int CONNECTION_NON_EXISTANT_ERROR_CODE4 = -1224;
+    private static final int CONNECTION_NON_EXISTENT_ERROR_CODE2 = -900;
+    private static final int CONNECTION_NON_EXISTENT_ERROR_CODE3 = -4470;
+    private static final int CONNECTION_NON_EXISTENT_ERROR_CODE4 = -1224;
 //    private static final String DEADLOCK_REASON_CODE = "00C90088";
     private static final String TIMEOUT_REASON_CODE = "00C9008E";
     private static final String READ_ONLY = " FOR READ ONLY";
@@ -364,10 +364,10 @@ public class Udb82DatabaseType extends AbstractDatabaseType
     @Override
     public boolean isConnectionDeadWithoutRecursion(SQLException e)
     {
-        return (e.getErrorCode() == CONNECTION_NON_EXISTANT_ERROR_CODE  ||
-                e.getErrorCode() == CONNECTION_NON_EXISTANT_ERROR_CODE2 ||
-                e.getErrorCode() == CONNECTION_NON_EXISTANT_ERROR_CODE3 ||
-                e.getErrorCode() == CONNECTION_NON_EXISTANT_ERROR_CODE4 ||
+        return (e.getErrorCode() == CONNECTION_NON_EXISTENT_ERROR_CODE  ||
+                e.getErrorCode() == CONNECTION_NON_EXISTENT_ERROR_CODE2 ||
+                e.getErrorCode() == CONNECTION_NON_EXISTENT_ERROR_CODE3 ||
+                e.getErrorCode() == CONNECTION_NON_EXISTENT_ERROR_CODE4 ||
                 e.getErrorCode() == DISCONNECT_ERROR_CODE);
     }
 

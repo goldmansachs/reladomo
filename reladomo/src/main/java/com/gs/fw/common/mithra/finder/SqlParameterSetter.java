@@ -25,7 +25,7 @@ public interface SqlParameterSetter
 {
 
     /**
-     * set the parameters on the statment and return the number of parameters set
+     * set the parameters on the statement and return the number of parameters set
      *
      * @param pstmt statement
      * @param startIndex index to start setting parameters

@@ -368,13 +368,13 @@ public class DependentLoaderFactoryImpl implements DependentLoaderFactory
         {
             if (each.isAsOfAttribute())
             {
-                throw new RuntimeException("CacheLoader cannnot handle AsOfOperation filter (" + op + ") on the dependent relationship " + this.relationship +
+                throw new RuntimeException("CacheLoader cannot handle AsOfOperation filter (" + op + ") on the dependent relationship " + this.relationship +
                         " all Milestoning logic has to be implemented in the cache loader factory classes (i.e. PmeYtdBalanceTopLevelLoaderFactory). " +
                         "Consider creating cacheLoader-specific relationship without AsOfAttribute filtering and with specialized factory in the cacheLoader.xml.");
             }
             if (each.isSourceAttribute())
             {
-                throw new RuntimeException("CacheLoader cannnot handle Source attribute filter (" + op + ") on the dependent relationship " + this.relationship +
+                throw new RuntimeException("CacheLoader cannot handle Source attribute filter (" + op + ") on the dependent relationship " + this.relationship +
                         " the source attributes have to be explicitly set in the cacheLoader.xml sourceAttributes properties. " +
                         "Consider creating cacheLoader-specific relationship without source attribute filtering and with source attribute defined in the cacheLoader.xml.");
             }

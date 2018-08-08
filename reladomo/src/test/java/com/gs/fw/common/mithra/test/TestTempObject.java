@@ -669,8 +669,8 @@ public class TestTempObject extends MithraTestAbstract
     {
         TemporaryContext temporaryContextA = null;
         TemporaryContext temporaryContextB = null;
-        Throwable destoryExceptionA = null;
-        Throwable destoryExceptionB = null;
+        Throwable destroyExceptionA = null;
+        Throwable destroyExceptionB = null;
         try
         {
             temporaryContextA = PositionDriverFinder.createTemporaryContext("A");
@@ -717,8 +717,8 @@ public class TestTempObject extends MithraTestAbstract
                 catch (Throwable e)
                 {
                     // we have to do this so we don't lose the exeption in the main part of the test
-                    getLogger().error("destory temp context failed", e);
-                    destoryExceptionA = e;
+                    getLogger().error("destroy temp context failed", e);
+                    destroyExceptionA = e;
                 }
             }
             if (temporaryContextB != null)
@@ -729,14 +729,14 @@ public class TestTempObject extends MithraTestAbstract
                 }
                 catch (Throwable e)
                 {
-                    getLogger().error("destory temp context failed", e);
-                    destoryExceptionB = e;
+                    getLogger().error("destroy temp context failed", e);
+                    destroyExceptionB = e;
                 }
             }
         }
         // if we get here, there wasn't another exception above.
-        if (destoryExceptionA != null) fail("destory failed");
-        if (destoryExceptionB != null) fail("destory failed");
+        if (destroyExceptionA != null) fail("destroy failed");
+        if (destroyExceptionB != null) fail("destroy failed");
     }
 
     private void createPositionDriverA()

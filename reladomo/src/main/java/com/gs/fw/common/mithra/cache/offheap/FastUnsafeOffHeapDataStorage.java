@@ -981,7 +981,7 @@ public class FastUnsafeOffHeapDataStorage implements OffHeapDataStorage
         {
             UNSAFE.freeMemory(this.baseAddress);
             destroyed = true;
-            this.baseAddress = -(1L << 40); // about a terrabyte
+            this.baseAddress = -(1L << 40); // about a terabyte
             this.dataArray = null;
             this.pageVersionList.destroy();
         }

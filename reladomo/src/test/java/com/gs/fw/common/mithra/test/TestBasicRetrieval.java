@@ -306,7 +306,7 @@ public class TestBasicRetrieval
         }
         if (!user.isActive())
         {
-            fail("improper inflation of nullable primitive attribute when default is provided. Default value is not availble");
+            fail("improper inflation of nullable primitive attribute when default is provided. Default value is not available");
         }
         try
         {

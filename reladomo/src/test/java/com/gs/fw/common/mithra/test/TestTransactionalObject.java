@@ -2829,7 +2829,7 @@ private static class TransactionalResourceForTests implements Synchronization
         this.currentTx = null;
         if (status == Status.STATUS_COMMITTED || status == Status.STATUS_COMMITTING)
         {
-            //Load the commited map with the transactional map
+            //Load the committed map with the transactional map
             this.commitedMap.putAll(this.transactionalMap);
             this.transactionalMap.clear();
         }

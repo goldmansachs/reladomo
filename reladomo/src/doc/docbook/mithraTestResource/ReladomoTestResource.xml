@@ -77,7 +77,7 @@ this.mithraTestResource.setUp();
     <sect2>
         <title>Reladomo runtime configuration for tests</title>
         <para>
-            The runtime configuration is used by the MithraTestReosurce to create the neccesary table in the in memory database used for tests.
+            The runtime configuration is used by the MithraTestReosurce to create the necessary table in the in memory database used for tests.
             Also, the MithraTestResource initializes Reladomo using that runtime configuration. It is required that a "resourceName" property is
             defined.
             <programlisting language="xml"><![CDATA[

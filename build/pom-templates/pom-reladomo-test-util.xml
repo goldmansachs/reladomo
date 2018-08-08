@@ -26,7 +26,7 @@
     <packaging>bundle</packaging>
 
     <name>Reladomo Test Utilities</name>
-    <description>Reladomo test utilities faciliate writing tests for projects using Reladomo.</description>
+    <description>Reladomo test utilities facilitate writing tests for projects using Reladomo.</description>
     <url>https://github.com/goldmansachs/reladomo</url>
 
     <licenses>

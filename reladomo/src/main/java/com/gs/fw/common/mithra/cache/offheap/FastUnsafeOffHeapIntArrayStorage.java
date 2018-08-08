@@ -319,7 +319,7 @@ public class FastUnsafeOffHeapIntArrayStorage implements OffHeapIntArrayStorage
         {
             destroyed = true;
             UNSAFE.freeMemory(this.baseAddress);
-            this.baseAddress = -(1L << 40); // about a terrabyte
+            this.baseAddress = -(1L << 40); // about a terabyte
         }
     }
 

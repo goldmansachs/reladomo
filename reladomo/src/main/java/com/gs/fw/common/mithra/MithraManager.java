@@ -645,7 +645,7 @@ public class MithraManager
 
     /**
      * sets the value of minimum queries to keep per class. 32 is the default. This can be
-     * overriden in a configuration file using &lt;MithraRuntime defaultMinQueriesToKeep="100"&gt;
+     * overridden in a configuration file using &lt;MithraRuntime defaultMinQueriesToKeep="100"&gt;
      * or on a per object basis
      * &lt;MithraObjectConfiguration className="com.gs.fw.para.domain.desk.product.ProductScrpMap" cacheType="partial" minQueriesToKeep="100"/&gt;
      * @param defaultMinQueriesToKeep
@@ -657,7 +657,7 @@ public class MithraManager
 
     /**
      * sets the value of relationship cache per class. 10000 is the default. This can be
-     * overriden in a configuration file using &lt;MithraRuntime defaultRelationshipCacheSize="100"&gt;
+     * overridden in a configuration file using &lt;MithraRuntime defaultRelationshipCacheSize="100"&gt;
      * or on a per object basis
      * &lt;MithraObjectConfiguration className="com.gs.fw.para.domain.desk.product.ProductScrpMap" cacheType="partial" relationshipCacheSize="50000"/&gt;
      * @param defaultRelationshipCacheSize

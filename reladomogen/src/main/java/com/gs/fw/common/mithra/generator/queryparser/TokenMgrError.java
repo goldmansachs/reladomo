@@ -24,7 +24,7 @@ public class TokenMgrError extends Error
     */
 
    /**
-    * Lexical error occured.
+    * Lexical error occurred.
     */
    static final int LEXICAL_ERROR = 0;
 
@@ -103,10 +103,10 @@ public class TokenMgrError extends Error
     * token manager to indicate a lexical error.
     * Parameters : 
     *    EOFSeen     : indicates if EOF caused the lexicl error
-    *    curLexState : lexical state in which this error occured
-    *    errorLine   : line number when the error occured
-    *    errorColumn : column number when the error occured
-    *    errorAfter  : prefix that was seen before this error occured
+    *    curLexState : lexical state in which this error occurred
+    *    errorLine   : line number when the error occurred
+    *    errorColumn : column number when the error occurred
+    *    errorAfter  : prefix that was seen before this error occurred
     *    curchar     : the offending character
     * Note: You can customize the lexical error message by modifying this method.
     */

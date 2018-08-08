@@ -342,7 +342,7 @@ public abstract class AbstractConnectionManager
     }
 
     /**
-     * sets the intial size of the pool. These connections will be established when initalizePool() is called.
+     * sets the initial size of the pool. These connections will be established when initalizePool() is called.
      * @param initialSize
      */
     public void setInitialSize(int initialSize)

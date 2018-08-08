@@ -1,5 +1,5 @@
 /**
- * This grammer files is used to generate the parser for Mithra relationship queries. The code generated is checked into
+ * This grammar files is used to generate the parser for Mithra relationship queries. The code generated is checked into
  * cvs in package com.gs.fw.common.mithra.generator.queryparser. Care should be taken when regenerating code because we have
  * custom code in SimpleNode, ASTLiteral, and ASTAttributeName
  *    
