@@ -90,7 +90,7 @@ public class EchoImpl implements Echo
         /**
          * Mapping of primitive wrapper classes to primitive types
          */
-        private static final ImmutableMap<Class<?>, Class<?>> WRAPPER_TO_PRIMATIVES = ((UnsortedMapIterable<Class<?>, Class<?>>)UnifiedMap.<Class<?>, Class<?>>newMap()
+        private static final ImmutableMap<Class<?>, Class<?>> WRAPPER_TO_PRIMITIVES = ((UnsortedMapIterable<Class<?>, Class<?>>)UnifiedMap.<Class<?>, Class<?>>newMap()
                 .withKeyValue(Short.class, short.class)
                 .withKeyValue(Boolean.class, boolean.class)
                 .withKeyValue(Byte.class, byte.class)
@@ -101,7 +101,7 @@ public class EchoImpl implements Echo
                 .withKeyValue(Double.class, double.class))
                 .toImmutable();
 
-        private static final ImmutableMap<Class<?>, Class<?>> PRIMITIVES_TO_WRAPPERS = ((UnsortedMapIterable<Class<?>, Class<?>>)MapIterate.reverseMapping(WRAPPER_TO_PRIMATIVES.castToMap())).toImmutable();
+        private static final ImmutableMap<Class<?>, Class<?>> PRIMITIVES_TO_WRAPPERS = ((UnsortedMapIterable<Class<?>, Class<?>>)MapIterate.reverseMapping(WRAPPER_TO_PRIMITIVES.castToMap())).toImmutable();
 
         private ReflectionHelper()
         {

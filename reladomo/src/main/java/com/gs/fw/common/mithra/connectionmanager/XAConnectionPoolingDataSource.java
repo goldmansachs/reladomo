@@ -319,7 +319,7 @@ public class XAConnectionPoolingDataSource implements DataSource
         private List availableConnections = new ArrayList();
         private List connectionsInUse = new ArrayList();
 
-        private boolean commited;
+        private boolean committed;
         private boolean rolledback = false;
         private final MithraTransaction ownerTransaction;
 
@@ -440,7 +440,7 @@ public class XAConnectionPoolingDataSource implements DataSource
 
         public void rollback(Xid xid) throws XAException
         {
-            if(commited)
+            if(committed)
             {
                 throw new XAException("Transaction is already committed");
             }
@@ -492,7 +492,7 @@ public class XAConnectionPoolingDataSource implements DataSource
 
         public void commit(Xid xid, boolean b) throws XAException
         {
-            if(commited)
+            if(committed)
             {
                 throw new XAException("Transaction is already committed");
             }
@@ -503,7 +503,7 @@ public class XAConnectionPoolingDataSource implements DataSource
                     throw new XAException("Detected open jdbc connections. Change code to close all connection borrowed from the connection manager");
                 }
                 commitConnections(availableConnections);
-                commited = true;
+                committed = true;
             }
             catch (SQLException e)
             {

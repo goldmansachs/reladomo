@@ -42,7 +42,7 @@ public class Libboot
     private static final int NEEDS_REDOWNLOAD = 200;
     private static final int ERROR_WRONG_ARGS = -1;
     private static final int ERROR_DOWNLOAD_FAILED = -2;
-    private static final int ERROR_UNKOWN = -4;
+    private static final int ERROR_UNKNOWN = -4;
     private static final int NO_ERROR = 0;
 
     public static void main(String[] args)
@@ -183,7 +183,7 @@ public class Libboot
             catch (Throwable e)
             {
                 error("Unrecoverable error "+printableError(e));
-                return ERROR_UNKOWN;
+                return ERROR_UNKNOWN;
             }
             finally
             {

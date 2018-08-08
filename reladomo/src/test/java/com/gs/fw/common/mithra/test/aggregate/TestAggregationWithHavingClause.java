@@ -1375,7 +1375,7 @@ public class TestAggregationWithHavingClause extends MithraTestAbstract
     }
 
 
-    // We still need to undertsand how to do this case. In this case we are going from Order to Items,we are aggregating
+    // We still need to understand how to do this case. In this case we are going from Order to Items,we are aggregating
     // Order but the having operation is aggregating on items
     public void xtestDatedHavingEqUsingDifferentMappedAttributeInHaving()
     {

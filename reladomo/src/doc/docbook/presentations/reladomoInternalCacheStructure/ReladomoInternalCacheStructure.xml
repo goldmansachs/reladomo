@@ -344,7 +344,7 @@
                     <para>By default it's a partial cache and no configuration is required</para>
                 </listitem>
                 <listitem>
-                    <para>The default can be overriden in the runtime configuration</para>
+                    <para>The default can be overridden in the runtime configuration</para>
                 </listitem>
                 <listitem>
                     <para>The client tries to answer queries from its cache first before hitting the middle tier</para>

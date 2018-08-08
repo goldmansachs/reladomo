@@ -171,7 +171,7 @@ public class AdhocDetachedList extends TransactionalAdhocFastList
         this.addRemovedItem((MithraTransactionalObject) obj);
     }
 
-// remove(Object) is not overriden because FastList implementation calls remove(int)
+// remove(Object) is not overridden because FastList implementation calls remove(int)
 //    public boolean remove(Object object)
 
     public void clear()

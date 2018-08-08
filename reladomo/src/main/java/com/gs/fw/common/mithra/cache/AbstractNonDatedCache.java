@@ -522,7 +522,7 @@ public abstract class AbstractNonDatedCache extends AbstractCache
 
     public void reindexForTransaction(MithraObject object, AttributeUpdateWrapper updateWrapper)
     {
-        throw new RuntimeException("not implemented. expected to be overriden by transactional cache.");
+        throw new RuntimeException("not implemented. expected to be overridden by transactional cache.");
     }
 
     public void removeIgnoringTransaction(MithraObject object)
@@ -532,27 +532,27 @@ public abstract class AbstractNonDatedCache extends AbstractCache
 
     public Object preparePut(MithraObject obj)
     {
-        throw new RuntimeException("not implemented. expected to be overriden by transactional cache.");
+        throw new RuntimeException("not implemented. expected to be overridden by transactional cache.");
     }
 
     public void commitPreparedForIndex(Object index)
     {
-        throw new RuntimeException("not implemented. expected to be overriden by transactional cache.");
+        throw new RuntimeException("not implemented. expected to be overridden by transactional cache.");
     }
 
     public void commitRemovedObject(MithraDataObject data)
     {
-        throw new RuntimeException("not implemented. expected to be overriden by transactional cache.");
+        throw new RuntimeException("not implemented. expected to be overridden by transactional cache.");
     }
 
     public void commitObject(MithraTransactionalObject mithraObject, MithraDataObject oldData)
     {
-        throw new RuntimeException("not implemented. expected to be overriden by transactional cache.");
+        throw new RuntimeException("not implemented. expected to be overridden by transactional cache.");
     }
 
     public Object getObjectByPrimaryKey(MithraDataObject data, boolean evenIfDirty)
     {
-        throw new RuntimeException("not implemented. expected to be overriden by transactional cache.");
+        throw new RuntimeException("not implemented. expected to be overridden by transactional cache.");
     }
 
     public boolean enrollDatedObject(MithraDatedTransactionalObject mithraObject, DatedTransactionalState prevState, boolean forWrite)

@@ -79,7 +79,7 @@
             </para>
 
             <para>
-            The database type must be specified using the <code>databaseType</code> element. Acceptible values
+            The database type must be specified using the <code>databaseType</code> element. Acceptable values
             for the type are &quot;sybase&quot; and &quot;udb82&quot;.
             </para>
 

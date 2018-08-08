@@ -500,7 +500,7 @@ public class TestBigDecimal extends MithraTestAbstract
         }
         catch (MithraBusinessException e)
         {
-            logger.info("Expected excpetion: ", e);
+            logger.info("Expected exception: ", e);
         }
 
         try
@@ -513,7 +513,7 @@ public class TestBigDecimal extends MithraTestAbstract
         }
         catch (MithraBusinessException e)
         {
-            logger.info("Expected excpetion: ", e);
+            logger.info("Expected exception: ", e);
         }
     }
 

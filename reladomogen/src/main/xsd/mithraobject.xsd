@@ -745,7 +745,7 @@
                 <xsd:annotation><xsd:documentation xml:lang="en">
                     "auto" - Automatically determine if the relationship qualifies for a foreign key. If one side
                     of the relationship has a "to-one" cardinality and it's not a dated object,
-                    the code will assume there is a foregin key.
+                    the code will assume there is a foreign key.
                 </xsd:documentation></xsd:annotation>
             </xsd:enumeration>
             <xsd:enumeration value="false">

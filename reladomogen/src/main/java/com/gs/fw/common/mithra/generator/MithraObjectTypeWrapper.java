@@ -1692,7 +1692,7 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
             }
             if (this.getSourceAttribute() != null && this.getSuperClassWrapper().getSourceAttribute() != null)
             {
-                errorMessages.add("source attributes are not allowed to be overriden in "+
+                errorMessages.add("source attributes are not allowed to be overridden in "+
                         this.getClassName()+"."+this.getSourceAttribute().getName()+" overriding "+
                         this.getSuperClassWrapper().getClassName()+"."+this.getSuperClassWrapper().getSourceAttribute().getName());
             }

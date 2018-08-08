@@ -95,7 +95,7 @@ public class RemoteMithraServiceImpl implements RemoteMithraService
                 }
                 if (workerTask == null || workerTask.isTimedOut())
                 {
-                    throw new MithraTransactionException("server side transaction context is timed out or non-existant");
+                    throw new MithraTransactionException("server side transaction context is timed out or non-existent");
                 }
             }
             return workerTask;
@@ -153,7 +153,7 @@ public class RemoteMithraServiceImpl implements RemoteMithraService
         }
         if (workerTask == null || workerTask.isTimedOut())
         {
-            throw new MithraTransactionException("server side transaction context is timed out or non-existant");
+            throw new MithraTransactionException("server side transaction context is timed out or non-existent");
         }
         workerTask.getRemoteTransactionId().setRequestorVmId(remoteTransactionId.getRequestorVmId());
         workerTask.commit(onePhase);
@@ -169,7 +169,7 @@ public class RemoteMithraServiceImpl implements RemoteMithraService
         }
         if (workerTask == null || workerTask.isTimedOut())
         {
-            throw new MithraTransactionException("server side transaction context is timed out or non-existant");
+            throw new MithraTransactionException("server side transaction context is timed out or non-existent");
         }
         workerTask.rollback();
         logger.debug("server side rollback finished");
@@ -450,7 +450,7 @@ public class RemoteMithraServiceImpl implements RemoteMithraService
         }
         if (workerTask == null || workerTask.isTimedOut())
         {
-            throw new MithraTransactionException("server side transaction context is timed out or non-existant");
+            throw new MithraTransactionException("server side transaction context is timed out or non-existent");
         }
         workerTask.waitForOtherTransactionToFinish();
         logger.debug("server side rollback finished");

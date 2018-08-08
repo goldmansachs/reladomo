@@ -445,7 +445,7 @@ public class AsOfEqualityChecker implements MapperStack
         if (asOfAttributes != null)
         {
             initRegisteredAsOfAttributesWithMapperStack();
-            //todo: pop to container boundry
+            //todo: pop to container boundary
             ObjectWithMapperStack<TemporalAttribute> tempObject = getOrCreateTemp();
             MapperStackImpl atBoundary = this.mapperStackImpl.ifAtContainerBoundaryCloneAndPop();
             for(int i=0;i<asOfAttributes.length;i++)
