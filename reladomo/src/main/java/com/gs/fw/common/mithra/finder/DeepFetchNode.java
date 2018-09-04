@@ -74,13 +74,11 @@ public class DeepFetchNode implements Serializable, DeepFetchTree
         }
     };
 
-    private long queryTime;
     private DeepFetchNode parent;
     private FastList<DeepFetchNode> children;
     private transient List cachedQueryList;
     private AbstractRelatedFinder relatedFinder;
     private Operation originalOperation;
-    private Operation simplifiedOperation;
     private boolean resolved = false;
     private boolean fullyResolved = false;
     private transient List resolvedList;
@@ -221,10 +219,8 @@ public class DeepFetchNode implements Serializable, DeepFetchTree
                 new ThreadConservingExecutor(numberOfParallelThreads);
         this.resolvedList = resolved.getResult();
         this.originalOperation = resolved.getOperation();
-        if (queryTime != 0) this.queryTime = queryTime;
         DeepFetchRunnable parent = new DeepFetchRunnable(null, bypassCache, executor, forceImplicitJoin);
         deepFetchChildren(bypassCache, executor, parent, forceImplicitJoin);
-        parent.waitForChildren();
         executor.finish();
         this.resolved = true;
         this.fullyResolved = true;
@@ -1073,21 +1069,6 @@ public class DeepFetchNode implements Serializable, DeepFetchTree
         {
             fullyResolved = true;
             decrementParent();
-        }
-
-        private synchronized void waitForChildren()
-        {
-            while(childCount > 0)
-            {
-                try
-                {
-                    this.wait();
-                }
-                catch (InterruptedException e)
-                {
-                    //ignore
-                }
-            }
         }
 
         private synchronized boolean decrementChildCount()
