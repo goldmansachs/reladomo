@@ -120,6 +120,7 @@ public class MithraTestSuite
         suite.addTestSuite(TestDirectRefRelationships.class);
         suite.addTestSuite(TestDatedBasicRetrieval.class);
         suite.addTestSuite(SelfJoinTest.class);
+        suite.addTestSuite(MultiThreadDeepFetchTest.class);
         suite.addTestSuite(TestDeepFetchExternalClose.class);
         suite.addTestSuite(EdgePointDeepFetchOnProcessingTemporalTest.class);
         suite.addTestSuite(TestQueryCacheBehavior.class);
