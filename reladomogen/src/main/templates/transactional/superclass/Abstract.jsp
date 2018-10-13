@@ -20,6 +20,7 @@ under the License.
 <%@ page import="com.gs.fw.common.mithra.generator.metamodel.MithraObjectType" %>
 <%@ page import="com.gs.fw.common.mithra.generator.metamodel.ObjectType" %>
 <%@ page import="com.gs.fw.common.mithra.generator.metamodel.RelationshipType" %>
+<%@ page import="com.gs.fw.common.mithra.generator.metamodel.MithraInterfaceType" %>
 <%
 	MithraObjectTypeWrapper wrapper = (MithraObjectTypeWrapper) request.getAttribute("mithraWrapper");
 	AbstractAttribute[] attributes = wrapper.getNormalAndSourceAttributes();
@@ -27,6 +28,7 @@ under the License.
     RelationshipAttribute[] relationshipAttributes = wrapper.getRelationshipAttributes();
     AsOfAttribute[] asOfAttributes = wrapper.getAsOfAttributes();
 	String className = wrapper.getImplClassName() + "Abstract";
+    MithraInterfaceType[] mithraInterfaceTypes = wrapper.getMithraInterfaces();
 %>
 package <%= wrapper.getPackageName() %>;
 
@@ -48,10 +50,27 @@ import java.util.Arrays;
 
 <% if (wrapper.hasSuperClass()) { %>
 public abstract class <%= className %> extends <%= wrapper.getFullyQualifiedSuperClassType() %> implements <%= wrapper.getMithraInterfaceName() %>
+    <% if (wrapper.hasMithraInterfaces()) { %>
+      <% for (int i=0;i<mithraInterfaceTypes.length;i++) { %>
+          , <%=mithraInterfaceTypes[i].getClassName()%>
+        <% } %>
+    <% } %>
 <% } else if (wrapper.canExtendNonGeneratedSuperClass()) { %>
 public abstract class <%= className %> extends <%= wrapper.getNonGeneratedSuperClassName()%>
+    <% if (wrapper.hasMithraInterfaces()) { %>
+      implements
+      <% for (int i=0;i<mithraInterfaceTypes.length-1;i++) { %>
+           <%=mithraInterfaceTypes[i].getClassName()%>,
+        <% } %>
+       <%=mithraInterfaceTypes[mithraInterfaceTypes.length-1].getClassName()%>
+    <% } %>
 <% } else {%>
 public abstract class <%= className %> implements <%= wrapper.getMithraInterfaceName() %>
+    <% if (wrapper.hasMithraInterfaces()) { %>
+      <% for (int i=0;i<mithraInterfaceTypes.length;i++) { %>
+          , <%=mithraInterfaceTypes[i].getClassName()%>
+        <% } %>
+    <% } %>
 <% } %>
 {
     //add getters for all attributes
