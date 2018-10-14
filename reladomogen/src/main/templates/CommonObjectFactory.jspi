@@ -12,6 +12,8 @@ software distributed under the License is distributed on an
 KIND, either express or implied.  See the License for the
 specific language governing permissions and limitations
 under the License.
+
+Portions copyright Two Sigma. Licensed under Apache 2.0 license
 --%>
 <%@ page import="com.gs.fw.common.mithra.generator.type.StringJavaType,
                  com.gs.fw.common.mithra.generator.type.CharJavaType,
@@ -49,7 +51,7 @@ under the License.
     public MithraDataObject deserializeFullData(ObjectInput in) throws IOException, ClassNotFoundException
     {
         <% if (wrapper.isTablePerClassSubClass() || wrapper.isTablePerClassSuperClass()) { %>
-            Class dataClass = com.gs.fw.common.mithra.remote.MithraSerialUtil.getDataClassToInstantiate((String) in.readObject());
+            java.lang.Class dataClass = com.gs.fw.common.mithra.remote.MithraSerialUtil.getDataClassToInstantiate((String) in.readObject());
             MithraDataObject data = com.gs.fw.common.mithra.remote.MithraSerialUtil.instantiateData(dataClass);
         <% } else { %>
             MithraDataObject data = new <%= wrapper.getOnHeapDataClassName()%>();
