@@ -26,7 +26,7 @@ under the License.
     String mithraObjectClassName = wrapper.getClassName();
     String listClassName = wrapper.getListClassName();
     RelationshipAttribute[] relationshipAttributes = wrapper.getRelationshipAttributes();
-    AbstractAttribute[] normalAttributes = wrapper.getSortedNormalAndSourceAttributes();
+    AbstractAttribute[] normalAttributes = wrapper.getNormalAndInheritedAndSourceAttributes();
     EmbeddedValue[] embeddedValueObjects = wrapper.getEmbeddedValueObjects();
     Attribute[] nullablePrimitiveAttributes = wrapper.getNullablePrimitiveAttributes();
     Attribute[] pkAttributes = wrapper.getPrimaryKeyAttributes();
