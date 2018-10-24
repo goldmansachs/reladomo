@@ -22,6 +22,9 @@
     <!--<MithraObjectResource name="CalcDate"/>-->
     <MithraObjectResource name="subdirtest/FundingBalance"/>
     <MithraObjectResource name="TlewTransaction"/>
+    <MithraObjectResource name="ParentX"/>
+    <MithraObjectResource name="AbstractChild"/>
+    <MithraObjectResource name="ConcreteChild"/>
     <MithraObjectResource name="TestAgeBalanceSheetRunRate"/>
     <MithraObjectResource name="TestAgeBalanceSheetRunRateNull"/>
     <MithraObjectResource name="DbsTestEntity"/>
