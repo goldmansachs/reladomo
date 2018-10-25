@@ -47,7 +47,6 @@ public abstract class MithraTestAbstract
     protected static final String MITHRA_TEST_DATA_FILE_PATH = "testdata/";
     protected static SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public static final String SHUTDOWN_COMMAND = "SHUTDOWN";
     public static final String SOURCE_A = "A";
     public static final String SOURCE_B = "B";
 
