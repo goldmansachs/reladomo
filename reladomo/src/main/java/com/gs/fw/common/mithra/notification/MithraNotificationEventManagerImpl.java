@@ -716,7 +716,13 @@ public class MithraNotificationEventManagerImpl implements MithraNotificationEve
         adapterFactory.shutdown();
         if (!fromShutdownHook && this.shutdownHook != null)
         {
-            Runtime.getRuntime().removeShutdownHook(this.shutdownHook);
+            try
+            {
+                Runtime.getRuntime ().removeShutdownHook (this.shutdownHook);
+            } catch (IllegalStateException ex)
+            {
+                logger.info("The virtual machine is already in the process of shutting down.", ex);
+            }
         }
         this.shutdownHook = null;
     }
