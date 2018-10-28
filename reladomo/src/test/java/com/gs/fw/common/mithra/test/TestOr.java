@@ -26,6 +26,7 @@ import com.gs.fw.common.mithra.test.domain.OrderItemList;
 import com.gs.fw.common.mithra.test.domain.OrderStatus;
 import com.gs.fw.common.mithra.test.domain.ParaDeskFinder;
 import com.gs.fw.common.mithra.test.domain.ParaDeskList;
+import com.gs.fw.common.mithra.test.domain.DatedEntityFinder;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 
 import java.sql.SQLException;
@@ -57,6 +58,19 @@ public class TestOr extends TestSqlDatatypes
         Operation secondOr = OrderFinder.items().discountPrice().lessThan(20).or(OrderFinder.userId().eq(2));
         Operation op = firstOr.and(secondOr);
         OrderFinder.findMany(op).forceResolve();
+    }
+
+    public void testPartialCombine()
+    {
+        com.gs.fw.finder.Operation procOp = DatedEntityFinder.processingDate ().eq (Timestamp.valueOf ("2017-10-30 23:59:00"));
+
+        com.gs.fw.finder.Operation op1 = DatedEntityFinder.id ().eq (1);
+        com.gs.fw.finder.Operation op2 = DatedEntityFinder.id ().greaterThan (2);
+
+        assertEquals (1, DatedEntityFinder.findMany (op1.and(procOp)).size());
+        assertEquals (8, DatedEntityFinder.findMany (op2.and(procOp)).size());
+
+        assertEquals (9, DatedEntityFinder.findMany (op1.and(procOp).or(op2.and(procOp))).size());
     }
 
     public void testOuterJoinLikeOr()

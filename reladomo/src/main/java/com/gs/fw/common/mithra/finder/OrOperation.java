@@ -257,6 +257,8 @@ public class OrOperation implements Operation
             return null;
         }
         FullUniqueIndex result = new FullUniqueIndex(ExtractorBasedHashStrategy.IDENTITY_HASH_STRATEGY);
+        result.addAll(partialResult);
+
         for (int i = 1; i < operations.length; i++)
         {
             partialResult = operation.getResultObjectPortal().zFindInMemoryWithoutAnalysis(operations[i], true);
