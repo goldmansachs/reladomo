@@ -4,12 +4,10 @@ addons:
     packages:
       - openjdk-6-jdk
 
-jdk:
-  - openjdk6
-
 install: true
 
 script:
+  - jdk_switcher use openjdk6
   - export RELADOMO_JDK_HOME="$JAVA_HOME"
   - export RELADOMO_TEST_THREADS=1
   - build/build.sh compile-reladomo-test compile-reladomo-xa-test
