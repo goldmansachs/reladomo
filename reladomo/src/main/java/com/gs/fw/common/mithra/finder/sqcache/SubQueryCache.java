@@ -61,14 +61,14 @@ public class SubQueryCache
             toFind = analyzedOperation.getAnalyzedOperation();
         }
         CachedQuery result = null;
-        for(int i=0;i<MAX_REFS;i++)
+        for(int i = 0; i<MAX_REFS; i++)
         {
             CachedQuery query = unwrap(hashTable[i]);
             if (query != null)
             {
                 ShapeMatchResult shapeMatchResult = toFind.zShapeMatch(query.getOperation());
                 List resolved = shapeMatchResult.resolve(cache);
-                result = createAndCacheCachedQuery(op, analyzedOperation, orderBy, cache, forRelationship, resolved);
+                result = createAndCacheCachedQuery(op, analyzedOperation, orderBy, cache, forRelationship, resolved, query);
             }
         }
         if (result != null) return result;
@@ -76,12 +76,12 @@ public class SubQueryCache
         CachedQuery all = unwrap(allOperation);
         if (all != null && all.getOperation().getResultObjectPortal() == toFind.getResultObjectPortal() && toFind.zCanFilterInMemory())
         {
-            result = createAndCacheCachedQuery(op, analyzedOperation, orderBy, cache, forRelationship, op.applyOperation(all.getResult()));
+            result = createAndCacheCachedQuery(op, analyzedOperation, orderBy, cache, forRelationship, op.applyOperation(all.getResult()), all);
         }
         return result;
     }
 
-    private CachedQuery createAndCacheCachedQuery(Operation op, AnalyzedOperation analyzedOperation, OrderBy orderBy, QueryCache cache, boolean forRelationship, List resolved)
+    private CachedQuery createAndCacheCachedQuery(Operation op, AnalyzedOperation analyzedOperation, OrderBy orderBy, QueryCache cache, boolean forRelationship, List resolved, CachedQuery originatingCachedQuery)
     {
         if (resolved != null)
         {
@@ -90,12 +90,12 @@ public class SubQueryCache
             boolean wasDefaulted = analyzedOperation != null && analyzedOperation.isAnalyzedOperationDifferent();
             if (wasDefaulted)
             {
-                CachedQuery query2 = new CachedQuery(analyzedOperation.getAnalyzedOperation(), orderBy);
+                CachedQuery query2 = new CachedQuery(analyzedOperation.getAnalyzedOperation(), orderBy, originatingCachedQuery);
                 query2.setResult(resolved);
                 cache.cacheQueryForSubQuery(query2, forRelationship);
             }
 
-            CachedQuery result = new CachedQuery(op, orderBy);
+            CachedQuery result = new CachedQuery(op, orderBy, originatingCachedQuery);
             result.setResult(resolved);
             if (wasDefaulted)
             {

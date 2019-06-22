@@ -22,11 +22,7 @@ import com.gs.fw.common.mithra.test.database.SyslogCheckerTest;
 import com.gs.fw.common.mithra.test.domain.inherited.TestIndexCreation;
 import com.gs.fw.common.mithra.test.evo.TestEmbeddedValueObjects;
 import com.gs.fw.common.mithra.test.finalgetter.TestFinalGetters;
-import com.gs.fw.common.mithra.test.h2batch.TestH2DefaultBatchSizeTestCases;
-import com.gs.fw.common.mithra.test.h2batch.TestH2LargeBatchSizeTestCases;
-import com.gs.fw.common.mithra.test.h2batch.TestH2NegativeBatchSizeTestCases;
-import com.gs.fw.common.mithra.test.h2batch.TestH2SmallBatchSizeTestCases;
-import com.gs.fw.common.mithra.test.h2batch.TestH2ZeroBatchSizeTestCases;
+import com.gs.fw.common.mithra.test.h2batch.*;
 import com.gs.fw.common.mithra.test.inherited.TestReadOnlyInherited;
 import com.gs.fw.common.mithra.test.inherited.TestTxInherited;
 import com.gs.fw.common.mithra.test.mithrainterface.TestMithraInterfaceType;
@@ -59,6 +55,7 @@ public class MithraTestSuite
         TestSuite suite = new TestSuite();
         suite.addTestSuite(TestConnectionManager.class);
         suite.addTestSuite(TestCursor.class);
+        suite.addTestSuite(TestCachedQueryClass.class);
 
         suite.addTestSuite(TestRelationshipPersistence.class);
         suite.addTestSuite(TestListMerge.class);
@@ -148,6 +145,7 @@ public class MithraTestSuite
         suite.addTestSuite(TestDetachedOptimisticAuditOnly.class);
         suite.addTestSuite(TestUpdateListener.class);
         suite.addTestSuite(TestAdhocDeepFetch.class);
+        suite.addTestSuite(TestNotificationDuringDeepFetch.class);
         suite.addTestSuite(TestCrossDatabaseAdhocDeepFetch.class);
         suite.addTestSuite(TestTransactionalObjectAttributesBehavior.class);
 

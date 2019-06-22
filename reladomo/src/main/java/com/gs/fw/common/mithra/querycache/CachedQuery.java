@@ -24,7 +24,9 @@ import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.util.ListFactory;
 import com.gs.fw.common.mithra.util.SmallSet;
 import org.eclipse.collections.impl.list.mutable.FastList;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -43,16 +45,30 @@ public class CachedQuery
 
     public CachedQuery(Operation op, OrderBy orderBy, CachedQuery first)
     {
+        this(op, orderBy, first, false);
+    }
+
+    public CachedQuery(Operation op, OrderBy orderBy, CachedQuery first, boolean mergeUpdateCounters)
+    {
         this.operation = op;
         this.orderBy = orderBy;
+
         if (first == null)
         {
             populateUpdateCounters();
         }
         else
         {
-            this.updateCountHolders = first.updateCountHolders;
-            this.originalValues = first.originalValues;
+            if (mergeUpdateCounters)
+            {
+                populateUpdateCounters();
+                mergeUpdateCounters(first);
+            }
+            else
+            {
+                this.updateCountHolders = first.updateCountHolders;
+                this.originalValues = first.originalValues;
+            }
         }
     }
 
@@ -168,6 +184,53 @@ public class CachedQuery
         return portalList;
     }
 
+    private void mergeUpdateCounters(CachedQuery first)
+    {
+        // Merges the update count holders and original values from first into this, eliminating duplicates.
+        // If the same update count holder appears in both, the original values of first take precedence as they are guaranteed to be the oldest.
+
+        if (first.updateCountHolders == null) return;
+        if (this.updateCountHolders == null)
+        {
+            this.updateCountHolders = first.updateCountHolders;
+            this.originalValues = first.originalValues;
+            return;
+        }
+
+        final UnifiedSet<UpdateCountHolder> updateCountHoldersFromThisToAdd = new UnifiedSet<UpdateCountHolder>();
+        updateCountHoldersFromThisToAdd.addAll(Arrays.asList(this.updateCountHolders));
+        updateCountHoldersFromThisToAdd.removeAll(Arrays.asList(first.updateCountHolders));
+
+        final int firstLength = first.updateCountHolders.length;
+        final int combinedLength = firstLength + updateCountHoldersFromThisToAdd.size();
+
+        final UpdateCountHolder[] combinedUpdateCountHolders = new UpdateCountHolder[combinedLength];
+        final int[] combinedOriginalValues = new int[combinedLength];
+
+        System.arraycopy(first.updateCountHolders, 0, combinedUpdateCountHolders, 0, firstLength);
+        System.arraycopy(first.originalValues, 0, combinedOriginalValues, 0, firstLength);
+
+        int insertPosition = firstLength;
+        for (int i = 0; i < this.updateCountHolders.length; i++)
+        {
+            UpdateCountHolder updateCountHolder = this.updateCountHolders[i];
+            if (updateCountHoldersFromThisToAdd.remove(updateCountHolder))
+            {
+                combinedUpdateCountHolders[insertPosition] = updateCountHolder;
+                combinedOriginalValues[insertPosition] = this.originalValues[i];
+                insertPosition++;
+            }
+        }
+
+        if (insertPosition != combinedLength)
+        {
+            throw new IllegalStateException("Should not be possible - inconsistency while merging update counters");
+        }
+
+        this.updateCountHolders = combinedUpdateCountHolders;
+        this.originalValues = combinedOriginalValues;
+    }
+
     private void populateUpdateCounters()
     {
         if (this.operation instanceof CompactUpdateCountOperation)
@@ -216,6 +279,7 @@ public class CachedQuery
 
     public boolean isExpired()
     {
+        if (updateCountHolders == null) return false;
         for(int i=0;i<updateCountHolders.length;i++)
         {
             if (originalValues[i] != updateCountHolders[i].getUpdateCount()) return true;

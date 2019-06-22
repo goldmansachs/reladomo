@@ -37,7 +37,8 @@ public class DeepRelationshipUtility
 
     private static final InternalList EMPTY_INTERNAL_LIST = new InternalList(0);
 
-    protected static int MAX_SIMPLIFIED_IN = 1000;
+    private static final int DEFAULT_MAX_SIMPLIFIED_IN = 1000;
+    protected static int MAX_SIMPLIFIED_IN = DEFAULT_MAX_SIMPLIFIED_IN;
 
     private DeepRelationshipUtility()
     {
@@ -52,6 +53,11 @@ public class DeepRelationshipUtility
     public static void setMaxSimplifiedIn(int max)
     {
         MAX_SIMPLIFIED_IN = max;
+    }
+
+    public static void resetMaxSimplifiedIn()
+    {
+        setMaxSimplifiedIn(DEFAULT_MAX_SIMPLIFIED_IN);
     }
 
     public static Logger getLogger()

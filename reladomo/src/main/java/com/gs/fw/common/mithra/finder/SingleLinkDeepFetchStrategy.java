@@ -29,12 +29,7 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 public abstract class SingleLinkDeepFetchStrategy extends DeepFetchStrategy
@@ -138,7 +133,7 @@ public abstract class SingleLinkDeepFetchStrategy extends DeepFetchStrategy
         return op.getResultObjectPortal().getFinder().findMany(op);
     }
 
-    protected List cacheResults(HashMap<Operation, List> opToListMap, int doNotCacheCount)
+    protected List cacheResults(HashMap<Operation, List> opToListMap, HashMap<Operation, CachedQuery> opToCachedQueryMap, int doNotCacheCount)
     {
         int initialCapacity = opToListMap.size() - doNotCacheCount;
         if (initialCapacity <= 0 ) initialCapacity = 1;
@@ -152,7 +147,7 @@ public abstract class SingleLinkDeepFetchStrategy extends DeepFetchStrategy
             List resultList = entry.getValue();
             if (resultList != DONT_CACHE_LIST)
             {
-                CachedQuery cachedQuery = new CachedQuery(op, this.orderBy, first);
+                CachedQuery cachedQuery = opToCachedQueryMap.get(op);
                 if (this.orderBy != null && resultList.size() > 1) Collections.sort(resultList, this.orderBy);
                 cachedQuery.setResult(resultList);
                 cachedQuery.cacheQueryForRelationship();
@@ -219,6 +214,22 @@ public abstract class SingleLinkDeepFetchStrategy extends DeepFetchStrategy
         return opToListMap;
     }
 
+    protected HashMap<Operation, CachedQuery> populateOpToCachedQueryMapWithEmptyCachedQuery(Map<Operation, List> opToListMap)
+    {
+        HashMap<Operation, CachedQuery> opToCachedQueryMap = new HashMap();
+        CachedQuery first = null;
+        for (Operation op : opToListMap.keySet())
+        {
+            final CachedQuery cachedQuery = new CachedQuery(op, this.orderBy, first);
+            if (first == null)
+            {
+                first = cachedQuery;
+            }
+            opToCachedQueryMap.put(op, cachedQuery);
+        }
+        return opToCachedQueryMap;
+    }
+
     protected List getImmediateParentList(DeepFetchNode node)
     {
         List originalParentList = node.getImmediateParentList(this.chainPosition);
@@ -227,35 +238,48 @@ public abstract class SingleLinkDeepFetchStrategy extends DeepFetchStrategy
         return filteredParentList;
     }
 
-    protected void associateSimplifiedResult(Operation op, MithraList list)
+    protected CachedQuery getImmediateParentCachedQuery(DeepFetchNode node)
+    {
+        return node.getImmediateParentCachedQuery(this.chainPosition);
+    }
+
+    protected void associateSimplifiedResult(MithraList list, CachedQuery emptyNewCachedQuery)
     {
         List resultList = new FastList(list);
         if (this.orderBy != null && resultList.size() > 1) Collections.sort(resultList, this.orderBy);
-        associateSimplifiedResult(op, resultList);
+        associateSimplifiedResult(resultList, emptyNewCachedQuery);
     }
 
-    protected void associateSimplifiedResult(Operation op, List resultList)
+    protected void associateSimplifiedResult(List resultList, CachedQuery emptyNewCachedQuery)
     {
-        CachedQuery cachedQuery = new CachedQuery(op, this.orderBy);
         if (this.orderBy != null && resultList.size() > 1) Collections.sort(resultList, this.orderBy);
-        cachedQuery.setResult(resultList);
-        cachedQuery.cacheQuery(false);
+        emptyNewCachedQuery.setResult(resultList);
+        emptyNewCachedQuery.cacheQuery(false);
     }
 
-    protected void associateResultsWithAlternateMapper(Operation originalOp, MithraList list)
+    protected void associateResultsWithAlternateMapper(MithraList list, CachedQuery emptyNewCachedQuery)
     {
-        if (this.alternateMapper != null)
+        if (emptyNewCachedQuery != null)
         {
-            associateSimplifiedResult(this.mapper.createMappedOperationForDeepFetch(originalOp), list);
+            associateSimplifiedResult(list, emptyNewCachedQuery);
         }
     }
 
-    protected void associateResultsWithAlternateMapper(Operation originalOp, List list)
+    protected void associateResultsWithAlternateMapper(List list, CachedQuery emptyNewCachedQuery)
+    {
+        if (emptyNewCachedQuery != null)
+        {
+            associateSimplifiedResult(list, emptyNewCachedQuery);
+        }
+    }
+
+    protected CachedQuery createCachedQueryForAlternateMapper(Operation originalOp, CachedQuery parentCachedQuery)
     {
         if (this.alternateMapper != null)
         {
-            associateSimplifiedResult(this.mapper.createMappedOperationForDeepFetch(originalOp), list);
+            return new CachedQuery(this.mapper.createMappedOperationForDeepFetch(originalOp), this.orderBy, parentCachedQuery, true);
         }
+        return null;
     }
 
     protected MithraList createListForAdHocDeepFetch(TupleTempContext tempContext, Object parentPrototype)
@@ -281,9 +305,10 @@ public abstract class SingleLinkDeepFetchStrategy extends DeepFetchStrategy
     protected List cacheEmptyResult(DeepFetchNode node)
     {
         MithraList complexList = (MithraList) this.mapOpToList(node);
-        CachedQuery query = new CachedQuery(complexList.getOperation(), null);
+        final CachedQuery immediateParentCachedQuery = getImmediateParentCachedQuery(node);
+        CachedQuery query = new CachedQuery(complexList.getOperation(), null, immediateParentCachedQuery);
         query.setResult(ListFactory.EMPTY_LIST);
-        node.setResolvedList(ListFactory.EMPTY_LIST, chainPosition);
+        node.setResolvedList(ListFactory.EMPTY_LIST, chainPosition, immediateParentCachedQuery);
         query.cacheQuery(true);
         return FastList.newListWith(query);
     }

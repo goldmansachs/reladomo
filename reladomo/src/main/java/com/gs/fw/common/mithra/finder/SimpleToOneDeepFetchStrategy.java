@@ -32,12 +32,7 @@ import org.eclipse.collections.impl.list.mutable.FastList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 public class SimpleToOneDeepFetchStrategy extends SingleLinkDeepFetchStrategy
@@ -83,7 +78,7 @@ public class SimpleToOneDeepFetchStrategy extends SingleLinkDeepFetchStrategy
         List immediateParentList = getImmediateParentList(node);
         if (immediateParentList.size() == 0)
         {
-            node.setResolvedList(ListFactory.EMPTY_LIST, chainPosition);
+            node.setResolvedList(ListFactory.EMPTY_LIST, chainPosition); // this adhoc deep fetch result will not be cached so a CachedQuery is not required
             return DeepFetchResult.nothingToDo();
         }
         DeepFetchResult deepFetchResult = new DeepFetchResult(immediateParentList);
@@ -133,12 +128,12 @@ public class SimpleToOneDeepFetchStrategy extends SingleLinkDeepFetchStrategy
             deepFetchResult.setResult(copyToList(fullResult));
             if (deepFetchResult.hasNothingToDo())
             {
-                node.setResolvedList(ListFactory.EMPTY_LIST, chainPosition);
+                node.setResolvedList(ListFactory.EMPTY_LIST, chainPosition); // this adhoc deep fetch result will not be cached so a CachedQuery is not required
             }
             FastList parentList = localInMemoryResult.notFound;
             if (parentList.isEmpty())
             {
-                node.setResolvedList(localInMemoryResult.fullResult.getAll(), chainPosition);
+                node.setResolvedList(localInMemoryResult.fullResult.getAll(), chainPosition); // this adhoc deep fetch result will not be cached so a CachedQuery is not required
             }
         }
         return deepFetchResult;
@@ -155,15 +150,16 @@ public class SimpleToOneDeepFetchStrategy extends SingleLinkDeepFetchStrategy
     {
         LocalInMemoryResult localResult = (LocalInMemoryResult) resultSoFar.getLocalResult();
         FastList parentList = localResult.notFound;
-        Operation simplifiedJoinOp = node.getSimplifiedJoinOp(this.mapper, parentList);
-        if (simplifiedJoinOp != null)
+
+        // Must create all CachedQuery objects here before executing queries to avoid race condition against concurrent updates
+        final OpMapsBundle opMapsBundle = createOpMaps(parentList);
+
+        MithraList simplifiedList = fetchSimplifiedJoinList(node, parentList, true);
+        if (simplifiedList != null)
         {
-            MithraList simplifiedList = findMany(simplifiedJoinOp);
-            simplifiedList.setBypassCache(true);
-            simplifiedList.forceResolve();
-            node.setResolvedList(localResult.fullResult.getAll(), chainPosition);
+            node.setResolvedList(localResult.fullResult.getAll(), chainPosition); // this adhoc deep fetch result will not be cached so a CachedQuery is not required
             node.addToResolvedList(simplifiedList, chainPosition);
-            return populateQueryCache(parentList, simplifiedList);
+            return populateQueryCache(simplifiedList, opMapsBundle);
         }
         Extractor[] leftAttributesWithoutFilters = node.getRelatedFinder().zGetMapper().getLeftAttributesWithoutFilters();
         Set<Attribute> attrSet = UnifiedSet.newSet(leftAttributesWithoutFilters.length);
@@ -175,6 +171,17 @@ public class SimpleToOneDeepFetchStrategy extends SingleLinkDeepFetchStrategy
                 parentList);
         node.addToResolvedList(localResult.fullResult.getAll(), chainPosition);
         return node.getCachedQueryList();
+    }
+
+    private OpMapsBundle createOpMaps(List immediateParentList)
+    {
+        final HashMap<Operation, List> opToListMap = new HashMap<Operation, List>();
+        final UnifiedMap<Operation, Object> opToParentMap = UnifiedMap.newMap();
+        populateOpToListMapWithEmptyList(immediateParentList, opToListMap, opToParentMap);
+
+        final HashMap<Operation, CachedQuery> opToCachedQueryMap = populateOpToCachedQueryMapWithEmptyCachedQuery(opToListMap);
+
+        return new OpMapsBundle(opToListMap, opToParentMap, opToCachedQueryMap);
     }
 
     @Override
@@ -192,10 +199,37 @@ public class SimpleToOneDeepFetchStrategy extends SingleLinkDeepFetchStrategy
     @Override
     public List deepFetchAdhocUsingInClause(DeepFetchNode node, Attribute singleAttribute, List parentList)
     {
-        Operation op = node.getSimplifiedJoinOp(this.getMapper(), parentList);
-        if (op == null) return null;
-        MithraList complexList = op.getResultObjectPortal().getFinder().findMany(op);
+        MithraList complexList = getSimplifiedJoinUnresolvedList(node, parentList);
         return deepFetchUsingComplexList(getImmediateParentList(node, parentList), complexList, node);
+    }
+
+    private Operation getSimplifiedJoinOp(DeepFetchNode node, List parentList)
+    {
+        return node.getSimplifiedJoinOp(this.getMapper(), parentList);
+    }
+
+    private boolean canSimplifyJoinOp(DeepFetchNode node, List parentList)
+    {
+        Operation op = getSimplifiedJoinOp(node, parentList);
+        return op != null;
+    }
+
+    private MithraList getSimplifiedJoinUnresolvedList(DeepFetchNode node, List parentList)
+    {
+        Operation op = getSimplifiedJoinOp(node, parentList);
+        if (op == null) return null;
+        return findMany(op);
+    }
+
+    protected MithraList fetchSimplifiedJoinList(DeepFetchNode node, List parentList, boolean bypassCache)
+    {
+        final MithraList mithraList = getSimplifiedJoinUnresolvedList(node, parentList);
+        if (mithraList != null)
+        {
+            mithraList.setBypassCache(bypassCache);
+            mithraList.forceResolve();
+        }
+        return mithraList;
     }
 
     private List copyToList(FullUniqueIndex fullResult)
@@ -227,14 +261,11 @@ public class SimpleToOneDeepFetchStrategy extends SingleLinkDeepFetchStrategy
         }
     }
 
-    protected List populateQueryCache(List immediateParentList, List resultList)
+    protected List populateQueryCache(List resultList, OpMapsBundle opMapsBundle)
     {
-        HashMap<Operation, List> opToListMap = new HashMap<Operation, List>();
-        UnifiedMap<Operation, Object> opToParentMap = UnifiedMap.newMap();
-        populateOpToListMapWithEmptyList(immediateParentList, opToListMap, opToParentMap);
-        int doNotCacheCount = associateResultsWithOps(resultList, opToListMap, 1, opToParentMap);
-        clearLeftOverObjectCache(opToParentMap);
-        return cacheResults(opToListMap, doNotCacheCount);
+        int doNotCacheCount = associateResultsWithOps(resultList, opMapsBundle.getOpToListMap(), 1, opMapsBundle.getOpToParentMap());
+        clearLeftOverObjectCache(opMapsBundle.getOpToParentMap());
+        return cacheResults(opMapsBundle.getOpToListMap(), opMapsBundle.getOpToCachedQueryMap(), doNotCacheCount);
     }
 
     private void clearLeftOverObjectCache(UnifiedMap<Operation, Object> opToParentMap)
@@ -250,16 +281,22 @@ public class SimpleToOneDeepFetchStrategy extends SingleLinkDeepFetchStrategy
     {
         if (bypassCache || complexList.getOperation().getResultObjectPortal().isCacheDisabled())
         {
-            Operation simplifiedJoinOp = node.getSimplifiedJoinOp(this.mapper, immediateParentList);
-            if (simplifiedJoinOp != null)
+            if (canSimplifyJoinOp(node, immediateParentList))
             {
-                MithraList simplifiedList = findMany(simplifiedJoinOp);
-                simplifiedList.setBypassCache(true);
-                simplifiedList.forceResolve();
-                node.setResolvedList(simplifiedList, chainPosition);
-                associateSimplifiedResult(complexList.getOperation(), simplifiedList);
-                associateResultsWithAlternateMapper(complexList.getOperation(), simplifiedList);
-                return populateQueryCache(immediateParentList, simplifiedList);
+                // Must create all CachedQuery objects here before executing queries to avoid race condition against concurrent updates
+                // Merge the update counters of the parent CachedQuery so that if the parent list becomes stale then this cache entry will become stale too.
+                OpMapsBundle opMapsBundle = createOpMaps(immediateParentList);
+                CachedQuery complexListCachedQuery = new CachedQuery(complexList.getOperation(), this.orderBy, getImmediateParentCachedQuery(node), true);
+                CachedQuery alternateMapperCachedQuery = createCachedQueryForAlternateMapper(complexList.getOperation(), getImmediateParentCachedQuery(node));
+
+                MithraList simplifiedList = fetchSimplifiedJoinList(node, immediateParentList, true);
+                if (simplifiedList != null)
+                {
+                    node.setResolvedList(simplifiedList, chainPosition, complexListCachedQuery);
+                    associateSimplifiedResult(simplifiedList, complexListCachedQuery);
+                    associateResultsWithAlternateMapper(simplifiedList, alternateMapperCachedQuery);
+                    return populateQueryCache(simplifiedList, opMapsBundle);
+                }
             }
         }
 
@@ -270,23 +307,40 @@ public class SimpleToOneDeepFetchStrategy extends SingleLinkDeepFetchStrategy
 
     private List deepFetchUsingComplexList(List immediateParentList, MithraList complexList, DeepFetchNode node)
     {
-        complexList.forceResolve();
-        CachedQuery cachedQuery = new CachedQuery(complexList.getOperation(), this.orderBy);
+        // Must create all CachedQuery objects here before executing queries to avoid race condition against concurrent updates
+        // Merge the update counters of the parent CachedQuery so that if the parent list becomes stale then this cache entry will become stale too.
+        OpMapsBundle opMapsBundle = createOpMaps(getImmediateParentList(node, immediateParentList));
+        CachedQuery cachedQuery = new CachedQuery(complexList.getOperation(), this.orderBy, getImmediateParentCachedQuery(node), true);
+        CachedQuery alternateMapperCachedQuery = createCachedQueryForAlternateMapper(complexList.getOperation(), getImmediateParentCachedQuery(node));
+
+        resolveComplexList(complexList);
+
         List result = Arrays.asList(complexList.toArray());
         cachedQuery.setResult(result);
-        node.setResolvedList(result, chainPosition);
+        node.setResolvedList(result, chainPosition, cachedQuery);
         cachedQuery.setOneQueryForMany(this.isResolvableInCache);
         boolean forRelationship = this.isResolvableInCache;
         cacheComplexQuery(cachedQuery, forRelationship);
-        associateResultsWithAlternateMapper(complexList.getOperation(), complexList);
+        associateResultsWithAlternateMapper(complexList, alternateMapperCachedQuery);
 
-        List cachedQueryList = this.populateQueryCache(getImmediateParentList(node, immediateParentList), complexList);
+        List cachedQueryList = this.populateQueryCache(complexList, opMapsBundle);
         cachedQueryList.add(cachedQuery);
         return cachedQueryList;
     }
 
+    protected void resolveComplexList(MithraList complexList)
+    {
+        complexList.forceResolve();
+    }
+
     protected List deepFetchToOneMostlyInMemory(List immediateParentList, Operation complexOperation, DeepFetchNode node)
     {
+        // Must create all CachedQuery objects here before executing queries to avoid race condition against concurrent updates
+        // Merge the update counters of the parent CachedQuery so that if the parent list becomes stale then this cache entry will become stale too.
+        OpMapsBundle opMapsBundle = createOpMaps(immediateParentList);
+        CachedQuery complexOperationCachedQuery = new CachedQuery(complexOperation, this.orderBy, getImmediateParentCachedQuery(node), true);
+        CachedQuery alternateMapperCachedQuery = createCachedQueryForAlternateMapper(complexOperation, getImmediateParentCachedQuery(node));
+
         MithraObjectPortal portal = complexOperation.getResultObjectPortal();
         if (portal.isCacheDisabled()) return null;
 
@@ -318,31 +372,31 @@ public class SimpleToOneDeepFetchStrategy extends SingleLinkDeepFetchStrategy
         List cachedQueryList = null;
         if (haveToGoToDatabase)
         {
-            Operation simplifiedJoinOp = node.getSimplifiedJoinOp(this.mapper, notFound);
-            if (simplifiedJoinOp != null)
+            MithraList partialList = fetchSimplifiedJoinList(node, notFound, false);
+            if (partialList != null)
             {
-                MithraList partialList = findMany(simplifiedJoinOp);
-                partialList.forceResolve();
                 for(int j=0;j<partialList.size();j++)
                 {
                     Object obj = partialList.get(j);
                     fullResult.putUsingUnderlying(obj, obj);
                 }
                 relatedList = copyToList(fullResult);
-                cachedQueryList = populateQueryCache(immediateParentList, relatedList);
+                cachedQueryList = populateQueryCache(relatedList, opMapsBundle);
                 haveToGoToDatabase = false;
             }
         }
-        return finishDeepFetchInMemory(complexOperation, node, fullResult, relatedList, haveToGoToDatabase, cachedQueryList);
+        return finishDeepFetchInMemory(node, fullResult, relatedList, haveToGoToDatabase, cachedQueryList,
+                                       complexOperationCachedQuery, alternateMapperCachedQuery);
     }
 
-    private List finishDeepFetchInMemory(Operation complexOperation, DeepFetchNode node, FullUniqueIndex fullResult,
-            List relatedList, boolean haveToGoToDatabase, List cachedQueryList)
+    private List finishDeepFetchInMemory(DeepFetchNode node, FullUniqueIndex fullResult,
+                                         List relatedList, boolean haveToGoToDatabase, List cachedQueryList,
+                                         CachedQuery complexOperationCachedQuery, CachedQuery alternateMapperCachedQuery)
     {
         if (!haveToGoToDatabase)
         {
             if (relatedList == null) relatedList = copyToList(fullResult);
-            node.setResolvedList(relatedList, chainPosition);
+            node.setResolvedList(relatedList, chainPosition, complexOperationCachedQuery);
             if (cachedQueryList == null)
             {
                 cachedQueryList = FastList.newList(2);
@@ -351,13 +405,12 @@ public class SimpleToOneDeepFetchStrategy extends SingleLinkDeepFetchStrategy
             {
                 cachedQueryList.add(relatedList);
             }
-            CachedQuery cachedQuery = new CachedQuery(complexOperation, this.orderBy);
             if (this.orderBy != null && relatedList.size() > 1) Collections.sort(relatedList, this.orderBy);
-            cachedQuery.setResult(relatedList);
-            cachedQuery.setOneQueryForMany(this.isResolvableInCache);
-            cacheComplexQuery(cachedQuery, this.isResolvableInCache);
-            cachedQueryList.add(cachedQuery);
-            associateResultsWithAlternateMapper(complexOperation, relatedList);
+            complexOperationCachedQuery.setResult(relatedList);
+            complexOperationCachedQuery.setOneQueryForMany(this.isResolvableInCache);
+            cacheComplexQuery(complexOperationCachedQuery, this.isResolvableInCache);
+            cachedQueryList.add(complexOperationCachedQuery);
+            associateResultsWithAlternateMapper(relatedList, alternateMapperCachedQuery);
             return cachedQueryList;
         }
         return null;
@@ -367,5 +420,34 @@ public class SimpleToOneDeepFetchStrategy extends SingleLinkDeepFetchStrategy
     {
         private FullUniqueIndex fullResult;
         private FastList notFound;
+    }
+
+    private class OpMapsBundle
+    {
+        private final HashMap<Operation, List> opToListMap;
+        private final UnifiedMap<Operation, Object> opToParentMap;
+        private final HashMap<Operation, CachedQuery> opToCachedQueryMap;
+
+        private OpMapsBundle(HashMap<Operation, List> opToListMap, UnifiedMap<Operation, Object> opToParentMap, HashMap<Operation, CachedQuery> opToCachedQueryMap)
+        {
+            this.opToListMap = opToListMap;
+            this.opToParentMap = opToParentMap;
+            this.opToCachedQueryMap = opToCachedQueryMap;
+        }
+
+        private HashMap<Operation, List> getOpToListMap()
+        {
+            return opToListMap;
+        }
+
+        private UnifiedMap<Operation, Object> getOpToParentMap()
+        {
+            return opToParentMap;
+        }
+
+        private HashMap<Operation, CachedQuery> getOpToCachedQueryMap()
+        {
+            return opToCachedQueryMap;
+        }
     }
 }

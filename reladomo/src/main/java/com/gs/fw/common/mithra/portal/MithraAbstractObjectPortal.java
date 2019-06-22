@@ -17,25 +17,7 @@
 
 package com.gs.fw.common.mithra.portal;
 
-import com.gs.fw.common.mithra.AggregateData;
-import com.gs.fw.common.mithra.AggregateDataConfig;
-import com.gs.fw.common.mithra.GroupByAttribute;
-import com.gs.fw.common.mithra.HavingOperation;
-import com.gs.fw.common.mithra.MithraAggregateAttribute;
-import com.gs.fw.common.mithra.MithraBusinessException;
-import com.gs.fw.common.mithra.MithraDataObject;
-import com.gs.fw.common.mithra.MithraDatabaseException;
-import com.gs.fw.common.mithra.MithraDatabaseObject;
-import com.gs.fw.common.mithra.MithraDatedObject;
-import com.gs.fw.common.mithra.MithraDatedObjectFactory;
-import com.gs.fw.common.mithra.MithraGroupByAttribute;
-import com.gs.fw.common.mithra.MithraManagerProvider;
-import com.gs.fw.common.mithra.MithraObject;
-import com.gs.fw.common.mithra.MithraObjectDeserializer;
-import com.gs.fw.common.mithra.MithraObjectFactory;
-import com.gs.fw.common.mithra.MithraObjectPortal;
-import com.gs.fw.common.mithra.MithraTransaction;
-import com.gs.fw.common.mithra.MithraTransactionalObject;
+import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.aggregate.attribute.BeanAggregateAttribute;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
@@ -48,17 +30,7 @@ import com.gs.fw.common.mithra.cache.offheap.MasterCacheUplink;
 import com.gs.fw.common.mithra.cache.offheap.OffHeapSyncableCache;
 import com.gs.fw.common.mithra.extractor.Extractor;
 import com.gs.fw.common.mithra.extractor.RelationshipHashStrategy;
-import com.gs.fw.common.mithra.finder.All;
-import com.gs.fw.common.mithra.finder.AnalyzedOperation;
-import com.gs.fw.common.mithra.finder.MappedOperation;
-import com.gs.fw.common.mithra.finder.Mapper;
-import com.gs.fw.common.mithra.finder.MapperStackImpl;
-import com.gs.fw.common.mithra.finder.Operation;
-import com.gs.fw.common.mithra.finder.RelatedFinder;
-import com.gs.fw.common.mithra.finder.ResultSetParser;
-import com.gs.fw.common.mithra.finder.SqlQuery;
-import com.gs.fw.common.mithra.finder.TransitivePropagator;
-import com.gs.fw.common.mithra.finder.UpdateCountHolder;
+import com.gs.fw.common.mithra.finder.*;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.list.DelegatingList;
 import com.gs.fw.common.mithra.list.NullPersistedRelation;
@@ -71,15 +43,7 @@ import com.gs.fw.common.mithra.querycache.CompactUpdateCountOperation;
 import com.gs.fw.common.mithra.querycache.QueryCache;
 import com.gs.fw.common.mithra.tempobject.MithraTuplePersister;
 import com.gs.fw.common.mithra.transaction.MithraObjectPersister;
-import com.gs.fw.common.mithra.util.Filter;
-import com.gs.fw.common.mithra.util.ListFactory;
-import com.gs.fw.common.mithra.util.MithraFastList;
-import com.gs.fw.common.mithra.util.MithraPerformanceData;
-import com.gs.fw.common.mithra.util.MithraProcessInfo;
-import com.gs.fw.common.mithra.util.Nullable;
-import com.gs.fw.common.mithra.util.PersisterId;
-import com.gs.fw.common.mithra.util.ReflectionMethodCache;
-import com.gs.fw.common.mithra.util.RenewedCacheStats;
+import com.gs.fw.common.mithra.util.*;
 import com.gs.reladomo.metadata.PrivateReladomoClassMetaData;
 import com.gs.reladomo.metadata.ReladomoClassMetaData;
 import org.eclipse.collections.api.block.HashingStrategy;
@@ -95,14 +59,7 @@ import java.io.InvalidClassException;
 import java.io.ObjectStreamException;
 import java.lang.ref.WeakReference;
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 
 
@@ -747,8 +704,9 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
 
     protected CachedQuery findInCacheForNoTransaction(Operation op, AnalyzedOperation analyzedOperation, OrderBy orderby, boolean forRelationship)
     {
+        CachedQuery emptyNewCachedQuery = new CachedQuery(op, orderby); // must create before executing the query to avoid a race condition against concurrent updates
         List resultList = resolveOperationOnCache(analyzedOperation != null ? analyzedOperation.getAnalyzedOperation() : op);
-        return createAndCacheQuery(resultList, orderby, op, analyzedOperation, forRelationship);
+        return createAndCacheQuery(resultList, orderby, analyzedOperation, forRelationship, emptyNewCachedQuery);
     }
 
     protected List resolveOperationOnCache(Operation op)
@@ -770,19 +728,19 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
         return resultList;
     }
 
-    protected CachedQuery createAndCacheQuery(List resultList, OrderBy orderby, Operation op, AnalyzedOperation analyzedOperation, boolean forRelationship)
+    protected CachedQuery createAndCacheQuery(List resultList, OrderBy orderby, AnalyzedOperation analyzedOperation, boolean forRelationship, CachedQuery emptyNewCachedQuery)
     {
         CachedQuery result = null;
         if (resultList != null)
         {
             if (orderby != null && resultList.size() > 1) Collections.sort(resultList, orderby);
-            result = new CachedQuery(op, orderby);
+            result = emptyNewCachedQuery;
             result.setResult(resultList);
             boolean needsDefaulting = analyzedOperation != null && analyzedOperation.isAnalyzedOperationDifferent();
             if (needsDefaulting)
             {
                 result.setWasDefaulted();
-                CachedQuery cachedQuery2 = new CachedQuery(analyzedOperation.getAnalyzedOperation(), orderby);
+                CachedQuery cachedQuery2 = new CachedQuery(analyzedOperation.getAnalyzedOperation(), orderby, emptyNewCachedQuery);
                 cachedQuery2.setResult(resultList);
                 cachedQuery2.cacheQuery(forRelationship);
             }

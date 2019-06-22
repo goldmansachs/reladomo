@@ -17,12 +17,7 @@
 
 package com.gs.fw.common.mithra.portal;
 
-import com.gs.fw.common.mithra.MithraDataObject;
-import com.gs.fw.common.mithra.MithraManagerProvider;
-import com.gs.fw.common.mithra.MithraObjectDeserializer;
-import com.gs.fw.common.mithra.MithraObjectPortal;
-import com.gs.fw.common.mithra.MithraTransaction;
-import com.gs.fw.common.mithra.MithraTransactionalObject;
+import com.gs.fw.common.mithra.*;
 import com.gs.fw.common.mithra.behavior.TemporalContainer;
 import com.gs.fw.common.mithra.behavior.state.PersistenceState;
 import com.gs.fw.common.mithra.behavior.txparticipation.FullTransactionalParticipationMode;
@@ -338,8 +333,9 @@ public class MithraTransactionalPortal extends MithraAbstractObjectPortal
     protected CachedQuery findInCacheForTransaction(AnalyzedOperation analyzedOperation, OrderBy orderby,
             MithraTransaction tx, boolean forRelationship, Operation op)
     {
+        CachedQuery emptyNewCachedQuery = new CachedQuery(op, orderby); // must create before executing the query to avoid a race condition against concurrent updates
         List resultList = applyOperationAndCheck(analyzedOperation != null ? analyzedOperation.getAnalyzedOperation() : op, tx);
-        return this.createAndCacheQuery(resultList, orderby, op, analyzedOperation, forRelationship);
+        return this.createAndCacheQuery(resultList, orderby, analyzedOperation, forRelationship, emptyNewCachedQuery);
     }
 
     /* returns null if the members of the list are not all participating in the transaction */

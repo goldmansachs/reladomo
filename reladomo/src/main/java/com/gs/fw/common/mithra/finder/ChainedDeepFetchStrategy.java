@@ -76,7 +76,7 @@ public class ChainedDeepFetchStrategy extends DeepFetchStrategy
             List list = ((DeepFetchStrategy) chainedStrategies.get(i)).deepFetch(node, bypassCache, forceImplicitJoin);
             if (list == null)
             {
-                node.setResolvedList(ListFactory.EMPTY_LIST, i);
+                node.setResolvedList(ListFactory.EMPTY_LIST, i, node.getImmediateParentCachedQuery(i));
             }
             else
             {
@@ -103,7 +103,7 @@ public class ChainedDeepFetchStrategy extends DeepFetchStrategy
             List list = ((DeepFetchStrategy) chainedStrategies.get(i)).deepFetchAdhocUsingTempContext(node, tempContext, parentPrototype, immediateParentList);
             if (list == null)
             {
-                node.setResolvedList(ListFactory.EMPTY_LIST, i);
+                node.setResolvedList(ListFactory.EMPTY_LIST, i, null);
             }
             else
             {
