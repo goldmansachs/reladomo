@@ -148,6 +148,7 @@ public class MithraTestSuite
         suite.addTestSuite(TestDetachedOptimisticAuditOnly.class);
         suite.addTestSuite(TestUpdateListener.class);
         suite.addTestSuite(TestAdhocDeepFetch.class);
+        suite.addTestSuite(TestNotificationDuringDeepFetch.class);
         suite.addTestSuite(TestCrossDatabaseAdhocDeepFetch.class);
         suite.addTestSuite(TestTransactionalObjectAttributesBehavior.class);
 

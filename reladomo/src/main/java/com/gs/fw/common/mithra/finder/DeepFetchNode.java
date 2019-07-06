@@ -82,7 +82,9 @@ public class DeepFetchNode implements Serializable, DeepFetchTree
     private boolean resolved = false;
     private boolean fullyResolved = false;
     private transient List resolvedList;
+    private transient CachedQuery resolvedCachedQuery;
     private transient List[] chainedResults;
+    private transient CachedQuery[] chainedCachedQueries;
     private static final int PERCENT_COMPLETE_TO_IGNORE = 80;
     private static final ExecutorWithFinish CURRENT_THREAD_EXECUTOR = new CurrentThreadExecutorService();
 
@@ -107,7 +109,9 @@ public class DeepFetchNode implements Serializable, DeepFetchTree
             result.cachedQueryList = FastList.newList(this.cachedQueryList);
         }
         result.resolvedList = this.resolvedList;
+        result.resolvedCachedQuery = this.resolvedCachedQuery;
         result.chainedResults = this.chainedResults;
+        result.chainedCachedQueries = this.chainedCachedQueries;
         if (children != null)
         {
             result.children = FastList.newList(children.size());
@@ -128,13 +132,28 @@ public class DeepFetchNode implements Serializable, DeepFetchTree
 
     public void setResolvedList(List resolvedList, int chainPosition)
     {
+        setResolvedList(resolvedList, chainPosition, null);
+    }
+
+    /**
+     * Records the results of the deep fetch query for this node, e.g. for consumption by the child node.
+     * @param resolvedList The resolved query results for this node
+     * @param chainPosition The chain position, or zero if not applicable
+     * @param resolvedCachedQuery An optional CachedQuery which may be used to determine if the query results may have expired.
+     *                            Note: this query does not need to return the correct result set, it is merely indicative of cache expiry.
+     *                            Set to null if not applicable.
+     */
+    public void setResolvedList(List resolvedList, int chainPosition, CachedQuery resolvedCachedQuery)
+    {
         if (chainedResults == null || chainPosition == chainedResults.length - 1)
         {
             this.resolvedList = resolvedList;
+            this.resolvedCachedQuery = resolvedCachedQuery;
         }
         else
         {
             this.chainedResults[chainPosition] = resolvedList;
+            this.chainedCachedQueries[chainPosition] = resolvedCachedQuery;
         }
     }
 
@@ -218,6 +237,7 @@ public class DeepFetchNode implements Serializable, DeepFetchTree
         ExecutorWithFinish executor = numberOfParallelThreads == 1 ? CURRENT_THREAD_EXECUTOR :
                 new ThreadConservingExecutor(numberOfParallelThreads);
         this.resolvedList = resolved.getResult();
+        this.resolvedCachedQuery = resolved;
         this.originalOperation = resolved.getOperation();
         DeepFetchRunnable parent = new DeepFetchRunnable(null, bypassCache, executor, forceImplicitJoin);
         deepFetchChildren(bypassCache, executor, parent, forceImplicitJoin);
@@ -268,14 +288,16 @@ public class DeepFetchNode implements Serializable, DeepFetchTree
         if (!resolved)
         {
             this.resolvedList = ListFactory.EMPTY_LIST;
+            this.resolvedCachedQuery = null;
             this.resolved = true;
 
             Operation rootOperation = this.getRootOperation();
             if (rootOperation != null)
             {
-                CachedQuery query = new CachedQuery(this.relatedFinder.zGetMapper().createMappedOperationForDeepFetch(rootOperation), null);
+                CachedQuery query = new CachedQuery(this.relatedFinder.zGetMapper().createMappedOperationForDeepFetch(rootOperation), null, this.getParent().getResolvedCachedQuery());
                 query.setResult(this.resolvedList);
                 query.cacheQuery(true);
+                this.resolvedCachedQuery = query;
             }
         }
     }
@@ -327,6 +349,16 @@ public class DeepFetchNode implements Serializable, DeepFetchTree
         return resolvedList;
     }
 
+    /**
+     * Returns an optional CachedQuery, solely for the purpose of determining if the query results may be stale.
+     * This query need not necessarily correspond to the same result set - it is merely indicative of cache expiry.
+     * Returns null if not applicable.
+     */
+    public CachedQuery getResolvedCachedQuery()
+    {
+        return resolvedCachedQuery;
+    }
+
     private Operation getRootOperation()
     {
         DeepFetchNode cur = this;
@@ -352,6 +384,7 @@ public class DeepFetchNode implements Serializable, DeepFetchTree
             this.fullyResolved = false;
             this.resolved = false;
             this.resolvedList = null;
+            this.resolvedCachedQuery = null;
             this.cachedQueryList = null;
         }
     }
@@ -360,6 +393,7 @@ public class DeepFetchNode implements Serializable, DeepFetchTree
     {
         if (this.fullyResolved) return;
         this.resolvedList = resolved.getResult();
+        this.resolvedCachedQuery = resolved;
         this.originalOperation = resolved.getOperation();
         incrementalDeepFetchChildren(bypassCache, forceImplicitJoin);
         this.fullyResolved = true;
@@ -387,6 +421,18 @@ public class DeepFetchNode implements Serializable, DeepFetchTree
         else
         {
             return chainedResults[chainPosition - 1];
+        }
+    }
+
+    public CachedQuery getImmediateParentCachedQuery(int chainPosition)
+    {
+        if (chainPosition == 0)
+        {
+            return this.parent.getResolvedCachedQuery();
+        }
+        else
+        {
+            return chainedCachedQueries[chainPosition - 1];
         }
     }
 
@@ -870,6 +916,7 @@ public class DeepFetchNode implements Serializable, DeepFetchTree
     public void allocatedChainedResults(int size)
     {
         this.chainedResults = new List[size];
+        this.chainedCachedQueries = new CachedQuery[size];
     }
 
     // mapper is not necessarily this.relatedFinder.mapper. chained mapper and linked mapper's callbacks.

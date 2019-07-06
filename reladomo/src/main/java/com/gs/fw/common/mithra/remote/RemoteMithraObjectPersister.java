@@ -169,6 +169,13 @@ public class RemoteMithraObjectPersister implements MithraDatedObjectPersister, 
         }
         MithraTransaction currentTransaction = MithraManagerProvider.getMithraManager().getCurrentTransaction();
         ClientTransactionContext context = getOrCreateContext(currentTransaction);
+        CachedQuery cachedQuery = new CachedQuery(analyzedOperation.getOriginalOperation(), orderby);
+        CachedQuery cachedQuery2 = null;
+        if (analyzedOperation.isAnalyzedOperationDifferent())
+        {
+            cachedQuery.setWasDefaulted();
+            cachedQuery2 = new CachedQuery(analyzedOperation.getAnalyzedOperation(), orderby);
+        }
         RemoteQueryResult queryResult = null;
         try
         {
@@ -181,7 +188,7 @@ public class RemoteMithraObjectPersister implements MithraDatedObjectPersister, 
             setRemoteServiceOnException(context, e);
         }
 
-        CachedQuery cachedQuery = cacheRemoteAnalyzedOperation(analyzedOperation, orderby, queryResult, forRelationship);
+        cacheRemoteAnalyzedOperation(cachedQuery, cachedQuery2, queryResult, forRelationship);
         MithraManagerProvider.getMithraManager().incrementRemoteRetrieveCount();
 
         queryResult.registerForNotification();
@@ -197,21 +204,17 @@ public class RemoteMithraObjectPersister implements MithraDatedObjectPersister, 
         return cachedQuery;
     }
 
-    private CachedQuery cacheRemoteAnalyzedOperation(AnalyzedOperation analyzedOperation, OrderBy orderby, RemoteQueryResult queryResult, boolean forRelationship)
+    private void cacheRemoteAnalyzedOperation(CachedQuery query1, CachedQuery query2, RemoteQueryResult queryResult, boolean forRelationship)
     {
-        CachedQuery cachedQuery = new CachedQuery(analyzedOperation.getOriginalOperation(), orderby);
-        cachedQuery.setReachedMaxRetrieveCount(queryResult.isReachedMaxRetrieveCount());
-        cachedQuery.setResult(queryResult.getDeserializedResult());
-        if (analyzedOperation.isAnalyzedOperationDifferent())
+        query1.setReachedMaxRetrieveCount(queryResult.isReachedMaxRetrieveCount());
+        query1.setResult(queryResult.getDeserializedResult());
+        if (query2 != null)
         {
-            cachedQuery.setWasDefaulted();
-            CachedQuery cachedQuery2 = new CachedQuery(analyzedOperation.getAnalyzedOperation(), orderby);
-            cachedQuery2.setReachedMaxRetrieveCount(queryResult.isReachedMaxRetrieveCount());
-            cachedQuery2.setResult(queryResult.getDeserializedResult());
-            cachedQuery2.cacheQuery(forRelationship);
+            query2.setReachedMaxRetrieveCount(queryResult.isReachedMaxRetrieveCount());
+            query2.setResult(queryResult.getDeserializedResult());
+            query2.cacheQuery(forRelationship);
         }
-        cachedQuery.cacheQuery(forRelationship);
-        return cachedQuery;
+        query1.cacheQuery(forRelationship);
     }
 
     public MithraDataObject refresh(MithraDataObject data, boolean lockInDatabase) throws MithraDatabaseException

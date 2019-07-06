@@ -186,6 +186,16 @@ public class AbstractOperationBasedList<E> implements MithraDelegatedList<E>, Se
         return false;
     }
 
+    @Override
+    public CachedQuery getCachedQuery(DelegatingList<E> delegatingList)
+    {
+        if (this.isOperationResolved(delegatingList))
+        {
+            return getResolved(delegatingList);
+        }
+        return null;
+    }
+
     protected boolean isOperationResolved(DelegatingList<E> delegatingList)
     {
         return delegatingList.zGetFastListOrCachedQuery() != null;

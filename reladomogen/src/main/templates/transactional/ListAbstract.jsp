@@ -82,7 +82,7 @@ public class <%= className %> extends DelegatingList<<%= wrapper.getClassName() 
     public <%= wrapper.getClassName() %>[] elements()
     {
         <%= wrapper.getClassName() %>[] result = new <%= wrapper.getClassName() %>[size()];
-        this.getDelegated().toArray(this, result);
+        this.zGetDelegated().toArray(this, result);
         return result;
     }
 
@@ -100,7 +100,7 @@ public class <%= className %> extends DelegatingList<<%= wrapper.getClassName() 
 <%@ include file="../RelationshipJavaDoc.jspi" %>
         public <%= relationshipAttributes[ i ].getListInterfaceName() %> <%= relationshipAttributes[i].getGetterNameForList() %>(<%= relationshipAttributes[i].getParameters() %>)
         {
-            return (<%= relationshipAttributes[i].getListInterfaceName() %>) this.getDelegated().resolveRelationship(this, <%= wrapper.getFinderClassName()%>.<%= relationshipAttributes[i].getName()%>(<%= relationshipAttributes[i].getParameterVariables() %>));
+            return (<%= relationshipAttributes[i].getListInterfaceName() %>) this.zGetDelegated().resolveRelationship(this, <%= wrapper.getFinderClassName()%>.<%= relationshipAttributes[i].getName()%>(<%= relationshipAttributes[i].getParameterVariables() %>));
         }
         <% if (wrapper.isTransactional() && relationshipAttributes[i].hasParentContainer()) { %>
             public void zSetParentContainer<%=relationshipAttributes[i].getName()%>(<%= relationshipAttributes[i].getRelatedObject().getAbstractClassName() %> parent)

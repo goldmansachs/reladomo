@@ -24,6 +24,7 @@ import com.gs.fw.common.mithra.finder.AbstractRelatedFinder;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
 import com.gs.fw.common.mithra.list.merge.TopLevelMergeOptions;
 import com.gs.fw.common.mithra.notification.listener.MithraApplicationNotificationListener;
+import com.gs.fw.common.mithra.querycache.CachedQuery;
 import com.gs.fw.common.mithra.util.DoWhileProcedure;
 import com.gs.fw.common.mithra.util.Filter;
 
@@ -48,6 +49,8 @@ public interface MithraDelegatedList<E> extends Serializable
     public void forceRefresh(DelegatingList<E> delegatingList);
 
     public boolean isStale(DelegatingList<E> delegatingList);
+
+    public CachedQuery getCachedQuery(DelegatingList<E> delegatingList);
 
     public int count(DelegatingList<E> delegatingList);
 

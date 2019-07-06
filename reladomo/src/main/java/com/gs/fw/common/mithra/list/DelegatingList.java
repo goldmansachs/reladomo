@@ -165,7 +165,7 @@ public abstract class DelegatingList<E> implements MithraList<E>
     public void setOrderBy(OrderBy orderBy)
     {
         getOrCreateListOptions().orderBy = orderBy;
-        this.getDelegated().sortWith(this, (com.gs.fw.common.mithra.finder.orderby.OrderBy) orderBy);
+        this.zGetDelegated().sortWith(this, (com.gs.fw.common.mithra.finder.orderby.OrderBy) orderBy);
     }
 
     protected DeepFetchNode getDeepFetchedRelationships()
@@ -336,7 +336,7 @@ public abstract class DelegatingList<E> implements MithraList<E>
         return delegated.toArray(this, a);
     }
 
-    protected MithraDelegatedList getDelegated()
+    public MithraDelegatedList zGetDelegated()
     {
         return delegated;
     }
@@ -357,7 +357,7 @@ public abstract class DelegatingList<E> implements MithraList<E>
         boolean added = this.listOptions.deepFetchRoot.add(deepRelationshipAttribute);
         if (added)
         {
-            this.getDelegated().incrementalDeepFetch(this);
+            this.zGetDelegated().incrementalDeepFetch(this);
         }
     }
 
@@ -373,12 +373,12 @@ public abstract class DelegatingList<E> implements MithraList<E>
 
     public void zSetRemoveHandler(DependentRelationshipRemoveHandler removeHandler)
     {
-        this.delegated = ((MithraDelegatedTransactionalList) this.getDelegated()).zSetRemoveHandler(this, removeHandler);
+        this.delegated = ((MithraDelegatedTransactionalList) this.zGetDelegated()).zSetRemoveHandler(this, removeHandler);
     }
 
     public void zSetAddHandler(DependentRelationshipAddHandler addHandler)
     {
-        this.delegated = ((MithraDelegatedTransactionalList) this.getDelegated()).zSetAddHandler(this, addHandler);
+        this.delegated = ((MithraDelegatedTransactionalList) this.zGetDelegated()).zSetAddHandler(this, addHandler);
     }
 
     public void addOrderBy(OrderBy orderBy)
@@ -392,37 +392,37 @@ public abstract class DelegatingList<E> implements MithraList<E>
         {
             this.listOptions.orderBy = this.listOptions.orderBy.and(orderBy);
         }
-        this.getDelegated().sortWith(this, (com.gs.fw.common.mithra.finder.orderby.OrderBy) orderBy);
+        this.zGetDelegated().sortWith(this, (com.gs.fw.common.mithra.finder.orderby.OrderBy) orderBy);
     }
 
     public void setMaxObjectsToRetrieve(int count)
     {
-        this.delegated = this.getDelegated().setMaxObjectsToRetrieve(this, count);
+        this.delegated = this.zGetDelegated().setMaxObjectsToRetrieve(this, count);
     }
 
     public boolean reachedMaxObjectsToRetrieve()
     {
-        return this.getDelegated().reachedMaxObjectsToRetrieve(this);
+        return this.zGetDelegated().reachedMaxObjectsToRetrieve(this);
     }
 
     public boolean isOperationBased()
     {
-        return this.getDelegated().isOperationBased();
+        return this.zGetDelegated().isOperationBased();
     }
 
     public void forceResolve()
     {
-        this.getDelegated().forceResolve(this);
+        this.zGetDelegated().forceResolve(this);
     }
 
     public void forceRefresh()
     {
-        this.getDelegated().forceRefresh(this);
+        this.zGetDelegated().forceRefresh(this);
     }
 
     public boolean isStale()
     {
-        return this.getDelegated().isStale(this);
+        return this.zGetDelegated().isStale(this);
     }
 
     public void setBypassCache(boolean bypassCache)
@@ -438,25 +438,25 @@ public abstract class DelegatingList<E> implements MithraList<E>
     public int count()
     {
         this.delegated = this.delegated.prepareForCount();
-        return this.getDelegated().count(this);
+        return this.zGetDelegated().count(this);
     }
 
     public void insertAll()
     {
         this.generateAndSetPrimaryKeys();
-        ((MithraDelegatedTransactionalList) this.getDelegated()).insertAll(this);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).insertAll(this);
     }
 
     public void bulkInsertAll()
     {
         this.generateAndSetPrimaryKeys();
-        ((MithraDelegatedTransactionalList) this.getDelegated()).bulkInsertAll(this);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).bulkInsertAll(this);
     }
 
     public void cascadeInsertAll()
     {
         this.generateAndSetPrimaryKeys();
-        ((MithraDelegatedTransactionalList) this.getDelegated()).cascadeInsertAll(this);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).cascadeInsertAll(this);
     }
 
     public void zCascadeCopyThenInsertAll()
@@ -482,17 +482,17 @@ public abstract class DelegatingList<E> implements MithraList<E>
     public void cascadeInsertAllUntil(Timestamp exclusiveUntil)
     {
         this.generateAndSetPrimaryKeys();
-        ((MithraDelegatedTransactionalList) this.getDelegated()).cascadeInsertAllUntil(this, exclusiveUntil);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).cascadeInsertAllUntil(this, exclusiveUntil);
     }
 
     public void cascadeDeleteAll()
     {
-        ((MithraDelegatedTransactionalList) this.getDelegated()).cascadeDeleteAll(this);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).cascadeDeleteAll(this);
     }
 
     public void deleteAll()
     {
-        ((MithraDelegatedTransactionalList) this.getDelegated()).deleteAll(this);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).deleteAll(this);
     }
 
     public void deleteAllInBatches(int batchSize)
@@ -501,17 +501,17 @@ public abstract class DelegatingList<E> implements MithraList<E>
         {
             throw new MithraBusinessException(batchSize + " is an invalid batchSize, batchSize must be > 0");
         }
-        ((MithraDelegatedTransactionalList) this.getDelegated()).deleteAllInBatches(this, batchSize);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).deleteAllInBatches(this, batchSize);
     }
 
     protected void terminateAll()
     {
-        ((MithraDelegatedTransactionalList) this.getDelegated()).terminateAll(this);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).terminateAll(this);
     }
 
     protected void purgeAll()
     {
-        ((MithraDelegatedTransactionalList) this.getDelegated()).purgeAll(this);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).purgeAll(this);
     }
 
     public void purgeAllInBatches(int batchSize)
@@ -520,52 +520,52 @@ public abstract class DelegatingList<E> implements MithraList<E>
         {
             throw new MithraBusinessException(batchSize + " is an invalid batchSize, batchSize must be > 0");
         }
-        ((MithraDelegatedTransactionalList) this.getDelegated()).purgeAllInBatches(this, batchSize);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).purgeAllInBatches(this, batchSize);
     }
 
     public void cascadeTerminateAll()
     {
-        ((MithraDelegatedTransactionalList) this.getDelegated()).cascadeTerminateAll(this);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).cascadeTerminateAll(this);
     }
 
     public void cascadeTerminateAllUntil(Timestamp exclusiveUntil)
     {
-        ((MithraDelegatedTransactionalList) this.getDelegated()).cascadeTerminateAllUntil(this, exclusiveUntil);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).cascadeTerminateAllUntil(this, exclusiveUntil);
     }
 
     public void copyDetachedValuesToOriginalOrInsertIfNewOrDeleteIfRemoved()
     {
-        ((MithraDelegatedTransactionalList) this.getDelegated()).copyDetachedValuesToOriginalOrInsertIfNewOrDeleteIfRemoved(this);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).copyDetachedValuesToOriginalOrInsertIfNewOrDeleteIfRemoved(this);
     }
 
     public void zCopyDetachedValuesDeleteIfRemovedOnly()
     {
-        ((MithraDelegatedTransactionalList) this.getDelegated()).zCopyDetachedValuesDeleteIfRemovedOnly(this);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).zCopyDetachedValuesDeleteIfRemovedOnly(this);
     }
 
     public void copyDetachedValuesToOriginalOrInsertIfNewOrTerminateIfRemoved()
     {
-        ((MithraDelegatedTransactionalList) this.getDelegated()).copyDetachedValuesToOriginalOrInsertIfNewOrTerminateIfRemoved(this);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).copyDetachedValuesToOriginalOrInsertIfNewOrTerminateIfRemoved(this);
     }
 
     public void zCascadeUpdateInPlaceBeforeTerminate()
     {
-        ((MithraDelegatedTransactionalList) this.getDelegated()).cascadeUpdateInPlaceBeforeTerminate(this);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).cascadeUpdateInPlaceBeforeTerminate(this);
     }
 
     public void copyDetachedValuesToOriginalUntilOrInsertIfNewUntilOrTerminateIfRemoved(Timestamp exclusiveUntil)
     {
-        ((MithraDelegatedTransactionalList) this.getDelegated()).copyDetachedValuesToOriginalUntilOrInsertIfNewUntilOrTerminateIfRemoved(this, exclusiveUntil);
+        ((MithraDelegatedTransactionalList) this.zGetDelegated()).copyDetachedValuesToOriginalUntilOrInsertIfNewUntilOrTerminateIfRemoved(this, exclusiveUntil);
     }
 
     public void clearResolvedReferences()
     {
-        this.getDelegated().clearResolvedReferences(this);
+        this.zGetDelegated().clearResolvedReferences(this);
     }
 
     public boolean isModifiedSinceDetachment()
     {
-        return this.getDelegated().isModifiedSinceDetachment(this);
+        return this.zGetDelegated().isModifiedSinceDetachment(this);
     }
 
     public void restrictRetrievalTo(com.gs.fw.finder.Attribute attribute)
@@ -788,9 +788,9 @@ public abstract class DelegatingList<E> implements MithraList<E>
         com.gs.fw.common.mithra.attribute.Attribute sourceAttribute = this.getMithraObjectPortal().getFinder().getSourceAttribute();
         Object firstNotSet = null;
         boolean isMultiSource = false;
-        for (int i = 0; i < this.getDelegated().size(this); i++)
+        for (int i = 0; i < this.zGetDelegated().size(this); i++)
         {
-            Object obj = this.getDelegated().get(this, i);
+            Object obj = this.zGetDelegated().get(this, i);
             if (!attribute.isSequenceSet(obj))
             {
                 if (firstNotSet == null)
@@ -810,9 +810,9 @@ public abstract class DelegatingList<E> implements MithraList<E>
             Map<Object, List> sourceAttributeMap = new HashMap<Object, List>();
             SimulatedSequencePrimaryKeyGenerator primaryKeyGenerator = null;
             //First check how many Mithra objects need to set this primary key attribute and keep a list for per sourceAttribute
-            for (int i = 0; i < this.getDelegated().size(this); i++)
+            for (int i = 0; i < this.zGetDelegated().size(this); i++)
             {
-                Object obj = this.getDelegated().get(this, i);
+                Object obj = this.zGetDelegated().get(this, i);
                 if (!attribute.isSequenceSet(obj))
                 {
                     Object source = sourceAttribute.valueOf(obj);
@@ -847,9 +847,9 @@ public abstract class DelegatingList<E> implements MithraList<E>
     {
         this.getMithraObjectPortal(); // initialize the portal if it's not initialized
         int count = 0;
-        for (int i = 0; i < this.getDelegated().size(this); i++)
+        for (int i = 0; i < this.zGetDelegated().size(this); i++)
         {
-            if (!attribute.isSequenceSet(this.getDelegated().get(this, i)))
+            if (!attribute.isSequenceSet(this.zGetDelegated().get(this, i)))
             {
                 count++;
             }
@@ -925,7 +925,7 @@ public abstract class DelegatingList<E> implements MithraList<E>
 
     public void registerForNotification(MithraApplicationNotificationListener listener)
     {
-        this.delegated = this.getDelegated().registerForNotification(this, listener);
+        this.delegated = this.zGetDelegated().registerForNotification(this, listener);
     }
 
     protected void zSetAttributeNull(com.gs.fw.common.mithra.attribute.Attribute attr)
@@ -1014,7 +1014,7 @@ public abstract class DelegatingList<E> implements MithraList<E>
 
     protected void zCopyNonPersistentInto(DelegatingList target)
     {
-        MithraDelegatedList<E> delegate = this.getDelegated().getNonPersistentDelegate();
+        MithraDelegatedList<E> delegate = this.zGetDelegated().getNonPersistentDelegate();
         target.setDelegated(delegate);
         delegate.init(target, this.size());
         for (int i = 0; i < this.size(); i++)

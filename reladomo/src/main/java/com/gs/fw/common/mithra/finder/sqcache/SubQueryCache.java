@@ -68,7 +68,7 @@ public class SubQueryCache
             {
                 ShapeMatchResult shapeMatchResult = toFind.zShapeMatch(query.getOperation());
                 List resolved = shapeMatchResult.resolve(cache);
-                result = createAndCacheCachedQuery(op, analyzedOperation, orderBy, cache, forRelationship, resolved);
+                result = createAndCacheCachedQuery(op, analyzedOperation, orderBy, cache, forRelationship, resolved, query);
             }
         }
         if (result != null) return result;
@@ -76,12 +76,14 @@ public class SubQueryCache
         CachedQuery all = unwrap(allOperation);
         if (all != null && all.getOperation().getResultObjectPortal() == toFind.getResultObjectPortal() && toFind.zCanFilterInMemory())
         {
-            result = createAndCacheCachedQuery(op, analyzedOperation, orderBy, cache, forRelationship, op.applyOperation(all.getResult()));
+            result = createAndCacheCachedQuery(op, analyzedOperation, orderBy, cache, forRelationship,
+                    op.applyOperation(all.getResult()), all);
         }
         return result;
     }
 
-    private CachedQuery createAndCacheCachedQuery(Operation op, AnalyzedOperation analyzedOperation, OrderBy orderBy, QueryCache cache, boolean forRelationship, List resolved)
+    private CachedQuery createAndCacheCachedQuery(Operation op, AnalyzedOperation analyzedOperation, OrderBy orderBy,
+            QueryCache cache, boolean forRelationship, List resolved, CachedQuery baseQuery)
     {
         if (resolved != null)
         {
@@ -92,7 +94,10 @@ public class SubQueryCache
             {
                 CachedQuery query2 = new CachedQuery(analyzedOperation.getAnalyzedOperation(), orderBy);
                 query2.setResult(resolved);
-                cache.cacheQueryForSubQuery(query2, forRelationship);
+                if (!baseQuery.isExpired())
+                {
+                    cache.cacheQueryForSubQuery(query2, forRelationship);
+                }
             }
 
             CachedQuery result = new CachedQuery(op, orderBy);
@@ -101,7 +106,10 @@ public class SubQueryCache
             {
                 result.setWasDefaulted();
             }
-            cache.cacheQueryForSubQuery(result, forRelationship);
+            if (!baseQuery.isExpired())
+            {
+                cache.cacheQueryForSubQuery(result, forRelationship);
+            }
             return result;
         }
         return null;

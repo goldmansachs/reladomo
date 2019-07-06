@@ -37,7 +37,7 @@ public class TestRelationshipsNoInClause extends TestRelationships
     protected void tearDown() throws Exception
     {
         super.tearDown();
-        DeepRelationshipUtility.getInstance().setMaxSimplifiedIn(1000);
+        DeepRelationshipUtility.getInstance().resetMaxSimplifiedIn();
     }
 
     public void testMultiLevelSimplifiedInClause()
