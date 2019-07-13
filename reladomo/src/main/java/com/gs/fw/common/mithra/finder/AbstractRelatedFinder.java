@@ -61,7 +61,7 @@ public abstract class AbstractRelatedFinder<ReturnType, ParentOwnerType, ReturnO
     {
     }
 
-    private DeepFetchStrategy getDeepFetchStrategy()
+    public DeepFetchStrategy zGetDeepFetchStrategy()
     {
         DeepFetchStrategy strategy = this.deepFetchStrategy;
         if (strategy == null)
@@ -81,6 +81,11 @@ public abstract class AbstractRelatedFinder<ReturnType, ParentOwnerType, ReturnO
             this.deepFetchStrategy = strategy;
         }
         return strategy;
+    }
+
+    public void zSetDeepFetchStrategy(DeepFetchStrategy deepFetchStrategy)
+    {
+        this.deepFetchStrategy = deepFetchStrategy;
     }
 
     public Mapper zGetMapper()
@@ -303,7 +308,7 @@ public abstract class AbstractRelatedFinder<ReturnType, ParentOwnerType, ReturnO
 
     public List zDeepFetch(DeepFetchNode node, boolean bypassCache, boolean forceImplicitJoin)
     {
-        DeepFetchStrategy strategy = this.getDeepFetchStrategy();
+        DeepFetchStrategy strategy = this.zGetDeepFetchStrategy();
         if (strategy != null)
         {
             return strategy.deepFetch(node, bypassCache, forceImplicitJoin);
@@ -313,7 +318,7 @@ public abstract class AbstractRelatedFinder<ReturnType, ParentOwnerType, ReturnO
 
     public DeepFetchResult zDeepFetchFirstLinkInMemory(DeepFetchNode node)
     {
-        DeepFetchStrategy strategy = this.getDeepFetchStrategy();
+        DeepFetchStrategy strategy = this.zGetDeepFetchStrategy();
         if (strategy != null)
         {
             return strategy.deepFetchFirstLinkInMemory(node);
@@ -323,12 +328,12 @@ public abstract class AbstractRelatedFinder<ReturnType, ParentOwnerType, ReturnO
 
     public List zFinishAdhocDeepFetch(DeepFetchNode deepFetchNode, DeepFetchResult result)
     {
-        return this.getDeepFetchStrategy().finishAdhocDeepFetch(deepFetchNode, result);
+        return this.zGetDeepFetchStrategy().finishAdhocDeepFetch(deepFetchNode, result);
     }
 
     public List zDeepFetchWithTempContext(DeepFetchNode node, TupleTempContext tempContext, Object parentPrototype, List immediateParentList)
     {
-        return this.getDeepFetchStrategy().deepFetchAdhocUsingTempContext(node, tempContext, parentPrototype, immediateParentList);
+        return this.zGetDeepFetchStrategy().deepFetchAdhocUsingTempContext(node, tempContext, parentPrototype, immediateParentList);
     }
 
     public RelationshipMultiExtractor zGetRelationshipMultiExtractor()
@@ -348,12 +353,12 @@ public abstract class AbstractRelatedFinder<ReturnType, ParentOwnerType, ReturnO
 
     public List zDeepFetchWithInClause(DeepFetchNode deepFetchNode, Attribute singleAttribute, List parentList)
     {
-        return this.getDeepFetchStrategy().deepFetchAdhocUsingInClause(deepFetchNode, singleAttribute, parentList);
+        return this.zGetDeepFetchStrategy().deepFetchAdhocUsingInClause(deepFetchNode, singleAttribute, parentList);
     }
 
     public boolean zCanFinishAdhocDeepFetchResult()
     {
-        return this.getDeepFetchStrategy().canFinishAdhocDeepFetchResult();
+        return this.zGetDeepFetchStrategy().canFinishAdhocDeepFetchResult();
     }
 
     @Override

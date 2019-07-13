@@ -23,6 +23,7 @@ import com.gs.fw.common.mithra.cache.Index;
 import com.gs.fw.common.mithra.finder.AbstractRelatedFinder;
 import com.gs.fw.common.mithra.finder.DeepFetchNode;
 import com.gs.fw.common.mithra.list.merge.TopLevelMergeOptions;
+import com.gs.fw.common.mithra.querycache.CachedQuery;
 import com.gs.fw.common.mithra.util.DoWhileProcedure;
 import com.gs.fw.common.mithra.util.Filter;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
@@ -76,6 +77,12 @@ public class AbstractNonOperationBasedList<E> implements MithraDelegatedList<E>
     public boolean isStale(DelegatingList delegatingList)
     {
         return false;
+    }
+
+    @Override
+    public CachedQuery getCachedQuery(DelegatingList<E> delegatingList)
+    {
+        return null;
     }
 
     public int count(DelegatingList delegatingList)

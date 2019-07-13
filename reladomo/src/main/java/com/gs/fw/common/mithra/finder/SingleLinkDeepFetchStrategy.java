@@ -21,6 +21,7 @@ import com.gs.fw.common.mithra.MithraList;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.finder.asofop.AsOfEqOperation;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
+import com.gs.fw.common.mithra.list.DelegatingList;
 import com.gs.fw.common.mithra.querycache.CachedQuery;
 import com.gs.fw.common.mithra.tempobject.TupleTempContext;
 import com.gs.fw.common.mithra.util.ListFactory;
@@ -138,7 +139,7 @@ public abstract class SingleLinkDeepFetchStrategy extends DeepFetchStrategy
         return op.getResultObjectPortal().getFinder().findMany(op);
     }
 
-    protected List cacheResults(HashMap<Operation, List> opToListMap, int doNotCacheCount)
+    protected List cacheResults(HashMap<Operation, List> opToListMap, int doNotCacheCount, CachedQueryPair baseQuery)
     {
         int initialCapacity = opToListMap.size() - doNotCacheCount;
         if (initialCapacity <= 0 ) initialCapacity = 1;
@@ -155,6 +156,10 @@ public abstract class SingleLinkDeepFetchStrategy extends DeepFetchStrategy
                 CachedQuery cachedQuery = new CachedQuery(op, this.orderBy, first);
                 if (this.orderBy != null && resultList.size() > 1) Collections.sort(resultList, this.orderBy);
                 cachedQuery.setResult(resultList);
+                if (baseQuery != null && baseQuery.isExpired())
+                {
+                    return cachedQueries;
+                }
                 cachedQuery.cacheQueryForRelationship();
                 cachedQueries.add(cachedQuery);
                 if (first == null) first = cachedQuery;
@@ -227,34 +232,37 @@ public abstract class SingleLinkDeepFetchStrategy extends DeepFetchStrategy
         return filteredParentList;
     }
 
-    protected void associateSimplifiedResult(Operation op, MithraList list)
+    protected void associateSimplifiedResult(Operation op, MithraList list, CachedQueryPair baseQuery)
     {
         List resultList = new FastList(list);
         if (this.orderBy != null && resultList.size() > 1) Collections.sort(resultList, this.orderBy);
-        associateSimplifiedResult(op, resultList);
+        associateSimplifiedResult(op, resultList, baseQuery);
     }
 
-    protected void associateSimplifiedResult(Operation op, List resultList)
+    protected void associateSimplifiedResult(Operation op, List resultList, CachedQueryPair baseQuery)
     {
         CachedQuery cachedQuery = new CachedQuery(op, this.orderBy);
         if (this.orderBy != null && resultList.size() > 1) Collections.sort(resultList, this.orderBy);
         cachedQuery.setResult(resultList);
-        cachedQuery.cacheQuery(false);
-    }
-
-    protected void associateResultsWithAlternateMapper(Operation originalOp, MithraList list)
-    {
-        if (this.alternateMapper != null)
+        if (!baseQuery.isExpired())
         {
-            associateSimplifiedResult(this.mapper.createMappedOperationForDeepFetch(originalOp), list);
+            cachedQuery.cacheQuery(false);
         }
     }
 
-    protected void associateResultsWithAlternateMapper(Operation originalOp, List list)
+    protected void associateResultsWithAlternateMapper(Operation originalOp, MithraList list, CachedQueryPair baseQuery)
     {
         if (this.alternateMapper != null)
         {
-            associateSimplifiedResult(this.mapper.createMappedOperationForDeepFetch(originalOp), list);
+            associateSimplifiedResult(this.mapper.createMappedOperationForDeepFetch(originalOp), list, baseQuery);
+        }
+    }
+
+    protected void associateResultsWithAlternateMapper(Operation originalOp, List list, CachedQueryPair baseQuery)
+    {
+        if (this.alternateMapper != null)
+        {
+            associateSimplifiedResult(this.mapper.createMappedOperationForDeepFetch(originalOp), list, baseQuery);
         }
     }
 
@@ -296,5 +304,37 @@ public abstract class SingleLinkDeepFetchStrategy extends DeepFetchStrategy
             cachedQuery.setWasDefaulted();
         }
         cachedQuery.cacheQuery(forRelationship);
+    }
+
+    protected CachedQuery getCachedQueryFromList(MithraList baseList)
+    {
+        DelegatingList delegatingList = (DelegatingList) baseList;
+        return delegatingList.zGetDelegated().getCachedQuery(delegatingList);
+    }
+
+    protected static class CachedQueryPair
+    {
+        private CachedQuery one;
+        private CachedQuery two;
+
+        public CachedQueryPair(CachedQuery one)
+        {
+            this.one = one;
+        }
+
+        public void add(CachedQuery two)
+        {
+            this.two = two;
+        }
+
+        public boolean isExpired()
+        {
+            return this.one.isExpired() || (this.two != null && this.two.isExpired());
+        }
+
+        public CachedQuery getOne()
+        {
+            return this.one;
+        }
     }
 }

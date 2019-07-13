@@ -18,6 +18,7 @@
 package com.gs.fw.common.mithra.querycache;
 
 import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.UpdateCountHolder;
 import com.gs.fw.common.mithra.finder.orderby.OrderBy;
@@ -111,6 +112,11 @@ public class CachedQuery
         compactBools = (byte)((int)compactBools | 1 << 4);
     }
 
+    public void setHasTempContext()
+    {
+        compactBools = (byte)((int)compactBools | 1 << 5);
+    }
+
 //    public void setNullableFloatValueNull()
 //    {
 //        compactBools = (byte)((int)compactBools | 1 << 5);
@@ -144,6 +150,11 @@ public class CachedQuery
     public boolean isSubQuery()
     {
         return (compactBools & 1 << 4) != 0 ;
+    }
+
+    public boolean hasTempContext()
+    {
+        return (compactBools & 1 << 5) != 0 ;
     }
 
 //    public boolean isNullableFloatValueNull()
@@ -185,33 +196,64 @@ public class CachedQuery
         {
             orderBy.addDepenedentAttributesToSet(portalOrAttributeSet);
         }
-        int size = portalOrAttributeSet.size();
-        updateCountHolders = new UpdateCountHolder[size];
-
+        int forTemp = 0;
         for(int i=0;i<size1;i++)
         {
             Object object = portalOrAttributeSet.get(i);
             MithraObjectPortal portal = (MithraObjectPortal) object;
             if (portal.isForTempObject())
             {
-                updateCountHolders = null;
-                return;
+                forTemp++;
             }
-            updateCountHolders[i] = portal.getPerClassUpdateCountHolder();
         }
-        for(int i=size1;i<size;i++)
+        int loopSize = portalOrAttributeSet.size();
+        if (forTemp > 0)
+        {
+            this.setHasTempContext();
+            for(int i=size1;i<loopSize;i++)
+            {
+                Object object = portalOrAttributeSet.get(i);
+                if (object instanceof Attribute && ((Attribute)object).getOwnerPortal().isForTempObject())
+                {
+                    forTemp++;
+                }
+            }
+        }
+        int arraySize = loopSize - forTemp;
+
+        updateCountHolders = new UpdateCountHolder[arraySize];
+
+        int pos = 0;
+        for(int i=0;i<size1;i++)
         {
             Object object = portalOrAttributeSet.get(i);
-            updateCountHolders[i] = (UpdateCountHolder) object;
+            MithraObjectPortal portal = (MithraObjectPortal) object;
+            if (portal.isForTempObject())
+            {
+                continue;
+            }
+            updateCountHolders[pos++] = portal.getPerClassUpdateCountHolder();
         }
-        originalValues = new int[size];
-        for(int i=0;i<size;i++)
+        for(int i=size1;i<loopSize;i++)
+        {
+            Object object = portalOrAttributeSet.get(i);
+            if (object instanceof Attribute && ((Attribute)object).getOwnerPortal().isForTempObject())
+            {
+                continue;
+            }
+            updateCountHolders[pos++] = (UpdateCountHolder) object;
+        }
+        originalValues = new int[arraySize];
+        for(int i=0;i<arraySize;i++)
         {
             originalValues[i] = updateCountHolders[i].getUpdateCount();
         }
         MithraObjectPortal portal = this.operation.getResultObjectPortal();
-        this.updateCountHolders = portal.getPooledUpdateCountHolders(updateCountHolders);
-        this.originalValues = portal.getPooledIntegerArray(this.originalValues);
+        if (this.updateCountHolders.length > 0)
+        {
+            this.updateCountHolders = portal.getPooledUpdateCountHolders(updateCountHolders);
+            this.originalValues = portal.getPooledIntegerArray(this.originalValues);
+        }
     }
 
     public boolean isExpired()
@@ -251,7 +293,7 @@ public class CachedQuery
 
     public boolean prepareToCacheQuery(boolean forRelationship, QueryCache queryCache)
     {
-        if (updateCountHolders == null) return false;
+        if (this.hasTempContext()) return false;
         if (this.operation instanceof CompactUpdateCountOperation)
         {
             CompactUpdateCountOperation compactOperation = (CompactUpdateCountOperation) this.operation;
@@ -291,7 +333,7 @@ public class CachedQuery
 
     public void cacheQueryForRelationship()
     {
-        if (updateCountHolders == null) return;
+        if (this.hasTempContext()) return;
         QueryCache queryCache = operation.getResultObjectPortal().getQueryCache();
         queryCache.cacheQueryForRelationship(this);
     }
