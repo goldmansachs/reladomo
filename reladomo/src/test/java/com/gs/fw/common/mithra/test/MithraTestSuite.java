@@ -298,6 +298,9 @@ public class MithraTestSuite
         //SubQuery
         suite.addTestSuite(TestSubQueryCache.class);
 
+        // utf-8 test charset
+        suite.addTestSuite(TestUtf8TestCharset.class);
+
         return suite;
     }
 }

@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,7 @@ public abstract class AbstractMithraDataFileParser
     private DataReaderState dataReaderState;
     private AttributeReaderState attributeReaderState;
     private MithraParsedData currentParsedData;
+    private Charset charset;
 
     public AbstractMithraDataFileParser(String filenameFromClasspathOrFileSystem)
     {
@@ -65,6 +67,11 @@ public abstract class AbstractMithraDataFileParser
         this.streamLocation = streamLocation;
         this.inputStream = is;
         this.initStates();
+    }
+
+    public void setCharset(Charset charset)
+    {
+        this.charset = charset;
     }
 
     private void initStates()
@@ -177,8 +184,17 @@ public abstract class AbstractMithraDataFileParser
                 {
                     throw new RuntimeException("could not get file input stream", e);
                 }
-    
-                Reader reader = new BufferedReader(new InputStreamReader(is));
+
+                InputStreamReader streamReader;
+                if (this.charset != null)
+                {
+                    streamReader = new InputStreamReader(is, charset);
+                }
+                else
+                {
+                    streamReader = new InputStreamReader(is);
+                }
+                Reader reader = new BufferedReader(streamReader);
                 StreamTokenizer st = new StreamTokenizer(reader);
                 st.parseNumbers();
                 st.eolIsSignificant(true);
