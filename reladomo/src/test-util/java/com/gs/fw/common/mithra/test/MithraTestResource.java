@@ -67,6 +67,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.sql.Timestamp;
 import java.text.Format;
 import java.text.SimpleDateFormat;
@@ -117,6 +118,7 @@ public class MithraTestResource
 
     protected List<MithraObjectPortal> portals;
     protected Map<String, List<MithraObject>> testData = new UnifiedMap<String, List<MithraObject>>();
+    protected Charset charset;
 
     public boolean isSetUpCompleted()
     {
@@ -169,6 +171,11 @@ public class MithraTestResource
     {
         this.initialize(databaseType, manager);
         this.runtimeType = mithraRuntimeType;
+    }
+
+    public void setCharset(Charset charset)
+    {
+        this.charset = charset;
     }
 
     private void initializeRuntime()
@@ -414,6 +421,7 @@ public class MithraTestResource
         {
             getLogger().debug("Parsing data file: " + testDataFilename);
             MithraTestDataParser parser = new MithraTestDataParser(testDataFilename);
+            parser.setCharset(this.charset);
             List<MithraParsedData> results = parser.getResults();
             getLogger().debug("Finished parsing data file: " + testDataFilename);
             testDataFile = new TestDataFile(testDataFilename, results);
@@ -717,7 +725,9 @@ public class MithraTestResource
 
     private TestDatabaseConfiguration createTestDbConfig(String databaseName, Object sourceId, Class type)
     {
-        return new TestDatabaseConfiguration(databaseName, sourceId, type, this.isStrictParsingEnabled);
+        TestDatabaseConfiguration configuration = new TestDatabaseConfiguration(databaseName, sourceId, type, this.isStrictParsingEnabled);
+        configuration.setCharset(this.charset);
+        return configuration;
     }
 
     /**
@@ -817,6 +827,10 @@ public class MithraTestResource
         List<TestDatabaseConfiguration> databasesPerConnectionManager = checkDatabasesPerConnectionManagerIfAbsentPutNew(testConnectionManager);
         int index = databasesPerConnectionManager.indexOf(testDbConfig);
         TestDatabaseConfiguration createdTestDatabaseConfiguration = index >= 0 ? databasesPerConnectionManager.get(index) : null;
+        if (createdTestDatabaseConfiguration != null)
+        {
+            createdTestDatabaseConfiguration.setCharset(this.charset);
+        }
 
         // Add the connection manager irrespective of any existing TestDatabaseConfiguration as it could have been cleared down by a previous fullyShutdown() event.
         boolean connectionManagerWasNotAlreadyRegistered = testDbConfig.addToConnectionManager(testConnectionManager);

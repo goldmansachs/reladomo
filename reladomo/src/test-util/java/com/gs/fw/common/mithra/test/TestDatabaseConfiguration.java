@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -56,6 +57,7 @@ public class TestDatabaseConfiguration
     protected static final Object[] NO_ARGS = {};
     private boolean shutdown;
     private boolean enableStrictParsing;
+    private Charset charset;
 
     public TestDatabaseConfiguration(String databaseName, Object sourceId, Class sourceAttributeType)
     {
@@ -69,6 +71,11 @@ public class TestDatabaseConfiguration
         this.sourceAttributeType = sourceAttributeType;
         this.testDataFiles = new ArrayList<TestDataFile>(3);
         this.enableStrictParsing = enableStrictParsing;
+    }
+
+    public void setCharset(Charset charset)
+    {
+        this.charset = charset;
     }
 
     protected static Logger getLogger()
@@ -167,6 +174,7 @@ public class TestDatabaseConfiguration
             else
             {
                 MithraTestDataParser parser = new MithraTestDataParser(streamLocation, is);
+                parser.setCharset(this.charset);
                 results = parser.getResults();
             }
             getLogger().debug("Finished parsing data from url: " + streamLocation.toString());
@@ -191,6 +199,7 @@ public class TestDatabaseConfiguration
             else
             {
                 MithraTestDataParser parser = new MithraTestDataParser(testDataFilename);
+                parser.setCharset(this.charset);
                 results = parser.getResults();
             }
             getLogger().debug("Finished parsing data file: " + testDataFilename);
