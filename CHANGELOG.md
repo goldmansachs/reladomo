@@ -1,4 +1,23 @@
 # Change Log
+## 17.1.0 - 2019-07-16
+### Enhancements:
+- Add support for test file charset
+- Changed handling of the optimistic lock exception to support situations where the underlying data has duplicate record for the given milestone. In this case a MithraUniqueIndexViolationException exception will be trown and no retries will be made.
+- Better error message during code generation
+- Remove duplicated attribute "finalGetter" in type EmbeddedValueType. The same attribute (name and target namespace) is already defined in type NestedEmbeddedValueType
+
+### Bug Fixes:
+- Fix deep fetch and query cache timing
+- Fix build failure caused by missing OpenJDK 6 dependency on Travis CI (#1)
+- Clean Notification Manager Shutdown
+- Fix attribute setters in inherited list classes
+- Fix code generation for class named Class. covered by: craig_motlin.dco
+- Fix superclass + interface combination
+- Multi threaded deep fetch exception handling
+- Fix the several typos detected by github.com/client9/misspell
+- Fix TXRollback for test
+
+
 ## 17.0.2 - 2018-05-10
 ### Bug Fixes:
 - Fix MultiUpdateOperation combine method for increment
