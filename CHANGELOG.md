@@ -1,4 +1,8 @@
 # Change Log
+## 17.1.2 - 2019-09-01
+### Bug Fixes:
+- Fix json deserialization without relationships
+
 ## 17.1.0 - 2019-07-16
 ### Enhancements:
 - Add support for test file charset
