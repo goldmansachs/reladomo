@@ -19,14 +19,17 @@ package com.gs.reladomo.serial.jackson;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.gs.fw.common.mithra.test.domain.BitemporalOrder;
-import com.gs.fw.common.mithra.test.domain.BitemporalOrderFinder;
-import com.gs.fw.common.mithra.test.domain.Order;
-import com.gs.fw.common.mithra.test.domain.OrderFinder;
+import com.gs.fw.common.mithra.test.MithraTestAbstract;
+import com.gs.fw.common.mithra.test.domain.*;
 import com.gs.fw.common.mithra.test.util.serializer.TestBitemporalRoundTripStringBased;
 import com.gs.fw.common.mithra.test.util.serializer.TestRoundTripStringBased;
+import com.gs.fw.common.mithra.util.serializer.SerializationConfig;
 import com.gs.fw.common.mithra.util.serializer.Serialized;
+import org.junit.Assert;
 import org.junit.Test;
+
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 
 public class ExampleJacksonReladomoBitemporalSerializerTest extends TestBitemporalRoundTripStringBased
 {
@@ -90,6 +93,33 @@ public class ExampleJacksonReladomoBitemporalSerializerTest extends TestBitempor
         assertEquals("First order modified", order.getDescription()); //modified attribute
         assertEquals("In-Progress", order.getState()); // missing in json, should stay as it was
         assertEquals(0, order.getItems().size());
+    }
+
+    @Test
+    public void testInMemoryNoRelationships() throws Exception
+    {
+        String serialized = "{\n" +
+                "  \"_rdoClassName\" : \"com.gs.fw.common.mithra.test.domain.BitemporalOrderItem\",\n" +
+//                "  \"_rdoState\" : 20,\n" +
+                "  \"id\" : 70459,\n" +
+                "  \"orderId\" : 1,\n" +
+                "  \"productId\" : 1,\n" +
+                "  \"quantity\" : 20.0,\n" +
+                "  \"originalPrice\" : 10.5,\n" +
+                "  \"discountPrice\" : 10.5,\n" +
+                "  \"state\" : \"In-Progress\",\n" +
+                "  \"businessDate\" : 1567363437186\n" +
+                "}\n";
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JacksonReladomoModule());
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        JavaType customClassCollection = mapper.getTypeFactory().constructCollectionLikeType(Serialized.class, BitemporalOrderItem.class);
+
+        Serialized<BitemporalOrderItem> back = mapper.readValue(serialized, customClassCollection);
+        BitemporalOrderItem wrapped = back.getWrapped();
+        Assert.assertEquals(70459, wrapped.getId());
+        Assert.assertEquals("In-Progress", wrapped.getState());
+        Assert.assertEquals(BitemporalOrderItemFinder.processingDate().getInfinityDate(), wrapped.getProcessingDate());
     }
 
 }

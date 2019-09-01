@@ -56,6 +56,7 @@ import com.gs.fw.common.mithra.util.Time;
 import com.gs.fw.finder.Navigation;
 import com.gs.reladomo.metadata.ReladomoClassMetaData;
 import org.eclipse.collections.api.block.function.Function;
+import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.list.mutable.FastList;
 import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
@@ -82,6 +83,7 @@ import java.util.Stack;
  */
 public class ReladomoDeserializer<T extends MithraObject>
 {
+    private static final Map<String, Object> EMPTY_MAP = Maps.fixedSize.of();
     protected static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
     private static final Object[] NULL_ARGS = (Object[]) null;
     private static final Object[] SINGLE_NULL = new Object[1];
@@ -546,7 +548,7 @@ public class ReladomoDeserializer<T extends MithraObject>
                         wireRelationshipsForInMemory(metaData, partialDeserialized);
                         break;
                     case ReladomoSerializationContext.DETACHED_STATE:
-                        if (partialDeserialized.partialRelationships != null)
+                        if (partialDeserialized.partialRelationships != EMPTY_MAP)
                         {
                             detached.add(partialDeserialized);
                         }
@@ -1081,13 +1083,13 @@ public class ReladomoDeserializer<T extends MithraObject>
         protected Timestamp processingDate;
         protected BitSet populatedAttributes;
         protected int state;
-        protected Map<String, Object> partialRelationships; //Object is either PartialDeserialized or List<PartialDeserialized>
+        protected Map<String, Object> partialRelationships = EMPTY_MAP; //Object is either PartialDeserialized or List<PartialDeserialized>
         protected byte deserializedState;
         protected MithraObject deserialized; // constructed at the end of the stream
 
         protected void storeRelated(RelatedFinder relatedFinder, Object related)
         {
-            if (this.partialRelationships == null)
+            if (this.partialRelationships == EMPTY_MAP)
             {
                 this.partialRelationships = UnifiedMap.newMap();
             }
