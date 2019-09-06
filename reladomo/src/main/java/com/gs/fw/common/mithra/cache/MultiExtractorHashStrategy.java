@@ -144,7 +144,7 @@ public class MultiExtractorHashStrategy extends ExtractorBasedHashStrategy
     {
         int h = ((Extractor)extractors.get(0)).valueHashCode(o);
         h = HashUtil.combineHashes(h,((Extractor)extractors.get(1)).valueHashCode(o));
-        for(int i=2;i<this.extractors.length;i++)
+        for(int i=2;i<extractors.size();i++)
         {
             h = HashUtil.combineHashes(h,((Extractor)extractors.get(i)).valueHashCode(o));
         }
@@ -157,7 +157,7 @@ public class MultiExtractorHashStrategy extends ExtractorBasedHashStrategy
     {
         int h = (extractors[0]).valueHashCode(o);
         h = HashUtil.combineHashes(h,(extractors[1]).valueHashCode(o));
-        for(int i=2;i<this.extractors.length;i++)
+        for(int i=2;i<extractors.length;i++)
         {
             h = HashUtil.combineHashes(h,(extractors[i]).valueHashCode(o));
         }
