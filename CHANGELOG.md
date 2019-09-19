@@ -1,5 +1,10 @@
 # Change Log
-## 17.1.2 - 2019-09-01
+## 17.1.2 - 2019-09-19
+### Bug Fixes:
+- Fix json deserialization with nulls
+- Fix ArrayIndexOutOfBoundsException in MultiExtractorHashStrategy
+
+## 17.1.1 - 2019-09-01
 ### Bug Fixes:
 - Fix json deserialization without relationships
 
