@@ -1915,7 +1915,7 @@ public class ReladomoDeserializer<T extends MithraObject>
         @Override
         public void setFieldOrRelationshipNull(ReladomoDeserializer deserializer) throws DeserializationException
         {
-            deserializer.data.attribute.setValueNull(deserializer.data.partial);
+            deserializer.data.attribute.setValueNull(deserializer.data.partial.dataObject);
             attributeDone(deserializer);
         }
 

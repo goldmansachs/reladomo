@@ -45,6 +45,20 @@ public abstract class TestBitemporalRoundTripStringBased extends MithraTestAbstr
         assertTrue(serialized.getWrapped().zIsDetached());
     }
 
+    @Test
+    public void testBitemporalOrderWithNullString() throws Exception
+    {
+        SerializationConfig config = SerializationConfig.shallowWithDefaultAttributes(BitemporalOrderFinder.getFinderInstance());
+        BitemporalOrder order = findOrder(1).getNonPersistentCopy();
+        order.setDescription(null);
+        String sb = toSerializedString(new Serialized(order, config));
+
+        Serialized<BitemporalOrder> serialized = fromSerializedString(sb);
+        BitemporalOrder wrapped = serialized.getWrapped();
+        assertEquals(1, wrapped.getOrderId());
+        assertNull(wrapped.getDescription());
+    }
+
     private BitemporalOrder findOrder(int orderId)
     {
         Operation op = BitemporalOrderFinder.orderId().eq(orderId);
