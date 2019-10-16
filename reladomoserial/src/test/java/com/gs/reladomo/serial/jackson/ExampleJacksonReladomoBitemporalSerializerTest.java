@@ -122,4 +122,74 @@ public class ExampleJacksonReladomoBitemporalSerializerTest extends TestBitempor
         Assert.assertEquals(BitemporalOrderItemFinder.processingDate().getInfinityDate(), wrapped.getProcessingDate());
     }
 
+    @Test
+    public void testOrderWithOneRemovedItem() throws Exception
+    {
+//        BitemporalOrder order = BitemporalOrderFinder.findByPrimaryKey(2, getBusinessDate(), BitemporalOrderFinder.processingDate().getInfinityDate());
+//
+//        System.out.println(toSerializedString(new Serialized(order,
+//                SerializationConfig.shallowWithDefaultAttributes(BitemporalOrderFinder.getFinderInstance()).withDeepDependents())));
+
+        String json = "{\n" +
+                "  \"_rdoClassName\" : \"com.gs.fw.common.mithra.test.domain.BitemporalOrder\",\n" +
+                "  \"orderId\" : 2,\n" +
+                "  \"orderDate\" : 1076562000000,\n" +
+                "  \"userId\" : 1,\n" +
+                "  \"description\" : \"Second order\",\n" +
+                "  \"state\" : \"In-Progress\",\n" +
+                "  \"trackingId\" : \"124\",\n" +
+                "  \"businessDate\" : 1495116000000,\n" +
+                "  \"processingDate\" : 253399726740000,\n" +
+                "  \"items\" : {\n" +
+                "    \"_rdoClassName\" : \"com.gs.fw.common.mithra.test.domain.BitemporalOrderItem\",\n" +
+                "    \"_rdoListSize\" : 2,\n" +
+                "    \"elements\" : [ {\n" +
+                "      \"_rdoClassName\" : \"com.gs.fw.common.mithra.test.domain.BitemporalOrderItem\",\n" +
+                "      \"id\" : 2,\n" +
+                "      \"orderId\" : 2,\n" +
+                "      \"productId\" : 1,\n" +
+                "      \"quantity\" : 20.0,\n" +
+                "      \"originalPrice\" : 10.5,\n" +
+                "      \"discountPrice\" : 10.5,\n" +
+                "      \"state\" : \"In-Progress\",\n" +
+                "      \"businessDate\" : 1495116000000,\n" +
+                "      \"processingDate\" : 253399726740000,\n" +
+                "      \"orderItemStatus\" : null\n" +
+                "    }, {\n" +
+                "      \"_rdoClassName\" : \"com.gs.fw.common.mithra.test.domain.BitemporalOrderItem\",\n" +
+                "      \"id\" : 3,\n" +
+                "      \"orderId\" : 2,\n" +
+                "      \"productId\" : 2,\n" +
+                "      \"quantity\" : 20.0,\n" +
+                "      \"originalPrice\" : 15.5,\n" +
+                "      \"discountPrice\" : 10.0,\n" +
+                "      \"state\" : \"In-Progress\",\n" +
+                "      \"businessDate\" : 1495116000000,\n" +
+                "      \"processingDate\" : 253399726740000,\n" +
+                "      \"orderItemStatus\" : {\n" +
+                "        \"_rdoClassName\" : \"com.gs.fw.common.mithra.test.domain.BitemporalOrderItemStatus\",\n" +
+                "        \"itemId\" : 3,\n" +
+                "        \"status\" : 20,\n" +
+                "        \"lastUser\" : \"Trinity\",\n" +
+                "        \"lastUpdateTime\" : 1073883600000,\n" +
+                "        \"businessDate\" : 1495116000000,\n" +
+                "        \"processingDate\" : 253399726740000\n" +
+                "      }\n" +
+                "    } ]\n" +
+                "  },\n" +
+                "  \"orderStatus\" : null\n" +
+                "}\n";
+
+        Serialized<BitemporalOrder> serialized = fromSerializedString(json);
+        BitemporalOrder unwrappedBitemporalOrder = serialized.getWrapped();
+
+        assertEquals(2, unwrappedBitemporalOrder.getOrderId());
+        assertTrue(unwrappedBitemporalOrder.zIsDetached());
+        assertEquals(2, unwrappedBitemporalOrder.getItems().size());
+
+        unwrappedBitemporalOrder.copyDetachedValuesToOriginalOrInsertIfNew();
+        BitemporalOrder order = BitemporalOrderFinder.findOneBypassCache(BitemporalOrderFinder.orderId().eq(2).and(BitemporalOrderFinder.businessDate().eq(getBusinessDate())));
+        assertEquals(2, order.getItems().size());
+    }
+
 }

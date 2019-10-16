@@ -157,7 +157,8 @@ public class MultiExtractorHashStrategy extends ExtractorBasedHashStrategy
     {
         int h = (extractors[0]).valueHashCode(o);
         h = HashUtil.combineHashes(h,(extractors[1]).valueHashCode(o));
-        for(int i=2;i<extractors.length;i++)
+        int end = Math.min(this.extractors.length, extractors.length);
+        for(int i=2;i<end;i++)
         {
             h = HashUtil.combineHashes(h,(extractors[i]).valueHashCode(o));
         }
