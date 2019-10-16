@@ -576,7 +576,7 @@ public class ReladomoDeserializer<T extends MithraObject>
                 }
                 else
                 {
-                    setTooManyRelationship(name, metaData, partialDeserialized);
+                    setToManyRelationship(name, metaData, partialDeserialized);
                 }
             }
             catch (Exception e)
@@ -678,7 +678,7 @@ public class ReladomoDeserializer<T extends MithraObject>
                 for(int i=0;i<withRel.size();i++)
                 {
                     PartialDeserialized partialDeserialized = withRel.get(i);
-                    setTooManyRelationship(name, metaData, partialDeserialized);
+                    setToManyRelationship(name, metaData, partialDeserialized);
                 }
             }
         }
@@ -688,7 +688,7 @@ public class ReladomoDeserializer<T extends MithraObject>
         }
     }
 
-    protected void setTooManyRelationship(String name, DeserializationClassMetaData metaData, PartialDeserialized partialDeserialized) throws IllegalAccessException, InvocationTargetException
+    protected void setToManyRelationship(String name, DeserializationClassMetaData metaData, PartialDeserialized partialDeserialized) throws IllegalAccessException, InvocationTargetException
     {
         RelatedFinder related = metaData.getRelationshipFinderByName(name);
         AbstractRelatedFinder abstractRelatedFinder = (AbstractRelatedFinder) related;
@@ -708,8 +708,31 @@ public class ReladomoDeserializer<T extends MithraObject>
             {
                 filterObjectForToManyRelationship(relatedList, p);
             }
+            List existing = (List) abstractRelatedFinder.valueOf(partialDeserialized.deserialized);
+            reconcileToMany(abstractRelatedFinder, existing, relatedList);
         }
         metaData.getRelationshipSetter(name).invoke(partialDeserialized.deserialized, relatedList);
+    }
+
+    private void reconcileToMany(AbstractRelatedFinder abstractRelatedFinder, List existing, MithraList relatedList)
+    {
+        if (existing.isEmpty() || relatedList.isEmpty())
+        {
+            return;
+        }
+        FullUniqueIndex index = new FullUniqueIndex(abstractRelatedFinder.getPrimaryKeyAttributes(), existing.size());
+        index.addAll(existing);
+        for(int i=0;i<relatedList.size();i++)
+        {
+            Object newDetached = relatedList.get(i);
+
+            MithraTransactionalObject existingDetached = (MithraTransactionalObject) index.getFromData(newDetached);
+            if (existingDetached != null)
+            {
+                existingDetached.copyNonPrimaryKeyAttributesFrom((MithraTransactionalObject) newDetached);
+                relatedList.set(i, existingDetached);
+            }
+        }
     }
 
     protected void filterObjectForToManyRelationship(MithraList relatedList, PartialDeserialized relatedDeserialized)

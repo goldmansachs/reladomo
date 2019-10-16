@@ -1,4 +1,9 @@
 # Change Log
+## 17.1.3 - 2019-10-16
+### Bug Fixes:
+- Fix json deserialization for to-many relationships
+
+# Change Log
 ## 17.1.2 - 2019-09-19
 ### Bug Fixes:
 - Fix json deserialization with nulls
