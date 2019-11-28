@@ -149,7 +149,7 @@ public class ExampleJacksonReladomoBitemporalSerializerTest extends TestBitempor
                 "      \"orderId\" : 2,\n" +
                 "      \"productId\" : 1,\n" +
                 "      \"quantity\" : 20.0,\n" +
-                "      \"originalPrice\" : 10.5,\n" +
+                "      \"originalPrice\" : null,\n" +
                 "      \"discountPrice\" : 10.5,\n" +
                 "      \"state\" : \"In-Progress\",\n" +
                 "      \"businessDate\" : 1495116000000,\n" +
