@@ -973,7 +973,15 @@ public class ReladomoDeserializer<T extends MithraObject>
             Attribute attr = settableAttributes.get(i);
             if (partial.isAttributeSet(attr, metaData))
             {
-                attr.setValue(obj, attr.valueOf(partial.dataObject));
+                Object newValue = attr.valueOf(partial.dataObject);
+                if (newValue == null)
+                {
+                    attr.setValueNull(obj);
+                }
+                else
+                {
+                    attr.setValue(obj, newValue);
+                }
             }
         }
         //todo: deserializable methods
