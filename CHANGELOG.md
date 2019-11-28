@@ -1,4 +1,8 @@
 # Change Log
+## 17.1.4 - 2019-11-28
+### Bug Fixes:
+- Fix json deserialization for primitive attributes with "null"
+
 ## 17.1.3 - 2019-10-16
 ### Bug Fixes:
 - Fix json deserialization for to-many relationships
