@@ -25,19 +25,19 @@ import java.util.Set;
 
 public interface DateAttribute<Owner> extends Attribute<Owner>
 {
-    Operation<Owner> eq(Date value);
+    public Operation<Owner> eq(Date value);
 
-    Operation<Owner> notEq(Date value);
+    public Operation<Owner> notEq(Date value);
 
-    Operation<Owner> greaterThan(Date value);
+    public Operation<Owner> greaterThan(Date value);
 
-    Operation<Owner> greaterThanEquals(Date value);
+    public Operation<Owner> greaterThanEquals(Date value);
 
-    Operation<Owner> lessThan(Date value);
+    public Operation<Owner> lessThan(Date value);
 
-    Operation<Owner> lessThanEquals(Date value);
+    public Operation<Owner> lessThanEquals(Date value);
 
-    Operation<Owner> in(Set<Date> dateSet);
+    public Operation<Owner> in(Set<Date> dateSet);
 
-    Operation<Owner> notIn(Set<Date> dateSet);
+    public Operation<Owner> notIn(Set<Date> dateSet);
 }

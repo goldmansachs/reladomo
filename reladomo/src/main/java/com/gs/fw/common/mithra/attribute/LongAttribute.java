@@ -101,8 +101,24 @@ public abstract class LongAttribute<T> extends PrimitiveNumericAttribute<T, Long
 
     public abstract Operation notEq(long other);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public abstract Operation in(com.gs.collections.api.set.primitive.LongSet longSet);
+
     @Override
     public abstract Operation in(LongSet longSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public abstract Operation notIn(com.gs.collections.api.set.primitive.LongSet longSet);
 
     @Override
     public abstract Operation notIn(LongSet longSet);

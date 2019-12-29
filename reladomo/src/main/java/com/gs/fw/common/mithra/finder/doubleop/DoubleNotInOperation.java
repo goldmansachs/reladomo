@@ -44,6 +44,17 @@ public class DoubleNotInOperation extends NotInOperation implements SqlParameter
     private transient volatile double[] copiedArray;
 
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public DoubleNotInOperation(DoubleAttribute attribute, com.gs.collections.api.set.primitive.DoubleSet doubleSet)
+    {
+        super(attribute);
+        this.set = DoubleSets.immutable.of(doubleSet.toArray());
+    }
+
     public DoubleNotInOperation(DoubleAttribute attribute, DoubleSet doubleSet)
     {
         super(attribute);

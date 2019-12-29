@@ -47,6 +47,17 @@ public class CharInOperation extends InOperation implements SqlParameterSetter
     private transient volatile char[] copiedArray;
 
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public CharInOperation(CharAttribute attribute, com.gs.collections.api.set.primitive.CharSet charSet)
+    {
+        super(attribute);
+        this.set = CharSets.immutable.of(charSet.toArray());
+    }
+
     public CharInOperation(CharAttribute attribute, org.eclipse.collections.api.set.primitive.CharSet charSet)
     {
         super(attribute);

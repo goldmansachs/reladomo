@@ -25,11 +25,11 @@ import java.util.Date;
 
 public interface AsOfAttribute<Owner> extends Attribute<Owner>
 {
-    Operation<Owner> eq(Date date);
+    public Operation<Owner> eq(Date date);
 
-    Operation<Owner> eq(Timestamp timestamp);
+    public Operation<Owner> eq(Timestamp timestamp);
 
-    Operation<Owner> equalsEdgePoint();
+    public Operation<Owner> equalsEdgePoint();
 
-    Operation<Owner> equalsInfinity();
+    public Operation<Owner> equalsInfinity();
 }

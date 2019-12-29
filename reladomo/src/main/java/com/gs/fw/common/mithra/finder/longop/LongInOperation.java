@@ -47,6 +47,17 @@ public class LongInOperation extends InOperation implements SqlParameterSetter
     private transient volatile long[] copiedArray;
 
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public LongInOperation(LongAttribute attribute, com.gs.collections.api.set.primitive.LongSet longSet)
+    {
+        super(attribute);
+        this.set = LongSets.immutable.of(longSet.toArray());
+    }
+
     public LongInOperation(LongAttribute attribute, LongSet longSet)
     {
         super(attribute);

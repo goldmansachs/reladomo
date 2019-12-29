@@ -173,10 +173,32 @@ public class MappedDoubleAttribute<T> extends DoubleAttribute<T> implements Mapp
         return this;
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public Operation in(com.gs.collections.api.set.primitive.DoubleSet doubleSet)
+    {
+        return new MappedOperation(this.mapper, this.wrappedAttribute.in(doubleSet));
+    }
+
     @Override
     public Operation in(DoubleSet doubleSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.in(doubleSet));
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public Operation notIn(com.gs.collections.api.set.primitive.DoubleSet doubleSet)
+    {
+        return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(doubleSet));
     }
 
     @Override

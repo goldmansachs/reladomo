@@ -60,85 +60,141 @@ public interface Cache
 {
     public static final int WEAK_THRESHOLD = 50000;
     
-    int getId();
+    public int getId();
     
-    List getAll();
+    public List getAll();
 
-    void forAll(DoUntilProcedure procedure);
+    public void forAll(DoUntilProcedure procedure);
 
-    IndexReference getIndexRef(Attribute attribute);
+    public IndexReference getIndexRef(Attribute attribute);
 
-    IndexReference getBestIndexReference(List attributes);
+    public IndexReference getBestIndexReference(List attributes);
 
-    boolean mapsToUniqueIndex(List attributes);
+    public boolean mapsToUniqueIndex(List attributes);
 
-    int addIndex(String indexName, Extractor[] attributes);
+    public int addIndex(String indexName, Extractor[] attributes);
 
-    int addUniqueIndex(String indexName, Extractor[] attributes);
+    public int addUniqueIndex(String indexName, Extractor[] attributes);
 
-    int addTypedIndex(Extractor[] attributes, Class type, Class underlyingType);
+    public int addTypedIndex(Extractor[] attributes, Class type, Class underlyingType);
 
-    int addTypedUniqueIndex(Extractor[] attributes, Class type, Class underlyingType);
+    public int addTypedUniqueIndex(Extractor[] attributes, Class type, Class underlyingType);
 
-    boolean isFullCache();
+    public boolean isFullCache();
 
-    boolean isPartialCache();
+    public boolean isPartialCache();
 
-    void clear();
+    public void clear();
 
-    List getMany(int indexRef, MithraTupleSet dataHolders, Extractor[] extractors, boolean abortIfNotFound);
+    public List getMany(int indexRef, MithraTupleSet dataHolders, Extractor[] extractors, boolean abortIfNotFound);
 
-    void getManyDatedObjectsFromData(Object[] dataArray, int length, ObjectWithMapperStack[] asOfOpWithStacks);
+    public void getManyDatedObjectsFromData(Object[] dataArray, int length, ObjectWithMapperStack[] asOfOpWithStacks);
 
-    int getAverageReturnSize(int indexRef, int multiplier);
+    public int getAverageReturnSize(int indexRef, int multiplier);
 
-    int getMaxReturnSize(int indexRef, int multiplier);
+    public int getMaxReturnSize(int indexRef, int multiplier);
 
-    List get(int indexRef, Object dataHolder, Extractor[] extractors, boolean parallelAllowed);
+    public List get(int indexRef, Object dataHolder, Extractor[] extractors, boolean parallelAllowed);
 
-    Object getAsOne(Object dataHolder, List extractors);
+    public Object getAsOne(Object dataHolder, List extractors);
 
-    Object getAsOne(Object dataHolder, Extractor[] extractors);
+    public Object getAsOne(Object dataHolder, Extractor[] extractors);
 
-    Object getAsOne(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1);
+    public Object getAsOne(Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1);
 
-    Object getAsOneByIndex(int indexRef, Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1);
+    public Object getAsOneByIndex(int indexRef, Object srcObject, Object srcData, RelationshipHashStrategy relationshipHashStrategy, Timestamp asOfDate0, Timestamp asOfDate1);
 
-    List get(int indexRef, Set indexValues);
+    public List get(int indexRef, Set indexValues);
 
-    List get(int indexRef, ByteArraySet indexValues);
+    public List get(int indexRef, ByteArraySet indexValues);
 
-    List get(int indexRef, IntSet intSetIndexValues);
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public List get(int indexRef, com.gs.collections.api.set.primitive.IntSet intSetIndexValues);
 
-    List get(int indexRef, DoubleSet doubleSetIndexValues);
+    public List get(int indexRef, IntSet intSetIndexValues);
 
-    List get(int indexRef, BooleanSet booleanSetIndexValues);
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public List get(int indexRef, com.gs.collections.api.set.primitive.DoubleSet doubleSetIndexValues);
 
-    List get(int indexRef, LongSet longSetIndexValues);
+    public List get(int indexRef, DoubleSet doubleSetIndexValues);
 
-    List get(int indexRef, ByteSet byteSetIndexValues);
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public List get(int indexRef, com.gs.collections.api.set.primitive.BooleanSet booleanSetIndexValues);
 
-    List get(int indexRef, CharSet charSetIndexValues);
+    public List get(int indexRef, BooleanSet booleanSetIndexValues);
 
-    List get(int indexRef, FloatSet floatSetIndexValues);
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public List get(int indexRef, com.gs.collections.api.set.primitive.LongSet longSetIndexValues);
 
-    List get(int indexRef, ShortSet shortSetIndexValues);
+    public List get(int indexRef, LongSet longSetIndexValues);
 
-    List get(int indexRef, Object indexValue);
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public List get(int indexRef, com.gs.collections.api.set.primitive.ByteSet byteSetIndexValues);
 
-    List get(int indexRef, int indexValue);
+    public List get(int indexRef, ByteSet byteSetIndexValues);
 
-    List get(int indexRef, char indexValue);
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public List get(int indexRef, com.gs.collections.api.set.primitive.CharSet charSetIndexValues);
 
-    List get(int indexRef, double indexValue);
+    public List get(int indexRef, CharSet charSetIndexValues);
 
-    List get(int indexRef, float indexValue);
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public List get(int indexRef, com.gs.collections.api.set.primitive.FloatSet floatSetIndexValues);
 
-    List get(int indexRef, boolean indexValue);
+    public List get(int indexRef, FloatSet floatSetIndexValues);
 
-    List get(int indexRef, long indexValue);
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public List get(int indexRef, com.gs.collections.api.set.primitive.ShortSet shortSetIndexValues);
 
-    List getNulls(int indexRef);
+    public List get(int indexRef, ShortSet shortSetIndexValues);
+
+    public List get(int indexRef, Object indexValue);
+
+    public List get(int indexRef, int indexValue);
+
+    public List get(int indexRef, char indexValue);
+
+    public List get(int indexRef, double indexValue);
+
+    public List get(int indexRef, float indexValue);
+
+    public List get(int indexRef, boolean indexValue);
+
+    public List get(int indexRef, long indexValue);
+
+    public List getNulls(int indexRef);
 
     /**
      *
@@ -150,129 +206,129 @@ public interface Cache
      * @param filter
      * @return
      */
-    boolean contains(IndexReference indexRef, Object keyHolder, Extractor[] keyHolderNonDatedExtractors, final Filter2 filter);
+    public boolean contains(IndexReference indexRef, Object keyHolder, Extractor[] keyHolderNonDatedExtractors, final Filter2 filter);
 
-    boolean isUnique(int indexReference);
+    public boolean isUnique(int indexReference);
 
-    boolean isUniqueAndImmutable(int indexReference);
+    public boolean isUniqueAndImmutable(int indexReference);
 
-    void setMithraObjectPortal(MithraObjectPortal portal);
+    public void setMithraObjectPortal(MithraObjectPortal portal);
 
-    Object getObjectFromData(MithraDataObject data);
+    public Object getObjectFromData(MithraDataObject data);
 
-    void getManyObjectsFromData(Object[] dataArray, int length, boolean weak);
+    public void getManyObjectsFromData(Object[] dataArray, int length, boolean weak);
 
-    Object getObjectFromData(MithraDataObject data, Timestamp[] asOfDates);
+    public Object getObjectFromData(MithraDataObject data, Timestamp[] asOfDates);
 
-    Object getObjectFromDataWithoutCaching(MithraDataObject data);
+    public Object getObjectFromDataWithoutCaching(MithraDataObject data);
 
-    Object getObjectFromDataWithoutCaching(MithraDataObject data, Timestamp[] asOfDates);
+    public Object getObjectFromDataWithoutCaching(MithraDataObject data, Timestamp[] asOfDates);
 
-    Attribute[] getIndexAttributes(int indexRef);
+    public Attribute[] getIndexAttributes(int indexRef);
 
     // only called when object is read from database
-    void reindex(MithraObject object, MithraDataObject newData, Object optionalBehavior, MithraDataObject optionalOldData);
+    public void reindex(MithraObject object, MithraDataObject newData, Object optionalBehavior, MithraDataObject optionalOldData);
 
     // this is called when a mithra object is changed via a setter method outside a transaction
-    void reindex(MithraObject object, AttributeUpdateWrapper updateWrapper);
+    public void reindex(MithraObject object, AttributeUpdateWrapper updateWrapper);
 
-    void remove(MithraObject object);
+    public void remove(MithraObject object);
 
-    Object put(MithraObject object);
+    public Object put(MithraObject object);
 
-    void removeAll(List objects);
+    public void removeAll(List objects);
 
-    void removeAll(Filter filter);
+    public void removeAll(Filter filter);
 
-    void removeUsingData(MithraDataObject object);
+    public void removeUsingData(MithraDataObject object);
 
-    boolean markDirty(MithraDataObject object);
+    public boolean markDirty(MithraDataObject object);
 
-    void markNonExistent(int indexReference, Collection<Object> parentObjects, List<Extractor> extractors,
-     List<Extractor> extraExtractors, Operation extraOperation);
+    public void markNonExistent(int indexReference, Collection<Object> parentObjects, List<Extractor> extractors,
+            List<Extractor> extraExtractors, Operation extraOperation);
 
-    MithraNotificationListener createNotificationListener(MithraObjectPortal portal);
+    public MithraNotificationListener createNotificationListener(MithraObjectPortal portal);
     // transactional methods.
     // todo: rezaei: split into TransactionalCache interface
 
     // this is called when a mithra object is changed via a setter method inside a transaction
-    void reindexForTransaction(MithraObject object, AttributeUpdateWrapper updateWrapper);
+    public void reindexForTransaction(MithraObject object, AttributeUpdateWrapper updateWrapper);
 
-    void removeIgnoringTransaction(MithraObject object);
+    public void removeIgnoringTransaction(MithraObject object);
 
-    void commit(MithraTransaction tx);
+    public void commit(MithraTransaction tx);
 
-    void prepareForCommit(MithraTransaction tx);
+    public void prepareForCommit(MithraTransaction tx);
 
-    void rollback(MithraTransaction tx);
+    public void rollback(MithraTransaction tx);
 
-    Object preparePut(MithraObject obj);
+    public Object preparePut(MithraObject obj);
 
-    void commitPreparedForIndex(Object index);
+    public void commitPreparedForIndex(Object index);
 
-    void commitRemovedObject(MithraDataObject data);
+    public void commitRemovedObject(MithraDataObject data);
 
-    void commitObject(MithraTransactionalObject mithraObject, MithraDataObject oldData);
+    public void commitObject(MithraTransactionalObject mithraObject, MithraDataObject oldData);
 
-    Object getObjectByPrimaryKey(MithraDataObject data, boolean evenIfDirty);
+    public Object getObjectByPrimaryKey(MithraDataObject data, boolean evenIfDirty);
 
-    boolean enrollDatedObject(MithraDatedTransactionalObject mithraObject, DatedTransactionalState prevState, boolean forWrite);
+    public boolean enrollDatedObject(MithraDatedTransactionalObject mithraObject, DatedTransactionalState prevState, boolean forWrite);
 
-    boolean enrollDatedObjectForDelete(MithraDatedTransactionalObject mithraObject, DatedTransactionalState prevState, boolean forWrite);
+    public boolean enrollDatedObjectForDelete(MithraDatedTransactionalObject mithraObject, DatedTransactionalState prevState, boolean forWrite);
 
-    TemporalContainer getOrCreateContainer(MithraDataObject mithraDataObject);
+    public TemporalContainer getOrCreateContainer(MithraDataObject mithraDataObject);
 
-    MithraDataObject getTransactionalDataFromData(MithraDataObject data);
+    public MithraDataObject getTransactionalDataFromData(MithraDataObject data);
 
-    boolean removeDatedData(MithraDataObject data);
+    public boolean removeDatedData(MithraDataObject data);
 
-    List getDatedDataIgnoringDates(MithraDataObject data);
+    public List getDatedDataIgnoringDates(MithraDataObject data);
 
-    void putDatedData(MithraDataObject data);
+    public void putDatedData(MithraDataObject data);
 
-    PrimaryKeyIndex getPrimayKeyIndexCopy();
+    public PrimaryKeyIndex getPrimayKeyIndexCopy();
 
-    void updateCache(List newDataList, List updatedDataList, List deletedData);
+    public void updateCache(List newDataList, List updatedDataList, List deletedData);
 
-    void rollbackObject(MithraObject mithraObject);
+    public void rollbackObject(MithraObject mithraObject);
 
-    MithraDataObject refreshOutsideTransaction(MithraDatedObject mithraObject, MithraDataObject data);
+    public MithraDataObject refreshOutsideTransaction(MithraDatedObject mithraObject, MithraDataObject data);
 
-    int size();
+    public int size();
 
-    void markDirtyForReload(MithraDataObject object, MithraTransaction tx);
+    public void markDirtyForReload(MithraDataObject object, MithraTransaction tx);
 
-    void reloadDirty(MithraTransaction tx);
+    public void reloadDirty(MithraTransaction tx);
 
-    void archiveCache(ObjectOutput out);
+    public void archiveCache(ObjectOutput out);
 
-    void archiveCacheWithFilter(ObjectOutput out, Filter filterOfDatesToKeep);
+    public void archiveCacheWithFilter(ObjectOutput out, Filter filterOfDatesToKeep);
 
-    long getCacheTimeToLive();
+    public long getCacheTimeToLive();
 
-    long getRelationshipCacheTimeToLive();
+    public long getRelationshipCacheTimeToLive();
 
     boolean isInitialized(int indexReference);
 
-    List<Object> collectMilestoningOverlaps();
+    public List<Object> collectMilestoningOverlaps();
 
-    int estimateQuerySize();
+    public int estimateQuerySize();
 
-    void destroy();
+    public void destroy();
 
-    boolean isOffHeap();
+    public boolean isOffHeap();
 
-    long getOffHeapAllocatedDataSize();
+    public long getOffHeapAllocatedDataSize();
 
-    long getOffHeapUsedDataSize();
+    public long getOffHeapUsedDataSize();
 
-    long getOffHeapAllocatedIndexSize();
+    public long getOffHeapAllocatedIndexSize();
 
-    long getOffHeapUsedIndexSize();
+    public long getOffHeapUsedIndexSize();
 
-    boolean syncWithMasterCache(MasterCacheUplink uplink);
+    public boolean syncWithMasterCache(MasterCacheUplink uplink);
 
-    MasterSyncResult sendSyncResult(long maxReplicatedPageVersion);
+    public MasterSyncResult sendSyncResult(long maxReplicatedPageVersion);
 
-    boolean isDated();
+    public boolean isDated();
 }

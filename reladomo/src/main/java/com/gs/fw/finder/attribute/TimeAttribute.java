@@ -24,19 +24,19 @@ import java.util.Set;
 
 public interface TimeAttribute<Owner> extends Attribute<Owner>
 {
-    Operation<Owner> eq(Time value);
+    public Operation<Owner> eq(Time value);
 
-    Operation<Owner> notEq(Time value);
+    public Operation<Owner> notEq(Time value);
 
-    Operation<Owner> greaterThan(Time value);
+    public Operation<Owner> greaterThan(Time value);
 
-    Operation<Owner> greaterThanEquals(Time value);
+    public Operation<Owner> greaterThanEquals(Time value);
 
-    Operation<Owner> lessThan(Time value);
+    public Operation<Owner> lessThan(Time value);
 
-    Operation<Owner> lessThanEquals(Time value);
+    public Operation<Owner> lessThanEquals(Time value);
 
-    Operation<Owner> in(Set<Time> timeSet);
+    public Operation<Owner> in(Set<Time> timeSet);
 
-    Operation<Owner> notIn(Set<Time> timeSet);
+    public Operation<Owner> notIn(Set<Time> timeSet);
 }

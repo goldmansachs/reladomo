@@ -1416,6 +1416,38 @@ public class TestTransactionalList extends MithraTestAbstract
 
     }
 
+    private void checkForEach(int start, com.gs.collections.api.list.MutableList list, int hash)
+    {
+        final int[] hashArray = new int[1];
+        hashArray[0] = start;
+        list.forEach(new com.gs.collections.api.block.procedure.Procedure<Order>()
+        {
+            public void value(Order order)
+            {
+                hashArray[0] = HashUtil.combineHashes(hashArray[0], order.getOrderId());
+            }
+        });
+        assertEquals(hash, hashArray[0]);
+        hashArray[0] = start;
+        list.forEachWith(new com.gs.collections.api.block.procedure.Procedure2<Order, int[]>()
+        {
+            public void value(Order order, int[] argument2)
+            {
+                argument2[0] = HashUtil.combineHashes(argument2[0], order.getOrderId());
+            }
+        }, hashArray);
+        assertEquals(hash, hashArray[0]);
+        hashArray[0] = start;
+        list.forEachWithIndex(new com.gs.collections.api.block.procedure.primitive.ObjectIntProcedure<Order>()
+        {
+            public void value(Order order, int index)
+            {
+                hashArray[0] = HashUtil.combineHashes(hashArray[0], order.getOrderId());
+            }
+        });
+        assertEquals(hash, hashArray[0]);
+    }
+
     public void testEclipseCollectionsList()
     {
         int start = 0xAE4927BE;

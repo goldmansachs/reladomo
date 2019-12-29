@@ -24,11 +24,25 @@ import org.eclipse.collections.api.set.primitive.BooleanSet;
 
 public interface BooleanAttribute<Owner> extends Attribute<Owner>
 {
-    Operation<Owner> eq(boolean value);
+    public Operation<Owner> eq(boolean value);
 
-    Operation<Owner> notEq(boolean value);
+    public Operation<Owner> notEq(boolean value);
 
-    Operation<Owner> in(BooleanSet booleanSet);
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public Operation<Owner> in(com.gs.collections.api.set.primitive.BooleanSet booleanSet);
 
-    Operation<Owner> notIn(BooleanSet booleanSet);
+    public Operation<Owner> in(BooleanSet booleanSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public Operation<Owner> notIn(com.gs.collections.api.set.primitive.BooleanSet booleanSet);
+
+    public Operation<Owner> notIn(BooleanSet booleanSet);
 }

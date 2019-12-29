@@ -172,10 +172,32 @@ public class MappedFloatAttribute<T> extends FloatAttribute<T> implements Mapped
         return this;
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public Operation in(com.gs.collections.api.set.primitive.FloatSet floatSet)
+    {
+        return new MappedOperation(this.mapper, this.wrappedAttribute.in(floatSet));
+    }
+
     @Override
     public Operation in(FloatSet floatSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.in(floatSet));
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public Operation notIn(com.gs.collections.api.set.primitive.FloatSet floatSet)
+    {
+        return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(floatSet));
     }
 
     @Override

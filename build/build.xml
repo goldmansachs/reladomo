@@ -24,6 +24,7 @@
     <property name="mithra.generateGscListMethod" value="false"/>
     <property name="mithra.generateEcListMethod" value="true"/>
 
+    <property name="gs-collections.version" value="5.0.0"/>
     <property name="eclipse-collections.version" value="7.1.1"/>
     <property name="junit.version" value="4.11"/>
     <property name="slf4j.version" value="1.6.4"/>

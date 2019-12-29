@@ -23,49 +23,63 @@ import org.eclipse.collections.api.set.primitive.FloatSet;
 
 public interface FloatAttribute<Owner> extends NumericAttribute<Owner>
 {
-    Operation<Owner> eq(float value);
+    public Operation<Owner> eq(float value);
 
-    Operation<Owner> notEq(float value);
+    public Operation<Owner> notEq(float value);
 
-    Operation<Owner> greaterThan(float value);
+    public Operation<Owner> greaterThan(float value);
 
-    Operation<Owner> greaterThanEquals(float value);
+    public Operation<Owner> greaterThanEquals(float value);
 
-    Operation<Owner> lessThan(float value);
+    public Operation<Owner> lessThan(float value);
 
-    Operation<Owner> lessThanEquals(float value);
+    public Operation<Owner> lessThanEquals(float value);
 
-    Operation<Owner> in(FloatSet floatSet);
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public Operation<Owner> in(com.gs.collections.api.set.primitive.FloatSet floatSet);
 
-    Operation<Owner> notIn(FloatSet floatSet);
+    public Operation<Owner> in(FloatSet floatSet);
 
-    FloatAttribute<Owner> plus(ByteAttribute addend);
-    FloatAttribute<Owner> plus(ShortAttribute addend);
-    FloatAttribute<Owner> plus(IntegerAttribute addend);
-    FloatAttribute<Owner> plus(LongAttribute addend);
-    FloatAttribute<Owner> plus(FloatAttribute addend);
-    DoubleAttribute<Owner> plus(DoubleAttribute addend);
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public Operation<Owner> notIn(com.gs.collections.api.set.primitive.FloatSet floatSet);
 
-    FloatAttribute<Owner> minus(ByteAttribute subtrahend);
-    FloatAttribute<Owner> minus(ShortAttribute subtrahend);
-    FloatAttribute<Owner> minus(IntegerAttribute subtrahend);
-    FloatAttribute<Owner> minus(LongAttribute subtrahend);
-    FloatAttribute<Owner> minus(FloatAttribute subtrahend);
-    DoubleAttribute<Owner> minus(DoubleAttribute subtrahend);
+    public Operation<Owner> notIn(FloatSet floatSet);
 
-    FloatAttribute<Owner> times(ByteAttribute multiplicand);
-    FloatAttribute<Owner> times(ShortAttribute multiplicand);
-    FloatAttribute<Owner> times(IntegerAttribute multiplicand);
-    FloatAttribute<Owner> times(LongAttribute multiplicand);
-    FloatAttribute<Owner> times(FloatAttribute multiplicand);
-    DoubleAttribute<Owner> times(DoubleAttribute multiplicand);
+    public FloatAttribute<Owner> plus(ByteAttribute addend);
+    public FloatAttribute<Owner> plus(ShortAttribute addend);
+    public FloatAttribute<Owner> plus(IntegerAttribute addend);
+    public FloatAttribute<Owner> plus(LongAttribute addend);
+    public FloatAttribute<Owner> plus(FloatAttribute addend);
+    public DoubleAttribute<Owner> plus(DoubleAttribute addend);
 
-    FloatAttribute<Owner> dividedBy(ByteAttribute divisor);
-    FloatAttribute<Owner> dividedBy(ShortAttribute divisor);
-    FloatAttribute<Owner> dividedBy(IntegerAttribute divisor);
-    FloatAttribute<Owner> dividedBy(LongAttribute divisor);
-    FloatAttribute<Owner> dividedBy(FloatAttribute divisor);
-    DoubleAttribute<Owner> dividedBy(DoubleAttribute divisor);
+    public FloatAttribute<Owner> minus(ByteAttribute subtrahend);
+    public FloatAttribute<Owner> minus(ShortAttribute subtrahend);
+    public FloatAttribute<Owner> minus(IntegerAttribute subtrahend);
+    public FloatAttribute<Owner> minus(LongAttribute subtrahend);
+    public FloatAttribute<Owner> minus(FloatAttribute subtrahend);
+    public DoubleAttribute<Owner> minus(DoubleAttribute subtrahend);
 
-    FloatAttribute<Owner> absoluteValue();
+    public FloatAttribute<Owner> times(ByteAttribute multiplicand);
+    public FloatAttribute<Owner> times(ShortAttribute multiplicand);
+    public FloatAttribute<Owner> times(IntegerAttribute multiplicand);
+    public FloatAttribute<Owner> times(LongAttribute multiplicand);
+    public FloatAttribute<Owner> times(FloatAttribute multiplicand);
+    public DoubleAttribute<Owner> times(DoubleAttribute multiplicand);
+
+    public FloatAttribute<Owner> dividedBy(ByteAttribute divisor);
+    public FloatAttribute<Owner> dividedBy(ShortAttribute divisor);
+    public FloatAttribute<Owner> dividedBy(IntegerAttribute divisor);
+    public FloatAttribute<Owner> dividedBy(LongAttribute divisor);
+    public FloatAttribute<Owner> dividedBy(FloatAttribute divisor);
+    public DoubleAttribute<Owner> dividedBy(DoubleAttribute divisor);
+
+    public FloatAttribute<Owner> absoluteValue();
 }

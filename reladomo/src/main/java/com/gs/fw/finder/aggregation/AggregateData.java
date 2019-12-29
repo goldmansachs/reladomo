@@ -23,33 +23,33 @@ import java.util.Date;
 
 public interface AggregateData extends Externalizable
 {
-    Object[] getValues();
+    public Object[] getValues();
 
-    Object getValueAt(int position);
+    public Object getValueAt(int position);
 
-    boolean getAttributeAsBoolean(String name);
+    public boolean getAttributeAsBoolean(String name);
 
-    byte getAttributeAsByte(String name);
+    public byte getAttributeAsByte(String name);
 
-    byte[] getAttributeAsByteArray(String name);
+    public byte[] getAttributeAsByteArray(String name);
 
-    char getAttributeAsCharacter(String name);
+    public char getAttributeAsCharacter(String name);
 
-    Date getAttributeAsDate(String name);
+    public Date getAttributeAsDate(String name);
 
-    double getAttributeAsDouble(String name);
+    public double getAttributeAsDouble(String name);
 
-    Enum getAttributeAsEnumeration(String name);
+    public Enum getAttributeAsEnumeration(String name);
 
-    float getAttributeAsFloat(String name);
+    public float getAttributeAsFloat(String name);
 
-    int getAttributeAsInteger(String name);
+    public int getAttributeAsInteger(String name);
 
-    long getAttributeAsLong(String name);
+    public long getAttributeAsLong(String name);
 
-    short getAttributeAsShort(String name);
+    public short getAttributeAsShort(String name);
 
-    String getAttributeAsString(String name);
+    public String getAttributeAsString(String name);
 
-    Timestamp getAttributeAsTimestamp(String name);
+    public Timestamp getAttributeAsTimestamp(String name);
 }

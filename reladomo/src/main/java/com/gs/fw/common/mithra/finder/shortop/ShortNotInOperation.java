@@ -30,6 +30,7 @@ import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import org.eclipse.collections.api.iterator.ShortIterator;
 import org.eclipse.collections.api.set.primitive.ShortSet;
+import org.eclipse.collections.impl.factory.primitive.ShortSets;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -42,6 +43,17 @@ public class ShortNotInOperation extends NotInOperation implements SqlParameterS
     private ShortSet set;
     private transient volatile short[] copiedArray;
 
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public ShortNotInOperation(ShortAttribute attribute, com.gs.collections.api.set.primitive.ShortSet shortSet)
+    {
+        super(attribute);
+        this.set = ShortSets.immutable.of(shortSet.toArray());
+    }
 
     public ShortNotInOperation(ShortAttribute attribute, ShortSet shortSet)
     {

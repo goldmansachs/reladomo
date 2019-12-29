@@ -1,5 +1,6 @@
 # <repo>, <groupId>, <artifactId>, <version>, <extension>, <destDir>, <checksum>
 # central,org.apache.ant,ant,1.9.6,jar,build/lib,80E2063B01BAB3C79C2D84E4ED5E73868394C85A
+central,com.goldmansachs,gs-collections-api,5.1.0,jar,lib/compile,EA605CDF64CAB5FC7B48C99F061D4C8DB05B6FF1
 central,org.eclipse.collections,eclipse-collections-api,7.1.1,jar,lib/compile,806C2B3BEF5364D1A1668F25CE70100FA2C6B919
 central,org.eclipse.collections,eclipse-collections,7.1.1,jar,lib/compile,83ECA9F03F1F2D055DF453D72036C5CE2E82896B
 central,joda-time,joda-time,2.9.4,jar,lib/compile,1C295B462F16702EBE720BBB08F62E1BA80DA41B

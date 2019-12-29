@@ -47,6 +47,17 @@ public class ByteInOperation extends InOperation implements SqlParameterSetter
     private transient volatile byte[] copiedArray;
 
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public ByteInOperation(ByteAttribute attribute, com.gs.collections.api.set.primitive.ByteSet byteSet)
+    {
+        super(attribute);
+        this.set = ByteSets.immutable.of(byteSet.toArray());
+    }
+
     public ByteInOperation(ByteAttribute attribute, ByteSet byteSet)
     {
         super(attribute);

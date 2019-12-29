@@ -91,8 +91,24 @@ public abstract class DoubleAttribute<T> extends PrimitiveNumericAttribute<T, Do
 
     public abstract Operation notEq(double other);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public abstract Operation in(com.gs.collections.api.set.primitive.DoubleSet doubleSet);
+
     @Override
     public abstract Operation in(DoubleSet doubleSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public abstract Operation notIn(com.gs.collections.api.set.primitive.DoubleSet doubleSet);
 
     @Override
     public abstract Operation notIn(DoubleSet doubleSet);

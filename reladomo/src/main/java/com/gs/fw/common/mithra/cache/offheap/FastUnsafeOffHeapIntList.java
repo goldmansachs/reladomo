@@ -130,6 +130,19 @@ public class FastUnsafeOffHeapIntList extends OffHeapMemoryReference
         this.size = 0;
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public void addAll(com.gs.collections.api.IntIterable intIterable)
+    {
+        for(com.gs.collections.api.iterator.IntIterator it = intIterable.intIterator(); it.hasNext();)
+        {
+            this.add(it.next());
+        }
+    }
+
     public void addAll(IntIterable intIterable)
     {
         for(IntIterator it = intIterable.intIterator(); it.hasNext();)

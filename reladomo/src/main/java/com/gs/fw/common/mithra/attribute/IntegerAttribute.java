@@ -144,8 +144,24 @@ public abstract class IntegerAttribute<T> extends PrimitiveNumericAttribute<T, I
 
     public abstract Operation notEq(int other);
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public abstract Operation in(com.gs.collections.api.set.primitive.IntSet intSet);
+
     @Override
     public abstract Operation in(IntSet intSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public abstract Operation notIn(com.gs.collections.api.set.primitive.IntSet intSet);
 
     @Override
     public abstract Operation notIn(IntSet intSet);

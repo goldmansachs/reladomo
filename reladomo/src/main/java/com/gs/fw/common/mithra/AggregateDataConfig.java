@@ -17,11 +17,11 @@
 
 package com.gs.fw.common.mithra;
 
+import com.gs.collections.api.block.procedure.primitive.ObjectIntProcedure;
+import com.gs.collections.api.map.primitive.ObjectIntMap;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.calculator.aggregateFunction.AggregateAttributeCalculator;
 import com.gs.fw.common.mithra.util.Nullable;
-import org.eclipse.collections.api.block.procedure.primitive.ObjectIntProcedure;
-import org.eclipse.collections.api.map.primitive.ObjectIntMap;
 import org.eclipse.collections.impl.list.mutable.FastList;
 import org.eclipse.collections.impl.map.mutable.primitive.ObjectIntHashMap;
 
@@ -82,10 +82,28 @@ public class AggregateDataConfig implements Serializable
         return nameToPositionMap.size();
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
     public void setNameToPositionMap(ObjectIntMap<String> map)
     {
         this.nameToPositionMap = new ObjectIntHashMap(map.size());
         map.forEachKeyValue(new ObjectIntProcedure<String>()
+        {
+            @Override
+            public void value(String each, int parameter)
+            {
+                nameToPositionMap.put(each, parameter);
+            }
+        });
+    }
+
+    public void setNameToPositionMap(org.eclipse.collections.api.map.primitive.ObjectIntMap<String> map)
+    {
+        this.nameToPositionMap = new ObjectIntHashMap(map.size());
+        map.forEachKeyValue(new org.eclipse.collections.api.block.procedure.primitive.ObjectIntProcedure<String>()
         {
             @Override
             public void value(String each, int parameter)

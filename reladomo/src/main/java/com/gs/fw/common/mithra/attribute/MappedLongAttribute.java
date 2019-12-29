@@ -173,10 +173,32 @@ public class MappedLongAttribute<T> extends LongAttribute<T> implements MappedAt
         return new MappedOperation(this.mapper, this.wrappedAttribute.notEq(other));
     }
 
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public Operation in(com.gs.collections.api.set.primitive.LongSet longSet)
+    {
+        return new MappedOperation(this.mapper, this.wrappedAttribute.in(longSet));
+    }
+
     @Override
     public Operation in(LongSet longSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.in(longSet));
+    }
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    @Override
+    public Operation notIn(com.gs.collections.api.set.primitive.LongSet longSet)
+    {
+        return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(longSet));
     }
 
     @Override

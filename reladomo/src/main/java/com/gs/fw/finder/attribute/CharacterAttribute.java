@@ -24,19 +24,33 @@ import org.eclipse.collections.api.set.primitive.CharSet;
 
 public interface CharacterAttribute<Owner> extends Attribute<Owner>
 {
-    Operation<Owner> eq(char value);
+    public Operation<Owner> eq(char value);
 
-    Operation<Owner> notEq(char value);
+    public Operation<Owner> notEq(char value);
 
-    Operation<Owner> greaterThan(char value);
+    public Operation<Owner> greaterThan(char value);
 
-    Operation<Owner> greaterThanEquals(char value);
+    public Operation<Owner> greaterThanEquals(char value);
 
-    Operation<Owner> lessThan(char value);
+    public Operation<Owner> lessThan(char value);
 
-    Operation<Owner> lessThanEquals(char value);
+    public Operation<Owner> lessThanEquals(char value);
 
-    Operation<Owner> in(CharSet charSet);
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public Operation<Owner> in(com.gs.collections.api.set.primitive.CharSet charSet);
 
-    Operation<Owner> notIn(CharSet charSet);
+    public Operation<Owner> in(CharSet charSet);
+
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public Operation<Owner> notIn(com.gs.collections.api.set.primitive.CharSet charSet);
+
+    public Operation<Owner> notIn(CharSet charSet);
 }

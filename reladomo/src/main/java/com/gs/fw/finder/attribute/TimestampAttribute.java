@@ -25,19 +25,19 @@ import java.util.Set;
 
 public interface TimestampAttribute<Owner> extends Attribute<Owner>
 {
-    Operation<Owner> eq(Timestamp value);
+    public Operation<Owner> eq(Timestamp value);
 
-    Operation<Owner> notEq(Timestamp value);
+    public Operation<Owner> notEq(Timestamp value);
 
-    Operation<Owner> greaterThan(Timestamp value);
+    public Operation<Owner> greaterThan(Timestamp value);
 
-    Operation<Owner> greaterThanEquals(Timestamp value);
+    public Operation<Owner> greaterThanEquals(Timestamp value);
 
-    Operation<Owner> lessThan(Timestamp value);
+    public Operation<Owner> lessThan(Timestamp value);
 
-    Operation<Owner> lessThanEquals(Timestamp value);
+    public Operation<Owner> lessThanEquals(Timestamp value);
 
-    Operation<Owner> in(Set<Timestamp> timestampSet);
+    public Operation<Owner> in(Set<Timestamp> timestampSet);
 
-    Operation<Owner> notIn(Set<Timestamp> timestampSet);
+    public Operation<Owner> notIn(Set<Timestamp> timestampSet);
 }

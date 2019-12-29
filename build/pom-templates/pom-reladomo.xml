@@ -54,6 +54,12 @@
     <dependencies>
 
         <dependency>
+            <groupId>com.goldmansachs</groupId>
+            <artifactId>gs-collections-api</artifactId>
+            <version>5.1.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.eclipse.collections</groupId>
             <artifactId>eclipse-collections-api</artifactId>
             <version>7.1.1</version>

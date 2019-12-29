@@ -24,49 +24,63 @@ import org.eclipse.collections.api.set.primitive.LongSet;
 
 public interface LongAttribute<Owner> extends NumericAttribute<Owner>
 {
-    Operation<Owner> eq(long value);
+    public Operation<Owner> eq(long value);
 
-    Operation<Owner> notEq(long value);
+    public Operation<Owner> notEq(long value);
 
-    Operation<Owner> greaterThan(long value);
+    public Operation<Owner> greaterThan(long value);
 
-    Operation<Owner> greaterThanEquals(long value);
+    public Operation<Owner> greaterThanEquals(long value);
 
-    Operation<Owner> lessThan(long value);
+    public Operation<Owner> lessThan(long value);
 
-    Operation<Owner> lessThanEquals(long value);
+    public Operation<Owner> lessThanEquals(long value);
 
-    Operation<Owner> in(LongSet longSet);
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public Operation<Owner> in(com.gs.collections.api.set.primitive.LongSet longSet);
 
-    Operation<Owner> notIn(LongSet longSet);
+    public Operation<Owner> in(LongSet longSet);
 
-    LongAttribute<Owner> plus(ByteAttribute addend);
-    LongAttribute<Owner> plus(ShortAttribute addend);
-    LongAttribute<Owner> plus(IntegerAttribute addend);
-    LongAttribute<Owner> plus(LongAttribute addend);
-    FloatAttribute<Owner> plus(FloatAttribute addend);
-    DoubleAttribute<Owner> plus(DoubleAttribute addend);
+    /**
+     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
+     * Use Eclipse Collections variant of the same API instead.
+     **/
+    @Deprecated
+    public Operation<Owner> notIn(com.gs.collections.api.set.primitive.LongSet longSet);
 
-    LongAttribute<Owner> minus(ByteAttribute subtrahend);
-    LongAttribute<Owner> minus(ShortAttribute subtrahend);
-    LongAttribute<Owner> minus(IntegerAttribute subtrahend);
-    LongAttribute<Owner> minus(LongAttribute subtrahend);
-    FloatAttribute<Owner> minus(FloatAttribute subtrahend);
-    DoubleAttribute<Owner> minus(DoubleAttribute subtrahend);
+    public Operation<Owner> notIn(LongSet longSet);
 
-    LongAttribute<Owner> times(ByteAttribute multiplicand);
-    LongAttribute<Owner> times(ShortAttribute multiplicand);
-    LongAttribute<Owner> times(IntegerAttribute multiplicand);
-    LongAttribute<Owner> times(LongAttribute multiplicand);
-    FloatAttribute<Owner> times(FloatAttribute multiplicand);
-    DoubleAttribute<Owner> times(DoubleAttribute multiplicand);
+    public LongAttribute<Owner> plus(ByteAttribute addend);
+    public LongAttribute<Owner> plus(ShortAttribute addend);
+    public LongAttribute<Owner> plus(IntegerAttribute addend);
+    public LongAttribute<Owner> plus(LongAttribute addend);
+    public FloatAttribute<Owner> plus(FloatAttribute addend);
+    public DoubleAttribute<Owner> plus(DoubleAttribute addend);
 
-    LongAttribute<Owner> dividedBy(ByteAttribute divisor);
-    LongAttribute<Owner> dividedBy(ShortAttribute divisor);
-    LongAttribute<Owner> dividedBy(IntegerAttribute divisor);
-    LongAttribute<Owner> dividedBy(LongAttribute divisor);
-    FloatAttribute<Owner> dividedBy(FloatAttribute divisor);
-    DoubleAttribute<Owner> dividedBy(DoubleAttribute divisor);
+    public LongAttribute<Owner> minus(ByteAttribute subtrahend);
+    public LongAttribute<Owner> minus(ShortAttribute subtrahend);
+    public LongAttribute<Owner> minus(IntegerAttribute subtrahend);
+    public LongAttribute<Owner> minus(LongAttribute subtrahend);
+    public FloatAttribute<Owner> minus(FloatAttribute subtrahend);
+    public DoubleAttribute<Owner> minus(DoubleAttribute subtrahend);
 
-    LongAttribute<Owner> absoluteValue();
+    public LongAttribute<Owner> times(ByteAttribute multiplicand);
+    public LongAttribute<Owner> times(ShortAttribute multiplicand);
+    public LongAttribute<Owner> times(IntegerAttribute multiplicand);
+    public LongAttribute<Owner> times(LongAttribute multiplicand);
+    public FloatAttribute<Owner> times(FloatAttribute multiplicand);
+    public DoubleAttribute<Owner> times(DoubleAttribute multiplicand);
+
+    public LongAttribute<Owner> dividedBy(ByteAttribute divisor);
+    public LongAttribute<Owner> dividedBy(ShortAttribute divisor);
+    public LongAttribute<Owner> dividedBy(IntegerAttribute divisor);
+    public LongAttribute<Owner> dividedBy(LongAttribute divisor);
+    public FloatAttribute<Owner> dividedBy(FloatAttribute divisor);
+    public DoubleAttribute<Owner> dividedBy(DoubleAttribute divisor);
+
+    public LongAttribute<Owner> absoluteValue();
 }
