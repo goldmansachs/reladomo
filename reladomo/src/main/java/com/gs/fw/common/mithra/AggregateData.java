@@ -78,20 +78,6 @@ public class AggregateData implements Externalizable
         this.values = values;
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    public void setNameToPositionMap(com.gs.collections.api.map.primitive.ObjectIntMap map)
-    {
-        if (this.config == null)
-        {
-            this.config = new AggregateDataConfig();
-        }
-        this.config.setNameToPositionMap(map);
-    }
-
     public void setNameToPositionMap(ObjectIntMap map)
     {
         if (this.config == null)

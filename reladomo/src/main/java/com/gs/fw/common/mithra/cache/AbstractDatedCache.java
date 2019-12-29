@@ -1872,30 +1872,8 @@ public abstract class AbstractDatedCache extends AbstractCache implements Refere
         throw new RuntimeException("not supported");
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public List get(int indexRef, com.gs.collections.api.set.primitive.IntSet intSetIndexValues)
-    {
-        throw new RuntimeException("not supported");
-    }
-
     @Override
     public List get(int indexRef, IntSet intSetIndexValues)
-    {
-        throw new RuntimeException("not supported");
-    }
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public List get(int indexRef, com.gs.collections.api.set.primitive.DoubleSet doubleSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }
@@ -1906,30 +1884,8 @@ public abstract class AbstractDatedCache extends AbstractCache implements Refere
         throw new RuntimeException("not supported");
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public List get(int indexRef, com.gs.collections.api.set.primitive.BooleanSet booleanSetIndexValues)
-    {
-        throw new RuntimeException("not supported");
-    }
-
     @Override
     public List get(int indexRef, BooleanSet booleanSetIndexValues)
-    {
-        throw new RuntimeException("not supported");
-    }
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public List get(int indexRef, com.gs.collections.api.set.primitive.LongSet longSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }
@@ -1940,30 +1896,8 @@ public abstract class AbstractDatedCache extends AbstractCache implements Refere
         throw new RuntimeException("not supported");
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public List get(int indexRef, com.gs.collections.api.set.primitive.ByteSet byteSetIndexValues)
-    {
-        throw new RuntimeException("not supported");
-    }
-
     @Override
     public List get(int indexRef, ByteSet byteSetIndexValues)
-    {
-        throw new RuntimeException("not supported");
-    }
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public List get(int indexRef, com.gs.collections.api.set.primitive.CharSet charSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }
@@ -1974,30 +1908,8 @@ public abstract class AbstractDatedCache extends AbstractCache implements Refere
         throw new RuntimeException("not supported");
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public List get(int indexRef, com.gs.collections.api.set.primitive.FloatSet floatSetIndexValues)
-    {
-        throw new RuntimeException("not supported");
-    }
-
     @Override
     public List get(int indexRef, FloatSet floatSetIndexValues)
-    {
-        throw new RuntimeException("not supported");
-    }
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public List get(int indexRef, com.gs.collections.api.set.primitive.ShortSet shortSetIndexValues)
     {
         throw new RuntimeException("not supported");
     }

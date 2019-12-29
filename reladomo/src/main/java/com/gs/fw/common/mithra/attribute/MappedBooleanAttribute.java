@@ -171,32 +171,10 @@ public class MappedBooleanAttribute<T> extends BooleanAttribute<T> implements Ma
         return this;
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public Operation in(com.gs.collections.api.set.primitive.BooleanSet set)
-    {
-        return new MappedOperation(this.mapper, this.wrappedAttribute.in(set));
-    }
-
     @Override
     public Operation in(BooleanSet set)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.in(set));
-    }
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public Operation notIn(com.gs.collections.api.set.primitive.BooleanSet set)
-    {
-        return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(set));
     }
 
     @Override

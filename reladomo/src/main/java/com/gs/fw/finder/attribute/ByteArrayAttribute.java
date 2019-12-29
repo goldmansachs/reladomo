@@ -24,11 +24,11 @@ import java.util.Set;
 
 public interface ByteArrayAttribute<Owner> extends Attribute<Owner>
 {
-    public Operation<Owner> eq(byte[] value);
+    Operation<Owner> eq(byte[] value);
 
-    public Operation<Owner> notEq(byte[] value);
+    Operation<Owner> notEq(byte[] value);
 
-    public Operation<Owner> in(Set<byte[]> byteArraySet);
+    Operation<Owner> in(Set<byte[]> byteArraySet);
 
-    public Operation<Owner> notIn(Set<byte[]> byteArraySet);
+    Operation<Owner> notIn(Set<byte[]> byteArraySet);
 }

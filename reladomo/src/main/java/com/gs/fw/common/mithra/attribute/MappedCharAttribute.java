@@ -176,32 +176,10 @@ public class MappedCharAttribute<T> extends CharAttribute<T> implements MappedAt
         return this;
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public Operation in(com.gs.collections.api.set.primitive.CharSet charSet)
-    {
-        return new MappedOperation(this.mapper, this.wrappedAttribute.in(charSet));
-    }
-
     @Override
     public Operation in(CharSet charSet)
     {
         return new MappedOperation(this.mapper, this.wrappedAttribute.in(charSet));
-    }
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public Operation notIn(com.gs.collections.api.set.primitive.CharSet charSet)
-    {
-        return new MappedOperation(this.mapper, this.wrappedAttribute.notIn(charSet));
     }
 
     @Override

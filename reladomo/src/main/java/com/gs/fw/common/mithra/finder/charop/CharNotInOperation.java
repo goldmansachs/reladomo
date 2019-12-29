@@ -44,17 +44,6 @@ public class CharNotInOperation extends NotInOperation implements SqlParameterSe
     private transient volatile char[] copiedArray;
 
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    public CharNotInOperation(CharAttribute attribute, com.gs.collections.api.set.primitive.CharSet charSet)
-    {
-        super(attribute);
-        this.set = CharSets.immutable.of(charSet.toArray());
-    }
-
     public CharNotInOperation(CharAttribute attribute, CharSet charSet)
     {
         super(attribute);

@@ -117,31 +117,6 @@ public abstract class SingleColumnDoubleAttribute<T> extends DoubleAttribute<T> 
         return new DoubleNotEqOperation(this, other);
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public Operation in(com.gs.collections.api.set.primitive.DoubleSet doubleSet)
-    {
-        Operation op;
-        switch (doubleSet.size())
-        {
-            case 0:
-                op = new None(this);
-                break;
-            case 1:
-                op = this.eq(doubleSet.doubleIterator().next());
-                break;
-            default:
-                op = new DoubleInOperation(this, doubleSet);
-                break;
-        }
-
-        return op;
-    }
-
     @Override
     public Operation in(DoubleSet doubleSet)
     {
@@ -156,31 +131,6 @@ public abstract class SingleColumnDoubleAttribute<T> extends DoubleAttribute<T> 
                 break;
             default:
                 op = new DoubleInOperation(this, doubleSet);
-                break;
-        }
-
-        return op;
-    }
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public Operation notIn(com.gs.collections.api.set.primitive.DoubleSet doubleSet)
-    {
-        Operation op;
-        switch (doubleSet.size())
-        {
-            case 0:
-                op = new All(this);
-                break;
-            case 1:
-                op = this.notEq(doubleSet.doubleIterator().next());
-                break;
-            default:
-                op = new DoubleNotInOperation(this, doubleSet);
                 break;
         }
 

@@ -122,31 +122,6 @@ public abstract class SingleColumnLongAttribute<T> extends LongAttribute<T> impl
         return new LongNotEqOperation(this, other);
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public Operation in(com.gs.collections.api.set.primitive.LongSet set)
-    {
-        Operation op;
-        switch (set.size())
-        {
-            case 0:
-                op = new None(this);
-                break;
-            case 1:
-                op = this.eq(set.longIterator().next());
-                break;
-            default:
-                op = new LongInOperation(this, set);
-                break;
-        }
-
-        return op;
-    }
-
     @Override
     public Operation in(LongSet set)
     {
@@ -161,31 +136,6 @@ public abstract class SingleColumnLongAttribute<T> extends LongAttribute<T> impl
                 break;
             default:
                 op = new LongInOperation(this, set);
-                break;
-        }
-
-        return op;
-    }
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public Operation notIn(com.gs.collections.api.set.primitive.LongSet set)
-    {
-        Operation op;
-        switch (set.size())
-        {
-            case 0:
-                op = new All(this);
-                break;
-            case 1:
-                op = this.notEq(set.longIterator().next());
-                break;
-            default:
-                op = new LongNotInOperation(this, set);
                 break;
         }
 

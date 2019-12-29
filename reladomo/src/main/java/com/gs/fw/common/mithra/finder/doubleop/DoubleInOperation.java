@@ -47,17 +47,6 @@ public class DoubleInOperation extends InOperation implements SqlParameterSetter
     private transient volatile double[] copiedArray;
 
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    public DoubleInOperation(DoubleAttribute attribute, com.gs.collections.api.set.primitive.DoubleSet doubleSet)
-    {
-        super(attribute);
-        this.set = DoubleSets.immutable.of(doubleSet.toArray());
-    }
-
     public DoubleInOperation(DoubleAttribute attribute, DoubleSet doubleSet)
     {
         super(attribute);

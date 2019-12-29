@@ -158,32 +158,10 @@ public abstract class SingleColumnBigDecimalAttribute<T> extends BigDecimalAttri
         return notEq(createBigDecimalFromDouble(other));
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public Operation in(com.gs.collections.api.set.primitive.DoubleSet doubleSet)
-    {
-        return this.in(createBigDecimalSetFromDoubleSet(doubleSet));
-    }
-
     @Override
     public Operation in(DoubleSet doubleSet)
     {
         return this.in(createBigDecimalSetFromDoubleSet(doubleSet));
-    }
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public Operation notIn(com.gs.collections.api.set.primitive.DoubleSet doubleSet)
-    {
-        return this.notIn(createBigDecimalSetFromDoubleSet(doubleSet));
     }
 
     @Override

@@ -37,21 +37,6 @@ public class BigDecimalUtil
         return validateBigDecimalValue(new BigDecimal(doubleValue, new MathContext(expectedPrecision, RoundingMode.HALF_UP)), expectedPrecision, expectedScale);
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    public static Set<BigDecimal> createBigDecimalSetFromDoubleSet(com.gs.collections.api.set.primitive.DoubleSet doubleSet, int expectedScale, int expectedPrecision)
-    {
-        Set<BigDecimal> bigDecimalSet = UnifiedSet.newSet(doubleSet.size());
-        for (com.gs.collections.api.iterator.DoubleIterator it = doubleSet.doubleIterator(); it.hasNext();)
-        {
-            bigDecimalSet.add(createBigDecimalFromDouble(it.next(), expectedScale, expectedPrecision));
-        }
-        return bigDecimalSet;
-    }
-
     public static Set<BigDecimal> createBigDecimalSetFromDoubleSet(DoubleSet doubleSet, int expectedScale, int expectedPrecision)
     {
         Set<BigDecimal> bigDecimalSet = UnifiedSet.newSet(doubleSet.size());

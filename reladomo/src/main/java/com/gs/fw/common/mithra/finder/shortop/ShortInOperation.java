@@ -46,18 +46,6 @@ public class ShortInOperation extends InOperation implements SqlParameterSetter
     private ShortSet set;
     private transient volatile short[] copiedArray;
 
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    public ShortInOperation(ShortAttribute attribute, com.gs.collections.api.set.primitive.ShortSet set)
-    {
-        super(attribute);
-        this.set = ShortSets.immutable.of(set.toArray());
-    }
-
     public ShortInOperation(ShortAttribute attribute, ShortSet set)
     {
         super(attribute);

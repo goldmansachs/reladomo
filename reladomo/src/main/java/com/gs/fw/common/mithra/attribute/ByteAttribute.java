@@ -110,24 +110,8 @@ public abstract class ByteAttribute<T> extends PrimitiveNumericAttribute<T, Byte
 
     public abstract Operation notEq(byte other);
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public abstract Operation in(com.gs.collections.api.set.primitive.ByteSet byteSet);
-
     @Override
     public abstract Operation in(ByteSet byteSet);
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public abstract Operation notIn(com.gs.collections.api.set.primitive.ByteSet byteSet);
 
     @Override
     public abstract Operation notIn(ByteSet byteSet);

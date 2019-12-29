@@ -24,33 +24,33 @@ import java.util.Set;
 
 public interface StringAttribute<Owner> extends Attribute<Owner>
 {
-    public Operation<Owner> eq(String value);
+    Operation<Owner> eq(String value);
 
-    public Operation<Owner> notEq(String value);
+    Operation<Owner> notEq(String value);
 
-    public Operation<Owner> in(Set<String> stringSet);
+    Operation<Owner> in(Set<String> stringSet);
 
-    public Operation<Owner> notIn(Set<String> stringSet);
+    Operation<Owner> notIn(Set<String> stringSet);
 
-    public Operation<Owner> greaterThan(String value);
+    Operation<Owner> greaterThan(String value);
 
-    public Operation<Owner> greaterThanEquals(String value);
+    Operation<Owner> greaterThanEquals(String value);
 
-    public Operation<Owner> lessThan(String value);
+    Operation<Owner> lessThan(String value);
 
-    public Operation<Owner> lessThanEquals(String value);
+    Operation<Owner> lessThanEquals(String value);
 
-    public Operation<Owner> startsWith(String value);
+    Operation<Owner> startsWith(String value);
 
-    public Operation<Owner> notStartsWith(String value);
+    Operation<Owner> notStartsWith(String value);
 
-    public Operation<Owner> endsWith(String value);
+    Operation<Owner> endsWith(String value);
 
-    public Operation<Owner> notEndsWith(String value);
+    Operation<Owner> notEndsWith(String value);
 
-    public Operation<Owner> contains(String value);
+    Operation<Owner> contains(String value);
 
-    public Operation<Owner> notContains(String value);
+    Operation<Owner> notContains(String value);
 
-    public StringAttribute<Owner> toLowerCase();
+    StringAttribute<Owner> toLowerCase();
 }
