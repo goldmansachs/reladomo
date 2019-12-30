@@ -2003,8 +2003,8 @@
     <target name="compile-reladomo-xa" depends="init-reladomo-xa, compile-reladomo, xa-dependset">
         <javac destdir="${root}/reladomoxa/target/classes"
                debug="true"
-               source="1.6"
-               target="1.6"
+               source="1.8"
+               target="1.8"
                nowarn="true"
                includeAntRuntime="false">
             <src path="${root}/reladomoxa/src/main/java"/>

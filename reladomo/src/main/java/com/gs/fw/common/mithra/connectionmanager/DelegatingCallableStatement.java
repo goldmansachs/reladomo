@@ -596,6 +596,18 @@ public class DelegatingCallableStatement extends DelegatingPreparedStatement imp
     }
 
     @Override
+    public <T> T getObject (int parameterIndex, Class<T> type) throws SQLException
+    {
+        return getDelegate().getObject (parameterIndex,type);
+    }
+
+    @Override
+    public <T> T getObject (String parameterName, Class<T> type) throws SQLException
+    {
+        return getDelegate().getObject (parameterName, type);
+    }
+
+    @Override
     public void setNClob(String parameterName, Reader reader, long length) throws SQLException
     {
         getDelegate().setNClob(parameterName, reader, length);

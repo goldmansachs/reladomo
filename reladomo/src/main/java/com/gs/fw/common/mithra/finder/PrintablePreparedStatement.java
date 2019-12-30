@@ -663,6 +663,18 @@ public class PrintablePreparedStatement implements PreparedStatement
         throw new RuntimeException("not implemented");
     }
 
+    @Override
+    public void closeOnCompletion () throws SQLException
+    {
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
+    public boolean isCloseOnCompletion () throws SQLException
+    {
+        throw new RuntimeException("not implemented");
+    }
+
     public <T> T unwrap(Class<T> iface) throws SQLException
     {
         throw new SQLException("not a wrapper");
