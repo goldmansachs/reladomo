@@ -360,16 +360,4 @@ public class DelegatingPreparedStatement extends DelegatingStatement implements 
     {
         ((PreparedStatement) this.getDelegate()).setURL(parameterIndex, x);
     }
-
-    @Override
-    public void closeOnCompletion () throws SQLException
-    {
-        this.getDelegate().closeOnCompletion();
-    }
-
-    @Override
-    public boolean isCloseOnCompletion () throws SQLException
-    {
-        return this.getDelegate().isCloseOnCompletion ();
-    }
 }

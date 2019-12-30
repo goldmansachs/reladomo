@@ -232,18 +232,6 @@ public class DelegatingStatement implements Statement
     }
 
     @Override
-    public void closeOnCompletion () throws SQLException
-    {
-        delegate.closeOnCompletion ();
-    }
-
-    @Override
-    public boolean isCloseOnCompletion () throws SQLException
-    {
-        return delegate.isCloseOnCompletion ();
-    }
-
-    @Override
     public void setCursorName(String name) throws SQLException
     {
         delegate.setCursorName(name);
