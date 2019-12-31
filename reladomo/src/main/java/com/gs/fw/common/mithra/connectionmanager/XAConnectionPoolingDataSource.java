@@ -36,8 +36,10 @@ import javax.transaction.xa.Xid;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 
 public class XAConnectionPoolingDataSource implements DataSource
@@ -208,6 +210,12 @@ public class XAConnectionPoolingDataSource implements DataSource
     }
 
     @Override
+    public java.util.logging.Logger getParentLogger () throws SQLFeatureNotSupportedException
+    {
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
     public <T> T unwrap(Class<T> iface) throws SQLException
     {
         throw new RuntimeException("not implemented");
@@ -249,6 +257,31 @@ public class XAConnectionPoolingDataSource implements DataSource
         public void close() throws SQLException
         {
             resource.makeConnectionAvailable(this);
+        }
+
+        public void setSchema(String schema) throws SQLException
+        {
+            throw new RuntimeException("not implemented");
+        }
+
+        public String getSchema() throws SQLException
+        {
+            throw new RuntimeException("not implemented");
+        }
+
+        public void abort(Executor executor) throws SQLException
+        {
+            throw new RuntimeException("not implemented");
+        }
+
+        public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException
+        {
+            throw new RuntimeException("not implemented");
+        }
+
+        public int getNetworkTimeout() throws SQLException
+        {
+            throw new RuntimeException("not implemented");
         }
 
         private void protectedCommit() throws SQLException
