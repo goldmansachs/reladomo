@@ -1366,64 +1366,12 @@ public abstract class AbstractNonDatedCache extends AbstractCache
         }
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public List get(int indexRef, com.gs.collections.api.set.primitive.IntSet intSetIndexValues)
-    {
-        Index index = indices[indexRef - 1];
-        MithraFastList result = new MithraFastList(this.getAverageReturnSize(index, intSetIndexValues.size()));
-        com.gs.collections.api.iterator.IntIterator it = intSetIndexValues.intIterator();
-        this.readWriteLock.acquireReadLock();
-        try
-        {
-            while (it.hasNext())
-            {
-                addAllListToList(wrapObjectInList(index.get(it.next())), result);
-            }
-            return result;
-        }
-        finally
-        {
-            this.readWriteLock.release();
-        }
-    }
-
     @Override
     public List get(int indexRef, IntSet intSetIndexValues)
     {
         Index index = indices[indexRef - 1];
         MithraFastList result = new MithraFastList(this.getAverageReturnSize(index, intSetIndexValues.size()));
         IntIterator it = intSetIndexValues.intIterator();
-        this.readWriteLock.acquireReadLock();
-        try
-        {
-            while (it.hasNext())
-            {
-                addAllListToList(wrapObjectInList(index.get(it.next())), result);
-            }
-            return result;
-        }
-        finally
-        {
-            this.readWriteLock.release();
-        }
-    }
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public List get(int indexRef, com.gs.collections.api.set.primitive.DoubleSet indexValues)
-    {
-        Index index = indices[indexRef - 1];
-        MithraFastList result = new MithraFastList(this.getAverageReturnSize(index, indexValues.size()));
-        com.gs.collections.api.iterator.DoubleIterator it = indexValues.doubleIterator();
         this.readWriteLock.acquireReadLock();
         try
         {
@@ -1460,64 +1408,12 @@ public abstract class AbstractNonDatedCache extends AbstractCache
         }
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public List get(int indexRef, com.gs.collections.api.set.primitive.BooleanSet booleanSetIndexValues)
-    {
-        Index index = indices[indexRef - 1];
-        MithraFastList result = new MithraFastList(this.getAverageReturnSize(index, booleanSetIndexValues.size()));
-        com.gs.collections.api.iterator.BooleanIterator it = booleanSetIndexValues.booleanIterator();
-        this.readWriteLock.acquireReadLock();
-        try
-        {
-            while (it.hasNext())
-            {
-                addAllListToList(wrapObjectInList(index.get(it.next())), result);
-            }
-            return result;
-        }
-        finally
-        {
-            this.readWriteLock.release();
-        }
-    }
-
     @Override
     public List get(int indexRef, BooleanSet booleanSetIndexValues)
     {
         Index index = indices[indexRef - 1];
         MithraFastList result = new MithraFastList(this.getAverageReturnSize(index, booleanSetIndexValues.size()));
         BooleanIterator it = booleanSetIndexValues.booleanIterator();
-        this.readWriteLock.acquireReadLock();
-        try
-        {
-            while (it.hasNext())
-            {
-                addAllListToList(wrapObjectInList(index.get(it.next())), result);
-            }
-            return result;
-        }
-        finally
-        {
-            this.readWriteLock.release();
-        }
-    }
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public List get(int indexRef, com.gs.collections.api.set.primitive.LongSet longSetIndexValues)
-    {
-        Index index = indices[indexRef - 1];
-        MithraFastList result = new MithraFastList(this.getAverageReturnSize(index, longSetIndexValues.size()));
-        com.gs.collections.api.iterator.LongIterator it = longSetIndexValues.longIterator();
         this.readWriteLock.acquireReadLock();
         try
         {
@@ -1554,32 +1450,6 @@ public abstract class AbstractNonDatedCache extends AbstractCache
         }
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public List get(int indexRef, com.gs.collections.api.set.primitive.ByteSet byteSetIndexValues)
-    {
-        Index index = indices[indexRef - 1];
-        MithraFastList result = new MithraFastList(this.getAverageReturnSize(index, byteSetIndexValues.size()));
-        com.gs.collections.api.iterator.ByteIterator it = byteSetIndexValues.byteIterator();
-        this.readWriteLock.acquireReadLock();
-        try
-        {
-            while (it.hasNext())
-            {
-                addAllListToList(wrapObjectInList(index.get((int) it.next())), result);
-            }
-            return result;
-        }
-        finally
-        {
-            this.readWriteLock.release();
-        }
-    }
-
     @Override
     public List get(int indexRef, ByteSet byteSetIndexValues)
     {
@@ -1592,32 +1462,6 @@ public abstract class AbstractNonDatedCache extends AbstractCache
             while (it.hasNext())
             {
                 addAllListToList(wrapObjectInList(index.get((int) it.next())), result);
-            }
-            return result;
-        }
-        finally
-        {
-            this.readWriteLock.release();
-        }
-    }
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public List get(int indexRef, com.gs.collections.api.set.primitive.CharSet indexValues)
-    {
-        Index index = indices[indexRef - 1];
-        MithraFastList result = new MithraFastList(this.getAverageReturnSize(index, indexValues.size()));
-        com.gs.collections.api.iterator.CharIterator it = indexValues.charIterator();
-        this.readWriteLock.acquireReadLock();
-        try
-        {
-            while (it.hasNext())
-            {
-                addAllListToList(wrapObjectInList(index.get(it.next())), result);
             }
             return result;
         }
@@ -1648,32 +1492,6 @@ public abstract class AbstractNonDatedCache extends AbstractCache
         }
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public List get(int indexRef, com.gs.collections.api.set.primitive.FloatSet floatSetIndexValues)
-    {
-        Index index = indices[indexRef - 1];
-        MithraFastList result = new MithraFastList(this.getAverageReturnSize(index, floatSetIndexValues.size()));
-        com.gs.collections.api.iterator.FloatIterator it = floatSetIndexValues.floatIterator();
-        this.readWriteLock.acquireReadLock();
-        try
-        {
-            while (it.hasNext())
-            {
-                addAllListToList(wrapObjectInList(index.get(it.next())), result);
-            }
-            return result;
-        }
-        finally
-        {
-            this.readWriteLock.release();
-        }
-    }
-
     @Override
     public List get(int indexRef, FloatSet floatSetIndexValues)
     {
@@ -1686,32 +1504,6 @@ public abstract class AbstractNonDatedCache extends AbstractCache
             while (it.hasNext())
             {
                 addAllListToList(wrapObjectInList(index.get(it.next())), result);
-            }
-            return result;
-        }
-        finally
-        {
-            this.readWriteLock.release();
-        }
-    }
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public List get(int indexRef, com.gs.collections.api.set.primitive.ShortSet shortSetIndexValues)
-    {
-        Index index = indices[indexRef - 1];
-        MithraFastList result = new MithraFastList(this.getAverageReturnSize(index, shortSetIndexValues.size()));
-        com.gs.collections.api.iterator.ShortIterator it = shortSetIndexValues.shortIterator();
-        this.readWriteLock.acquireReadLock();
-        try
-        {
-            while (it.hasNext())
-            {
-                addAllListToList(wrapObjectInList(index.get((int) it.next())), result);
             }
             return result;
         }

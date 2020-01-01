@@ -240,8 +240,8 @@ public class XAConnectionPoolingDataSource implements DataSource
             super(c);
         }
 
-        @Override
-        public void addPostTransactionAction(PostTransactionAction action)
+            @Override
+            public void addPostTransactionAction(PostTransactionAction action)
         {
             if (postTransactionActions == null)
             {
