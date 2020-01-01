@@ -1,13 +1,28 @@
+######################################################################################################################
+# see https://travis-ci.org/goldmansachs/reladomo/pull_requests?utm_medium=notification&utm_source=github_status
+
 language: java
 addons:
   apt:
     packages:
-      - openjdk-6-jdk
+      - openjdk-8-jdk
 
 install: true
 
+jdk:
+    - openjdk8
+
+matrix:
+    include:
+        - os: linux
+          env: CUSTOM_JDK="openjdk8"
+
+before_install:
+    - echo 'MAVEN_OPTS="$MAVEN_OPTS -Xmx1024m -XX:MaxPermSize=512m -XX:+BytecodeVerificationLocal"' >> ~/.mavenrc
+    - cat ~/.mavenrc
+
 script:
-  - jdk_switcher use openjdk6
+  - javac -version
   - export RELADOMO_JDK_HOME="$JAVA_HOME"
   - export RELADOMO_TEST_THREADS=1
   - build/build.sh compile-reladomo-test compile-reladomo-xa-test

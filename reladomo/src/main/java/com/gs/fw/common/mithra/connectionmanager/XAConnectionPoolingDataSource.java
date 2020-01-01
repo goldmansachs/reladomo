@@ -179,49 +179,41 @@ public class XAConnectionPoolingDataSource implements DataSource
 
     // unused methods
 
-    @Override
     public Connection getConnection(String username, String password) throws SQLException
     {
         throw new RuntimeException("not implemented");
     }
 
-    @Override
     public PrintWriter getLogWriter() throws SQLException
     {
         throw new RuntimeException("not implemented");
     }
 
-    @Override
     public void setLogWriter(PrintWriter out) throws SQLException
     {
         throw new RuntimeException("not implemented");
     }
 
-    @Override
     public void setLoginTimeout(int seconds) throws SQLException
     {
         throw new RuntimeException("not implemented");
     }
 
-    @Override
     public int getLoginTimeout() throws SQLException
     {
         throw new RuntimeException("not implemented");
     }
 
-    @Override
     public java.util.logging.Logger getParentLogger () throws SQLFeatureNotSupportedException
     {
         throw new RuntimeException("not implemented");
     }
 
-    @Override
     public <T> T unwrap(Class<T> iface) throws SQLException
     {
         throw new RuntimeException("not implemented");
     }
 
-    @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException
     {
         throw new RuntimeException("not implemented");
@@ -239,8 +231,7 @@ public class XAConnectionPoolingDataSource implements DataSource
             super(c);
         }
 
-        @Override
-        public void addPostTransactionAction(PostTransactionAction action)
+            public void addPostTransactionAction(PostTransactionAction action)
         {
             if (postTransactionActions == null)
             {
@@ -259,32 +250,27 @@ public class XAConnectionPoolingDataSource implements DataSource
             resource.makeConnectionAvailable(this);
         }
 
-        @Override
-        public void setSchema (String schema) throws SQLException
+        public void setSchema(String schema) throws SQLException
         {
             throw new RuntimeException("not implemented");
         }
 
-        @Override
-        public String getSchema () throws SQLException
+        public String getSchema() throws SQLException
         {
             throw new RuntimeException("not implemented");
         }
 
-        @Override
-        public void abort (Executor executor) throws SQLException
+        public void abort(Executor executor) throws SQLException
         {
             throw new RuntimeException("not implemented");
         }
 
-        @Override
-        public void setNetworkTimeout (Executor executor, int milliseconds) throws SQLException
+        public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException
         {
             throw new RuntimeException("not implemented");
         }
 
-        @Override
-        public int getNetworkTimeout () throws SQLException
+        public int getNetworkTimeout() throws SQLException
         {
             throw new RuntimeException("not implemented");
         }
