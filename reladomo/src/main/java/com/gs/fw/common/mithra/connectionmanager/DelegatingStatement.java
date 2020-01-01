@@ -18,7 +18,6 @@ package com.gs.fw.common.mithra.connectionmanager;
 
 
 import java.sql.*;
-import java.util.List;
 
 public class DelegatingStatement implements Statement
 {
@@ -229,6 +228,18 @@ public class DelegatingStatement implements Statement
     public boolean isPoolable() throws SQLException
     {
         return delegate.isPoolable();
+    }
+
+    @Override
+    public void closeOnCompletion() throws SQLException
+    {
+        delegate.closeOnCompletion();
+    }
+
+    @Override
+    public boolean isCloseOnCompletion() throws SQLException
+    {
+        return delegate.isCloseOnCompletion();
     }
 
     @Override
