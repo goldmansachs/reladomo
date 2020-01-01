@@ -32,6 +32,7 @@ public class DelegatingCallableStatement extends DelegatingPreparedStatement imp
         super(delegate);
     }
 
+    @Override
     protected CallableStatement getDelegate()
     {
         return (CallableStatement) super.getDelegate();
@@ -593,6 +594,18 @@ public class DelegatingCallableStatement extends DelegatingPreparedStatement imp
     public void setNClob(String parameterName, Reader reader) throws SQLException
     {
         getDelegate().setNClob(parameterName, reader);
+    }
+
+    @Override
+    public <T> T getObject(int parameterIndex, Class<T> type) throws SQLException
+    {
+        return getDelegate().getObject (parameterIndex,type);
+    }
+
+    @Override
+    public <T> T getObject(String parameterName, Class<T> type) throws SQLException
+    {
+        return getDelegate().getObject (parameterName, type);
     }
 
     @Override
