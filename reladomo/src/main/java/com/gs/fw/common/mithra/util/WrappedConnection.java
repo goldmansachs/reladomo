@@ -300,34 +300,30 @@ public class WrappedConnection implements Connection
         return getUnderlyingConnection().createStruct(typeName, attributes);
     }
 
-    @Override
-    public void setSchema (String schema) throws SQLException
+
+    public void setSchema(String schema) throws SQLException
     {
-        getUnderlyingConnection().setSchema (schema);
+        getUnderlyingConnection().setSchema(schema);
     }
 
-    @Override
-    public String getSchema () throws SQLException
+    public String getSchema() throws SQLException
     {
-        return getUnderlyingConnection().getSchema ();
+        return getUnderlyingConnection().getSchema();
     }
 
-    @Override
-    public void abort (Executor executor) throws SQLException
+    public void abort(Executor executor) throws SQLException
     {
         getUnderlyingConnection().abort (executor);
     }
 
-    @Override
-    public void setNetworkTimeout (Executor executor, int milliseconds) throws SQLException
+    public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException
     {
-        getUnderlyingConnection().setNetworkTimeout (executor, milliseconds);
+        getUnderlyingConnection().setNetworkTimeout(executor, milliseconds);
     }
 
-    @Override
-    public int getNetworkTimeout () throws SQLException
+    public int getNetworkTimeout() throws SQLException
     {
-        return getUnderlyingConnection().getNetworkTimeout ();
+        return getUnderlyingConnection().getNetworkTimeout();
     }
 
     public Properties getClientInfo()
