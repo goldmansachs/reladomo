@@ -143,7 +143,6 @@ public class SlaveVm
         cmdList.add("-classpath");
         cmdList.add(SYSTEM_CLASSPATH);
         cmdList.add("-server");
-        cmdList.add("-XX:MaxPermSize=256m");
         cmdList.add("-Duser.timezone=America/New_York");
         addProperties(cmdList);
         cmdList.add(this.getClass().getName());
