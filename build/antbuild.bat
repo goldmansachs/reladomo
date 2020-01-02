@@ -31,7 +31,7 @@ set ANT_ARGS=%ANT_ARGS% -Dlog4j.configuration="file:%ANTBUILD_HOME%\log4j.config
 @REM set ANT_ARGS=%ANT_ARGS% -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005
 
 @@REM GC Options: -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps 
-set JVM_ARGS=-ms16m -mx1024m -server -XX:MaxPermSize=256m -XX:+UseParallelGC -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -XX:CompileThreshold=100
+set JVM_ARGS=-ms16m -mx1024m -server -XX:+UseParallelGC -XX:MaxHeapFreeRatio=20 -XX:MinHeapFreeRatio=10 -XX:CompileThreshold=100
 
 set PATH=%ANTBUILD_HOME%\build\bin;%PATH%
 
