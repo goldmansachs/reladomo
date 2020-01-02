@@ -36,8 +36,10 @@ import javax.transaction.xa.Xid;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 
 public class XAConnectionPoolingDataSource implements DataSource
@@ -105,6 +107,7 @@ public class XAConnectionPoolingDataSource implements DataSource
         return resource.getConnection();
     }
 
+    @Override
     public Connection getConnection() throws SQLException
     {
         MithraTransaction currentTransaction = MithraManagerProvider.getMithraManager().getCurrentTransaction();
@@ -208,6 +211,12 @@ public class XAConnectionPoolingDataSource implements DataSource
     }
 
     @Override
+    public java.util.logging.Logger getParentLogger () throws SQLFeatureNotSupportedException
+    {
+        throw new RuntimeException("not implemented");
+    }
+
+    @Override
     public <T> T unwrap(Class<T> iface) throws SQLException
     {
         throw new RuntimeException("not implemented");
@@ -246,9 +255,40 @@ public class XAConnectionPoolingDataSource implements DataSource
             this.resource = resource;
         }
 
+        @Override
         public void close() throws SQLException
         {
             resource.makeConnectionAvailable(this);
+        }
+
+        @Override
+        public void setSchema(String schema) throws SQLException
+        {
+            throw new RuntimeException("not implemented");
+        }
+
+        @Override
+        public String getSchema() throws SQLException
+        {
+            throw new RuntimeException("not implemented");
+        }
+
+        @Override
+        public void abort(Executor executor) throws SQLException
+        {
+            throw new RuntimeException("not implemented");
+        }
+
+        @Override
+        public void setNetworkTimeout(Executor executor, int milliseconds) throws SQLException
+        {
+            throw new RuntimeException("not implemented");
+        }
+
+        @Override
+        public int getNetworkTimeout() throws SQLException
+        {
+            throw new RuntimeException("not implemented");
         }
 
         private void protectedCommit() throws SQLException
@@ -303,11 +343,13 @@ public class XAConnectionPoolingDataSource implements DataSource
             }
         }
 
+        @Override
         public void commit() throws SQLException
         {
             throw new SQLException("Commit on connection not allowed. Commit the transaction instead");
         }
 
+        @Override
         public void rollback() throws SQLException
         {
             throw new SQLException("Rollback on connection not allowed. Rollback the transaction instead");
@@ -409,35 +451,42 @@ public class XAConnectionPoolingDataSource implements DataSource
             }
         }
 
+        @Override
         public int getTransactionTimeout() throws XAException
         {
             return -1;
         }
 
+        @Override
         public boolean setTransactionTimeout(int i) throws XAException
         {
             return false;
         }
 
+        @Override
         public boolean isSameRM(XAResource xaResource) throws XAException
         {
             return this.equals(xaResource);
         }
 
+        @Override
         public Xid[] recover(int i) throws XAException
         {
             return new Xid[0];
         }
 
+        @Override
         public int prepare(Xid xid) throws XAException
         {
             return 0;
         }
 
+        @Override
         public void forget(Xid xid) throws XAException
         {
         }
 
+        @Override
         public void rollback(Xid xid) throws XAException
         {
             if(committed)
@@ -452,11 +501,13 @@ public class XAConnectionPoolingDataSource implements DataSource
             }
         }
 
+        @Override
         public void end(Xid xid, int i) throws XAException
         {
             txLocalXaResource.set(ownerTransaction, null);
         }
 
+        @Override
         public void start(Xid xid, int i) throws XAException
         {
         }
@@ -490,6 +541,7 @@ public class XAConnectionPoolingDataSource implements DataSource
             }
         }
 
+        @Override
         public void commit(Xid xid, boolean b) throws XAException
         {
             if(committed)
