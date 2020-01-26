@@ -81,9 +81,7 @@ public class CoreMithraGenerator extends BaseMithraGenerator
     private boolean executed = false;
     private boolean generateConcreteClasses = true;
     private boolean warnAboutConcreteClasses = true;
-    private boolean generateGscListMethod = false;
-    private boolean generateEcListMethod = false;
-    private boolean generateLegacyCaramel = false;
+    private boolean generateEcListMethod = true;
     private String format = FORMAT_FAST;
     private boolean generateImported;
     private ThreadLocal<ByteArrayOutputStream> byteArrayOutputStreamThreadLocal = new ThreadLocal<ByteArrayOutputStream>();
@@ -158,20 +156,9 @@ public class CoreMithraGenerator extends BaseMithraGenerator
         this.warnAboutConcreteClasses = warnAboutConreteClasses;
     }
 
-    public void setGenerateGscListMethod(boolean generateGscListMethod)
-    {
-        this.generateGscListMethod = generateGscListMethod;
-    }
-
     public void setGenerateEcListMethod(boolean generateEcListMethod)
     {
         this.generateEcListMethod = generateEcListMethod;
-    }
-
-    @Deprecated
-    public void setGenerateLegacyCaramel(boolean generateLegacyCaramel)
-    {
-        this.generateLegacyCaramel = false;
     }
 
     public void setCodeFormat(String format)
@@ -442,9 +429,7 @@ public class CoreMithraGenerator extends BaseMithraGenerator
                         writer = new JspWriter(byteArrayOutputStream);
                         HttpServletRequest request = new HttpServletRequest();
                         request.setAttribute("mithraWrapper", wrapper);
-                        request.setAttribute("generateGscListMethod", Boolean.valueOf(generateGscListMethod));
                         request.setAttribute("generateEcListMethod", Boolean.valueOf(generateEcListMethod));
-                        request.setAttribute("generateLegacyCaramel", Boolean.valueOf(false));
                         HttpServletResponse response = new HttpServletResponse(writer);
                         servlet._jspService(request, response);
                         writer.close();
@@ -585,7 +570,6 @@ public class CoreMithraGenerator extends BaseMithraGenerator
 
         gen.setGeneratedDir("H:/temp/Mithra/src");
         gen.setNonGeneratedDir("H:/temp/Mithra/src");
-        gen.setGenerateGscListMethod(true);
 
         gen.execute();
     }

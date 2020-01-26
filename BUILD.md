@@ -1,18 +1,18 @@
 # Building Reladomo
 
 Reladomo is built from the command line with the `build/build.sh` or `build/build.bat` files.
-Reladomo is currently built with JDK 1.6. The resulting jars are known to work with JDK 1.6, 1.7, and 1.8.
+Reladomo is currently built with JDK 1.8.
 Reladomo cannot be built with any other version of the JDK.
 
 ## Setting up your environment
-You'll need to clone the repository and have JDK 1.6 installed. You can then setup your environment.
+You'll need to clone the repository and have JDK 1.8 installed. You can then setup your environment.
 
 If you're using `build.bat` under Windows, you must modify the first line of `build/setenv.bat` to point to 
 your JDK installation.
 
 If you're using `build.sh`, you can set a variable in your shell, for example:
 ```
-export RELADOMO_JDK_HOME=/opt/jdk1.6.0_45
+export RELADOMO_JDK_HOME=/opt/jdk1.8.0_202
 ```
 Alternatively, you can modify `build/setenv.sh` by uncommenting the similar line near the top
 and setting the value to point to your JDK.

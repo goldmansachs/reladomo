@@ -22,39 +22,39 @@ import com.gs.fw.finder.AggregateAttribute;
 
 public interface NumericAttribute<Owner> extends Attribute<Owner>
 {
-    public NumericAttribute<Owner> plus(ByteAttribute addend);
-    public NumericAttribute<Owner> plus(ShortAttribute addend);
-    public NumericAttribute<Owner> plus(IntegerAttribute addend);
-    public NumericAttribute<Owner> plus(LongAttribute addend);
-    public NumericAttribute<Owner> plus(FloatAttribute addend);
-    public NumericAttribute<Owner> plus(DoubleAttribute addend);
+    NumericAttribute<Owner> plus(ByteAttribute addend);
+    NumericAttribute<Owner> plus(ShortAttribute addend);
+    NumericAttribute<Owner> plus(IntegerAttribute addend);
+    NumericAttribute<Owner> plus(LongAttribute addend);
+    NumericAttribute<Owner> plus(FloatAttribute addend);
+    NumericAttribute<Owner> plus(DoubleAttribute addend);
 
-    public NumericAttribute<Owner> minus(ByteAttribute subtrahend);
-    public NumericAttribute<Owner> minus(ShortAttribute subtrahend);
-    public NumericAttribute<Owner> minus(IntegerAttribute subtrahend);
-    public NumericAttribute<Owner> minus(LongAttribute subtrahend);
-    public NumericAttribute<Owner> minus(FloatAttribute subtrahend);
-    public NumericAttribute<Owner> minus(DoubleAttribute subtrahend);
+    NumericAttribute<Owner> minus(ByteAttribute subtrahend);
+    NumericAttribute<Owner> minus(ShortAttribute subtrahend);
+    NumericAttribute<Owner> minus(IntegerAttribute subtrahend);
+    NumericAttribute<Owner> minus(LongAttribute subtrahend);
+    NumericAttribute<Owner> minus(FloatAttribute subtrahend);
+    NumericAttribute<Owner> minus(DoubleAttribute subtrahend);
 
-    public NumericAttribute<Owner> times(ByteAttribute multiplicand);
-    public NumericAttribute<Owner> times(ShortAttribute multiplicand);
-    public NumericAttribute<Owner> times(IntegerAttribute multiplicand);
-    public NumericAttribute<Owner> times(LongAttribute multiplicand);
-    public NumericAttribute<Owner> times(FloatAttribute multiplicand);
-    public NumericAttribute<Owner> times(DoubleAttribute multiplicand);
+    NumericAttribute<Owner> times(ByteAttribute multiplicand);
+    NumericAttribute<Owner> times(ShortAttribute multiplicand);
+    NumericAttribute<Owner> times(IntegerAttribute multiplicand);
+    NumericAttribute<Owner> times(LongAttribute multiplicand);
+    NumericAttribute<Owner> times(FloatAttribute multiplicand);
+    NumericAttribute<Owner> times(DoubleAttribute multiplicand);
 
-    public NumericAttribute<Owner> dividedBy(ByteAttribute divisor);
-    public NumericAttribute<Owner> dividedBy(ShortAttribute divisor);
-    public NumericAttribute<Owner> dividedBy(IntegerAttribute divisor);
-    public NumericAttribute<Owner> dividedBy(LongAttribute divisor);
-    public NumericAttribute<Owner> dividedBy(FloatAttribute divisor);
-    public NumericAttribute<Owner> dividedBy(DoubleAttribute divisor);
+    NumericAttribute<Owner> dividedBy(ByteAttribute divisor);
+    NumericAttribute<Owner> dividedBy(ShortAttribute divisor);
+    NumericAttribute<Owner> dividedBy(IntegerAttribute divisor);
+    NumericAttribute<Owner> dividedBy(LongAttribute divisor);
+    NumericAttribute<Owner> dividedBy(FloatAttribute divisor);
+    NumericAttribute<Owner> dividedBy(DoubleAttribute divisor);
 
-    public NumericAttribute<Owner> absoluteValue();
+    NumericAttribute<Owner> absoluteValue();
 
-    public AggregateAttribute<Owner> sum();
+    AggregateAttribute<Owner> sum();
 
-    public AggregateAttribute<Owner> avg();
+    AggregateAttribute<Owner> avg();
 
-    public AggregateAttribute<Owner> standardDeviationSample();
+    AggregateAttribute<Owner> standardDeviationSample();
 }

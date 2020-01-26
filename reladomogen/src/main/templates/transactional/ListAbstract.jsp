@@ -30,7 +30,6 @@ under the License.
     EmbeddedValue[] embeddedValueObjects = wrapper.getEmbeddedValueObjects();
     Attribute[] nullablePrimitiveAttributes = wrapper.getNullablePrimitiveAttributes();
     Attribute[] pkAttributes = wrapper.getPrimaryKeyAttributes();
-    boolean isGenerateGscListMethod = (Boolean) request.getAttribute("generateGscListMethod");
     boolean isGenerateEcListMethod = (Boolean) request.getAttribute("generateEcListMethod");
 %>
 package <%= wrapper.getPackageName() %>;
@@ -135,19 +134,6 @@ public class <%= className %> extends DelegatingList<<%= wrapper.getClassName() 
     {
         return this.getNonPersistentCopy();
     }
-
-    <% if (isGenerateGscListMethod) { %>
-    /**
-     * Return a view of this list that implements GS Collections MutableList API.
-     * Since the returned list will be operation-based, it is effectively read-only,
-     * so mutating methods will throw a RuntimeException.
-     * (Implemented by a light-weight adapter, not a copy)
-     */
-    public com.gs.collections.api.list.MutableList<<%= wrapper.getClassName() %>> asGscList()
-    {
-        return com.gs.collections.impl.list.mutable.ListAdapter.adapt(this);
-    }
-    <% } %>
 
     <% if (isGenerateEcListMethod) { %>
     /**

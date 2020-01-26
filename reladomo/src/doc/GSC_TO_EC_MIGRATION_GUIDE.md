@@ -1,9 +1,8 @@
 # User Guide to migrate from GS Collections to Eclipse Collections
 
 Starting with version 17.0.0, `Reladomo` supports [Eclipse Collections](https://github.com/eclipse/eclipse-collections).
-GS Collections support is now deprecated. Please note that GS Collections support is planned to
-be removed in 1 year (Mar 2019). We recommend users to be prepared for the deprecation and start a plan to migrate from
-GS Collections to Eclipse Collections.
+GS Collections support is deprecated in 17.x.x. The GS Collections support is removed starting with 18.0.0.
+At this moment all users need to migrate migrate from GS Collections to Eclipse Collections.
 
 Here is a quick guide to migrate from GS Collections to Eclipse Collections
 

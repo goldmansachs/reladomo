@@ -47,17 +47,6 @@ public class FloatInOperation extends InOperation implements SqlParameterSetter
     private transient volatile float[] copiedArray;
 
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    public FloatInOperation(FloatAttribute attribute, com.gs.collections.api.set.primitive.FloatSet floatSet)
-    {
-        super(attribute);
-        this.set = FloatSets.immutable.of(floatSet.toArray());
-    }
-
     public FloatInOperation(FloatAttribute attribute, FloatSet floatSet)
     {
         super(attribute);

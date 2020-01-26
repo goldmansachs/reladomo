@@ -94,24 +94,8 @@ public abstract class CharAttribute<T> extends Attribute<T, Character> implement
 
     public abstract Operation notEq(char other);
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public abstract Operation in(com.gs.collections.api.set.primitive.CharSet charSet);
-
     @Override
     public abstract Operation in(CharSet charSet);
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public abstract Operation notIn(com.gs.collections.api.set.primitive.CharSet charSet);
 
     @Override
     public abstract Operation notIn(CharSet charSet);
