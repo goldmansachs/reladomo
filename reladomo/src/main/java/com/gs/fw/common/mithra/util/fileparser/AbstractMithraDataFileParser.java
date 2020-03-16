@@ -159,7 +159,16 @@ public abstract class AbstractMithraDataFileParser
         }
         catch (FileNotFoundException e)
         {
-            FileNotFoundException e2 = new FileNotFoundException("could not find file " + this.getFile().getName());
+            String inLocation = "";
+            try
+            {
+                inLocation = " in " + new File(".").getAbsolutePath();
+            } catch (Exception e2)
+            {
+                //ignore
+            }
+
+            FileNotFoundException e2 = new FileNotFoundException("could not find file " + this.getFile() + inLocation);
             e2.initCause(e);
             throw e2;
         }

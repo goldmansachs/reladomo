@@ -1,0 +1,51 @@
+/*
+ Copyright 2016 Goldman Sachs.
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License.
+ */
+
+class sample.domain.Person
+personId, firstName, lastName, country
+0       , "John",  "Smith", "USA"
+1       , "Taro",  "Tanaka", "JPN"
+2       , "Michael",  "Barkley", "CAN"
+3       , "Ying",  "Chung", "CHN"
+4       , "Olga", "Ivanova", "RUS"
+
+class sample.domain.Course
+courseId, name, teacherId, cost, startDate
+101,"Music",2,2000.0, "2019-09-20 10:30:12.0"
+201,"Poetry",3,2000.0, "2019-09-20 10:30:12.0"
+5,"Accounting",3,533.0, "2019-09-20 10:30:12.0"
+6,"Advertising",2,2542.0, "2019-09-20 10:30:12.0"
+38,"Chemistry",2,2190.0, "2019-09-20 10:30:12.0"
+39,"Chinese",3,545.0, "2019-09-20 10:30:12.0"
+74,"Finance",2,724.0, "2019-09-20 10:30:12.0"
+76,"Forestry",2,1388.0, "2019-09-20 10:30:12.0"
+77,"French",3,62.0, "2019-09-20 10:30:12.0"
+80,"Genetics",2,1053.0, "2019-09-20 10:30:12.0"
+81,"Geology",3,2764.0, "2019-09-20 10:30:12.0"
+82,"German",2,1778.0, "2019-09-20 10:30:12.0"
+
+class sample.domain.Balance
+id, accountNum, value, currency, businessDateFrom,  businessDateTo, processingDateFrom, processingDateTo
+1, "100001", 2122211.23, "USD", "2010-01-01 23:59:00.0", "9999-12-01 23:59:00.000", "2010-01-03 03:00:00.0", "9999-12-01 23:59:00.000"
+2, "100002", 21211.23, "USD", "2010-01-01 23:59:00.0", "9999-12-01 23:59:00.000", "2010-01-03 03:00:00.0", "9999-12-01 23:59:00.000"
+3, "100003", 2121.23, "USD", "2010-01-01 23:59:00.0", "9999-12-01 23:59:00.000", "2010-01-03 03:10:00.0", "9999-12-01 23:59:00.000"
+
+class sample.domain.Account
+accountNum, name, processingDateFrom, processingDateTo
+"100001", "Cash", "2019-01-03 03:00:00.0", "9999-12-01 23:59:00.000"
+"100002", "Cash", "2019-01-03 03:00:00.0", "9999-12-01 23:59:00.000"
+"100003", "Cash", "2019-01-03 03:00:00.0", "9999-12-01 23:59:00.000"
+

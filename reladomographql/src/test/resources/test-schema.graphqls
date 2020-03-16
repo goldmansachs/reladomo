@@ -1,0 +1,708 @@
+type Mutation
+{
+    tinyBalance_insert(tinyBalance: TinyBalanceInput businessDate: Timestamp!): TinyBalance
+    testBalanceNoAcmap_insert(testBalanceNoAcmap: TestBalanceNoAcmapInput businessDate: Timestamp!): TestBalanceNoAcmap
+    product_insert(product: ProductInput): Product
+    order_insert(order: OrderInput): Order
+    orderItem_insert(orderItem: OrderItemInput): OrderItem
+}
+
+
+type Query
+{
+    tinyBalanceById( balanceId: Int!  acmapCode: String! ): TinyBalance
+    tinyBalances(findMany: TinyBalanceFinder filter: TinyBalanceFinder where: TinyBalanceFinder order_by: TinyBalanceOrderBy limit: Int): [TinyBalance]
+    tinyBalance_aggregate(findMany: TinyBalanceFinder filter: TinyBalanceFinder where: TinyBalanceFinder order_by: TinyBalanceOrderBy limit: Int): [TinyBalanceAggregate]
+
+    testBalanceNoAcmapById( accountId: String!  productId: Int!  positionType: Int! ): TestBalanceNoAcmap
+    testBalanceNoAcmaps(findMany: TestBalanceNoAcmapFinder filter: TestBalanceNoAcmapFinder where: TestBalanceNoAcmapFinder order_by: TestBalanceNoAcmapOrderBy limit: Int): [TestBalanceNoAcmap]
+    testBalanceNoAcmap_aggregate(findMany: TestBalanceNoAcmapFinder filter: TestBalanceNoAcmapFinder where: TestBalanceNoAcmapFinder order_by: TestBalanceNoAcmapOrderBy limit: Int): [TestBalanceNoAcmapAggregate]
+
+    tamsMithraAccountById( accountNumber: String! ): TamsMithraAccount
+    tamsMithraAccounts(findMany: TamsMithraAccountFinder filter: TamsMithraAccountFinder where: TamsMithraAccountFinder order_by: TamsMithraAccountOrderBy limit: Int): [TamsMithraAccount]
+    tamsMithraAccount_aggregate(findMany: TamsMithraAccountFinder filter: TamsMithraAccountFinder where: TamsMithraAccountFinder order_by: TamsMithraAccountOrderBy limit: Int): [TamsMithraAccountAggregate]
+
+    productById( productId: Int! ): Product
+    products(findMany: ProductFinder filter: ProductFinder where: ProductFinder order_by: ProductOrderBy limit: Int): [Product]
+    product_aggregate(findMany: ProductFinder filter: ProductFinder where: ProductFinder order_by: ProductOrderBy limit: Int): [ProductAggregate]
+
+    orderById( orderId: Int! ): Order
+    orders(findMany: OrderFinder filter: OrderFinder where: OrderFinder order_by: OrderOrderBy limit: Int): [Order]
+    order_aggregate(findMany: OrderFinder filter: OrderFinder where: OrderFinder order_by: OrderOrderBy limit: Int): [OrderAggregate]
+
+    orderItemById( id: Int! ): OrderItem
+    orderItems(findMany: OrderItemFinder filter: OrderItemFinder where: OrderItemFinder order_by: OrderItemOrderBy limit: Int): [OrderItem]
+    orderItem_aggregate(findMany: OrderItemFinder filter: OrderItemFinder where: OrderItemFinder order_by: OrderItemOrderBy limit: Int): [OrderItemAggregate]
+
+}
+
+
+#################### com.gs.fw.common.mithra.test.domain.TinyBalance ##################
+type TinyBalance
+{
+    balanceId: Int
+    quantity: Float
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    businessDate: Timestamp
+    processingDate: Timestamp
+    acmapCode: String
+}
+
+type TinyBalanceAggregate
+{
+    balanceId: Int
+    quantity: FloatAggregate
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+input TinyBalanceInput
+{
+    balanceId: Int
+    quantity: Float
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    acmapCode: String
+}
+
+input TinyBalanceOrderBy
+{
+    balanceId: AcsDesc
+    quantity: AcsDesc
+    businessDateFrom: AcsDesc
+    businessDateTo: AcsDesc
+    processingDateFrom: AcsDesc
+    processingDateTo: AcsDesc
+}
+
+input TinyBalanceFinder
+{
+    balanceId: IntegerAttribute
+    quantity: FloatAttribute
+    businessDateFrom: TimestampAttribute
+    businessDateTo: TimestampAttribute
+    processingDateFrom: TimestampAttribute
+    processingDateTo: TimestampAttribute
+    businessDate: TimestampAttribute
+    processingDate: TimestampAttribute
+    acmapCode: StringAttribute
+    AND: [TinyBalanceFinder]
+    OR: [TinyBalanceFinder]
+    EXPR: [TinyBalanceFloatExpr]
+    tupleIn: [TinyBalanceFinderTuple]
+}
+
+input TinyBalanceFloatExpr
+{
+    plus: [TinyBalanceCalculatedAttribute]
+    minus: [TinyBalanceCalculatedAttribute]
+    times: [TinyBalanceCalculatedAttribute]
+    dividedBy: [TinyBalanceCalculatedAttribute]
+    absoluteValue: TinyBalanceCalculatedAttribute
+    eq: Float
+    notEq: Float
+    in: [Float]
+    notIn: [Float]
+    greaterThan: Float
+    greaterThanEquals: Float
+    lessThan: Float
+    lessThanEquals: Float
+}
+input TinyBalanceCalculatedAttribute
+{
+    plus: [TinyBalanceCalculatedAttribute]
+    minus: [TinyBalanceCalculatedAttribute]
+    times: [TinyBalanceCalculatedAttribute]
+    dividedBy: [TinyBalanceCalculatedAttribute]
+    absoluteValue: TinyBalanceCalculatedAttribute
+    id: IntegerAttribute
+    orderId: IntegerAttribute
+    productId: IntegerAttribute
+    quantity: FloatAttribute
+    originalPrice: FloatAttribute
+    discountPrice: FloatAttribute
+    state: StringAttribute
+    VAL: Float
+}
+input TinyBalanceFinderTuple
+{
+    balanceId: Int
+    quantity: Float
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+#################### com.gs.fw.common.mithra.test.domain.TestBalanceNoAcmap ##################
+type TestBalanceNoAcmap
+{
+    accountId: String
+    productId: Int
+    positionType: Int
+    quantity: Float
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    businessDate: Timestamp
+    processingDate: Timestamp
+    account: TamsMithraAccount
+}
+
+type TestBalanceNoAcmapAggregate
+{
+    accountId: String
+    productId: Int
+    positionType: Int
+    quantity: FloatAggregate
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    account: TamsMithraAccount
+}
+
+input TestBalanceNoAcmapInput
+{
+    accountId: String
+    productId: Int
+    positionType: Int
+    quantity: Float
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+input TestBalanceNoAcmapOrderBy
+{
+    accountId: AcsDesc
+    productId: AcsDesc
+    positionType: AcsDesc
+    quantity: AcsDesc
+    businessDateFrom: AcsDesc
+    businessDateTo: AcsDesc
+    processingDateFrom: AcsDesc
+    processingDateTo: AcsDesc
+}
+
+input TestBalanceNoAcmapFinder
+{
+    accountId: StringAttribute
+    productId: IntegerAttribute
+    positionType: IntegerAttribute
+    quantity: FloatAttribute
+    businessDateFrom: TimestampAttribute
+    businessDateTo: TimestampAttribute
+    processingDateFrom: TimestampAttribute
+    processingDateTo: TimestampAttribute
+    businessDate: TimestampAttribute
+    processingDate: TimestampAttribute
+    account: TamsMithraAccountFinder
+    AND: [TestBalanceNoAcmapFinder]
+    OR: [TestBalanceNoAcmapFinder]
+    EXPR: [TestBalanceNoAcmapFloatExpr]
+    tupleIn: [TestBalanceNoAcmapFinderTuple]
+}
+
+input TestBalanceNoAcmapFloatExpr
+{
+    plus: [TestBalanceNoAcmapCalculatedAttribute]
+    minus: [TestBalanceNoAcmapCalculatedAttribute]
+    times: [TestBalanceNoAcmapCalculatedAttribute]
+    dividedBy: [TestBalanceNoAcmapCalculatedAttribute]
+    absoluteValue: TestBalanceNoAcmapCalculatedAttribute
+    eq: Float
+    notEq: Float
+    in: [Float]
+    notIn: [Float]
+    greaterThan: Float
+    greaterThanEquals: Float
+    lessThan: Float
+    lessThanEquals: Float
+}
+input TestBalanceNoAcmapCalculatedAttribute
+{
+    plus: [TestBalanceNoAcmapCalculatedAttribute]
+    minus: [TestBalanceNoAcmapCalculatedAttribute]
+    times: [TestBalanceNoAcmapCalculatedAttribute]
+    dividedBy: [TestBalanceNoAcmapCalculatedAttribute]
+    absoluteValue: TestBalanceNoAcmapCalculatedAttribute
+    id: IntegerAttribute
+    orderId: IntegerAttribute
+    productId: IntegerAttribute
+    quantity: FloatAttribute
+    originalPrice: FloatAttribute
+    discountPrice: FloatAttribute
+    state: StringAttribute
+    VAL: Float
+}
+input TestBalanceNoAcmapFinderTuple
+{
+    accountId: String
+    productId: Int
+    positionType: Int
+    quantity: Float
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+#################### com.gs.fw.common.mithra.test.domain.TamsMithraAccount ##################
+type TamsMithraAccount
+{
+    accountNumber: String
+    code: String
+    trialId: String
+    pnlGroupId: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    businessDate: Timestamp
+    processingDate: Timestamp
+}
+
+type TamsMithraAccountAggregate
+{
+    accountNumber: String
+    code: String
+    trialId: String
+    pnlGroupId: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+input TamsMithraAccountInput
+{
+    accountNumber: String
+    code: String
+    trialId: String
+    pnlGroupId: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+input TamsMithraAccountOrderBy
+{
+    accountNumber: AcsDesc
+    code: AcsDesc
+    trialId: AcsDesc
+    pnlGroupId: AcsDesc
+    businessDateFrom: AcsDesc
+    businessDateTo: AcsDesc
+    processingDateFrom: AcsDesc
+    processingDateTo: AcsDesc
+}
+
+input TamsMithraAccountFinder
+{
+    accountNumber: StringAttribute
+    code: StringAttribute
+    trialId: StringAttribute
+    pnlGroupId: StringAttribute
+    businessDateFrom: TimestampAttribute
+    businessDateTo: TimestampAttribute
+    processingDateFrom: TimestampAttribute
+    processingDateTo: TimestampAttribute
+    businessDate: TimestampAttribute
+    processingDate: TimestampAttribute
+    AND: [TamsMithraAccountFinder]
+    OR: [TamsMithraAccountFinder]
+    EXPR: [TamsMithraAccountFloatExpr]
+    tupleIn: [TamsMithraAccountFinderTuple]
+}
+
+input TamsMithraAccountFloatExpr
+{
+    plus: [TamsMithraAccountCalculatedAttribute]
+    minus: [TamsMithraAccountCalculatedAttribute]
+    times: [TamsMithraAccountCalculatedAttribute]
+    dividedBy: [TamsMithraAccountCalculatedAttribute]
+    absoluteValue: TamsMithraAccountCalculatedAttribute
+    eq: Float
+    notEq: Float
+    in: [Float]
+    notIn: [Float]
+    greaterThan: Float
+    greaterThanEquals: Float
+    lessThan: Float
+    lessThanEquals: Float
+}
+input TamsMithraAccountCalculatedAttribute
+{
+    plus: [TamsMithraAccountCalculatedAttribute]
+    minus: [TamsMithraAccountCalculatedAttribute]
+    times: [TamsMithraAccountCalculatedAttribute]
+    dividedBy: [TamsMithraAccountCalculatedAttribute]
+    absoluteValue: TamsMithraAccountCalculatedAttribute
+    id: IntegerAttribute
+    orderId: IntegerAttribute
+    productId: IntegerAttribute
+    quantity: FloatAttribute
+    originalPrice: FloatAttribute
+    discountPrice: FloatAttribute
+    state: StringAttribute
+    VAL: Float
+}
+input TamsMithraAccountFinderTuple
+{
+    accountNumber: String
+    code: String
+    trialId: String
+    pnlGroupId: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+#################### com.gs.fw.common.mithra.test.domain.Product ##################
+type Product
+{
+    productId: Int
+    productCode: String
+    productDescription: String
+    manufacturerId: Int
+    dailyProductionRate: Float
+}
+
+type ProductAggregate
+{
+    productId: Int
+    productCode: String
+    productDescription: String
+    manufacturerId: Int
+    dailyProductionRate: FloatAggregate
+}
+
+input ProductInput
+{
+    productId: Int
+    productCode: String
+    productDescription: String
+    manufacturerId: Int
+    dailyProductionRate: Float
+}
+
+input ProductOrderBy
+{
+    productId: AcsDesc
+    productCode: AcsDesc
+    productDescription: AcsDesc
+    manufacturerId: AcsDesc
+    dailyProductionRate: AcsDesc
+}
+
+input ProductFinder
+{
+    productId: IntegerAttribute
+    productCode: StringAttribute
+    productDescription: StringAttribute
+    manufacturerId: IntegerAttribute
+    dailyProductionRate: FloatAttribute
+    AND: [ProductFinder]
+    OR: [ProductFinder]
+    EXPR: [ProductFloatExpr]
+    tupleIn: [ProductFinderTuple]
+}
+
+input ProductFloatExpr
+{
+    plus: [ProductCalculatedAttribute]
+    minus: [ProductCalculatedAttribute]
+    times: [ProductCalculatedAttribute]
+    dividedBy: [ProductCalculatedAttribute]
+    absoluteValue: ProductCalculatedAttribute
+    eq: Float
+    notEq: Float
+    in: [Float]
+    notIn: [Float]
+    greaterThan: Float
+    greaterThanEquals: Float
+    lessThan: Float
+    lessThanEquals: Float
+}
+input ProductCalculatedAttribute
+{
+    plus: [ProductCalculatedAttribute]
+    minus: [ProductCalculatedAttribute]
+    times: [ProductCalculatedAttribute]
+    dividedBy: [ProductCalculatedAttribute]
+    absoluteValue: ProductCalculatedAttribute
+    id: IntegerAttribute
+    orderId: IntegerAttribute
+    productId: IntegerAttribute
+    quantity: FloatAttribute
+    originalPrice: FloatAttribute
+    discountPrice: FloatAttribute
+    state: StringAttribute
+    VAL: Float
+}
+input ProductFinderTuple
+{
+    productId: Int
+    productCode: String
+    productDescription: String
+    manufacturerId: Int
+    dailyProductionRate: Float
+}
+
+#################### com.gs.fw.common.mithra.test.domain.Order ##################
+type Order
+{
+    orderId: Int
+    orderDate: Timestamp
+    userId: Int
+    description: String
+    state: String
+    trackingId: String
+    items: [OrderItem]
+    itemsForUserFive: [OrderItem]
+    productsWithoutInProgress: [Product]
+    itemsFilterByDate: [OrderItem]
+    children: [Order]
+    itemsforExistingStatus: [OrderItem]
+    itemsOrTest: [OrderItem]
+    itemsInTest: [OrderItem]
+    parent: Order
+}
+
+type OrderAggregate
+{
+    orderId: Int
+    orderDate: Timestamp
+    userId: Int
+    description: String
+    state: String
+    trackingId: String
+    items: [OrderItem]
+    itemsForUserFive: [OrderItem]
+    productsWithoutInProgress: [Product]
+    itemsFilterByDate: [OrderItem]
+    children: [Order]
+    itemsforExistingStatus: [OrderItem]
+    itemsOrTest: [OrderItem]
+    itemsInTest: [OrderItem]
+    parent: Order
+}
+
+input OrderInput
+{
+    orderId: Int
+    orderDate: Timestamp
+    userId: Int
+    description: String
+    state: String
+    trackingId: String
+}
+
+input OrderOrderBy
+{
+    orderId: AcsDesc
+    orderDate: AcsDesc
+    userId: AcsDesc
+    description: AcsDesc
+    state: AcsDesc
+    trackingId: AcsDesc
+}
+
+input OrderFinder
+{
+    orderId: IntegerAttribute
+    orderDate: TimestampAttribute
+    userId: IntegerAttribute
+    description: StringAttribute
+    state: StringAttribute
+    trackingId: StringAttribute
+    items: OrderItemFinder
+    itemsForUserFive: OrderItemFinder
+    productsWithoutInProgress: ProductFinder
+    itemsFilterByDate: OrderItemFinder
+    children: OrderFinder
+    itemsforExistingStatus: OrderItemFinder
+    itemsOrTest: OrderItemFinder
+    itemsInTest: OrderItemFinder
+    parent: OrderFinder
+    AND: [OrderFinder]
+    OR: [OrderFinder]
+    EXPR: [OrderFloatExpr]
+    tupleIn: [OrderFinderTuple]
+}
+
+input OrderFloatExpr
+{
+    plus: [OrderCalculatedAttribute]
+    minus: [OrderCalculatedAttribute]
+    times: [OrderCalculatedAttribute]
+    dividedBy: [OrderCalculatedAttribute]
+    absoluteValue: OrderCalculatedAttribute
+    eq: Float
+    notEq: Float
+    in: [Float]
+    notIn: [Float]
+    greaterThan: Float
+    greaterThanEquals: Float
+    lessThan: Float
+    lessThanEquals: Float
+}
+input OrderCalculatedAttribute
+{
+    plus: [OrderCalculatedAttribute]
+    minus: [OrderCalculatedAttribute]
+    times: [OrderCalculatedAttribute]
+    dividedBy: [OrderCalculatedAttribute]
+    absoluteValue: OrderCalculatedAttribute
+    id: IntegerAttribute
+    orderId: IntegerAttribute
+    productId: IntegerAttribute
+    quantity: FloatAttribute
+    originalPrice: FloatAttribute
+    discountPrice: FloatAttribute
+    state: StringAttribute
+    VAL: Float
+}
+input OrderFinderTuple
+{
+    orderId: Int
+    orderDate: Timestamp
+    userId: Int
+    description: String
+    state: String
+    trackingId: String
+}
+
+#################### com.gs.fw.common.mithra.test.domain.OrderItem ##################
+type OrderItem
+{
+    id: Int
+    orderId: Int
+    productId: Int
+    quantity: Float
+    originalPrice: Float
+    discountPrice: Float
+    state: String
+    productInfo: Product
+    nullTestOrder: Order
+    otherInProgressItems: [OrderItem]
+    otherExpensiveItems: [OrderItem]
+    orderWithIsNull: Order
+    order: Order
+}
+
+type OrderItemAggregate
+{
+    id: Int
+    orderId: Int
+    productId: Int
+    quantity: FloatAggregate
+    originalPrice: FloatAggregate
+    discountPrice: FloatAggregate
+    state: String
+    productInfo: Product
+    nullTestOrder: Order
+    otherInProgressItems: [OrderItem]
+    otherExpensiveItems: [OrderItem]
+    orderWithIsNull: Order
+    order: Order
+}
+
+input OrderItemInput
+{
+    id: Int
+    orderId: Int
+    productId: Int
+    quantity: Float
+    originalPrice: Float
+    discountPrice: Float
+    state: String
+}
+
+input OrderItemOrderBy
+{
+    id: AcsDesc
+    orderId: AcsDesc
+    productId: AcsDesc
+    quantity: AcsDesc
+    originalPrice: AcsDesc
+    discountPrice: AcsDesc
+    state: AcsDesc
+}
+
+input OrderItemFinder
+{
+    id: IntegerAttribute
+    orderId: IntegerAttribute
+    productId: IntegerAttribute
+    quantity: FloatAttribute
+    originalPrice: FloatAttribute
+    discountPrice: FloatAttribute
+    state: StringAttribute
+    productInfo: ProductFinder
+    nullTestOrder: OrderFinder
+    otherInProgressItems: OrderItemFinder
+    otherExpensiveItems: OrderItemFinder
+    orderWithIsNull: OrderFinder
+    order: OrderFinder
+    AND: [OrderItemFinder]
+    OR: [OrderItemFinder]
+    EXPR: [OrderItemFloatExpr]
+    tupleIn: [OrderItemFinderTuple]
+}
+
+input OrderItemFloatExpr
+{
+    plus: [OrderItemCalculatedAttribute]
+    minus: [OrderItemCalculatedAttribute]
+    times: [OrderItemCalculatedAttribute]
+    dividedBy: [OrderItemCalculatedAttribute]
+    absoluteValue: OrderItemCalculatedAttribute
+    eq: Float
+    notEq: Float
+    in: [Float]
+    notIn: [Float]
+    greaterThan: Float
+    greaterThanEquals: Float
+    lessThan: Float
+    lessThanEquals: Float
+}
+input OrderItemCalculatedAttribute
+{
+    plus: [OrderItemCalculatedAttribute]
+    minus: [OrderItemCalculatedAttribute]
+    times: [OrderItemCalculatedAttribute]
+    dividedBy: [OrderItemCalculatedAttribute]
+    absoluteValue: OrderItemCalculatedAttribute
+    id: IntegerAttribute
+    orderId: IntegerAttribute
+    productId: IntegerAttribute
+    quantity: FloatAttribute
+    originalPrice: FloatAttribute
+    discountPrice: FloatAttribute
+    state: StringAttribute
+    VAL: Float
+}
+input OrderItemFinderTuple
+{
+    id: Int
+    orderId: Int
+    productId: Int
+    quantity: Float
+    originalPrice: Float
+    discountPrice: Float
+    state: String
+}
+

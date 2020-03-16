@@ -1,0 +1,161 @@
+<!--
+  Copyright 2016 Goldman Sachs.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing,
+  software distributed under the License is distributed on an
+  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  KIND, either express or implied.  See the License for the
+  specific language governing permissions and limitations
+  under the License.
+  -->
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:annotation>
+		<xsd:documentation xml:lang="en">
+			Schema used to describe mithra runtime configuration
+        </xsd:documentation>
+	</xsd:annotation>
+
+	<xsd:element name="MithraRuntime" type="MithraRuntimeType"/>
+
+	<xsd:complexType name="MithraRuntimeType">
+		<xsd:sequence>
+            <xsd:element name="ConnectionManager" type="ConnectionManagerType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="RemoteServer" type="RemoteServerType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="MasterCacheReplicationServer" type="MasterCacheReplicationServerType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="PureObjects" type="PureObjectsType" minOccurs="0" maxOccurs="1"/>
+		</xsd:sequence>
+        <xsd:attribute name="defaultRelationshipCacheSize" type="xsd:int" default="10000"/>
+        <xsd:attribute name="defaultMinQueriesToKeep" type="xsd:int" default="32"/>
+        <xsd:attribute name="defaultCacheTimeToLive" type="xsd:long" default="0"/>
+        <xsd:attribute name="defaultRelationshipCacheTimeToLive" type="xsd:long" default="0"/>
+	</xsd:complexType>
+
+    <xsd:complexType name="PureObjectsType">
+        <xsd:sequence>
+            <xsd:element name="MithraObjectConfiguration" type="MithraPureObjectConfigurationType" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="threeTierExport" type="xsd:boolean" default="true" />
+        <xsd:attribute name="offHeapReplicationExport" type="xsd:boolean" default="true" />
+        <xsd:attribute name="notificationIdentifier" type="xsd:token" use="required" />
+    </xsd:complexType>
+
+    <xsd:complexType name="ConnectionManagerType">
+        <xsd:sequence>
+            <xsd:element name="Property" type="PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="MithraObjectConfiguration" type="MithraObjectConfigurationType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="MithraTemporaryObjectConfiguration" type="MithraTemporaryObjectConfigurationType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="Schema" type="SchemaType" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="className" type="xsd:token" use="required"/>
+        <xsd:attribute name="replicationPollingInterval" type="xsd:long" default="300000" />
+        <xsd:attribute name="useMultiUpdate" type="xsd:boolean" default="true" />
+        <xsd:attribute name="threeTierExport" type="xsd:boolean" default="true" />
+        <xsd:attribute name="offHeapReplicationExport" type="xsd:boolean" default="true" />
+        <xsd:attribute name="initialLoaderThreads" type="xsd:int" default="1" />
+        <xsd:attribute name="loadOperationProvider" type="xsd:token" />
+    </xsd:complexType>
+
+    <xsd:complexType name="SchemaType">
+        <xsd:sequence>
+            <xsd:element name="MithraObjectConfiguration" type="MithraObjectConfigurationType" minOccurs="1" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="xsd:token" use="required"/>
+        <xsd:attribute name="getFromConnectionManager" type="xsd:boolean" default="false"/>
+        <xsd:attribute name="replicationPollingInterval" type="xsd:long" default="300000" />
+    </xsd:complexType>
+
+    <xsd:complexType name="RemoteServerType">
+        <xsd:sequence>
+            <xsd:element name="Property" type="PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="MithraObjectConfiguration" type="MithraObjectConfigurationType" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="className" type="xsd:token" use="required"/>
+        <xsd:attribute name="overrideRelationshipCacheSize" type="xsd:int" default="10000"/>
+        <xsd:attribute name="overrideMinQueriesToKeep" type="xsd:int" default="32"/>
+        <xsd:attribute name="threeTierExport" type="xsd:boolean" default="false" />
+        <xsd:attribute name="initialLoaderThreads" type="xsd:int" default="1" />
+    </xsd:complexType>
+
+    <xsd:complexType name="MasterCacheReplicationServerType">
+        <xsd:sequence>
+            <xsd:element name="Property" type="PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="masterCacheId" type="xsd:token" use="required"/>
+        <xsd:attribute name="className" type="xsd:token" use="required"/>
+        <xsd:attribute name="syncThreads" type="xsd:int" default="5" />
+        <xsd:attribute name="syncIntervalInMilliseconds" type="xsd:int" default="60000" />
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraObjectConfigurationType">
+        <xsd:attribute name="className" type="xsd:token" use="required"/>
+        <xsd:attribute name="cacheType" type="CacheType" use="required"/>
+        <xsd:attribute name="txParticipation" type="TxParticipationType" default="full">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Transactional objects are by default configured to fully participate in transactions. If this setting is set to
+                readOnly, transactional objects will not participate in transactions.
+                This setting has no effect on read-only objects.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="offHeapFullCache" type="xsd:boolean" default="false" />
+        <xsd:attribute name="relationshipCacheSize" type="xsd:int"/>
+        <xsd:attribute name="minQueriesToKeep" type="xsd:int"/>
+        <xsd:attribute name="replicated" type="xsd:boolean" default="false"/>
+        <xsd:attribute name="useMultiUpdate" type="xsd:boolean" default="true" />
+        <xsd:attribute name="threeTierExport" type="xsd:boolean" default="true" />
+        <xsd:attribute name="offHeapReplicationExport" type="xsd:boolean" default="true" />
+        <xsd:attribute name="loadCacheOnStartup" type="xsd:boolean" default="true" />
+        <xsd:attribute name="cacheTimeToLive" type="xsd:long" default="0">
+            <xsd:annotation><xsd:documentation xml:lang="en">
+                Time for cache to live in milli-seconds.
+            </xsd:documentation></xsd:annotation>
+        </xsd:attribute>
+        <xsd:attribute name="relationshipCacheTimeToLive" type="xsd:long" default="0"/>
+        <xsd:attribute name="loadOperationProvider" type="xsd:token" />
+        <xsd:attribute name="getTableNameFromConnectionManager" type="xsd:boolean" default="false"/>
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraTemporaryObjectConfigurationType">
+        <xsd:attribute name="className" type="xsd:token" use="required"/>
+        <xsd:attribute name="relationshipCacheSize" type="xsd:int"/>
+        <xsd:attribute name="minQueriesToKeep" type="xsd:int"/>
+        <xsd:attribute name="useMultiUpdate" type="xsd:boolean" default="true" />
+        <xsd:attribute name="threeTierExport" type="xsd:boolean" default="true" />
+    </xsd:complexType>
+
+    <xsd:complexType name="MithraPureObjectConfigurationType">
+        <xsd:attribute name="className" type="xsd:token" use="required"/>
+        <xsd:attribute name="offHeapFullCache" type="xsd:boolean" default="false"/>
+        <xsd:attribute name="factoryParameter" type="xsd:token"/>
+        <xsd:attribute name="relationshipCacheSize" type="xsd:int"/>
+        <xsd:attribute name="minQueriesToKeep" type="xsd:int"/>
+        <xsd:attribute name="threeTierExport" type="xsd:boolean" default="true" />
+        <xsd:attribute name="offHeapReplicationExport" type="xsd:boolean" default="true" />
+    </xsd:complexType>
+
+    <xsd:complexType name="PropertyType">
+        <xsd:attribute name="name" type="xsd:token" use="required"/>
+        <xsd:attribute name="value" type="xsd:token" use="required"/>
+    </xsd:complexType>
+
+    <xsd:simpleType name="CacheType">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="partial"/>
+            <xsd:enumeration value="full"/>
+            <xsd:enumeration value="none"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+    <xsd:simpleType name="TxParticipationType">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="full"/>
+            <xsd:enumeration value="readOnly"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+</xsd:schema>

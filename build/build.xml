@@ -72,10 +72,28 @@
         <pathelement location="${root}/reladomo/target/reladomo-asm-4.2.jar"/>
     </path>
 
+    <path id="reladomographql.compile.classpath">
+        <pathelement location="${root}/reladomo/target/classes"/>
+        <pathelement location="${root}/build/lib/graphql/graphql-java-13.0.jar"/>
+        <pathelement location="${root}/build/lib/graphql/graphql-java-servlet-8.0.0.jar"/>
+        <pathelement location="${root}/lib/serial/jackson-databind-2.8.6.jar"/>
+        <pathelement location="${root}/lib/serial/jackson-core-2.8.6.jar"/>
+        <pathelement location="${root}/build/lib/graphql/javax.servlet-api-3.0.1.jar"/>
+        <pathelement location="${root}/build/lib/graphql/graphql-java-extended-scalars-1.0.jar"/>
+    </path>
+
     <path id="reladomo.test.compile.classpath">
         <fileset refid="fileset.lib.test"/>
         <path refid="reladomo.compile.classpath"/>
         <pathelement location="${root}/reladomo/target/classes"/>
+    </path>
+
+    <path id="reladomographql.test.compile.classpath">
+        <fileset refid="fileset.lib.test"/>
+        <path refid="reladomo.compile.classpath"/>
+        <path refid="reladomographql.compile.classpath"/>
+        <pathelement location="${root}/lib/test/jsonassert-1.5.0.jar"/>
+        <pathelement location="${root}/lib/test/android-json-0.0.20131108.vaadin1.jar"/>
     </path>
 
     <path id="reladomo.run.test.classpath">
@@ -160,6 +178,7 @@
         <delete quiet="true" dir="${root}/target"/>
         <delete quiet="true" dir="${root}/reladomo/target"/>
         <delete quiet="true" dir="${root}/reladomogen/target"/>
+        <delete quiet="true" dir="${root}/reladomographql/target"/>
         <delete quiet="true" dir="${root}/reladomoui/target"/>
         <delete quiet="true" dir="${root}/reladomogs.target"/>
     </target>
@@ -610,6 +629,81 @@
             <srcfileset dir="${root}/reladomo/target/classes"/>
             <targetfileset dir="${root}/reladomo/target/test-util-classes"/>
         </dependset>
+    </target>
+
+    <target name="compile-reladomo-graphql" depends="init-reladomo, libboot-reladomo, compile-reladomo">
+        <copy file="${root}/reladomographql/src/main/resources/meta.graphqls" todir="${root}/reladomographql/target/classes/" verbose="true"/>
+        <javac destdir="${root}/reladomographql/target/classes"
+               debug="true"
+               source="1.8"
+               target="1.8"
+               nowarn="true"
+               includeAntRuntime="false">
+            <src path="${root}/reladomographql/src/main/java"/>
+            <compilerarg line="-Xlint:-unchecked -Xlint:-deprecation -XDignore.symbol.file"/>
+            <classpath>
+                <path refid="reladomo.compile.classpath"/>
+                <path refid="reladomographql.compile.classpath"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="compile-reladomo-graphql-test" depends="compile-reladomo-graphql, compile-reladomo-test, compile-reladomo-test-util, test-util-dependset">
+        <copy file="${root}/reladomographql/src/main/resources/meta.graphqls" todir="${root}/reladomographql/target/test-classes/" verbose="true"/>
+        <javac destdir="${root}/reladomographql/target/test-classes"
+               debug="true"
+               source="1.8"
+               target="1.8"
+               nowarn="true"
+               includeAntRuntime="false">
+            <src path="${root}/reladomographql/src/test/java"/>
+            <compilerarg line="-Xlint:-unchecked -Xlint:-deprecation -XDignore.symbol.file"/>
+            <classpath>
+                <path refid="reladomo.test.compile.classpath"/>
+                <path refid="reladomographql.test.compile.classpath"/>
+                <pathelement location="${root}/reladomo/target/classes"/>
+                <pathelement location="${root}/reladomo/target/test-classes-offheap"/>
+                <pathelement location="${root}/reladomo/target/test-util-classes"/>
+                <pathelement location="${root}/reladomographql/target/classes"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="run-reladomo-graphql-test-suite" depends="compile-reladomo-graphql-test, compile-reladomo-test" description="Run JUnit test cases for Reladomo GraphQL module">
+        <delete quiet="true" dir="${root}/reladomographql/target/testresult"/>
+        <mkdir dir="${root}/reladomographql/target/testresult"/>
+        <tstamp>
+            <format property="TIME_NOW" pattern="hh:mm:ss a z"/>
+        </tstamp>
+        <echo message="Log4j file: ${root}/reladomo/src/test/resources/log4jWarn.config"/>
+
+        <sequential>
+            <junit printsummary="on" dir="${root}/reladomographql" timeout="3600000" fork="yes" includeantruntime="true">
+                <formatter type="xml" extension="junit"/>
+                <formatter classname="com.gs.fw.common.mithra.test.JunitFormatter" extension="junit.txt"/>
+                <classpath>
+                    <path refid="reladomo.run.test.classpath"/>
+                    <path refid="reladomo.test.compile.classpath"/>
+                    <path refid="reladomographql.test.compile.classpath"/>
+                    <pathelement location="${root}/reladomo/target/classes"/>
+                    <pathelement location="${root}/reladomo/target/test-classes-offheap"/>
+                    <pathelement location="${root}/reladomo/target/test-util-classes"/>
+                    <pathelement location="${root}/reladomographql/target/classes"/>
+                    <pathelement location="${root}/reladomographql/target/test-classes"/>
+                </classpath>
+                <jvmarg value="-server"/>
+                <jvmarg value="${jacocovmarg}${root}/reladomographql/target/coverage/junit-tests.exec"/>
+                <jvmarg value="-Xmx500m"/>
+                <jvmarg value="-ea"/>
+                <jvmarg value="-Dlog4j.configuration=file:${root}/reladomo/src/test/resources/log4jWarn.config"/>
+                <jvmarg value="-Dmithra.xml.root=${root}/reladomographql/src/test/resources/"/>
+                <jvmarg value="-Djacoco.args=${jacocovmarg}${root}/reladomographql/target/coverage/jacoco/junit-tests.exec"/>
+                <jvmarg value="-Duser.timezone=America/New_York"/>
+                <batchtest>
+                    <fileset dir="${root}/reladomographql/target/test-classes" includes="**/*Test.java" />
+                </batchtest>
+            </junit>
+        </sequential>
     </target>
 
     <target name="compile-reladomo-test-util" depends="compile-reladomo, test-util-dependset">
@@ -1335,6 +1429,30 @@
         </jar>
     </target>
 
+    <target name="reladomo-graphql-javadoc">
+        <javadoc packagenames="com.gs.reladomo.graphql"
+                 sourcepath="${root}/reladomographql/src/main/java"
+                 defaultexcludes="yes"
+                 access="public"
+                 destdir="${root}/reladomo/target/reladomographql-javadoc"
+                 use="true"
+                 windowtitle="Reladomo GraphQL Integration Module"
+                 version="yes"
+                 Verbose="true">
+            <classpath>
+                <path refid="reladomo.test.compile.classpath"/>
+            </classpath>
+        </javadoc>
+    </target>
+
+    <target name="jar-reladomo-graphql-javadoc" depends="reladomo-graphql-javadoc">
+        <jar jarfile="${root}/target/reladomo-graphql-${reladomo.version}-javadoc.jar" index="true">
+            <fileset dir="${root}/reladomo/target/reladomographql-javadoc"/>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
+    </target>
+
     <target name="gen-reladomo-pom" depends="init-reladomo">
         <generate-pom module="reladomo"/>
     </target>
@@ -1403,7 +1521,29 @@
 
     <target name="prep-reladomo-gen-util" depends="gen-reladomo-gen-util-pom, jar-reladomo-gen-util, jar-reladomo-gen-util-src, jar-reladomo-gen-util-javadoc"/>
 
-    <target name="prep-release" depends="prep-reladomo, prep-reladomogen, prep-reladomo-gen-util, prep-reladomo-test-util, prep-reladomo-serial, prep-reladomo-xa"/>
+    <target name="jar-reladomo-graphql" depends="compile-reladomo-genutil">
+        <jar jarfile="${root}/target/reladomo-graphql-${reladomo.version}.jar" index="true">
+            <fileset dir="${root}/reladomographql/target/classes"/>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
+    </target>
+
+    <target name="jar-reladomo-graphql-src" depends="init-reladomo">
+        <jar jarfile="${root}/target/reladomo-graphql-${reladomo.version}-sources.jar" index="true">
+            <fileset dir="${root}/reladomographql/src/main/java"/>
+            <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
+            <zipfileset prefix="META-INF" file="${root}/LICENSE.txt"/>
+        </jar>
+    </target>
+
+    <target name="gen-reladomo-graphql-pom" depends="init-reladomo">
+        <generate-pom module="reladomo-graphql"/>
+    </target>
+
+    <target name="prep-reladomo-graphql" depends="gen-reladomo-graphql-pom, jar-reladomo-graphql, jar-reladomo-graphql-src, jar-reladomo-graphql-javadoc"/>
+
+    <target name="prep-release" depends="prep-reladomo, prep-reladomogen, prep-reladomo-gen-util, prep-reladomo-test-util, prep-reladomo-serial, prep-reladomo-xa, prep-reladomo-graphql"/>
 
     <target name="bundle-release" >
         <delete quiet="true" file="${root}/target/bundle-${reladomo.version}.jar"/>
@@ -1433,6 +1573,10 @@
                 <include name="reladomo-xa-${reladomo.version}.jar"/>
                 <include name="reladomo-xa-${reladomo.version}-sources.jar"/>
                 <include name="reladomo-xa-${reladomo.version}-javadoc.jar"/>
+                <include name="reladomo-graphql-${reladomo.version}.pom"/>
+                <include name="reladomo-graphql-${reladomo.version}.jar"/>
+                <include name="reladomo-graphql-${reladomo.version}-sources.jar"/>
+                <include name="reladomo-graphql-${reladomo.version}-javadoc.jar"/>
             </srcfileset>
             <targetfileset dir="${root}/target" includes="*.asc"/>
         </dependset>
@@ -1465,6 +1609,10 @@
                             <include name="reladomo-xa-${reladomo.version}.jar"/>
                             <include name="reladomo-xa-${reladomo.version}-sources.jar"/>
                             <include name="reladomo-xa-${reladomo.version}-javadoc.jar"/>
+                            <include name="reladomo-graphql-${reladomo.version}.pom"/>
+                            <include name="reladomo-graphql-${reladomo.version}.jar"/>
+                            <include name="reladomo-graphql-${reladomo.version}-sources.jar"/>
+                            <include name="reladomo-graphql-${reladomo.version}-javadoc.jar"/>
 
                             <include name="reladomo-${reladomo.version}.pom.asc"/>
                             <include name="reladomo-${reladomo.version}.jar.asc"/>
@@ -1490,6 +1638,10 @@
                             <include name="reladomo-xa-${reladomo.version}.jar.asc"/>
                             <include name="reladomo-xa-${reladomo.version}-sources.jar.asc"/>
                             <include name="reladomo-xa-${reladomo.version}-javadoc.jar.asc"/>
+                            <include name="reladomo-graphql-${reladomo.version}.pom.asc"/>
+                            <include name="reladomo-graphql-${reladomo.version}.jar.asc"/>
+                            <include name="reladomo-graphql-${reladomo.version}-sources.jar.asc"/>
+                            <include name="reladomo-graphql-${reladomo.version}-javadoc.jar.asc"/>
                         </fileset>
                     </resourcecount>
                 </not>
@@ -1571,6 +1723,19 @@
                 <include name="reladomo-xa-${reladomo.version}.jar.asc"/>
                 <include name="reladomo-xa-${reladomo.version}-sources.jar.asc"/>
                 <include name="reladomo-xa-${reladomo.version}-javadoc.jar.asc"/>
+            </fileset>
+        </jar>
+        <jar jarfile="${root}/target/bundle-reladomo-graphql-${reladomo.version}.jar" index="false">
+            <fileset dir="${root}/target">
+                <include name="reladomo-graphql-${reladomo.version}.pom"/>
+                <include name="reladomo-graphql-${reladomo.version}.jar"/>
+                <include name="reladomo-graphql-${reladomo.version}-sources.jar"/>
+                <include name="reladomo-graphql-${reladomo.version}-javadoc.jar"/>
+
+                <include name="reladomo-graphql-${reladomo.version}.pom.asc"/>
+                <include name="reladomo-graphql-${reladomo.version}.jar.asc"/>
+                <include name="reladomo-graphql-${reladomo.version}-sources.jar.asc"/>
+                <include name="reladomo-graphql-${reladomo.version}-javadoc.jar.asc"/>
             </fileset>
         </jar>
     </target>

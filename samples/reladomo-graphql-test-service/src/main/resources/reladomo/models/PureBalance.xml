@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+Copyright 2019 Goldman Sachs.
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<MithraPureObject objectType="transactional"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="reladomoobject.xsd">
+
+    <PackageName>sample.domain</PackageName>
+    <ClassName>PureBalance</ClassName>
+
+    <AsOfAttribute name="businessDate" toIsInclusive="false"
+                   infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+    />
+    <AsOfAttribute name="processingDate"
+                   infinityDate="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                   defaultIfNotSpecified="[com.gs.fw.common.mithra.util.DefaultInfinityTimestamp.getDefaultInfinity()]"
+                   isProcessingDate="true"/>
+
+    <Attribute name="id" javaType="long" primaryKey="true"/>
+    <Attribute name="url" javaType="String" maxLength="255"/>
+
+    <Attribute name="accountId" javaType="long"/>
+    <Attribute name="accountNum" javaType="String" maxLength="255"/>
+    <Attribute name="value" javaType="double"/>
+    <Attribute name="interest" javaType="double"/>
+    <Attribute name="count" javaType="double"/>
+    <Attribute name="currency" javaType="String" nullable="false" maxLength="5"/>
+
+    <Relationship name="account" relatedObject="PureAccount" cardinality="many-to-one">
+        this.accountNum = PureAccount.accountNum
+    </Relationship>
+</MithraPureObject>
