@@ -810,15 +810,7 @@
     </target>
 
     <target name="reladomo-test-suite" depends="generate-reladomo-test-graph, reladomo-junitreport" description="Run JUnit test cases for Reladomo code">
-        <condition property="unitTestFailedAndIsNotSonar">
-            <and>
-                <isset property="failed.mithra.unit.tests"/>
-                <not>
-                    <isset property="isSonar"/>
-                </not>
-            </and>
-        </condition>
-        <fail if="unitTestFailedAndIsNotSonar" message="Reladomo unit tests failed"/>
+        <fail if="failed.mithra.unit.tests" message="Reladomo unit tests failed"/>
     </target>
 
     <target name="reladomo-test-coverage" depends="-jacoco-init,compile-reladomo, reladomo-test-suite, reladomo-coverage-report"/>
@@ -1837,8 +1829,8 @@
             <delete dir="${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
             <mkdir dir="${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
             <mkdir dir="${root}/reladomoserial/target/testresult"/>
-            <junit printsummary="off" dir="${root}" timeout="3600000" fork="yes" failureproperty="failed.mithra.unit.tests"
-                   includeantruntime="true" showoutput="false" jvm="${env.RELADOMO_JDK_18_HOME}/bin/java">
+            <junit printsummary="off" dir="${root}" timeout="3600000" fork="yes" failureproperty="failed.reladomo.serial.unit.tests"
+                   includeantruntime="true" showoutput="false">
                 <!--<formatter type="plain" usefile="false"/>-->
                 <formatter type="xml" extension="@{mithraxmlconfig}"/>
                 <formatter classname="com.gs.fw.common.mithra.test.JunitFormatter" extension="@{mithraxmlconfig}.txt"/>
@@ -1872,18 +1864,7 @@
         </sequential>
     </macrodef>
 
-    <target name="jdk18-sanity-check">
-        <condition property="reladomo.jdk18.sanity.check">
-            <or>
-                <available property="" file="${env.RELADOMO_JDK_18_HOME}/bin/java"/>
-                <available property="" file="${env.RELADOMO_JDK_18_HOME}/bin/java.exe"/>
-            </or>
-        </condition>
-        <fail message="Could not find JDK 1.8 for running serial tests in ${env.RELADOMO_JDK_18_HOME}/bin/java. Set the RELADOMO_JDK_18_HOME environment variable!"
-              unless="reladomo.jdk18.sanity.check"/>
-    </target>
-
-    <target name="run-reladomo-serial-test-suite" depends="jdk18-sanity-check, compile-reladomo-serial-test, get-cores" description="Run JUnit test cases for Reladomo Serial code">
+    <target name="run-reladomo-serial-test-suite" depends="compile-reladomo-serial-test, get-cores" description="Run JUnit test cases for Reladomo Serial code">
         <property name="jacocovmarg" value="-Dcoverage=none"/>
         <delete quiet="true" dir="${root}/reladomoserial/target/testresult"/>
         <mkdir dir="${root}/reladomoserial/target/testresult"/>
@@ -1896,6 +1877,20 @@
             <exec-serial-test-suite mithraxmlconfig="MithraConfigFullCache.xml" qualifier="/full" testclass="com.gs.reladomo.serial.ReladomoSerialTestSuite" heap="onheap"/>
             <exec-serial-test-suite mithraxmlconfig="MithraConfigPartialCache.xml" qualifier="/partial" testclass="com.gs.reladomo.serial.ReladomoSerialTestSuite" heap="onheap"/>
         </parallel>
+    </target>
+
+    <target name="reladomo-serial-junitreport" if="junitHtmlReport" depends="run-reladomo-serial-test-suite">
+        <mkdir dir="${root}/reladomoserial/target/junit-report"/>
+        <junitreport>
+            <fileset dir="${root}/reladomoserial/target/testresult">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="noframes" todir="${root}/reladomoserial/target/junit-report"/>
+        </junitreport>
+    </target>
+
+    <target name="reladomo-serial-test-suite" depends="reladomo-serial-junitreport" description="Run JUnit test cases for Reladomo serial code">
+        <fail if="failed.reladomo.serial.unit.tests" message="Reladomo unit tests failed"/>
     </target>
 
     <target name="gen-reladomo-serial-pom" depends="init-reladomo-serial">
@@ -2038,7 +2033,7 @@
             <delete dir="${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
             <mkdir dir="${root}/reladomo/target/dbtemp/@{mithraxmlconfig}@{testclass}"/>
             <mkdir dir="${root}/reladomoxa/target/testresult"/>
-            <junit printsummary="off" dir="${root}" timeout="3600000" fork="yes" failureproperty="failed.mithra.unit.tests"
+            <junit printsummary="off" dir="${root}" timeout="3600000" fork="yes" failureproperty="failed.reladomo.xa.unit.tests"
                    includeantruntime="true" showoutput="false">
                 <!--<formatter type="plain" usefile="false"/>-->
                 <formatter type="xml" extension="@{mithraxmlconfig}"/>
@@ -2117,15 +2112,7 @@
     </target>
 
     <target name="reladomo-xa-test-suite" depends="reladomo-xa-junitreport" description="Run JUnit test cases for Reladomo XA code">
-        <condition property="unitTestFailedAndIsNotSonar">
-            <and>
-                <isset property="failed.mithra.unit.tests"/>
-                <not>
-                    <isset property="isSonar"/>
-                </not>
-            </and>
-        </condition>
-        <fail if="unitTestFailedAndIsNotSonar" message="Reladomo unit tests failed"/>
+        <fail if="failed.reladomo.xa.unit.tests" message="Reladomo unit tests failed"/>
     </target>
 
     <target name="jar-reladomo-xa" depends="compile-reladomo-xa">
