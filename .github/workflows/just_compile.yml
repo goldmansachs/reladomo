@@ -20,7 +20,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+    - name: Set env
+      run: echo ::set-env name=RELADOMO_JDK_HOME::"$JAVA_HOME"
     - name: Build with Ant via shell script
-      run: echo $RELADOMO_JDK_HOME
-      env:
-        RELADOMO_JDK_HOME: $JDK_HOME
+      run: ./build/build.sh compile-reladomo-test compile-reladomo-xa-test compile-reladomo-serial-test
