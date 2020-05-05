@@ -27,4 +27,9 @@ public class DatedAccount extends DatedAccountAbstract
     {
         super(businessDate, processingDate);
     }
+
+    public static String complexFunction(int param, int other)
+    {
+        return param +"-"+ other;
+    }
 }
