@@ -1187,7 +1187,7 @@ public class Join
         if (parameterVariableList == null) return null;
         int index = parameterVariableList.indexOf(literal);
         if (index >= 0) return parameterVariableList.get(index);
-        StringTokenizer strTok = new StringTokenizer(literal, " .()-=+*/[]:'\"&|!^%\n");
+        StringTokenizer strTok = tokenizeParams(literal);
         while(strTok.hasMoreTokens())
         {
             index = parameterVariableList.indexOf(strTok.nextToken());
@@ -1210,13 +1210,18 @@ public class Join
         for(int i=0;i<literals.size();i++)
         {
             String literal = literals.get(i);
-            StringTokenizer strTok = new StringTokenizer(literal, " .()-=+*/[]:'\"&|!^%\n");
+            StringTokenizer strTok = tokenizeParams(literal);
             while(strTok.hasMoreTokens())
             {
                 if (parameterVariable.equals(strTok.nextToken())) return true;
             }
         }
         return false;
+    }
+
+    private StringTokenizer tokenizeParams(String literal)
+    {
+        return new StringTokenizer(literal, " .(),-=+*/[]:'\"&|!^%\n");
     }
 
     private List<String> getFilterLiterals()
