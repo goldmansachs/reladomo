@@ -17,6 +17,20 @@
 
 package com.gs.fw.common.mithra.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import com.gs.fw.common.mithra.LoadOperationProvider;
 import com.gs.fw.common.mithra.MithraBusinessException;
 import com.gs.fw.common.mithra.MithraDatabaseObject;
@@ -60,20 +74,6 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class MithraConfigurationManager
@@ -372,7 +372,7 @@ public class MithraConfigurationManager
             mrc.setObjectPortals(objectPortals);
             for(int j=0;j<configs.size();j++)
             {
-                MithraConfigurationManager.Config config = configs.get(j);
+                Config config = configs.get(j);
                 MithraObjectPortal portal = this.initializeObject(config.className, mithraInitializationErrors);
                 if (portal != null)
                 {
@@ -1819,7 +1819,7 @@ public class MithraConfigurationManager
         }
     }
 
-    private static class PortalLoadCacheRunnable implements Runnable
+    private static class PortalLoadCacheRunnable extends ExceptionHandlingTask
     {
         private MithraObjectPortal portal;
 
@@ -1828,7 +1828,8 @@ public class MithraConfigurationManager
             this.portal = portal;
         }
 
-        public void run()
+        @Override
+        public void execute()
         {
             portal.loadCache();
         }

@@ -94,6 +94,8 @@ import java.io.IOException;
 import java.io.InvalidClassException;
 import java.io.ObjectStreamException;
 import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collection;
@@ -551,6 +553,11 @@ public abstract class MithraAbstractObjectPortal implements MithraObjectPortal
     public MithraObjectReader getMithraObjectReader()
     {
         return mithraObjectReader;
+    }
+
+    public void setMithraObjectReader (MithraObjectReader mithraObjectReader)
+    {
+        this.mithraObjectReader = mithraObjectReader;
     }
 
     protected void loadFullCacheFromServer()

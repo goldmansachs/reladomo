@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MasterCacheUplink
@@ -46,6 +47,8 @@ public class MasterCacheUplink
     private long lastSuccessfulRefresh = 0;
     private volatile boolean paused = false;
     private final Object pauseLock = new Object();
+
+    private AtomicBoolean isInitialSyncComplete = new AtomicBoolean(false);
 
     public MasterCacheUplink(String masterCacheId, MasterCacheService service)
     {
@@ -186,6 +189,8 @@ public class MasterCacheUplink
         this.nextRefresh = initialSyncState;
         setUpThreadPool();
         initialSyncState.waitForRefreshToFinish();
+
+        this.isInitialSyncComplete.set(true);
     }
 
     private void setUpThreadPool()
@@ -252,7 +257,15 @@ public class MasterCacheUplink
                 lastPortal = portal;
                 if (portal != null)
                 {
+                    if (!MasterCacheUplink.this.isInitialSyncComplete.get())
+                    {
+                        logger.debug("Started initial portal sync with master cache for: " + portal.getBusinessClassName());
+                    }
                     boolean destroyed = portal.syncWithMasterCache(MasterCacheUplink.this);
+                    if (!MasterCacheUplink.this.isInitialSyncComplete.get())
+                    {
+                        logger.info("Completed initial portal sync with master cache for: " + portal.getBusinessClassName());
+                    }
                     if (destroyed)
                     {
                         objectPortals.set(portalIndex, null);
@@ -350,8 +363,12 @@ public class MasterCacheUplink
                     {
                         lastSuccessfulRefresh = end;
                     }
+                    else
+                    {
+                        logger.warn("Fail", this.failedThrowable);
+                    }
                     this.notifyAll();
-                    logger.info("Cache replication sync for "+masterCacheId+" finished in "+(endTime - startTime)/1000.0+" seconds");
+                    logger.info("Cache replication sync for " + masterCacheId + " finished in "+(endTime - startTime)/1000.0+" seconds. Last success: " + lastSuccessfulRefresh);
                 }
                 else
                 {

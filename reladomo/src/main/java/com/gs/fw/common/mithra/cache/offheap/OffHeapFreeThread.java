@@ -32,7 +32,8 @@ import java.util.Map;
 public class OffHeapFreeThread extends Thread
 {
     private static Logger logger = LoggerFactory.getLogger(OffHeapFreeThread.class.getName());
-    private static final int POLL_PERIOD = 60000;
+
+    private static final int POLL_PERIOD = 1000;
 
     private static Unsafe UNSAFE = MithraUnsafe.getUnsafe();
 //    private static MithraUnsafe.AuditedMemory UNSAFE = MithraUnsafe.getAuditedMemory();
