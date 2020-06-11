@@ -99,7 +99,7 @@ public class H2DatabaseTypeForTests extends H2DatabaseType
         }
         else
         {
-            // Would not expect this table name to be present in the blacklist as it should be a unique name not seen before, but just in case...
+            // Would not expect this table name to be present in the denylist as it should be a unique name not seen before, but just in case...
             // This also means createIndexSql can rely on suppressedTableNames.contains() to check the behaviour for the current create table attempt.
             this.suppressedTableNames.remove(tempTableName);
         }

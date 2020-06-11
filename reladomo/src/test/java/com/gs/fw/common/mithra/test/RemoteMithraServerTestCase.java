@@ -90,7 +90,7 @@ public class RemoteMithraServerTestCase extends MultiVmTestCase
         MithraManagerProvider.getMithraManager().cleanUpRuntimeCacheControllers();
     }
 
-    public void slaveVmOnStartup()
+    public void workerVmOnStartup()
     {
         setupPspMithraService();
     }
@@ -117,7 +117,7 @@ public class RemoteMithraServerTestCase extends MultiVmTestCase
         }
     }
 
-    public void slaveVmSetUp()
+    public void workerVmSetUp()
     {
         String xmlFile = System.getProperty("mithra.xml.config");
 
@@ -162,7 +162,7 @@ public class RemoteMithraServerTestCase extends MultiVmTestCase
         return null;
     }
 
-    public void slaveVmTearDown()
+    public void workerVmTearDown()
     {
         mithraTestResource.tearDown();
     }

@@ -77,7 +77,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
 //        waitForRegistrationToComplete();
 //        int updateClassCount = OrderFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
 //        waitForRegistrationToComplete();
-//        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder", new Class[]{int.class, String.class, String.class, String.class, int.class},
+//        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder", new Class[]{int.class, String.class, String.class, String.class, int.class},
 //                new Object[]{new Integer(orderId), description, newOrderState, trackingId, new Integer(userId) });
 //        waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
 //
@@ -103,7 +103,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
 //        int updateClassCount = ExchangeRateFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
 //
 //        waitForRegistrationToComplete();
-//        this.getRemoteSlaveVm().executeMethod("serverInsertExchangeRate", new Class[]{String.class, String.class, int.class, Timestamp.class, double.class}, new Object[]{"A", currency, new Integer(source), new Timestamp(System.currentTimeMillis()), new Double(1.40)});
+//        this.getRemoteWorkerVm().executeMethod("serverInsertExchangeRate", new Class[]{String.class, String.class, int.class, Timestamp.class, double.class}, new Object[]{"A", currency, new Integer(source), new Timestamp(System.currentTimeMillis()), new Double(1.40)});
 //
 //        waitForMessages(updateClassCount, ExchangeRateFinder.getMithraObjectPortal());
 //
@@ -146,7 +146,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
 //        waitForRegistrationToComplete();
 //        int updateClassCount = OrderFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
 //        waitForRegistrationToComplete();
-//        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder", new Class[]{int.class, String.class, String.class, String.class, int.class},
+//        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder", new Class[]{int.class, String.class, String.class, String.class, int.class},
 //                new Object[]{new Integer(orderId), description, newOrderState, trackingId, new Integer(userId) });
 //        waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
 //
@@ -182,7 +182,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
 //        int updateClassCount = DivisionFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
 //        waitForRegistrationToComplete();
 //
-//        this.getRemoteSlaveVm().executeMethod("serverUpdateDivision", new Class[]{int.class, String.class, String.class, String.class, String.class},
+//        this.getRemoteWorkerVm().executeMethod("serverUpdateDivision", new Class[]{int.class, String.class, String.class, String.class, String.class},
 //                new Object[]{new Integer(divisionId),"B", newDivisionName, newState, newCity });
 //        waitForMessages(updateClassCount, DivisionFinder.getMithraObjectPortal());
 //
@@ -217,7 +217,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         OrderList orderList = new OrderList(op);
         assertEquals(0, orderList.size());
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverInsertOrder", new Class[]{int.class}, new Object[]{new Integer(999999)});
+        this.getRemoteWorkerVm().executeMethod("serverInsertOrder", new Class[]{int.class}, new Object[]{new Integer(999999)});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
         OrderList orderList2 = new OrderList(op);
         assertEquals(1, orderList2.size());
@@ -235,7 +235,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         ExchangeRateList list0 = new ExchangeRateList(op);
         assertEquals(0, list0.size());
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverInsertExchangeRate", new Class[]{String.class, String.class, int.class, Timestamp.class, double.class}, new Object[]{"A", "USD", new Integer(11), ts, new Double(1.40)});
+        this.getRemoteWorkerVm().executeMethod("serverInsertExchangeRate", new Class[]{String.class, String.class, int.class, Timestamp.class, double.class}, new Object[]{"A", "USD", new Integer(11), ts, new Double(1.40)});
         waitForMessages(updateClassCount, ExchangeRateFinder.getMithraObjectPortal());
 
         ExchangeRateList list1 = new ExchangeRateList(op);
@@ -257,7 +257,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         assertNotNull(exchangeRate0);
         assertEquals(1.0, exchangeRate0.getExchangeRate(), 0.0);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateExchangeRate", new Class[]{String.class, String.class, int.class, Timestamp.class, double.class}, new Object[]{"A", "USD", new Integer(10), ts, new Double(1.40)});
+        this.getRemoteWorkerVm().executeMethod("serverUpdateExchangeRate", new Class[]{String.class, String.class, int.class, Timestamp.class, double.class}, new Object[]{"A", "USD", new Integer(10), ts, new Double(1.40)});
         waitForMessages(updateClassCount, ExchangeRateFinder.getMithraObjectPortal());
         ExchangeRate exchangeRate1 = ExchangeRateFinder.findOne(op);
         assertNotNull(exchangeRate1);
@@ -272,7 +272,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         EmployeeList list0 = new EmployeeList(op);
         assertEquals(0, list0.size());
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverInsertEmployee", new Class[]{int.class, int.class, String.class}, new Object[]{new Integer(0), new Integer(2), "abc@abc.com"});
+        this.getRemoteWorkerVm().executeMethod("serverInsertEmployee", new Class[]{int.class, int.class, String.class}, new Object[]{new Integer(0), new Integer(2), "abc@abc.com"});
         waitForMessages(updateClassCount, EmployeeFinder.getMithraObjectPortal());
         EmployeeList list1 = new EmployeeList(op);
         assertEquals(1, list1.size());
@@ -290,8 +290,8 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         int prevSize =  list0.size();
         assertEquals(1, list1.size());
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverInsertEmployee", new Class[]{int.class, int.class, String.class}, new Object[]{new Integer(0), new Integer(2), "abc@abc.com"});
-        this.getRemoteSlaveVm().executeMethod("serverInsertOrder", new Class[]{int.class}, new Object[]{new Integer(999999)});
+        this.getRemoteWorkerVm().executeMethod("serverInsertEmployee", new Class[]{int.class, int.class, String.class}, new Object[]{new Integer(0), new Integer(2), "abc@abc.com"});
+        this.getRemoteWorkerVm().executeMethod("serverInsertOrder", new Class[]{int.class}, new Object[]{new Integer(999999)});
         waitForMessages(employeeUpdateClassCount, EmployeeFinder.getMithraObjectPortal());
         waitForMessages(orderUpdateClassCount,OrderFinder.getMithraObjectPortal());
         OrderList list2 = new OrderList(op0);
@@ -308,12 +308,12 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         OrderList list0 = new OrderList(op);
         assertEquals(0, list0.size());
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverInsertOrderList", new Class[]{int.class, int.class}, new Object[]{new Integer(999900), new Integer(50)});
+        this.getRemoteWorkerVm().executeMethod("serverInsertOrderList", new Class[]{int.class, int.class}, new Object[]{new Integer(999900), new Integer(50)});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
         OrderList list1 = new OrderList(op);
         assertEquals(50, list1.size());
         updateClassCount = OrderFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverInsertOrderList", new Class[]{int.class, int.class}, new Object[]{new Integer(999950), new Integer(50)});
+        this.getRemoteWorkerVm().executeMethod("serverInsertOrderList", new Class[]{int.class, int.class}, new Object[]{new Integer(999950), new Integer(50)});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
         OrderList list2 = new OrderList(op);
         assertEquals(100, list2.size());
@@ -330,7 +330,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         EmployeeList list1 = new EmployeeList(op1);
         assertEquals(1, list1.size());
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverInsertEmployeeListWithMultipleDestinations", new Class[]{}, new Object[]{});
+        this.getRemoteWorkerVm().executeMethod("serverInsertEmployeeListWithMultipleDestinations", new Class[]{}, new Object[]{});
         waitForMessages(updateClassCount, EmployeeFinder.getMithraObjectPortal());
         EmployeeList list2 = new EmployeeList(op0);
         EmployeeList list3 = new EmployeeList(op1);
@@ -359,7 +359,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         EmployeeList list0 = new EmployeeList(op);
         assertEquals(1, list0.size());
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverDeleteEmployee", new Class[]{int.class, int.class}, new Object[]{new Integer(1), new Integer(1) });
+        this.getRemoteWorkerVm().executeMethod("serverDeleteEmployee", new Class[]{int.class, int.class}, new Object[]{new Integer(1), new Integer(1) });
         waitForMessages(updateClassCount, EmployeeFinder.getMithraObjectPortal());
         EmployeeList list1 = new EmployeeList(op);
         assertEquals(0, list1.size());
@@ -373,7 +373,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         ExchangeRateList list0 = new ExchangeRateList(op);
         assertEquals(4, list0.size());
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverBatchDeleteAllExchangeRates", new Class[]{String.class}, new Object[]{"A"});
+        this.getRemoteWorkerVm().executeMethod("serverBatchDeleteAllExchangeRates", new Class[]{String.class}, new Object[]{"A"});
         waitForMessages(updateClassCount, ExchangeRateFinder.getMithraObjectPortal());
         ExchangeRateList list1 = new ExchangeRateList(op);
         assertEquals(0, list1.size());
@@ -393,7 +393,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         String newPhone = employee0.getPhone();
         String newDesignation = employee0.getDesignation();
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateEmployee", new Class[]{int.class, int.class, String.class, String.class, String.class, String.class}, new Object[]{new Integer(0), new Integer(1), newName, newPhone, newDesignation, newEmail});
+        this.getRemoteWorkerVm().executeMethod("serverUpdateEmployee", new Class[]{int.class, int.class, String.class, String.class, String.class, String.class}, new Object[]{new Integer(0), new Integer(1), newName, newPhone, newDesignation, newEmail});
         waitForMessages(updateClassCount, EmployeeFinder.getMithraObjectPortal());
         Employee employee1 = EmployeeFinder.findOne(op0);
         assertEquals(newEmail, employee1.getEmail());
@@ -418,7 +418,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         String newPhone = "222-222-2222";
         String newDesignation = "Trader";
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateEmployee", new Class[]{int.class, int.class, String.class, String.class, String.class, String.class}, new Object[]{new Integer(0), new Integer(1), newName, newPhone, newDesignation, newEmail});
+        this.getRemoteWorkerVm().executeMethod("serverUpdateEmployee", new Class[]{int.class, int.class, String.class, String.class, String.class, String.class}, new Object[]{new Integer(0), new Integer(1), newName, newPhone, newDesignation, newEmail});
         waitForMessages(updateClassCount, EmployeeFinder.getMithraObjectPortal());
         Employee employee1 = EmployeeFinder.findOne(op0);
         assertEquals(newEmail, employee1.getEmail());
@@ -441,7 +441,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         OrderList list1 = new OrderList(op1);
         assertEquals(0, list1.size());
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverBatchUpdateOrderState", new Class[]{String.class, String.class}, new Object[]{state, newState});
+        this.getRemoteWorkerVm().executeMethod("serverBatchUpdateOrderState", new Class[]{String.class, String.class}, new Object[]{state, newState});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
         OrderList list2 = new OrderList(op0);
         assertEquals(0, list2.size());
@@ -457,7 +457,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         ExchangeRate rate0 = ExchangeRateFinder.findOne(op);
         assertEquals(1.0, rate0.getExchangeRate(),0);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateExchangeRate", new Class[]{String.class, String.class, double.class}, new Object[]{"USD", "A", new Double(2.0)});
+        this.getRemoteWorkerVm().executeMethod("serverUpdateExchangeRate", new Class[]{String.class, String.class, double.class}, new Object[]{"USD", "A", new Double(2.0)});
         waitForMessages(updateClassCount, ExchangeRateFinder.getMithraObjectPortal());
         ExchangeRate rate1 = ExchangeRateFinder.findOne(op);
         assertEquals(2.0, rate1.getExchangeRate(),0);
@@ -473,7 +473,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         OrderList list = new OrderList(op);
         assertTrue(list.size() > 0);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverDeleteAllOrdersUsingOperation", new Class[]{}, new Object[]{});
+        this.getRemoteWorkerVm().executeMethod("serverDeleteAllOrdersUsingOperation", new Class[]{}, new Object[]{});
         waitForMessages(updateClassCount,OrderFinder.getMithraObjectPortal());
         OrderList list2 = new OrderList(op);
         assertEquals(0, list2.size());
@@ -487,7 +487,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         OrderList list = new OrderList(op);
         assertEquals(1, list.size());
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverDeleteAllOrdersUsingOperation", new Class[]{}, new Object[]{});
+        this.getRemoteWorkerVm().executeMethod("serverDeleteAllOrdersUsingOperation", new Class[]{}, new Object[]{});
         waitForMessages(updateClassCount,OrderFinder.getMithraObjectPortal());
         OrderList list2 = new OrderList(op);
         assertEquals(0, list2.size());
@@ -507,7 +507,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         TinyBalanceList list0 = new TinyBalanceList(op0);
         assertEquals(0, list0.size());
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverInsertNewTinyBalance", new Class[]{String.class, int.class, Timestamp.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate0});
+        this.getRemoteWorkerVm().executeMethod("serverInsertNewTinyBalance", new Class[]{String.class, int.class, Timestamp.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate0});
         waitForMessages(updateClassCount, TinyBalanceFinder.getMithraObjectPortal());
         TinyBalanceList list1 = new TinyBalanceList(op0);
         assertEquals(1, list1.size());
@@ -539,7 +539,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
 
         waitForRegistrationToComplete();
         int updateClassCount = TinyBalanceFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverPurgeTinyBalance", new Class[]{String.class, int.class}, new Object[]{sourceAttribute, new Integer(balanceId)});
+        this.getRemoteWorkerVm().executeMethod("serverPurgeTinyBalance", new Class[]{String.class, int.class}, new Object[]{sourceAttribute, new Integer(balanceId)});
         waitForMessages(updateClassCount, TinyBalanceFinder.getMithraObjectPortal());
         TinyBalanceList list1 = new TinyBalanceList(op);
         assertEquals(0, list1.size());
@@ -572,7 +572,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
 
         waitForRegistrationToComplete();
         int updateClassCount = FullyCachedTinyBalanceFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverPurgeFullyCachedTinyBalance", new Class[]{int.class}, new Object[]{new Integer(balanceId)});
+        this.getRemoteWorkerVm().executeMethod("serverPurgeFullyCachedTinyBalance", new Class[]{int.class}, new Object[]{new Integer(balanceId)});
         waitForMessages(updateClassCount, FullyCachedTinyBalanceFinder.getMithraObjectPortal());
         FullyCachedTinyBalanceList list1 = new FullyCachedTinyBalanceList(op);
         assertEquals(0, list1.size());
@@ -608,7 +608,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
 
         waitForRegistrationToComplete();
         int updateClassCount = TinyBalanceFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverPurgeTinyBalanceWithDateOperation", new Class[]{String.class}, new Object[]{sourceAttribute});
+        this.getRemoteWorkerVm().executeMethod("serverPurgeTinyBalanceWithDateOperation", new Class[]{String.class}, new Object[]{sourceAttribute});
         waitForMessages(updateClassCount, TinyBalanceFinder.getMithraObjectPortal());
         TinyBalanceList list1 = new TinyBalanceList(op);
         assertEquals(5, list1.size());
@@ -652,7 +652,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
 
         waitForRegistrationToComplete();
         int updateClassCount = FullyCachedTinyBalanceFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverPurgeFullyCachedTinyBalanceWithDateOperation", new Class[]{}, new Object[]{});
+        this.getRemoteWorkerVm().executeMethod("serverPurgeFullyCachedTinyBalanceWithDateOperation", new Class[]{}, new Object[]{});
         waitForMessages(updateClassCount, FullyCachedTinyBalanceFinder.getMithraObjectPortal());
         FullyCachedTinyBalanceList list1 = new FullyCachedTinyBalanceList(op);
         assertEquals(5, list1.size());
@@ -707,7 +707,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         assertEquals(100.00, balance0.getQuantity(),0);
         waitForRegistrationToComplete();
         int updateClassCount = TinyBalanceFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateTinyBalance", new Class[]{String.class, int.class, Timestamp.class, double.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate0, new Double(150.00)});
+        this.getRemoteWorkerVm().executeMethod("serverUpdateTinyBalance", new Class[]{String.class, int.class, Timestamp.class, double.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate0, new Double(150.00)});
         waitForMessages(updateClassCount, TinyBalanceFinder.getMithraObjectPortal());
         TinyBalanceList list1 = new TinyBalanceList(op0);
         assertEquals(1, list1.size());
@@ -751,7 +751,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         waitForRegistrationToComplete();
         double newBalanceValue = 1234.5;
         int updateClassCount = FullyCachedTinyBalanceFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateFullyCachedTinyBalance", new Class[]{int.class, Timestamp.class, double.class}, new Object[]{new Integer(balanceId), businessDate0, newBalanceValue});
+        this.getRemoteWorkerVm().executeMethod("serverUpdateFullyCachedTinyBalance", new Class[]{int.class, Timestamp.class, double.class}, new Object[]{new Integer(balanceId), businessDate0, newBalanceValue});
         waitForMessages(updateClassCount, FullyCachedTinyBalanceFinder.getMithraObjectPortal());
         FullyCachedTinyBalanceList list1 = new FullyCachedTinyBalanceList(op0);
         assertEquals(1, list1.size());
@@ -793,7 +793,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         assertEquals(100.00, balance0.getQuantity(), 0);
         waitForRegistrationToComplete();
         int updateClassCount = TinyBalanceFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverTerminateTinyBalance", new Class[]{String.class, int.class, Timestamp.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate0});
+        this.getRemoteWorkerVm().executeMethod("serverTerminateTinyBalance", new Class[]{String.class, int.class, Timestamp.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate0});
         waitForMessages(updateClassCount, TinyBalanceFinder.getMithraObjectPortal());
         TinyBalanceList list1 = new TinyBalanceList(op0);
         assertEquals(0, list1.size());
@@ -832,7 +832,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         assertEquals(-1336922075.5390835, balance0.getQuantity(), 0);
         waitForRegistrationToComplete();
         int updateClassCount = FullyCachedTinyBalanceFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverTerminateFullyCachedTinyBalance", new Class[]{int.class, Timestamp.class}, new Object[]{new Integer(balanceId), businessDate0});
+        this.getRemoteWorkerVm().executeMethod("serverTerminateFullyCachedTinyBalance", new Class[]{int.class, Timestamp.class}, new Object[]{new Integer(balanceId), businessDate0});
         waitForMessages(updateClassCount, FullyCachedTinyBalanceFinder.getMithraObjectPortal());
         FullyCachedTinyBalanceList list1 = new FullyCachedTinyBalanceList(op0);
         assertEquals(0, list1.size());
@@ -872,7 +872,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         assertEquals(2, order.getOrderId());
 
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverTerminateAuditedOrderItem", new Class[]{int.class}, new Object[]{new Integer(3)});
+        this.getRemoteWorkerVm().executeMethod("serverTerminateAuditedOrderItem", new Class[]{int.class}, new Object[]{new Integer(3)});
         waitForMessages(updateCount, AuditedOrderItemFinder.processingDateTo());
         AuditedOrder order2 = AuditedOrderFinder.findOne(op);
         assertNull(order2);
@@ -892,7 +892,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         assertNotNull(balance);
         assertEquals(1, balance.getBalanceId());
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverTerminateAuditOnlyBalance", new Class[]{String.class, int.class}, new Object[]{sourceAttribute, new Integer(balanceId)});
+        this.getRemoteWorkerVm().executeMethod("serverTerminateAuditOnlyBalance", new Class[]{String.class, int.class}, new Object[]{sourceAttribute, new Integer(balanceId)});
         waitForMessages(updateClassCount, AuditOnlyBalanceFinder.getMithraObjectPortal());
         AuditOnlyBalance balance2 = AuditOnlyBalanceFinder.findOne(op0);
         assertNull(balance2);
@@ -916,7 +916,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         assertEquals(1234, balance0.getBalanceId());
         assertEquals(100.00, balance0.getQuantity(),0);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverIncrementTinyBalance", new Class[]{String.class, int.class, Timestamp.class, double.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate0, new Double(150.00)});
+        this.getRemoteWorkerVm().executeMethod("serverIncrementTinyBalance", new Class[]{String.class, int.class, Timestamp.class, double.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate0, new Double(150.00)});
         waitForMessages(updateClassCount, TinyBalanceFinder.getMithraObjectPortal());
         TinyBalanceList list1 = new TinyBalanceList(op0);
         assertEquals(1, list1.size());
@@ -994,7 +994,7 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
          waitForRegistrationToComplete();
         //Oooppsss We just found out a trade that was done on 12/10/2005 that increased the balance by 50
         Timestamp businessDate3 = new Timestamp(timestampFormat.parse("2005-12-10 18:30:00.0").getTime());
-        this.getRemoteSlaveVm().executeMethod("serverIncrementTinyBalance", new Class[]{String.class, int.class, Timestamp.class, double.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate3, new Double(50)});
+        this.getRemoteWorkerVm().executeMethod("serverIncrementTinyBalance", new Class[]{String.class, int.class, Timestamp.class, double.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate3, new Double(50)});
         waitForMessages(updateClassCount, TinyBalanceFinder.getMithraObjectPortal());
 
         //Get the balance on 12/05/2005 for balance 1234
@@ -1144,15 +1144,15 @@ public class TestNotificationMessages extends RemoteMithraNotificationTestCase
         // We sneakily insert a 'magic value' row into the database using JDBC without Mithra's knowledge.
         // The test can assert the existence of this new row in the client cache to verify the cache really did reload this key from database.
 
-        // This is necessary because the client is using Mithra remote service (3 tier) architecture - backed by the slave VM cache.
-        // The slave VM cache is the same place where we perform Mithra updates to generate the notifications for the test.
-        // So when the client processes the notification, the slave VM cache by definition already has the updated Mithra objects in its cache.
+        // This is necessary because the client is using Mithra remote service (3 tier) architecture - backed by the worker VM cache.
+        // The worker VM cache is the same place where we perform Mithra updates to generate the notifications for the test.
+        // So when the client processes the notification, the worker VM cache by definition already has the updated Mithra objects in its cache.
         // That makes it an unrealistic test for most 2 tier scenarios. True, the client's own cache does not have the update, but we have
         // no way of knowing if the client has just reloaded the data that is already in the remote cache or if it has actually bypassed
         // the remote cache to re-query the database.
 
         // This magic value is not representative of a real world scenario but at least allows us to prove that the database refresh happens.
-        // The alternative would be to have the client connect to the same H2 database instance as the slave VM. That would be tricky to set up.
+        // The alternative would be to have the client connect to the same H2 database instance as the worker VM. That would be tricky to set up.
 
         Calendar cal = GregorianCalendar.getInstance();
         cal.setTime(VERY_OLD_BUSINESS_DATE_FOR_SQL_INSERT);

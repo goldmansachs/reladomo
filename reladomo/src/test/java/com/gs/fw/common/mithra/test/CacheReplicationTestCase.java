@@ -143,7 +143,7 @@ public class CacheReplicationTestCase extends MultiVmTestCase
         MithraManagerProvider.getMithraManager().cleanUpRuntimeCacheControllers();
     }
 
-    public void slaveVmOnStartup()
+    public void workerVmOnStartup()
     {
         setupPspMithraService();
     }
@@ -171,7 +171,7 @@ public class CacheReplicationTestCase extends MultiVmTestCase
         }
     }
 
-    public void slaveVmSetUp() // oddly, this is the master cache. "slave" here refers to the Junit spawned second JVM.
+    public void workerVmSetUp() // oddly, this is the master cache. "worker" here refers to the Junit spawned second JVM.
     {
         String xmlFile = System.getProperty("mithra.xml.config");
 
@@ -211,7 +211,7 @@ public class CacheReplicationTestCase extends MultiVmTestCase
         return null;
     }
 
-    public void slaveVmTearDown()
+    public void workerVmTearDown()
     {
         mithraTestResource.tearDown();
     }
@@ -246,38 +246,38 @@ public class CacheReplicationTestCase extends MultiVmTestCase
         // pause
         masterCacheUplink.pause();
         // load 101K objects
-        this.getRemoteSlaveVm().executeMethod("serverTestInsertLargeSalvo");
+        this.getRemoteWorkerVm().executeMethod("serverTestInsertLargeSalvo");
         // unpause, wait for sync
 
         unpauseAndWaitForSync(masterCacheUplink);
         checkInitialOrders();
 
         masterCacheUplink.pause();
-        this.getRemoteSlaveVm().executeMethod("serverTestUpdate");
+        this.getRemoteWorkerVm().executeMethod("serverTestUpdate");
         unpauseAndWaitForSync(masterCacheUplink);
         checkUpdates();
 
         masterCacheUplink.pause();
-        this.getRemoteSlaveVm().executeMethod("serverTestUpdateInsert");
+        this.getRemoteWorkerVm().executeMethod("serverTestUpdateInsert");
         unpauseAndWaitForSync(masterCacheUplink);
         checkUpdatesAndInserts();
 
         masterCacheUplink.pause();
-        this.getRemoteSlaveVm().executeMethod("serverTestDelete");
+        this.getRemoteWorkerVm().executeMethod("serverTestDelete");
         unpauseAndWaitForSync(masterCacheUplink);
         checkDeletes();
 
         masterCacheUplink.pause();
-        this.getRemoteSlaveVm().executeMethod("serverTestDeleteInsert");
+        this.getRemoteWorkerVm().executeMethod("serverTestDeleteInsert");
         unpauseAndWaitForSync(masterCacheUplink);
         checkDeletesAndInserts();
 
         masterCacheUplink.pause();
-        this.getRemoteSlaveVm().executeMethod("serverTestInsertInPlace");
+        this.getRemoteWorkerVm().executeMethod("serverTestInsertInPlace");
         unpauseAndWaitForSync(masterCacheUplink);
         checkInPlaceInserts();
 
-        this.getRemoteSlaveVm().executeMethod("serverDoLotsOfSlowUpdates");
+        this.getRemoteWorkerVm().executeMethod("serverDoLotsOfSlowUpdates");
         waitForSync(masterCacheUplink);
 
         checkLotsOfSlowUpdates();
@@ -285,10 +285,10 @@ public class CacheReplicationTestCase extends MultiVmTestCase
         {
             // Test to confirm correct handling of case where the buffer contains empty pages at the end
             masterCacheUplink.pause();
-            this.getRemoteSlaveVm().executeMethod("serverMakeNewEmptyPages");
+            this.getRemoteWorkerVm().executeMethod("serverMakeNewEmptyPages");
             unpauseAndWaitForSync(masterCacheUplink);
 
-            this.getRemoteSlaveVm().executeMethod("serverCreateObjectsInNewPages");
+            this.getRemoteWorkerVm().executeMethod("serverCreateObjectsInNewPages");
             waitForSync(masterCacheUplink);
 
             checkResultOfNewPagesTestOnReplicaSide();
@@ -308,7 +308,7 @@ public class CacheReplicationTestCase extends MultiVmTestCase
 
     private void reconcilePageVersionListForSingleClass(Class finderClass) throws Exception
     {
-        List<Long> masterPageVersionList = (List<Long>)this.getRemoteSlaveVm().executeMethod("getPageVersionList", new Class[] { Class.class }, new Object[] { finderClass });
+        List<Long> masterPageVersionList = (List<Long>)this.getRemoteWorkerVm().executeMethod("getPageVersionList", new Class[] { Class.class }, new Object[] { finderClass });
         List<Long> replicaPageVersionList = this.getPageVersionList(finderClass);
 
         Long[] masterPagesAsArray = masterPageVersionList.toArray(new Long[]{});

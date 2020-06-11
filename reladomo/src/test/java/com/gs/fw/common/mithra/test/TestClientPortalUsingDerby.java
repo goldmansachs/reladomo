@@ -54,7 +54,7 @@ public class TestClientPortalUsingDerby  extends RemoteMithraServerTestCase
         super.tearDown();
     }
 
-    public void slaveVmSetUp()
+    public void workerVmSetUp()
     {
         MithraTestAbstract.setDerby(true);
         String xmlFile = System.getProperty("mithra.xml.config");
@@ -85,7 +85,7 @@ public class TestClientPortalUsingDerby  extends RemoteMithraServerTestCase
         }
     }
 
-    public void slaveVmTearDown()
+    public void workerVmTearDown()
     {
         MithraTestAbstract.setDerby(false);
         mithraTestResource.tearDown();

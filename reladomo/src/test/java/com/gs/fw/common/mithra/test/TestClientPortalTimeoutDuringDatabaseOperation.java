@@ -61,10 +61,10 @@ public class TestClientPortalTimeoutDuringDatabaseOperation extends RemoteMithra
     }
 
     @Override
-    public void slaveVmSetUp()
+    public void workerVmSetUp()
     {
         MithraManagerProvider.getMithraManager().setTransactionTimeout(TRANSACTION_TIMEOUT_SECONDS);
-        super.slaveVmSetUp();
+        super.workerVmSetUp();
     }
 
     @Override
@@ -82,7 +82,7 @@ public class TestClientPortalTimeoutDuringDatabaseOperation extends RemoteMithra
 
     public void setDatabaseLockTimeout(int timeout)
     {
-        this.getRemoteSlaveVm().executeMethod("serverSetTimeout", new Class[]{int.class}, new Object[]{new Integer(timeout)});
+        this.getRemoteWorkerVm().executeMethod("serverSetTimeout", new Class[]{int.class}, new Object[]{new Integer(timeout)});
     }
 
     public void serverSetTimeout(int timeout) throws SQLException
@@ -163,9 +163,9 @@ public class TestClientPortalTimeoutDuringDatabaseOperation extends RemoteMithra
         waitToEnsureLockReleaseHasCompleted(); // should already be done by now but make sure
 
         this.setDatabaseLockTimeout(0); // use zero lock timeout to detect any remaining database locks as any statement which gets blocked will fail
-        this.getRemoteSlaveVm().executeMethod("serverTestOrderInsertRollbackInCache");
-        this.getRemoteSlaveVm().executeMethod("serverTestOrderInsertRollbackInDatabase");
-        this.getRemoteSlaveVm().executeMethod("serverTestForLocksOfAnyKindOnOrderTable");
+        this.getRemoteWorkerVm().executeMethod("serverTestOrderInsertRollbackInCache");
+        this.getRemoteWorkerVm().executeMethod("serverTestOrderInsertRollbackInDatabase");
+        this.getRemoteWorkerVm().executeMethod("serverTestForLocksOfAnyKindOnOrderTable");
     }
 
     private void assertExceptionIsCausedByTimeout(MithraDatabaseException e)
@@ -203,7 +203,7 @@ public class TestClientPortalTimeoutDuringDatabaseOperation extends RemoteMithra
         waitToEnsureLockReleaseHasCompleted(); // should already be done by now but make sure
 
         this.setDatabaseLockTimeout(0); // use zero lock timeout to detect any remaining database locks as any statement which gets blocked will fail
-        this.getRemoteSlaveVm().executeMethod("serverTestForLocksOfAnyKindOnOrderTable");
+        this.getRemoteWorkerVm().executeMethod("serverTestForLocksOfAnyKindOnOrderTable");
     }
 
     // In this test the first insert has a chance to define a ClientTransactionContext under normal conditions.
@@ -249,12 +249,12 @@ public class TestClientPortalTimeoutDuringDatabaseOperation extends RemoteMithra
         waitToEnsureLockReleaseHasCompleted(); // should already be done by now but make sure
 
         this.setDatabaseLockTimeout(0); // use zero lock timeout to detect any remaining database locks as any statement which gets blocked will fail
-        this.getRemoteSlaveVm().executeMethod("serverTestOrderItemInsertRollbackInCache");
-        this.getRemoteSlaveVm().executeMethod("serverTestOrderItemInsertRollbackInDatabase");
-        this.getRemoteSlaveVm().executeMethod("serverTestOrderInsertRollbackInCache");
-        this.getRemoteSlaveVm().executeMethod("serverTestOrderInsertRollbackInDatabase");
-        this.getRemoteSlaveVm().executeMethod("serverTestForLocksOfAnyKindOnOrderTable");
-        this.getRemoteSlaveVm().executeMethod("serverTestForLocksOfAnyKindOnOrderItemTable");
+        this.getRemoteWorkerVm().executeMethod("serverTestOrderItemInsertRollbackInCache");
+        this.getRemoteWorkerVm().executeMethod("serverTestOrderItemInsertRollbackInDatabase");
+        this.getRemoteWorkerVm().executeMethod("serverTestOrderInsertRollbackInCache");
+        this.getRemoteWorkerVm().executeMethod("serverTestOrderInsertRollbackInDatabase");
+        this.getRemoteWorkerVm().executeMethod("serverTestForLocksOfAnyKindOnOrderTable");
+        this.getRemoteWorkerVm().executeMethod("serverTestForLocksOfAnyKindOnOrderItemTable");
     }
 
     // In this test the first select has a chance to define a ClientTransactionContext under normal conditions.
@@ -297,13 +297,13 @@ public class TestClientPortalTimeoutDuringDatabaseOperation extends RemoteMithra
         waitToEnsureLockReleaseHasCompleted(); // should already be done by now but make sure
 
         this.setDatabaseLockTimeout(0); // use zero lock timeout to detect any remaining database locks as any statement which gets blocked will fail
-        this.getRemoteSlaveVm().executeMethod("serverTestForLocksOfAnyKindOnOrderTable");
-        this.getRemoteSlaveVm().executeMethod("serverTestForLocksOfAnyKindOnOrderItemTable");
+        this.getRemoteWorkerVm().executeMethod("serverTestForLocksOfAnyKindOnOrderTable");
+        this.getRemoteWorkerVm().executeMethod("serverTestForLocksOfAnyKindOnOrderItemTable");
     }
 
     private void holdTableLockLongEnoughToExceedTxTimeoutAndReleaseConcurrently()
     {
-        TestClientPortalTimeoutDuringDatabaseOperation.this.getRemoteSlaveVm().executeMethod("serverTakeLockOnOrder");
+        TestClientPortalTimeoutDuringDatabaseOperation.this.getRemoteWorkerVm().executeMethod("serverTakeLockOnOrder");
         releaseLockAtFuturePointInTime(TRANSACTION_TIMEOUT_SECONDS + 1); // wait just long enough to exceed Mithra tx timeout
     }
 
@@ -330,7 +330,7 @@ public class TestClientPortalTimeoutDuringDatabaseOperation extends RemoteMithra
                     }
 
                     logger.warn("Releasing lock on database table");
-                    TestClientPortalTimeoutDuringDatabaseOperation.this.getRemoteSlaveVm().executeMethod("serverReleaseLockOnOrder");
+                    TestClientPortalTimeoutDuringDatabaseOperation.this.getRemoteWorkerVm().executeMethod("serverReleaseLockOnOrder");
                 }
             });
         this.lockReleaserThread.start();

@@ -21,28 +21,28 @@ package com.gs.fw.common.mithra.test.multivm;
 public class TestMultiVmTestCase extends MultiVmTestCase
 {
 
-    private boolean slaveVmOnStartupCalled = false;
-    private boolean slaveVmSetUpCalled = false;
+    private boolean workerVmOnStartupCalled = false;
+    private boolean workerVmSetUpCalled = false;
 
-    public void slaveVmOnStartup()
+    public void workerVmOnStartup()
     {
-        this.slaveVmOnStartupCalled = true;
+        this.workerVmOnStartupCalled = true;
     }
 
-    public void slaveVmSetUp()
+    public void workerVmSetUp()
     {
-        this.slaveVmSetUpCalled = true;
+        this.workerVmSetUpCalled = true;
     }
 
-    public boolean slaveVmAllGood()
+    public boolean workerVmAllGood()
     {
-        return this.slaveVmOnStartupCalled && this.slaveVmSetUpCalled;
+        return this.workerVmOnStartupCalled && this.workerVmSetUpCalled;
     }
 
-    public void testTrivialSlaveVm()
+    public void testTrivialWorkerVm()
     {
-        assertNotNull(this.getRemoteSlaveVm());
-        Object result = this.getRemoteSlaveVm().executeMethod("slaveVmAllGood");
+        assertNotNull(this.getRemoteWorkerVm());
+        Object result = this.getRemoteWorkerVm().executeMethod("workerVmAllGood");
         if (result instanceof Boolean)
         {
             assertTrue(((Boolean)result).booleanValue());

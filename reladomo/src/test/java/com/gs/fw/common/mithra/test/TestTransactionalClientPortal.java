@@ -199,9 +199,9 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
         TimeZone.setDefault(TIME_ZONE);
     }
 
-    public void slaveVmSetUp()
+    public void workerVmSetUp()
     {
-        super.slaveVmSetUp();
+        super.workerVmSetUp();
         setInitialTime();
     }
 
@@ -441,13 +441,13 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
         IntIterator it = deletedIds.intIterator();
         while(it.hasNext())
         {
-            this.getRemoteSlaveVm().executeMethod("serverCheckOrderDoesNotExist", new Class[] { int.class} , new Object[] { new Integer(it.next())});
+            this.getRemoteWorkerVm().executeMethod("serverCheckOrderDoesNotExist", new Class[] { int.class} , new Object[] { new Integer(it.next())});
         }
     }
 
     public void setDatabaseLockTimeout(int timeout)
     {
-        this.getRemoteSlaveVm().executeMethod("serverSetTimeout", new Class[] { int.class} , new Object[] { new Integer(timeout)});
+        this.getRemoteWorkerVm().executeMethod("serverSetTimeout", new Class[] { int.class} , new Object[] { new Integer(timeout)});
     }
 
     public void serverSetTimeout(int timeout) throws SQLException
@@ -479,7 +479,7 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
 
     public void testDeleteAllInBatches()
     {
-        this.getRemoteSlaveVm().executeMethod("serverInsertOrderTestData", new Class[]{int.class, int.class}, new Object[]{Integer.valueOf(5000), Integer.valueOf(1000)});
+        this.getRemoteWorkerVm().executeMethod("serverInsertOrderTestData", new Class[]{int.class, int.class}, new Object[]{Integer.valueOf(5000), Integer.valueOf(1000)});
         OrderList firstList = new OrderList(OrderFinder.userId().eq(999));
         firstList.deleteAllInBatches(500);
         OrderList secondList = new OrderList(OrderFinder.userId().eq(999));
@@ -617,8 +617,8 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
             assertEquals(1000+i, order.getUserId());
         }
 
-        this.getRemoteSlaveVm().executeMethod("serverTestBatchUpdateInCache");
-        this.getRemoteSlaveVm().executeMethod("serverTestBatchUpdateInDatabase");
+        this.getRemoteWorkerVm().executeMethod("serverTestBatchUpdateInCache");
+        this.getRemoteWorkerVm().executeMethod("serverTestBatchUpdateInDatabase");
     }
 
     public void serverTestBatchUpdateInCache()
@@ -668,8 +668,8 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
         list2 = new OrderList(OrderFinder.userId().eq(1));
         assertEquals(0, list2.size());
 
-        this.getRemoteSlaveVm().executeMethod("serverTestBatchDeleteInCache");
-        this.getRemoteSlaveVm().executeMethod("serverTestBatchDeleteInDatabase");
+        this.getRemoteWorkerVm().executeMethod("serverTestBatchDeleteInCache");
+        this.getRemoteWorkerVm().executeMethod("serverTestBatchDeleteInDatabase");
     }
 
     public void serverTestBatchDeleteInCache()
@@ -720,8 +720,8 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
         {
             // ok
         }
-        this.getRemoteSlaveVm().executeMethod("serverTestBatchInsertWithDatabaseRollbackInCache");
-        this.getRemoteSlaveVm().executeMethod("serverTestBatchInsertWithDatabaseRollbackInDatabase");
+        this.getRemoteWorkerVm().executeMethod("serverTestBatchInsertWithDatabaseRollbackInCache");
+        this.getRemoteWorkerVm().executeMethod("serverTestBatchInsertWithDatabaseRollbackInDatabase");
     }
 
     public void serverTestBatchInsertWithDatabaseRollbackInCache()
@@ -749,8 +749,8 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
         order.delete();
         assertNull(OrderFinder.findOne(OrderFinder.orderId().eq(1)));
 
-        this.getRemoteSlaveVm().executeMethod("serverTestDeleteInCache");
-        this.getRemoteSlaveVm().executeMethod("serverTestDeleteInDatabase");
+        this.getRemoteWorkerVm().executeMethod("serverTestDeleteInCache");
+        this.getRemoteWorkerVm().executeMethod("serverTestDeleteInDatabase");
     }
 
     public void testDeleteInTransaction()
@@ -762,8 +762,8 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
         assertNull(OrderFinder.findOne(OrderFinder.orderId().eq(1)));
         tx.commit();
 
-        this.getRemoteSlaveVm().executeMethod("serverTestDeleteInCache");
-        this.getRemoteSlaveVm().executeMethod("serverTestDeleteInDatabase");
+        this.getRemoteWorkerVm().executeMethod("serverTestDeleteInCache");
+        this.getRemoteWorkerVm().executeMethod("serverTestDeleteInDatabase");
     }
 
     public void serverTestDeleteInCache()
@@ -802,9 +802,9 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
         }
         tx.commit();
 
-        this.getRemoteSlaveVm().executeMethod("serverTestBatchInsertInCache");
+        this.getRemoteWorkerVm().executeMethod("serverTestBatchInsertInCache");
 
-        this.getRemoteSlaveVm().executeMethod("serverTestBatchInsertInDatabase");
+        this.getRemoteWorkerVm().executeMethod("serverTestBatchInsertInDatabase");
     }
 
     public void testQueryInsideTransaction() throws SQLException
@@ -856,7 +856,7 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
     {
         Order order = OrderFinder.findOne(OrderFinder.orderId().eq(1));
         assertNotNull(order);
-        this.getRemoteSlaveVm().executeMethod("serverTestRefreshUpdateUserId");
+        this.getRemoteWorkerVm().executeMethod("serverTestRefreshUpdateUserId");
         MithraTransaction tx = MithraManagerProvider.getMithraManager().startOrContinueTransaction();
         assertEquals(1111, order.getUserId());
         tx.commit();
@@ -881,8 +881,8 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
         int newValue = oldValue+10000;
         order.setUserId(newValue);
         assertEquals(order.getUserId(), newValue);
-        assertEquals(newValue, ((Integer)this.getRemoteSlaveVm().executeMethod("serverTestUpdateOneRowDatabase")).intValue());
-        assertEquals(newValue, ((Integer)this.getRemoteSlaveVm().executeMethod("serverTestUpdateOneRowCache")).intValue());
+        assertEquals(newValue, ((Integer)this.getRemoteWorkerVm().executeMethod("serverTestUpdateOneRowDatabase")).intValue());
+        assertEquals(newValue, ((Integer)this.getRemoteWorkerVm().executeMethod("serverTestUpdateOneRowCache")).intValue());
 
         OrderList list = new OrderList(OrderFinder.userId().eq(oldValue));
         assertEquals(oldSize, list.size()+1);
@@ -932,11 +932,11 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
         assertEquals(order.getUserId(), newValue);
         assertEquals(order.getDescription(), description);
 
-        assertEquals(newValue, ((Integer)this.getRemoteSlaveVm().executeMethod("serverTestUpdateOneRowDatabase")).intValue());
-        assertEquals(newValue, ((Integer)this.getRemoteSlaveVm().executeMethod("serverTestUpdateOneRowCache")).intValue());
+        assertEquals(newValue, ((Integer)this.getRemoteWorkerVm().executeMethod("serverTestUpdateOneRowDatabase")).intValue());
+        assertEquals(newValue, ((Integer)this.getRemoteWorkerVm().executeMethod("serverTestUpdateOneRowCache")).intValue());
 
-        assertEquals(description, this.getRemoteSlaveVm().executeMethod("serverTestMultipleSetDatabase"));
-        assertEquals(description, this.getRemoteSlaveVm().executeMethod("serverTestMultipleSetCache"));
+        assertEquals(description, this.getRemoteWorkerVm().executeMethod("serverTestMultipleSetDatabase"));
+        assertEquals(description, this.getRemoteWorkerVm().executeMethod("serverTestMultipleSetCache"));
 
     }
 
@@ -983,10 +983,10 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
         assertEquals(1, list.size());
         assertSame(order, list.getOrderAt(0));
 
-        String serverdesc = (String) this.getRemoteSlaveVm().executeMethod("serverTestInsert");
+        String serverdesc = (String) this.getRemoteWorkerVm().executeMethod("serverTestInsert");
         assertEquals("new order description", serverdesc);
 
-        this.getRemoteSlaveVm().executeMethod("serverTestInsertInDatabase");
+        this.getRemoteWorkerVm().executeMethod("serverTestInsertInDatabase");
     }
 
     public void testInsertInTransaction()
@@ -1012,10 +1012,10 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
         assertSame(order, list.getOrderAt(0));
         tx.commit();
 
-        String serverdesc = (String) this.getRemoteSlaveVm().executeMethod("serverTestInsert");
+        String serverdesc = (String) this.getRemoteWorkerVm().executeMethod("serverTestInsert");
         assertEquals("new order description", serverdesc);
 
-        this.getRemoteSlaveVm().executeMethod("serverTestInsertInDatabase");
+        this.getRemoteWorkerVm().executeMethod("serverTestInsertInDatabase");
     }
 
     public void testInsertRollback()
@@ -1292,10 +1292,10 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
         order = null;
         tx.commit();
 
-        String serverdesc = (String) this.getRemoteSlaveVm().executeMethod("serverTestInsert");
+        String serverdesc = (String) this.getRemoteWorkerVm().executeMethod("serverTestInsert");
         assertEquals("new order description", serverdesc);
 
-        this.getRemoteSlaveVm().executeMethod("serverTestInsertInDatabase");
+        this.getRemoteWorkerVm().executeMethod("serverTestInsertInDatabase");
     }
 
     public void serverTestInsertInDatabase() throws SQLException
@@ -1486,13 +1486,13 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
 
     public void checkDatedBitemporalTerminated(int balance) throws SQLException
     {
-        this.getRemoteSlaveVm().executeMethod("serverCheckBitemporalTerminated", new Class[] { int.class} , new Object[] { new Integer(balance) } );
+        this.getRemoteWorkerVm().executeMethod("serverCheckBitemporalTerminated", new Class[] { int.class} , new Object[] { new Integer(balance) } );
     }
 
     public void checkDatedBitemporalInfinityRow(int balanceId, double quantity, Timestamp businessDate) throws SQLException
     {
         businessDate = convertToServerTimeZone(businessDate);
-        this.getRemoteSlaveVm().executeMethod("serverCheckBitemporalInfinityRow", new Class[] { int.class, double.class, Timestamp.class} ,
+        this.getRemoteWorkerVm().executeMethod("serverCheckBitemporalInfinityRow", new Class[] { int.class, double.class, Timestamp.class} ,
                 new Object[] { new Integer(balanceId), new Double(quantity), businessDate } );
     }
 
@@ -1500,13 +1500,13 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
     {
         businessDate = convertToServerTimeZone(businessDate);
         processingDate = convertToServerTimeZone(processingDate);
-        this.getRemoteSlaveVm().executeMethod("serverCheckDatedBitemporalTimestampRow", new Class[] { int.class, double.class, Timestamp.class, Timestamp.class } ,
+        this.getRemoteWorkerVm().executeMethod("serverCheckDatedBitemporalTimestampRow", new Class[] { int.class, double.class, Timestamp.class, Timestamp.class } ,
                 new Object[] { new Integer(balanceId), new Double(quantity), businessDate, processingDate });
     }
 
     public int checkDatedBitemporalRowCounts(int balanceId) throws SQLException
     {
-        return ((Integer) this.getRemoteSlaveVm().executeMethod("serverCheckDatedBitemporalRowCounts", new Class[] { int.class } ,
+        return ((Integer) this.getRemoteWorkerVm().executeMethod("serverCheckDatedBitemporalRowCounts", new Class[] { int.class } ,
                 new Object[] { new Integer(balanceId) } )).intValue();
     }
 
@@ -1672,39 +1672,39 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
 
     public void checkDatedAuditOnlyTerminated(int balance) throws SQLException
     {
-        this.getRemoteSlaveVm().executeMethod("serverCheckDatedAuditOnlyTerminated", new Class[] { int.class} , new Object[] { new Integer(balance) } );
+        this.getRemoteWorkerVm().executeMethod("serverCheckDatedAuditOnlyTerminated", new Class[] { int.class} , new Object[] { new Integer(balance) } );
     }
 
     public void checkDatedAuditOnlyInfinityRow(int balanceId, double quantity, double interest) throws SQLException
     {
-        this.getRemoteSlaveVm().executeMethod("serverCheckDatedAuditOnlyInfinityRow", new Class[] { int.class, double.class, double.class } ,
+        this.getRemoteWorkerVm().executeMethod("serverCheckDatedAuditOnlyInfinityRow", new Class[] { int.class, double.class, double.class } ,
                 new Object[] { new Integer(balanceId), new Double(quantity), new Double(interest) } );
     }
 
     public void checkDatedAuditOnlyTimestampRow(int balanceId, double quantity, double interest, Timestamp processingDate) throws SQLException
     {
         processingDate = convertToServerTimeZone(processingDate);
-        this.getRemoteSlaveVm().executeMethod("serverCheckDatedAuditOnlyTimestampRow", new Class[] { int.class, double.class, double.class, Timestamp.class } ,
+        this.getRemoteWorkerVm().executeMethod("serverCheckDatedAuditOnlyTimestampRow", new Class[] { int.class, double.class, double.class, Timestamp.class } ,
                 new Object[] { new Integer(balanceId), new Double(quantity), new Double(interest), processingDate} );
     }
 
     public int checkDatedAuditOnlyRowCounts(int balanceId) throws SQLException
     {
-        return ((Integer)this.getRemoteSlaveVm().executeMethod("serverCheckDatedAuditOnlyRowCounts", new Class[] { int.class} ,
+        return ((Integer)this.getRemoteWorkerVm().executeMethod("serverCheckDatedAuditOnlyRowCounts", new Class[] { int.class} ,
                 new Object[] { new Integer(balanceId) } )).intValue();
     }
 
     public void updateDatedAuditOnlyTimestamp(int balanceId, Timestamp timestamp) throws SQLException
     {
         timestamp = convertToServerTimeZone(timestamp);
-        this.getRemoteSlaveVm().executeMethod("serverUpdateDatedAuditOnlyTimestamp", new Class[] { int.class, Timestamp.class } ,
+        this.getRemoteWorkerVm().executeMethod("serverUpdateDatedAuditOnlyTimestamp", new Class[] { int.class, Timestamp.class } ,
                 new Object[] { new Integer(balanceId), timestamp } );
     }
 
     public void insertDatedAuditOnly(int balanceId, double quantity, double interest, Timestamp timestamp) throws SQLException
     {
         timestamp = convertToServerTimeZone(timestamp);
-        this.getRemoteSlaveVm().executeMethod("serverInsertDatedAuditOnly", new Class[] { int.class, double.class, double.class, Timestamp.class } ,
+        this.getRemoteWorkerVm().executeMethod("serverInsertDatedAuditOnly", new Class[] { int.class, double.class, double.class, Timestamp.class } ,
                 new Object[] { new Integer(balanceId), new Double(quantity), new Double(interest), timestamp } );
     }
 
@@ -1809,19 +1809,19 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
 
     public void checkDatedNonAuditedTerminated(int balance) throws SQLException
     {
-        this.getRemoteSlaveVm().executeMethod("serverCheckNonAuditedTerminated", new Class[] { int.class} , new Object[] { new Integer(balance) } );
+        this.getRemoteWorkerVm().executeMethod("serverCheckNonAuditedTerminated", new Class[] { int.class} , new Object[] { new Integer(balance) } );
     }
 
     public void checkDatedNonAuditedInfinityRow(int balanceId, double quantity, Timestamp businessDate) throws SQLException
     {
         businessDate = convertToServerTimeZone(businessDate);
-        this.getRemoteSlaveVm().executeMethod("serverCheckNonAuditedInfinityRow", new Class[] { int.class, double.class, Timestamp.class} ,
+        this.getRemoteWorkerVm().executeMethod("serverCheckNonAuditedInfinityRow", new Class[] { int.class, double.class, Timestamp.class} ,
                 new Object[] { new Integer(balanceId), new Double(quantity), businessDate } );
     }
 
     public int checkDatedNonAuditedRowCounts(int balanceId) throws SQLException
     {
-        return ((Integer)this.getRemoteSlaveVm().executeMethod("serverCheckNonAuditedRowCounts", new Class[] { int.class} ,
+        return ((Integer)this.getRemoteWorkerVm().executeMethod("serverCheckNonAuditedRowCounts", new Class[] { int.class} ,
                 new Object[] { new Integer(balanceId) } )).intValue();
     }
 
@@ -3081,7 +3081,7 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
     public void testServerSideTermination() throws Exception
     {
         final TinyBalance tb = findTinyBalanceForBusinessDate(1, new Timestamp(timestampFormat.parse("2005-01-20 00:00:00").getTime()));
-        this.getRemoteSlaveVm().executeMethod("serverTerminateTinyBalance", new Class[] {} , null);
+        this.getRemoteWorkerVm().executeMethod("serverTerminateTinyBalance", new Class[] {} , null);
         try
         {
             MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand()
@@ -3103,7 +3103,7 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
     public void testServerSideTerminationWithOptimisticLocking() throws Exception
     {
         final TinyBalance tb = findTinyBalanceForBusinessDate(1, new Timestamp(timestampFormat.parse("2005-01-20 00:00:00").getTime()));
-        this.getRemoteSlaveVm().executeMethod("serverTerminateTinyBalance", new Class[] {} , null);
+        this.getRemoteWorkerVm().executeMethod("serverTerminateTinyBalance", new Class[] {} , null);
         try
         {
             MithraManagerProvider.getMithraManager().executeTransactionalCommand(new TransactionalCommand()
@@ -3133,7 +3133,7 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
     {
         PureOrder order = PureOrderFinder.findOne(PureOrderFinder.orderId().eq(1));
         assertNotNull(order);
-        this.getRemoteSlaveVm().executeMethod("serverModifyPureOrder");
+        this.getRemoteWorkerVm().executeMethod("serverModifyPureOrder");
         order = PureOrderFinder.findOneBypassCache(PureOrderFinder.orderId().eq(1));
         assertNotNull(order);
         assertEquals("foo", order.getDescription());
@@ -3143,7 +3143,7 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
     {
         PureOrder order = PureOrderFinder.findOne(PureOrderFinder.orderId().eq(1));
         assertNotNull(order);
-        this.getRemoteSlaveVm().executeMethod("serverModifyPureOrder");
+        this.getRemoteWorkerVm().executeMethod("serverModifyPureOrder");
 
         MithraTransaction tx = MithraManager.getInstance().startOrContinueTransaction();
         order = PureOrderFinder.findOne(PureOrderFinder.orderId().eq(1));
@@ -3420,19 +3420,19 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
 
         public void checkDatedNonAuditedTerminated(int balance) throws SQLException
         {
-            portal.getRemoteSlaveVm().executeMethod("serverCheckNonAuditedTerminatedNull", new Class[] { int.class} , new Object[] { new Integer(balance) } );
+            portal.getRemoteWorkerVm().executeMethod("serverCheckNonAuditedTerminatedNull", new Class[] { int.class} , new Object[] { new Integer(balance) } );
         }
 
         public void checkDatedNonAuditedInfinityRow(int balanceId, double quantity, Timestamp businessDate) throws SQLException
         {
             businessDate = convertToServerTimeZone(businessDate);
-            portal.getRemoteSlaveVm().executeMethod("serverCheckNonAuditedInfinityRowNull", new Class[] { int.class, double.class, Timestamp.class} ,
+            portal.getRemoteWorkerVm().executeMethod("serverCheckNonAuditedInfinityRowNull", new Class[] { int.class, double.class, Timestamp.class} ,
                     new Object[] { new Integer(balanceId), new Double(quantity), businessDate } );
         }
 
         public int checkDatedNonAuditedRowCounts(int balanceId) throws SQLException
         {
-            return ((Integer)portal.getRemoteSlaveVm().executeMethod("serverCheckNonAuditedRowCountsNull", new Class[] { int.class} ,
+            return ((Integer)portal.getRemoteWorkerVm().executeMethod("serverCheckNonAuditedRowCountsNull", new Class[] { int.class} ,
                     new Object[] { new Integer(balanceId) } )).intValue();
         }
     }
@@ -3448,13 +3448,13 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
 
         public void checkDatedBitemporalTerminated(int balance) throws SQLException
         {
-            portal.getRemoteSlaveVm().executeMethod("serverCheckBitemporalTerminatedNull", new Class[] { int.class} , new Object[] { new Integer(balance) } );
+            portal.getRemoteWorkerVm().executeMethod("serverCheckBitemporalTerminatedNull", new Class[] { int.class} , new Object[] { new Integer(balance) } );
         }
 
         public void checkDatedBitemporalInfinityRow(int balanceId, double quantity, Timestamp businessDate) throws SQLException
         {
             businessDate = convertToServerTimeZone(businessDate);
-            portal.getRemoteSlaveVm().executeMethod("serverCheckBitemporalInfinityRowNull", new Class[] { int.class, double.class, Timestamp.class} ,
+            portal.getRemoteWorkerVm().executeMethod("serverCheckBitemporalInfinityRowNull", new Class[] { int.class, double.class, Timestamp.class} ,
                     new Object[] { new Integer(balanceId), new Double(quantity), businessDate } );
         }
 
@@ -3462,13 +3462,13 @@ public class TestTransactionalClientPortal extends RemoteMithraServerTestCase
         {
             businessDate = convertToServerTimeZone(businessDate);
             processingDate = convertToServerTimeZone(processingDate);
-            portal.getRemoteSlaveVm().executeMethod("serverCheckDatedBitemporalTimestampRowNull", new Class[] { int.class, double.class, Timestamp.class, Timestamp.class } ,
+            portal.getRemoteWorkerVm().executeMethod("serverCheckDatedBitemporalTimestampRowNull", new Class[] { int.class, double.class, Timestamp.class, Timestamp.class } ,
                     new Object[] { new Integer(balanceId), new Double(quantity), businessDate, processingDate });
         }
 
         public int checkDatedBitemporalRowCounts(int balanceId) throws SQLException
         {
-            return ((Integer) portal.getRemoteSlaveVm().executeMethod("serverCheckDatedBitemporalRowCountsNull", new Class[] { int.class } ,
+            return ((Integer) portal.getRemoteWorkerVm().executeMethod("serverCheckDatedBitemporalRowCountsNull", new Class[] { int.class } ,
                     new Object[] { new Integer(balanceId) } )).intValue();
         }
     }

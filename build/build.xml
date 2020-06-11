@@ -818,7 +818,7 @@
     <target name="reladomo-coverage-report" depends="-jacoco-init">
         <mkdir dir="${root}/reladomo/target/coverage/report"/>
         <jacoco:merge destfile="${root}/reladomo/target/coverage/mergedData.exec">
-            <fileset dir="${root}/reladomo/target/coverage" includes="*.exec, *.execslave"/>
+            <fileset dir="${root}/reladomo/target/coverage" includes="*.exec, *.execworker"/>
         </jacoco:merge>
         <jacoco:report>
             <!-- This task needs the collected execution data  -->

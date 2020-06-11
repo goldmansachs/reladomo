@@ -53,10 +53,10 @@ public class RemoteMithraNotificationTestCase extends RemoteMithraServerTestCase
         return new MithraNotificationEventManagerImpl(new ActiveMqMessagingAdapterFactory(this.getApplicationPort2()));
     }
 
-    public void slaveVmSetUp()
+    public void workerVmSetUp()
     {
         MithraManagerProvider.getMithraManager().setNotificationEventManager(createNotificationEventManager());
-        super.slaveVmSetUp();
+        super.workerVmSetUp();
     }
 
     public void tearDown()
@@ -68,12 +68,12 @@ public class RemoteMithraNotificationTestCase extends RemoteMithraServerTestCase
         super.tearDown();
     }
 
-    public void slaveVmTearDown()
+    public void workerVmTearDown()
     {
         MithraManagerProvider.getMithraManager().getNotificationEventManager().clearNotificationSubscribers();
         MithraManagerProvider.getMithraManager().getNotificationEventManager().shutdown();
         MithraManagerProvider.getMithraManager().setNotificationEventManager(new UninitializedNotificationEventManager());
-        super.slaveVmTearDown();
+        super.workerVmTearDown();
     }
 
 

@@ -20,9 +20,9 @@ package com.gs.fw.common.mithra.test.multivm;
 public interface MultiClientVmTest extends MultiVmTest
 {
 
-    public RemoteSlaveVm getRemoteClientVm();
+    public RemoteWorkerVm getRemoteClientVm();
 
-    public void setRemoteClientVm(RemoteSlaveVm remoteClientVm);
+    public void setRemoteClientVm(RemoteWorkerVm remoteClientVm);
 
     public void clientVmOnStartup();
 

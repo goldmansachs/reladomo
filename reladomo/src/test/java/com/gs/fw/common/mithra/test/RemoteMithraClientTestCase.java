@@ -21,21 +21,21 @@ import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.notification.UninitializedNotificationEventManager;
 import com.gs.fw.common.mithra.test.multivm.MultiClientVmTest;
-import com.gs.fw.common.mithra.test.multivm.RemoteSlaveVm;
+import com.gs.fw.common.mithra.test.multivm.RemoteWorkerVm;
 import com.gs.fw.common.mithra.test.util.MultiVmTestMithraRemoteServerFactory;
 
 
 public class RemoteMithraClientTestCase extends RemoteMithraNotificationTestCase implements MultiClientVmTest
 {
-    private RemoteSlaveVm remoteClientVm;
+    private RemoteWorkerVm remoteClientVm;
 
 
-    public RemoteSlaveVm getRemoteClientVm()
+    public RemoteWorkerVm getRemoteClientVm()
     {
         return remoteClientVm;
     }
 
-    public void setRemoteClientVm(RemoteSlaveVm remoteClientVm)
+    public void setRemoteClientVm(RemoteWorkerVm remoteClientVm)
     {
         this.remoteClientVm = remoteClientVm;
     }

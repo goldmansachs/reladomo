@@ -27,7 +27,7 @@ public class MultiVmTestCase extends TestCase implements MultiVmTest
 {
     private static  Logger logger = LoggerFactory.getLogger(MultiVmTestCase.class.getName());
 
-    private RemoteSlaveVm remoteSlaveVm;
+    private RemoteWorkerVm remoteWorkerVm;
     private int applicationPort1;
     private int applicationPort2;
 
@@ -43,27 +43,27 @@ public class MultiVmTestCase extends TestCase implements MultiVmTest
         super.run(result);
     }
 
-    public RemoteSlaveVm getRemoteSlaveVm()
+    public RemoteWorkerVm getRemoteWorkerVm()
     {
-        return remoteSlaveVm;
+        return remoteWorkerVm;
     }
 
-    public void setRemoteSlaveVm(RemoteSlaveVm remoteSlaveVm)
+    public void setRemoteWorkerVm(RemoteWorkerVm remoteWorkerVm)
     {
-        this.remoteSlaveVm = remoteSlaveVm;
+        this.remoteWorkerVm = remoteWorkerVm;
     }
 
-    public void slaveVmOnStartup()
-    {
-        // nothing to do. Subclass should override
-    }
-
-    public void slaveVmSetUp()
+    public void workerVmOnStartup()
     {
         // nothing to do. Subclass should override
     }
 
-    public void slaveVmTearDown()
+    public void workerVmSetUp()
+    {
+        // nothing to do. Subclass should override
+    }
+
+    public void workerVmTearDown()
     {
         // nothing to do. Subclass should override
     }

@@ -55,7 +55,7 @@ public class TestPeerToPeerMithraTestCase extends PeerToPeerMithraServerTestCase
         Operation op = OrderFinder.orderId().eq(orderId);
         Order order0 = OrderFinder.findOne(op);
         assertNull(order0);
-        this.getRemoteSlaveVm().executeMethod("peerInsertOrder", new Class[]{int.class}, new Object[]{new Integer(orderId)});
+        this.getRemoteWorkerVm().executeMethod("peerInsertOrder", new Class[]{int.class}, new Object[]{new Integer(orderId)});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
         Order order1 = OrderFinder.findOne(op);
         assertNotNull(order1);
@@ -68,12 +68,12 @@ public class TestPeerToPeerMithraTestCase extends PeerToPeerMithraServerTestCase
         Operation op = OrderFinder.orderId().greaterThanEquals(990000);
         OrderList list0 = new OrderList(op);
         assertEquals(0, list0.size());
-        this.getRemoteSlaveVm().executeMethod("peerInsertOrderList", new Class[]{int.class, int.class}, new Object[]{new Integer(997000), new Integer(1500)});
+        this.getRemoteWorkerVm().executeMethod("peerInsertOrderList", new Class[]{int.class, int.class}, new Object[]{new Integer(997000), new Integer(1500)});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
         OrderList list1 = new OrderList(op);
         assertEquals(1500, list1.size());
         updateClassCount = OrderFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("peerInsertOrderList", new Class[]{int.class, int.class}, new Object[]{new Integer(998500), new Integer(1500)});
+        this.getRemoteWorkerVm().executeMethod("peerInsertOrderList", new Class[]{int.class, int.class}, new Object[]{new Integer(998500), new Integer(1500)});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
         OrderList list2 = new OrderList(op);
         assertEquals(3000, list2.size());
@@ -91,7 +91,7 @@ public class TestPeerToPeerMithraTestCase extends PeerToPeerMithraServerTestCase
 
         ExchangeRateList list0 = new ExchangeRateList(op);
         assertEquals(0, list0.size());
-        this.getRemoteSlaveVm().executeMethod("peerInsertExchangeRate", new Class[]{String.class, String.class, int.class, Timestamp.class, double.class}, new Object[]{"A", "USD", new Integer(11), ts, new Double(1.40)});
+        this.getRemoteWorkerVm().executeMethod("peerInsertExchangeRate", new Class[]{String.class, String.class, int.class, Timestamp.class, double.class}, new Object[]{"A", "USD", new Integer(11), ts, new Double(1.40)});
         waitForMessages(updateClassCount, ExchangeRateFinder.getMithraObjectPortal());
 
         ExchangeRateList list1 = new ExchangeRateList(op);
@@ -111,7 +111,7 @@ public class TestPeerToPeerMithraTestCase extends PeerToPeerMithraServerTestCase
         ExchangeRate exchangeRate0 = ExchangeRateFinder.findOne(op);
         assertNotNull(exchangeRate0);
         assertEquals(1.0, exchangeRate0.getExchangeRate(), 0.0);
-        this.getRemoteSlaveVm().executeMethod("peerUpdateExchangeRate", new Class[]{String.class, String.class, int.class, Timestamp.class, double.class}, new Object[]{"A", "USD", new Integer(10), ts, new Double(1.40)});
+        this.getRemoteWorkerVm().executeMethod("peerUpdateExchangeRate", new Class[]{String.class, String.class, int.class, Timestamp.class, double.class}, new Object[]{"A", "USD", new Integer(10), ts, new Double(1.40)});
         waitForMessages(updateClassCount, ExchangeRateFinder.getMithraObjectPortal());
         ExchangeRate exchangeRate1 = ExchangeRateFinder.findOne(op);
         assertNotNull(exchangeRate1);
@@ -130,7 +130,7 @@ public class TestPeerToPeerMithraTestCase extends PeerToPeerMithraServerTestCase
 
         TinyBalanceList list = new TinyBalanceList(op);
         assertEquals(0, list.size());
-        this.getRemoteSlaveVm().executeMethod("peerInsertTinyBalanceList", new Class[]{String.class, int.class, int.class}, new Object[]{"A", new Integer(1001), new Integer(1250)});
+        this.getRemoteWorkerVm().executeMethod("peerInsertTinyBalanceList", new Class[]{String.class, int.class, int.class}, new Object[]{"A", new Integer(1001), new Integer(1250)});
         waitForMessages(updateClassCount, TinyBalanceFinder.getMithraObjectPortal());
 
         TinyBalanceList list1 = new TinyBalanceList(op);
@@ -153,7 +153,7 @@ public class TestPeerToPeerMithraTestCase extends PeerToPeerMithraServerTestCase
 
         TinyBalanceList list0 = new TinyBalanceList(op0);
         assertEquals(0, list0.size());
-        this.getRemoteSlaveVm().executeMethod("serverInsertNewTinyBalance", new Class[]{String.class, int.class, Timestamp.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate0});
+        this.getRemoteWorkerVm().executeMethod("serverInsertNewTinyBalance", new Class[]{String.class, int.class, Timestamp.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate0});
         waitForMessages(updateClassCount, TinyBalanceFinder.getMithraObjectPortal());
         TinyBalanceList list1 = new TinyBalanceList(op0);
         assertEquals(1, list1.size());
@@ -183,7 +183,7 @@ public class TestPeerToPeerMithraTestCase extends PeerToPeerMithraServerTestCase
         assertEquals(1234, balance0.getBalanceId());
         assertEquals(100.00, balance0.getQuantity(),0);
 
-        this.getRemoteSlaveVm().executeMethod("serverUpdateTinyBalance", new Class[]{String.class, int.class, Timestamp.class, double.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate0, new Double(150.00)});
+        this.getRemoteWorkerVm().executeMethod("serverUpdateTinyBalance", new Class[]{String.class, int.class, Timestamp.class, double.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate0, new Double(150.00)});
         waitForMessages(updateClassCount, TinyBalanceFinder.getMithraObjectPortal());
         TinyBalanceList list1 = new TinyBalanceList(op0);
         assertEquals(1, list1.size());
@@ -210,7 +210,7 @@ public class TestPeerToPeerMithraTestCase extends PeerToPeerMithraServerTestCase
         assertEquals(1234, balance0.getBalanceId());
         assertEquals(100.00, balance0.getQuantity(),0);
 
-        this.getRemoteSlaveVm().executeMethod("serverIncrementTinyBalance", new Class[]{String.class, int.class, Timestamp.class, double.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate0, new Double(150.00)});
+        this.getRemoteWorkerVm().executeMethod("serverIncrementTinyBalance", new Class[]{String.class, int.class, Timestamp.class, double.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate0, new Double(150.00)});
         waitForMessages(updateClassCount, TinyBalanceFinder.getMithraObjectPortal());
         TinyBalanceList list1 = new TinyBalanceList(op0);
         assertEquals(1, list1.size());
@@ -288,7 +288,7 @@ public class TestPeerToPeerMithraTestCase extends PeerToPeerMithraServerTestCase
 
         //Oooppsss We just found out a trade that was done on 12/10/2005 that increased the balance by 50
         Timestamp businessDate3 = new Timestamp(timestampFormat.parse("2005-12-10 18:30:00.0").getTime());
-        this.getRemoteSlaveVm().executeMethod("serverIncrementTinyBalance", new Class[]{String.class, int.class, Timestamp.class, double.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate3, new Double(50)});
+        this.getRemoteWorkerVm().executeMethod("serverIncrementTinyBalance", new Class[]{String.class, int.class, Timestamp.class, double.class}, new Object[]{sourceAttribute, new Integer(balanceId), businessDate3, new Double(50)});
         waitForMessages(updateClassCount, TinyBalanceFinder.getMithraObjectPortal());
 
         //Get the balance on 12/05/2005 for balance 1234
