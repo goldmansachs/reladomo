@@ -34,9 +34,9 @@ import org.slf4j.LoggerFactory;
 
 
 
-public class SlaveVm
+public class WorkerVm
 {
-    private static  Logger logger = LoggerFactory.getLogger(SlaveVm.class.getName());
+    private static  Logger logger = LoggerFactory.getLogger(WorkerVm.class.getName());
 
     protected static final String JAVA_HOME = System.getProperty("java.home");
     protected static final String SYSTEM_CLASSPATH = System.getProperty("java.class.path");
@@ -52,9 +52,9 @@ public class SlaveVm
     private int appPort2;
     private StreamFlusher outFlusher;
     private StreamFlusher errFlusher;
-    private OutputStream slaveVmInput;
-    private SlaveVmPinger slavePinger;
-    private RemoteSlaveVm remoteSlaveVm;
+    private OutputStream workerVmInput;
+    private WorkerVmPinger workerPinger;
+    private RemoteWorkerVm remoteWorkerVm;
     private Properties properties = new Properties();
 
     private Process otherVm;
@@ -69,7 +69,7 @@ public class SlaveVm
         return logger;
     }
 
-    public SlaveVm()
+    public WorkerVm()
     {
         this.port = (int)(Math.random()*20000+10000);
         String log4jConfigValue = System.getProperty(LOG4J_CONFIG);
@@ -81,8 +81,8 @@ public class SlaveVm
         {
             properties.put(LOG4J_CONFIG, log4jConfigValue);
         }
-        appendSlaveToDirectory(DERBY_SERVER_DIRECTORY);
-        appendSlaveToDirectory(DERBY_TMP_DIRECTORY);
+        appendWorkerToDirectory(DERBY_SERVER_DIRECTORY);
+        appendWorkerToDirectory(DERBY_TMP_DIRECTORY);
         for(Iterator it = System.getProperties().keySet().iterator(); it.hasNext();)
         {
             String key = (String) it.next();
@@ -103,12 +103,12 @@ public class SlaveVm
         this.appPort2 = appPort2;
     }
 
-    private void appendSlaveToDirectory(String key)
+    private void appendWorkerToDirectory(String key)
     {
         String derbyTmpDirectory = System.getProperty(key);
         if (derbyTmpDirectory != null)
         {
-            derbyTmpDirectory += "slave";
+            derbyTmpDirectory += "worker";
             File derbyDir = new File(derbyTmpDirectory);
             if (!derbyDir.exists())
             {
@@ -118,12 +118,12 @@ public class SlaveVm
         }
     }
 
-    public RemoteSlaveVm getRemoteSlaveVm()
+    public RemoteWorkerVm getRemoteWorkerVm()
     {
-        return remoteSlaveVm;
+        return remoteWorkerVm;
     }
 
-    public void startSlaveVm(Class testClass)
+    public void startWorkerVm(Class testClass)
     {
         ArrayList cmdList = new ArrayList();
         cmdList.add(JAVA_HOME+getJavaBinary());
@@ -162,7 +162,7 @@ public class SlaveVm
         cmdList.toArray(cmdAndArgs);
         try
         {
-            String cmdString = "executing slave vm with";
+            String cmdString = "executing worker vm with";
             for(int i=0;i<cmdAndArgs.length;i++)
             {
                 cmdString += " "+cmdAndArgs[i];
@@ -170,17 +170,17 @@ public class SlaveVm
             getLogger().debug(cmdString);
             otherVm = Runtime.getRuntime().exec(cmdAndArgs, null, new File(START_DIRECTORY));
 //            this.errFlusher = new StreamFlusher(otherVm.getErrorStream(), System.err, false);
-            File errFile = File.createTempFile("slavevmslave", ".errlog");
+            File errFile = File.createTempFile("workervmworker", ".errlog");
             this.errFlusher = new StreamFlusher(otherVm.getErrorStream(), new FileOutputStream(errFile), false);
             this.errFlusher.start();
             waitForAllGood(otherVm.getInputStream(), errFile.getAbsolutePath(), cmdString);
             this.outFlusher = new StreamFlusher(otherVm.getInputStream(), System.out, false);
             this.outFlusher.start();
-            this.slaveVmInput = otherVm.getOutputStream();
+            this.workerVmInput = otherVm.getOutputStream();
             FastServletProxyFactory factory = new FastServletProxyFactory();
-            remoteSlaveVm = factory.create(RemoteSlaveVm.class, "http://localhost:"+this.port+"/PspServlet");
-            this.slavePinger = new SlaveVmPinger(remoteSlaveVm);
-            slavePinger.start();
+            remoteWorkerVm = factory.create(RemoteWorkerVm.class, "http://localhost:"+this.port+"/PspServlet");
+            this.workerPinger = new WorkerVmPinger(remoteWorkerVm);
+            workerPinger.start();
         }
         catch (Throwable e)
         {
@@ -193,7 +193,7 @@ public class SlaveVm
     {
         try
         {
-            File errFile = File.createTempFile("slavevmmaster", ".errlog");
+            File errFile = File.createTempFile("workervmmaster", ".errlog");
             FileOutputStream out = new FileOutputStream(errFile);
             PrintWriter writer = new PrintWriter(out);
             writer.write(message);
@@ -221,7 +221,7 @@ public class SlaveVm
     {
         try
         {
-            File errFile = File.createTempFile("slavevmmaster", ".errlog");
+            File errFile = File.createTempFile("workervmmaster", ".errlog");
             FileOutputStream out = new FileOutputStream(errFile);
             PrintWriter writer = new PrintWriter(out);
             writer.write(message);
@@ -251,7 +251,7 @@ public class SlaveVm
                 int read = inputStream.read();
                 if (read < 0)
                 {
-                    throwFatal("Slave VM did not start properly and closed its stream. The stream had: '"
+                    throwFatal("Worker VM did not start properly and closed its stream. The stream had: '"
                             + output.toString() + "' in it before closing. Also see error file: " + errFile + " started with command '" + cmdString + "'");
                 }
                 System.out.print((char) read);
@@ -264,13 +264,13 @@ public class SlaveVm
                 }
                 if (badSearcher.isFound())
                 {
-                    throwFatal("Slave VM had trouble starting");
+                    throwFatal("Worker VM had trouble starting");
                 }
             }
             catch (IOException e)
             {
                 getLogger().error("could not write output", e);
-                throwFatal("Slave VM did not start properly and had an IO exception", e);
+                throwFatal("Worker VM did not start properly and had an IO exception", e);
             }
         }
 
@@ -286,7 +286,7 @@ public class SlaveVm
         }
     }
 
-    protected void shutdownSlaveVm()
+    protected void shutdownWorkerVm()
     {
         if (this.outFlusher != null)
         {
@@ -296,21 +296,21 @@ public class SlaveVm
         {
             this.errFlusher.setDone(true);
         }
-        if (this.slavePinger != null)
+        if (this.workerPinger != null)
         {
-            this.slavePinger.setDone(true);
+            this.workerPinger.setDone(true);
         }
         try
         {
-            if (this.slaveVmInput != null)
+            if (this.workerVmInput != null)
             {
-                this.slaveVmInput.write('\n');
-                this.slaveVmInput.flush();
+                this.workerVmInput.write('\n');
+                this.workerVmInput.flush();
             }
         }
         catch (IOException e)
         {
-            getLogger().error("could not communicate with Slave VM");
+            getLogger().error("could not communicate with Worker VM");
         }
         ThankYouWriter.getInstance().stopThankYouThread();
         if (otherVm != null)
@@ -324,7 +324,7 @@ public class SlaveVm
             }
             catch (InterruptedException e)
             {
-                getLogger().warn("Slave VM took too long to quit");
+                getLogger().warn("Worker VM took too long to quit");
                 Thread.currentThread().interrupted();
             }
             otherVm.destroy();
@@ -344,16 +344,16 @@ public class SlaveVm
 
     public static void main(String args[])
     {
-        runSlaveVm(args, true);
+        runWorkerVm(args, true);
     }
 
-    protected static void runSlaveVm(String[] args, boolean runSlaveVmStartup)
+    protected static void runWorkerVm(String[] args, boolean runWorkerVmStartup)
     {
         Server server = new Server(Integer.parseInt(args[0]));
         Context context = new Context (server,"/",Context.SESSIONS);
         ServletHolder holder = context.addServlet(PspServlet.class, "/PspServlet");
-        holder.setInitParameter("serviceInterface.RemoteSlaveVm", "com.gs.fw.common.mithra.test.multivm.RemoteSlaveVm");
-        holder.setInitParameter("serviceClass.RemoteSlaveVm", "com.gs.fw.common.mithra.test.multivm.RemoteSlaveVmImpl");
+        holder.setInitParameter("serviceInterface.RemoteWorkerVm", "com.gs.fw.common.mithra.test.multivm.RemoteWorkerVm");
+        holder.setInitParameter("serviceClass.RemoteWorkerVm", "com.gs.fw.common.mithra.test.multivm.RemoteWorkerVmImpl");
         holder.setInitOrder(10);
 
         try
@@ -363,8 +363,8 @@ public class SlaveVm
             Class testClass = Class.forName(args[1]);
             MultiVmTest testCase = (MultiVmTest) testClass.newInstance();
             testCase.setApplicationPorts(Integer.parseInt(args[2]), Integer.parseInt(args[3]));
-            RemoteSlaveVmImpl.setTestCase(testCase);
-            if (runSlaveVmStartup) testCase.slaveVmOnStartup();
+            RemoteWorkerVmImpl.setTestCase(testCase);
+            if (runWorkerVmStartup) testCase.workerVmOnStartup();
             System.out.println(ALL_GOOD);
             while(true)
             {
@@ -376,20 +376,20 @@ public class SlaveVm
             }
             if (System.in.read() == -1)
             {
-                System.out.println("SlaveVM System.in shutdown???!!!????");
+                System.out.println("WorkerVM System.in shutdown???!!!????");
                 System.out.flush();
                 Thread.sleep(1000);
                 throw new IOException("EOF");
             }
-            System.out.println("SlaveVm Exiting");
-            RemoteSlaveVmImpl.exitSlaveVm();
+            System.out.println("WorkerVm Exiting");
+            RemoteWorkerVmImpl.exitWorkerVm();
             System.out.flush();
             System.exit(0);
         }
         catch (Exception e)
         {
             System.out.println(ALL_BAD);
-            System.out.println("Could not start slave vm "+e.getClass().getName()+": "+e.getMessage());
+            System.out.println("Could not start worker vm "+e.getClass().getName()+": "+e.getMessage());
             e.printStackTrace();
             System.exit(-1);
         }
@@ -464,14 +464,14 @@ public class SlaveVm
         }
     }
 
-    private static class SlaveVmPinger extends Thread
+    private static class WorkerVmPinger extends Thread
     {
-        private RemoteSlaveVm remoteSlaveVm;
+        private RemoteWorkerVm remoteWorkerVm;
         private boolean done = false;
 
-        private SlaveVmPinger(RemoteSlaveVm remoteSlaveVm)
+        private WorkerVmPinger(RemoteWorkerVm remoteWorkerVm)
         {
-            this.remoteSlaveVm = remoteSlaveVm;
+            this.remoteWorkerVm = remoteWorkerVm;
             this.setDaemon(true);
         }
 
@@ -487,7 +487,7 @@ public class SlaveVm
                 try
                 {
                     sleep(PING_INTERVAL_MS);
-                    if (!done) remoteSlaveVm.ping();
+                    if (!done) remoteWorkerVm.ping();
                 }
                 catch (InterruptedException e)
                 {

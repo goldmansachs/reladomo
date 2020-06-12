@@ -18,13 +18,25 @@ package com.gs.fw.common.mithra.test.multivm;
 
 
 
-public interface RemoteSlaveVm
+public class RemoteWorkerVmException extends RuntimeException
 {
 
-    public void ping();
+    public RemoteWorkerVmException()
+    {
+    }
 
-    public Object executeMethod(String methodName);
+    public RemoteWorkerVmException(String message)
+    {
+        super(message);
+    }
 
-    public Object executeMethod(String methodName, Class[] argumentTypes, Object[] args);
+    public RemoteWorkerVmException(Throwable cause)
+    {
+        super(cause);
+    }
 
+    public RemoteWorkerVmException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
 }

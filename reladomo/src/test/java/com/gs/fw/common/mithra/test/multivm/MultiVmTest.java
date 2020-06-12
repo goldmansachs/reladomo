@@ -21,15 +21,15 @@ package com.gs.fw.common.mithra.test.multivm;
 public interface MultiVmTest
 {
 
-    public RemoteSlaveVm getRemoteSlaveVm();
+    public RemoteWorkerVm getRemoteWorkerVm();
 
-    public void setRemoteSlaveVm(RemoteSlaveVm remoteSlaveVm);
+    public void setRemoteWorkerVm(RemoteWorkerVm remoteWorkerVm);
 
-    public void slaveVmOnStartup();
+    public void workerVmOnStartup();
 
-    public void slaveVmSetUp();
+    public void workerVmSetUp();
 
-    public void slaveVmTearDown();
+    public void workerVmTearDown();
 
     public void setApplicationPorts(int port1, int port2);
 }

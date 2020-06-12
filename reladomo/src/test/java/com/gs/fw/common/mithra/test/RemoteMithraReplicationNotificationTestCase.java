@@ -23,18 +23,18 @@ import com.gs.fw.common.mithra.notification.replication.ReplicationNotificationC
 public class RemoteMithraReplicationNotificationTestCase extends RemoteMithraNotificationTestCase
 {
 
-    public void slaveVmSetUp()
+    public void workerVmSetUp()
     {
-        super.slaveVmSetUp();
+        super.workerVmSetUp();
         getMithraTestResource().createReplicationNotificationTables(ReplicationNotificationConnectionManager.getInstance());
         MithraManagerProvider.getMithraManager().getReplicationNotificationManager().initializeNotificationPollingThreads();        
     }
 
-    public void slaveVmTearDown()
+    public void workerVmTearDown()
     {
         MithraManagerProvider.getMithraManager().getReplicationNotificationManager().shutdownReplicationNotification();
         getMithraTestResource().tearDownReplicationNotificationTables(ReplicationNotificationConnectionManager.getInstance());
         MithraManagerProvider.getMithraManager().getReplicationNotificationManager().clearReplicationNotificationMaps();
-        super.slaveVmTearDown();
+        super.workerVmTearDown();
     }
 }

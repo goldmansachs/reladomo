@@ -78,9 +78,9 @@ public class TestEmbeddedValueObjectsRemote extends RemoteMithraServerTestCase
         this.testEmbeddedValueObjects = new TestEmbeddedValueObjects();
     }
 
-    public void slaveVmSetUp()
+    public void workerVmSetUp()
     {
-        super.slaveVmSetUp();
+        super.workerVmSetUp();
     }
 
     public void testType1FindOne()

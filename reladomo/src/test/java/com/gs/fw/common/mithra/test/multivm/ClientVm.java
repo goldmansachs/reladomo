@@ -18,12 +18,12 @@ package com.gs.fw.common.mithra.test.multivm;
 
 
 
-public class ClientVm extends SlaveVm
+public class ClientVm extends WorkerVm
 {
 
     public static void main(String args[])
     {
-        runSlaveVm(args, false);
+        runWorkerVm(args, false);
     }
 
 }

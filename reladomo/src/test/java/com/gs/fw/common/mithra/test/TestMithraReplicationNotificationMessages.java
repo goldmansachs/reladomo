@@ -66,14 +66,14 @@ public class TestMithraReplicationNotificationMessages  extends RemoteMithraRepl
         TestTamsMithraTrial trial = TestTamsMithraTrialFinder.findOne(op);
         assertEquals("1", trial.getTrialId());
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverInsertUpdateNotifications", new Class[]{},
+        this.getRemoteWorkerVm().executeMethod("serverInsertUpdateNotifications", new Class[]{},
                 new Object[]{});
         waitForMessages(updateClassCount, TestTamsMithraTrialFinder.getMithraObjectPortal());
         waitForMessages(updateClassCount+1, TestTamsMithraTrialFinder.getMithraObjectPortal());
         TestTamsMithraTrial trial2 = TestTamsMithraTrialFinder.findOne(op);
         assertNotNull(trial2);
         assertEquals("2", trial2.getTrialId());
-//        this.getRemoteSlaveVm().executeMethod("serverVerifyTablesAreEmpty", new Class[]{String.class},
+//        this.getRemoteWorkerVm().executeMethod("serverVerifyTablesAreEmpty", new Class[]{String.class},
 //                new Object[]{TestTamsMithraTrialFinder.getMithraObjectPortal().getDatabaseObject().getTableName()});
     }
 
@@ -87,7 +87,7 @@ public class TestMithraReplicationNotificationMessages  extends RemoteMithraRepl
         TestTamsMithraTrial trial = TestTamsMithraTrialFinder.findOne(op);
         assertEquals("1", trial.getTrialId());
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverInsertUpdateNotifications", new Class[]{},
+        this.getRemoteWorkerVm().executeMethod("serverInsertUpdateNotifications", new Class[]{},
                 new Object[]{});
         waitForMessages(updateClassCount, TestTamsMithraTrialFinder.getMithraObjectPortal());
         waitForMessages(updateClassCount+1, TestTamsMithraTrialFinder.getMithraObjectPortal());
@@ -114,7 +114,7 @@ public class TestMithraReplicationNotificationMessages  extends RemoteMithraRepl
                assertEquals(25.5f, incFunc.getPercentage(), 0);
 
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverInsertMultipleUpdateNotifications", new Class[]{},
+        this.getRemoteWorkerVm().executeMethod("serverInsertMultipleUpdateNotifications", new Class[]{},
                 new Object[]{});
         waitForMessages(updateClassCount, TestTamsMithraTrialFinder.getMithraObjectPortal());
         waitForMessages(updateClassCount+1, TestTamsMithraTrialFinder.getMithraObjectPortal());
@@ -154,7 +154,7 @@ public class TestMithraReplicationNotificationMessages  extends RemoteMithraRepl
                assertEquals(50.5f, incFunc2.getPercentage(), 0);
 
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverInsertMultipleUpdateNotifications2", new Class[]{},
+        this.getRemoteWorkerVm().executeMethod("serverInsertMultipleUpdateNotifications2", new Class[]{},
                 new Object[]{});
         waitForMessages(updateClassCount, TestTamsMithraTrialFinder.getMithraObjectPortal());
         waitForMessages(updateClassCount+1, TestTamsMithraTrialFinder.getMithraObjectPortal());

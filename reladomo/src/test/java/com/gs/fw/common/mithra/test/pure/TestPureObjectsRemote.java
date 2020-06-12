@@ -76,9 +76,9 @@ public class TestPureObjectsRemote extends RemoteMithraServerTestCase
         this.testPureObjects = new TestPureObjects();
     }
 
-    public void slaveVmSetUp()
+    public void workerVmSetUp()
     {
-        super.slaveVmSetUp();
+        super.workerVmSetUp();
     }
 
     public void testType2FindOne()
