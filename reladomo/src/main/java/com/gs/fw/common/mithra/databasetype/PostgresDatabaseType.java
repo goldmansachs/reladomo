@@ -113,7 +113,7 @@ public class PostgresDatabaseType extends AbstractDatabaseType
         String result = super.getSelect(columns, query, groupBy, isInTransaction, rowCount);
         if (rowCount > 0)
         {
-            result += " LIMIT "+rowCount + 1;
+            result += " LIMIT "+ (rowCount + 1);
         }
         if (isInTransaction)
         {
