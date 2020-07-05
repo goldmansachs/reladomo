@@ -1,0 +1,584 @@
+# Copyright 2016 Goldman Sachs.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+
+type Mutation
+{
+    person_insert(person: PersonInput): Person
+    course_insert(course: CourseInput): Course
+    account_insert(account: AccountInput): Account
+    objectSequence_insert(objectSequence: ObjectSequenceInput): ObjectSequence
+    balance_insert(balance: BalanceInput): Balance
+    pureAccount_insert(pureAccount: PureAccountInput): PureAccount
+    pureBalance_insert(pureBalance: PureBalanceInput): PureBalance
+}
+
+
+type Query
+{
+    personById( personId: Int! ): Person
+    persons(findMany: PersonFinder): [Person]
+    person_aggregate(filter: PersonFinder): [PersonAggregate]
+
+    courseById( courseId: Int! ): Course
+    courses(findMany: CourseFinder where: CourseFinder filter: CourseFinder order_by: CourseOrderBy limit: Int): [Course]
+    course_aggregate(filter: CourseFinder): [CourseAggregate]
+
+    accountById( accountNum: String! ): Account
+    accounts(findMany: AccountFinder): [Account]
+    account_aggregate(filter: AccountFinder): [AccountAggregate]
+
+    objectSequenceById( simulatedSequenceName: String! ): ObjectSequence
+    objectSequences(findMany: ObjectSequenceFinder): [ObjectSequence]
+    objectSequence_aggregate(filter: ObjectSequenceFinder): [ObjectSequenceAggregate]
+
+    balanceById( id: Int! ): Balance
+    balances(findMany: BalanceFinder filder: BalanceFinder where: BalanceFinder order_by: BalanceOrderBy limit: Int): [Balance]
+    balance_aggregate(filter: BalanceFinder): [BalanceAggregate]
+
+    pureAccountById( accountId: Int! ): PureAccount
+    pureAccounts(findMany: PureAccountFinder filter: PureAccountFinder where: PureAccountFinder): [PureAccount]
+    pureAccount_aggregate(filter: PureAccountFinder): [PureAccountAggregate]
+
+    pureBalanceById( id: Int! ): PureBalance
+    pureBalances(findMany: PureBalanceFinder): [PureBalance]
+    pureBalance_aggregate(filter: PureBalanceFinder): [PureBalanceAggregate]
+
+}
+
+
+#################### sample.domain.Person ##################
+type Person
+{
+    personId: Int
+    firstName: String
+    lastName: String
+    country: String
+}
+
+type PersonAggregate
+{
+    personId: Int
+    varianceSampleOfPersonId: Int
+    maxOfPersonId: Int
+    avgOfPersonId: Int
+    minOfPersonId: Int
+    standardDeviationPopulationOfPersonId: Int
+    sumOfPersonId: Int
+    variancePopulationOfPersonId: Int
+    standardDeviationSampleOfPersonId: Int
+    firstName: String
+    lastName: String
+    country: String
+}
+
+input PersonInput
+{
+    personId: Int
+    firstName: String
+    lastName: String
+    country: String
+}
+
+input PersonFinder
+{
+    personId: IntegerAttribute
+    firstName: StringAttribute
+    lastName: StringAttribute
+    country: StringAttribute
+    and: PersonFinder
+    or: PersonFinder
+    orderBy: PersonFinder
+    tupleIn: [PersonFinderTuple]
+}
+
+input PersonFinderTuple
+{
+    personId: Int
+    firstName: String
+    lastName: String
+    country: String
+}
+
+#################### sample.domain.Course ##################
+type Course
+{
+    courseId: Int
+    name: String
+    startDate: Timestamp
+    teacherId: Int
+    cost: Float
+    teacher: Person
+}
+
+type CourseAggregate
+{
+    courseId: Int
+    varianceSampleOfCourseId: Int
+    maxOfCourseId: Int
+    avgOfCourseId: Int
+    minOfCourseId: Int
+    standardDeviationPopulationOfCourseId: Int
+    sumOfCourseId: Int
+    variancePopulationOfCourseId: Int
+    standardDeviationSampleOfCourseId: Int
+    name: String
+    startDate: Timestamp
+    teacherId: Int
+    varianceSampleOfTeacherId: Int
+    maxOfTeacherId: Int
+    avgOfTeacherId: Int
+    minOfTeacherId: Int
+    standardDeviationPopulationOfTeacherId: Int
+    sumOfTeacherId: Int
+    variancePopulationOfTeacherId: Int
+    standardDeviationSampleOfTeacherId: Int
+    varianceSampleOfCost: Float
+    maxOfCost: Float
+    avgOfCost: Float
+    minOfCost: Float
+    standardDeviationPopulationOfCost: Float
+    sumOfCost: Float
+    variancePopulationOfCost: Float
+    standardDeviationSampleOfCost: Float
+    teacher: Person
+}
+
+input CourseInput
+{
+    courseId: Int
+    name: String
+    startDate: Timestamp
+    teacherId: Int
+    cost: Float
+}
+
+input CourseFinder
+{
+    courseId: IntegerAttribute
+    name: StringAttribute
+    startDate: TimestampAttribute
+    teacherId: IntegerAttribute
+    cost: FloatAttribute
+    teacher: PersonFinder
+    and: CourseFinder
+    or: CourseFinder
+    tupleIn: [CourseFinderTuple]
+}
+
+input CourseOrderBy
+{
+    courseId: AcsDesc
+    name: AcsDesc
+    startDate: AcsDesc
+    teacherId: AcsDesc
+    cost: AcsDesc
+}
+
+input CourseFinderTuple
+{
+    courseId: Int
+    name: String
+    startDate: Timestamp
+    teacherId: Int
+    cost: Float
+}
+
+#################### sample.domain.Account ##################
+type Account
+{
+    accountNum: String
+    name: String
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    processingDate: Timestamp
+}
+
+type AccountAggregate
+{
+    accountNum: String
+    name: String
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+input AccountInput
+{
+    accountNum: String
+    name: String
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+input AccountFinder
+{
+    accountNum: StringAttribute
+    name: StringAttribute
+    processingDateFrom: TimestampAttribute
+    processingDateTo: TimestampAttribute
+    processingDate: TimestampAttribute
+    and: AccountFinder
+    or: AccountFinder
+    orderBy: AccountFinder
+    tupleIn: [AccountFinderTuple]
+}
+
+input AccountFinderTuple
+{
+    accountNum: String
+    name: String
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+#################### sample.domain.ObjectSequence ##################
+type ObjectSequence
+{
+    simulatedSequenceName: String
+    nextValue: Int
+}
+
+type ObjectSequenceAggregate
+{
+    simulatedSequenceName: String
+    nextValue: Int
+    varianceSampleOfNextValue: Int
+    maxOfNextValue: Int
+    avgOfNextValue: Int
+    minOfNextValue: Int
+    standardDeviationPopulationOfNextValue: Int
+    sumOfNextValue: Int
+    variancePopulationOfNextValue: Int
+    standardDeviationSampleOfNextValue: Int
+}
+
+input ObjectSequenceInput
+{
+    simulatedSequenceName: String
+    nextValue: Int
+}
+
+input ObjectSequenceFinder
+{
+    simulatedSequenceName: StringAttribute
+    nextValue: IntegerAttribute
+    and: ObjectSequenceFinder
+    or: ObjectSequenceFinder
+    orderBy: ObjectSequenceFinder
+    tupleIn: [ObjectSequenceFinderTuple]
+}
+
+input ObjectSequenceFinderTuple
+{
+    simulatedSequenceName: String
+    nextValue: Int
+}
+
+#################### sample.domain.Balance ##################
+type Balance
+{
+    id: Int
+    accountNum: String
+    value: Float
+    currency: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    businessDate: Timestamp
+    processingDate: Timestamp
+    account: Account
+}
+
+type BalanceAggregate
+{
+    id: Int
+    varianceSampleOfId: Int
+    maxOfId: Int
+    avgOfId: Int
+    minOfId: Int
+    standardDeviationPopulationOfId: Int
+    sumOfId: Int
+    variancePopulationOfId: Int
+    standardDeviationSampleOfId: Int
+    accountNum: String
+    varianceSampleOfValue: Float
+    maxOfValue: Float
+    avgOfValue: Float
+    minOfValue: Float
+    standardDeviationPopulationOfValue: Float
+    sumOfValue: Float
+    variancePopulationOfValue: Float
+    standardDeviationSampleOfValue: Float
+    currency: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    account: Account
+}
+
+input BalanceInput
+{
+    id: Int
+    accountNum: String
+    value: Float
+    currency: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+input BalanceFinder
+{
+    id: IntegerAttribute
+    accountNum: StringAttribute
+    value: FloatAttribute
+    currency: StringAttribute
+    businessDateFrom: TimestampAttribute
+    businessDateTo: TimestampAttribute
+    processingDateFrom: TimestampAttribute
+    processingDateTo: TimestampAttribute
+    businessDate: TimestampAttribute
+    processingDate: TimestampAttribute
+    account: AccountFinder
+    and: BalanceFinder
+    or: BalanceFinder
+    orderBy: BalanceFinder
+    tupleIn: [BalanceFinderTuple]
+}
+
+input BalanceOrderBy
+{
+    id: AcsDesc
+    accountNum: AcsDesc
+    value: AcsDesc
+    currency: AcsDesc
+    businessDateFrom: AcsDesc
+    businessDateTo: AcsDesc
+    processingDateFrom: AcsDesc
+    processingDateTo: AcsDesc
+    businessDate: AcsDesc
+    processingDate: AcsDesc
+    account: AcsDesc
+    then: BalanceOrderBy
+}
+
+input BalanceFinderTuple
+{
+    id: Int
+    accountNum: String
+    value: Float
+    currency: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+#################### sample.domain.PureAccount ##################
+type PureAccount
+{
+    accountId: Int
+    accountNum: String
+    name: String
+    country: String
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    processingDate: Timestamp
+}
+
+type PureAccountAggregate
+{
+    accountId: Int
+    varianceSampleOfAccountId: Int
+    maxOfAccountId: Int
+    avgOfAccountId: Int
+    minOfAccountId: Int
+    standardDeviationPopulationOfAccountId: Int
+    sumOfAccountId: Int
+    variancePopulationOfAccountId: Int
+    standardDeviationSampleOfAccountId: Int
+    accountNum: String
+    name: String
+    country: String
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+input PureAccountInput
+{
+    accountId: Int
+    accountNum: String
+    name: String
+    country: String
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+input PureAccountFinder
+{
+    accountId: IntegerAttribute
+    accountNum: StringAttribute
+    name: StringAttribute
+    country: StringAttribute
+    processingDateFrom: TimestampAttribute
+    processingDateTo: TimestampAttribute
+    processingDate: TimestampAttribute
+    and: PureAccountFinder
+    or: PureAccountFinder
+    orderBy: PureAccountFinder
+    tupleIn: [PureAccountFinderTuple]
+}
+
+input PureAccountFinderTuple
+{
+    accountId: Int
+    accountNum: String
+    name: String
+    country: String
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+#################### sample.domain.PureBalance ##################
+type PureBalance
+{
+    id: Int
+    url: String
+    accountId: Int
+    accountNum: String
+    value: Float
+    interest: Float
+    count: Float
+    currency: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    businessDate: Timestamp
+    processingDate: Timestamp
+    account: PureAccount
+}
+
+type PureBalanceAggregate
+{
+    id: Int
+    varianceSampleOfId: Int
+    maxOfId: Int
+    avgOfId: Int
+    minOfId: Int
+    standardDeviationPopulationOfId: Int
+    sumOfId: Int
+    variancePopulationOfId: Int
+    standardDeviationSampleOfId: Int
+    url: String
+    accountId: Int
+    varianceSampleOfAccountId: Int
+    maxOfAccountId: Int
+    avgOfAccountId: Int
+    minOfAccountId: Int
+    standardDeviationPopulationOfAccountId: Int
+    sumOfAccountId: Int
+    variancePopulationOfAccountId: Int
+    standardDeviationSampleOfAccountId: Int
+    accountNum: String
+    varianceSampleOfValue: Float
+    maxOfValue: Float
+    avgOfValue: Float
+    minOfValue: Float
+    standardDeviationPopulationOfValue: Float
+    sumOfValue: Float
+    variancePopulationOfValue: Float
+    standardDeviationSampleOfValue: Float
+    varianceSampleOfInterest: Float
+    maxOfInterest: Float
+    avgOfInterest: Float
+    minOfInterest: Float
+    standardDeviationPopulationOfInterest: Float
+    sumOfInterest: Float
+    variancePopulationOfInterest: Float
+    standardDeviationSampleOfInterest: Float
+    varianceSampleOfCount: Float
+    maxOfCount: Float
+    avgOfCount: Float
+    minOfCount: Float
+    standardDeviationPopulationOfCount: Float
+    sumOfCount: Float
+    variancePopulationOfCount: Float
+    standardDeviationSampleOfCount: Float
+    currency: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    account: PureAccount
+}
+
+input PureBalanceInput
+{
+    id: Int
+    url: String
+    accountId: Int
+    accountNum: String
+    value: Float
+    interest: Float
+    count: Float
+    currency: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+input PureBalanceFinder
+{
+    id: IntegerAttribute
+    url: StringAttribute
+    accountId: IntegerAttribute
+    accountNum: StringAttribute
+    value: FloatAttribute
+    interest: FloatAttribute
+    count: FloatAttribute
+    currency: StringAttribute
+    businessDateFrom: TimestampAttribute
+    businessDateTo: TimestampAttribute
+    processingDateFrom: TimestampAttribute
+    processingDateTo: TimestampAttribute
+    businessDate: TimestampAttribute
+    processingDate: TimestampAttribute
+    account: PureAccountFinder
+    and: PureBalanceFinder
+    or: PureBalanceFinder
+    orderBy: PureBalanceFinder
+    tupleIn: [PureBalanceFinderTuple]
+}
+
+input PureBalanceFinderTuple
+{
+    id: Int
+    url: String
+    accountId: Int
+    accountNum: String
+    value: Float
+    interest: Float
+    count: Float
+    currency: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+

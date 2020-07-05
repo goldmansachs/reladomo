@@ -46,7 +46,6 @@ central,org.apache.xmlgraphics,batik-util,1.8,jar,build/lib/fop,35DCD204F397D697
 central,org.apache.xmlgraphics,xmlgraphics-commons,2.1,jar,build/lib/fop,B61132DEFE1DF4E91C1EB0DDF544958C50D358B5
 central,org.apache.commons,commons-io,1.3.2,jar,build/lib/fop,B6DDE38349BA9BB5E6EA6320531EAE969985DAE5
 
-
 #  Copyright 2016 Goldman Sachs.
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.

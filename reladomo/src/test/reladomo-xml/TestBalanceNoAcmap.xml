@@ -33,4 +33,9 @@
     <Attribute name="positionType" javaType="int" columnName="POS_TYP_C" primaryKey="true"/>
 
     <Attribute name="quantity" javaType="double" columnName="POS_QUANTITY_M"/>
+
+    <Relationship name="account" relatedObject="TamsMithraAccount" cardinality="many-to-one">
+        this.accountId = TamsMithraAccount.code
+    </Relationship>
+
 </MithraObject>

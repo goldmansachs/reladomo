@@ -11,8 +11,9 @@ reladomogs/target/**
 reladomogsi/target/**
 reladomoui/target/**
 reladomoserial/target/**
+reladomographql/target/**
 .idea/**
-reladomo.iml
+*.iml
 target/**
 samples/**/target/**
 samples/**/build/**
