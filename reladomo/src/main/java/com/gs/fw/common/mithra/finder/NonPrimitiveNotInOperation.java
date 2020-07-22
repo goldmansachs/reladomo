@@ -28,6 +28,7 @@ import com.gs.fw.common.mithra.finder.sqcache.NoMatchSmr;
 import com.gs.fw.common.mithra.finder.sqcache.ShapeMatchResult;
 import com.gs.fw.common.mithra.finder.sqcache.SuperMatchSmr;
 import com.gs.fw.common.mithra.util.Time;
+import org.eclipse.collections.impl.set.mutable.SetAdapter;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import java.io.Externalizable;
@@ -206,7 +207,12 @@ public class NonPrimitiveNotInOperation extends NotInOperation implements SqlPar
     @Override
     protected void appendSetToString(ToStringContext toStringContext)
     {
-        toStringContext.append(this.set.toString());
+        NonPrimitiveAttribute nonPrimitiveAttribute = (NonPrimitiveAttribute) this.getAttribute();
+        String formattedStrings = SetAdapter.adapt(this.set)
+                .asLazy()
+                .collect(nonPrimitiveAttribute::formattedValue)
+                .toString();
+        toStringContext.append(formattedStrings);
     }
 
     @Override

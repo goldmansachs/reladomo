@@ -19,6 +19,7 @@ package com.gs.fw.common.mithra.test;
 
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.bytearray.ByteArraySet;
+import com.gs.fw.common.mithra.test.domain.DatedAllTypes;
 import com.gs.fw.common.mithra.test.domain.DatedAllTypesFinder;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.eclipse.collections.impl.set.mutable.primitive.ByteHashSet;
@@ -29,10 +30,13 @@ import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import org.eclipse.collections.impl.set.mutable.primitive.LongHashSet;
 import org.eclipse.collections.impl.set.mutable.primitive.ShortHashSet;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -50,11 +54,14 @@ public class TestAtomicOperationsToString extends MithraTestAbstract
     private static final Timestamp BUSINESS_TIMESTAMP2 = Timestamp.valueOf("2011-01-01 23:59:00.0");
     private static final Date BUSINESS_DATE2 = new Date(Timestamp.valueOf("2011-01-01 00:00:00.0").getTime());
     private static final String BUSINESS_DATE2_UNQUOTED_STRING = BUSINESS_DATE2.toString();
+    private static final String BUSINESS_DATE2_QUOTED_STRING = quote(BUSINESS_DATE2_UNQUOTED_STRING);
     private static final String BUSINESS_TIMESTAMP2_UNQUOTED_STRING = TIMESTAMP_FORMAT.format(BUSINESS_TIMESTAMP2);
+    private static final String BUSINESS_TIMESTAMP2_QUOTED_STRING = quote(BUSINESS_TIMESTAMP2_UNQUOTED_STRING);
 
     private static final String VALUE_STRING = "Value";
     private static final String VALUE2_STRING = "Value2";
     private static final String VALUE_QUOTED_STRING = quote(VALUE_STRING);
+    private static final String VALUE2_QUOTED_STRING = quote(VALUE2_STRING);
     private static final String WILDCARD_STRING = "Value?";
     private static final String WILDCARD_QUOTED_STRING = quote(WILDCARD_STRING);
 
@@ -124,6 +131,9 @@ public class TestAtomicOperationsToString extends MithraTestAbstract
         
         Operation asOfEqualsTimestamp = DatedAllTypesFinder.businessDate().eq(BUSINESS_TIMESTAMP);
         assertEquals("DatedAllTypes.businessDate = " + BUSINESS_TIMESTAMP_QUOTED_STRING, asOfEqualsTimestamp.toString());
+
+        Operation bigDecimalValueEquals = DatedAllTypesFinder.bigDecimalValue().eq(1234.56789);
+        assertEquals("DatedAllTypes.bigDecimalValue = 1234.56789", bigDecimalValueEquals.toString());
     }
 
     public void testNonPrimitiveEqualsOperation()
@@ -166,6 +176,9 @@ public class TestAtomicOperationsToString extends MithraTestAbstract
 
         Operation asOfEqualsTimestamp = DatedAllTypesFinder.businessDate().nonPrimitiveEq(BUSINESS_TIMESTAMP);
         assertEquals("DatedAllTypes.businessDate = " + BUSINESS_TIMESTAMP_QUOTED_STRING, asOfEqualsTimestamp.toString());
+
+        Operation bigDecimalValueEquals = DatedAllTypesFinder.bigDecimalValue().nonPrimitiveEq(new BigDecimal("1234.56789"));
+        assertEquals("DatedAllTypes.bigDecimalValue = 1234.56789", bigDecimalValueEquals.toString());
     }
 
     public void testNotEqualsOperation()
@@ -202,6 +215,9 @@ public class TestAtomicOperationsToString extends MithraTestAbstract
 
         Operation stringValueNotEquals = DatedAllTypesFinder.stringValue().notEq(VALUE_STRING);
         assertEquals("DatedAllTypes.stringValue != " + VALUE_QUOTED_STRING, stringValueNotEquals.toString());
+
+        Operation bigDecimalValueEquals = DatedAllTypesFinder.bigDecimalValue().notEq(1234.56789);
+        assertEquals("DatedAllTypes.bigDecimalValue != 1234.56789", bigDecimalValueEquals.toString());
     }
 
     public void testGreaterThanOperation()
@@ -235,6 +251,9 @@ public class TestAtomicOperationsToString extends MithraTestAbstract
 
         Operation stringValueGreaterTran = DatedAllTypesFinder.stringValue().greaterThan(VALUE_STRING);
         assertEquals("DatedAllTypes.stringValue > " + VALUE_QUOTED_STRING, stringValueGreaterTran.toString());
+
+        Operation bigDecimalValueEquals = DatedAllTypesFinder.bigDecimalValue().greaterThan(1234.56789);
+        assertEquals("DatedAllTypes.bigDecimalValue > 1234.56789", bigDecimalValueEquals.toString());
     }
 
     public void testGreaterThanEqualsOperation()
@@ -268,6 +287,9 @@ public class TestAtomicOperationsToString extends MithraTestAbstract
 
         Operation stringValueGreaterTranEquals = DatedAllTypesFinder.stringValue().greaterThanEquals(VALUE_STRING);
         assertEquals("DatedAllTypes.stringValue >= " + VALUE_QUOTED_STRING, stringValueGreaterTranEquals.toString());
+
+        Operation bigDecimalValueEquals = DatedAllTypesFinder.bigDecimalValue().greaterThanEquals(1234.56789);
+        assertEquals("DatedAllTypes.bigDecimalValue >= 1234.56789", bigDecimalValueEquals.toString());
     }
 
     public void testLessThanOperation()
@@ -301,6 +323,9 @@ public class TestAtomicOperationsToString extends MithraTestAbstract
 
         Operation stringValueLessThan = DatedAllTypesFinder.stringValue().lessThan(VALUE_STRING);
         assertEquals("DatedAllTypes.stringValue < " + VALUE_QUOTED_STRING, stringValueLessThan.toString());
+
+        Operation bigDecimalValueEquals = DatedAllTypesFinder.bigDecimalValue().lessThan(1234.56789);
+        assertEquals("DatedAllTypes.bigDecimalValue < 1234.56789", bigDecimalValueEquals.toString());
     }
 
     public void testLessThanEqualsOperation()
@@ -334,6 +359,9 @@ public class TestAtomicOperationsToString extends MithraTestAbstract
 
         Operation stringValueLessThanEquals = DatedAllTypesFinder.stringValue().lessThanEquals(VALUE_STRING);
         assertEquals("DatedAllTypes.stringValue <= " + VALUE_QUOTED_STRING, stringValueLessThanEquals.toString());
+
+        Operation bigDecimalValueEquals = DatedAllTypesFinder.bigDecimalValue().lessThanEquals(1234.56789);
+        assertEquals("DatedAllTypes.bigDecimalValue <= 1234.56789", bigDecimalValueEquals.toString());
     }
 
     public void testStringLikeOperations()
@@ -419,22 +447,25 @@ public class TestAtomicOperationsToString extends MithraTestAbstract
 
         Set<Date> dateSet = new TreeSet<Date>(UnifiedSet.newSetWith(BUSINESS_DATE, BUSINESS_DATE2));
         Operation dateValueIn = DatedAllTypesFinder.dateValue().in(dateSet);
-        assertEquals("DatedAllTypes.dateValue in [" + BUSINESS_DATE_UNQUOTED_STRING + ", " + BUSINESS_DATE2_UNQUOTED_STRING + "]", dateValueIn.toString());
+        assertEquals("DatedAllTypes.dateValue in [" + BUSINESS_DATE_QUOTED_STRING + ", " + BUSINESS_DATE2_QUOTED_STRING + "]", dateValueIn.toString());
 
         Set<Timestamp> timestampSet = new TreeSet<Timestamp>(UnifiedSet.newSetWith(BUSINESS_TIMESTAMP, BUSINESS_TIMESTAMP2));
         Operation timestampValueIn = DatedAllTypesFinder.timestampValue().in(timestampSet);
-        assertEquals("DatedAllTypes.timestampValue in [" + BUSINESS_TIMESTAMP_UNQUOTED_STRING + ", " + BUSINESS_TIMESTAMP2_UNQUOTED_STRING + "]", timestampValueIn.toString());
+        assertEquals("DatedAllTypes.timestampValue in [" + BUSINESS_TIMESTAMP_QUOTED_STRING + ", " + BUSINESS_TIMESTAMP2_QUOTED_STRING + "]", timestampValueIn.toString());
 
         Set<String> stringSet = new TreeSet<String>(UnifiedSet.newSetWith(VALUE_STRING, VALUE2_STRING));
         Operation stringValueIn = DatedAllTypesFinder.stringValue().in(stringSet);
-        assertEquals("DatedAllTypes.stringValue in [" + VALUE_STRING + ", " + VALUE2_STRING + "]", stringValueIn.toString());
+        assertEquals("DatedAllTypes.stringValue in [" + VALUE_QUOTED_STRING + ", " + VALUE2_QUOTED_STRING + "]", stringValueIn.toString());
 
         ByteArraySet byteArraySet = new ByteArraySet();
         byteArraySet.add(new byte[] {2,3});
         byteArraySet.add(new byte[] {4,5});
         //TODO: How to ensure order?
-//        Operation byteArrayValueIn = DatedAllTypesFinder.byteArrayValue().in(byteArraySet);
-//        assertEquals("DatedAllTypes.byteArrayValue in [[2, 3],[4, 5]]", byteArrayValueIn.toString());
+        Operation byteArrayValueIn = DatedAllTypesFinder.byteArrayValue().in(byteArraySet);
+        assertEquals("DatedAllTypes.byteArrayValue in [[2, 3], [4, 5]]", byteArrayValueIn.toString());
+
+        Operation bigDecimalValueEquals = DatedAllTypesFinder.bigDecimalValue().in(gscDoubleSet);
+        assertEquals("DatedAllTypes.bigDecimalValue in [7.70000, 8.80000]", bigDecimalValueEquals.toString());
     }
 
     public void testNotInOperation()
@@ -490,22 +521,25 @@ public class TestAtomicOperationsToString extends MithraTestAbstract
 
         Set<Date> dateSet = new TreeSet<Date>(UnifiedSet.newSetWith(BUSINESS_DATE, BUSINESS_DATE2));
         Operation dateValueNotIn = DatedAllTypesFinder.dateValue().notIn(dateSet);
-        assertEquals("DatedAllTypes.dateValue not in [" + BUSINESS_DATE_UNQUOTED_STRING + ", " + BUSINESS_DATE2_UNQUOTED_STRING + "]", dateValueNotIn.toString());
+        assertEquals("DatedAllTypes.dateValue not in [" + BUSINESS_DATE_QUOTED_STRING + ", " + BUSINESS_DATE2_QUOTED_STRING + "]", dateValueNotIn.toString());
 
         Set<Timestamp> timestampSet = new TreeSet<Timestamp>(UnifiedSet.newSetWith(BUSINESS_TIMESTAMP, BUSINESS_TIMESTAMP2));
         Operation timestampValueNotIn = DatedAllTypesFinder.timestampValue().notIn(timestampSet);
-        assertEquals("DatedAllTypes.timestampValue not in [" + BUSINESS_TIMESTAMP_UNQUOTED_STRING + ", " + BUSINESS_TIMESTAMP2_UNQUOTED_STRING + "]", timestampValueNotIn.toString());
+        assertEquals("DatedAllTypes.timestampValue not in [" + BUSINESS_TIMESTAMP_QUOTED_STRING + ", " + BUSINESS_TIMESTAMP2_QUOTED_STRING + "]", timestampValueNotIn.toString());
 
         Set<String> stringSet = new TreeSet<String>(UnifiedSet.newSetWith(VALUE_STRING, VALUE2_STRING));
         Operation stringValueNotIn = DatedAllTypesFinder.stringValue().notIn(stringSet);
-        assertEquals("DatedAllTypes.stringValue not in [" + VALUE_STRING + ", " + VALUE2_STRING + "]", stringValueNotIn.toString());
+        assertEquals("DatedAllTypes.stringValue not in [" + VALUE_QUOTED_STRING + ", " + VALUE2_QUOTED_STRING + "]", stringValueNotIn.toString());
 
         ByteArraySet byteArraySet = new ByteArraySet();
         byteArraySet.add(new byte[] {2, 3});
         byteArraySet.add(new byte[] {4, 5});
         //TODO: How to ensure order?
-//        Operation byteArrayValueNotIn = DatedAllTypesFinder.byteArrayValue().notIn(byteArraySet);
-//        assertEquals("DatedAllTypes.byteArrayValue not in [[2, 3],[4, 5]]", byteArrayValueNotIn.toString());
+        Operation byteArrayValueNotIn = DatedAllTypesFinder.byteArrayValue().notIn(byteArraySet);
+        assertEquals("DatedAllTypes.byteArrayValue not in [[2, 3], [4, 5]]", byteArrayValueNotIn.toString());
+
+        Operation bigDecimalValueEquals = DatedAllTypesFinder.bigDecimalValue().notIn(gscDoubleSet);
+        assertEquals("DatedAllTypes.bigDecimalValue not in [7.70000, 8.80000]", bigDecimalValueEquals.toString());
     }
 
     private void assertEqualsEither(String expected1, String expected2, String actual)

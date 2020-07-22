@@ -222,6 +222,12 @@ public abstract class BigDecimalAttribute<T> extends NonPrimitiveAttribute<T, Bi
         ps.setBigDecimal(index, (BigDecimal)o);
     }
 
+    @Override
+    public String formattedValue(BigDecimal object)
+    {
+        return String.valueOf(object);
+    }
+
     public BigDecimal valueOf(T o)
     {
         return this.bigDecimalValueOf(o);
