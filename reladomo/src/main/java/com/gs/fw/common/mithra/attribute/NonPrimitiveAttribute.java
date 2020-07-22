@@ -317,4 +317,13 @@ public abstract class NonPrimitiveAttribute<Owner, Type> extends Attribute<Owner
 //    public abstract Operation notIn(Set<Type> set);
 
     public abstract void setSqlParameter(int index, PreparedStatement ps, Object o, TimeZone databaseTimeZone, DatabaseType databaseType) throws SQLException;
+
+    public String formattedValue(Type object)
+    {
+        if (object == null)
+        {
+            return "null";
+        }
+        return "\"" + object + "\"";
+    }
 }

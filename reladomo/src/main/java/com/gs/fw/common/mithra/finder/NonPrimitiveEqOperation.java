@@ -96,7 +96,9 @@ public class NonPrimitiveEqOperation extends AtomicEqualityOperation implements 
     {
         this.getAttribute().zAppendToString(toStringContext);
         toStringContext.append("=");
-        toStringContext.append("\""+this.getParameterAsObject().toString()+"\"");
+        NonPrimitiveAttribute nonPrimitiveAttribute = (NonPrimitiveAttribute) this.getAttribute();
+        String formattedValue = nonPrimitiveAttribute.formattedValue(this.getParameterAsObject());
+        toStringContext.append(formattedValue);
     }
 
     public boolean equals(Object obj)

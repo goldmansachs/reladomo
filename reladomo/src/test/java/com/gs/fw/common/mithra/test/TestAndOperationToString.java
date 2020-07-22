@@ -38,7 +38,7 @@ public class TestAndOperationToString extends MithraTestAbstract
     {
         SortedSet<String> stringSet = new TreeSet<String>(UnifiedSet.newSetWith("lsd", "swp"));
         Operation op = ParaDeskFinder.deskIdString().in(stringSet).and(ParaDeskFinder.statusChar().eq('A')).and(ParaDeskFinder.connectionLong().greaterThan(1000000L));
-        assertEquals("ParaDesk.deskIdString in [lsd, swp] & ParaDesk.statusChar = A & ParaDesk.connectionLong > 1000000", op.toString());
+        assertEquals("ParaDesk.deskIdString in [\"lsd\", \"swp\"] & ParaDesk.statusChar = A & ParaDesk.connectionLong > 1000000", op.toString());
     }
 
     public void testAndWithDuplicates()

@@ -55,7 +55,10 @@ public class NonPrimitiveLessThanOperation extends LessThanOperation implements 
     public void zToString(ToStringContext toStringContext)
     {
         this.getAttribute().zAppendToString(toStringContext);
-        toStringContext.append("<").append("\"" + this.parameter.toString() + "\"");
+        toStringContext.append("<");
+        NonPrimitiveAttribute nonPrimitiveAttribute = (NonPrimitiveAttribute) this.getAttribute();
+        String formattedValue = nonPrimitiveAttribute.formattedValue(this.parameter);
+        toStringContext.append(formattedValue);
     }
 
     public Comparable getParameter()

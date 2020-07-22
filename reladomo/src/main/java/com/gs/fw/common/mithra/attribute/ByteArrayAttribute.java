@@ -41,6 +41,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.Format;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -237,6 +238,12 @@ public abstract class ByteArrayAttribute<Owner> extends NonPrimitiveAttribute<Ow
     public void setSqlParameter(int index, PreparedStatement ps, Object o, TimeZone databaseTimeZone, DatabaseType databaseType) throws SQLException
     {
         ps.setBytes(index, (byte[]) o);
+    }
+
+    @Override
+    public String formattedValue(byte[] object)
+    {
+        return Arrays.toString(object);
     }
 
     public byte[] valueOf(Owner o)
