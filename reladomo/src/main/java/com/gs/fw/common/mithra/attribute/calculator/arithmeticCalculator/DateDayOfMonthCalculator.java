@@ -63,12 +63,29 @@ public class DateDayOfMonthCalculator extends SingleAttributeNumericCalculator<D
     @Override
     public void appendToString(ToStringContext toStringContext)
     {
-        toStringContext.append(attribute.getAttributeName()).append(".dayOfMonth");
+        toStringContext.append("dayOfMonth(");
+        this.attribute.zAppendToString(toStringContext);
+        toStringContext.append(")");
     }
 
     @Override
     public Operation optimizedIntegerEq(int value, CalculatedIntegerAttribute intAttribute)
     {
         return new IntegerEqOperation(intAttribute, value);
+    }
+
+    public boolean equals(Object obj)
+    {
+        if (this == obj) return true;
+        if (obj.getClass().equals(this.getClass()))
+        {
+            return this.attribute.equals(((DateDayOfMonthCalculator)obj).attribute);
+        }
+        return false;
+    }
+
+    public int hashCode()
+    {
+        return 0x23456781 ^ this.attribute.hashCode();
     }
 }

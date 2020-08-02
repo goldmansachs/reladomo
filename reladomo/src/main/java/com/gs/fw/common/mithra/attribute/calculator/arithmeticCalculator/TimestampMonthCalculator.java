@@ -75,12 +75,29 @@ public class TimestampMonthCalculator extends SingleAttributeNumericCalculator<T
     @Override
     public void appendToString(ToStringContext toStringContext)
     {
-        toStringContext.append(attribute.getAttributeName()).append(".month");
+        toStringContext.append("month(");
+        this.attribute.zAppendToString(toStringContext);
+        toStringContext.append(")");
     }
 
     @Override
     public Operation optimizedIntegerEq(int value, CalculatedIntegerAttribute intAttribute)
     {
         return new IntegerEqOperation(intAttribute, value);
+    }
+
+    public boolean equals(Object obj)
+    {
+        if (this == obj) return true;
+        if (obj.getClass().equals(this.getClass()))
+        {
+            return this.attribute.equals(((TimestampMonthCalculator)obj).attribute);
+        }
+        return false;
+    }
+
+    public int hashCode()
+    {
+        return 0x67812345 ^ this.attribute.hashCode();
     }
 }
