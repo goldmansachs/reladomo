@@ -19,7 +19,6 @@ package com.gs.fw.common.mithra.test;
 
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.bytearray.ByteArraySet;
-import com.gs.fw.common.mithra.test.domain.DatedAllTypes;
 import com.gs.fw.common.mithra.test.domain.DatedAllTypesFinder;
 import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 import org.eclipse.collections.impl.set.mutable.primitive.ByteHashSet;
@@ -34,12 +33,9 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.TreeSet;
-
 
 public class TestAtomicOperationsToString extends MithraTestAbstract
 {
@@ -540,6 +536,38 @@ public class TestAtomicOperationsToString extends MithraTestAbstract
 
         Operation bigDecimalValueEquals = DatedAllTypesFinder.bigDecimalValue().notIn(gscDoubleSet);
         assertEquals("DatedAllTypes.bigDecimalValue not in [7.70000, 8.80000]", bigDecimalValueEquals.toString());
+    }
+
+    public void testAbsoluteValueOperation()
+    {
+        Operation intValueEquals = DatedAllTypesFinder.intValue().absoluteValue().eq(4);
+        assertEquals("abs( DatedAllTypes.intValue ) = 4", intValueEquals.toString());
+
+        Operation longValueEquals = DatedAllTypesFinder.longValue().absoluteValue().eq(5L);
+        assertEquals("abs( DatedAllTypes.longValue ) = 5", longValueEquals.toString());
+
+        Operation floatValueEquals = DatedAllTypesFinder.floatValue().absoluteValue().eq((float)6.6);
+        assertEquals("abs( DatedAllTypes.floatValue ) = 6.6", floatValueEquals.toString());
+
+        Operation doubleValueEquals = DatedAllTypesFinder.doubleValue().absoluteValue().eq(7.7);
+        assertEquals("abs( DatedAllTypes.doubleValue ) = 7.7", doubleValueEquals.toString());
+    }
+
+    public void testDatePartOperation()
+    {
+        Operation dateYearValueEquals  = DatedAllTypesFinder.dateValue().year().notEq(1999);
+        Operation dateMonthValueEquals = DatedAllTypesFinder.dateValue().month().notEq(12);
+        Operation dateDayValueEquals   = DatedAllTypesFinder.dateValue().dayOfMonth().notEq(31);
+        assertEquals("year( DatedAllTypes.dateValue ) != 1999", dateYearValueEquals.toString());
+        assertEquals("month( DatedAllTypes.dateValue ) != 12", dateMonthValueEquals.toString());
+        assertEquals("dayOfMonth( DatedAllTypes.dateValue ) != 31", dateDayValueEquals.toString());
+
+        Operation timestampYearValueEquals  = DatedAllTypesFinder.timestampValue().year().notEq(1999);
+        Operation timestampMonthValueEquals = DatedAllTypesFinder.timestampValue().month().notEq(12);
+        Operation timestampDayValueEquals   = DatedAllTypesFinder.timestampValue().dayOfMonth().notEq(31);
+        assertEquals("year( DatedAllTypes.timestampValue ) != 1999", timestampYearValueEquals.toString());
+        assertEquals("month( DatedAllTypes.timestampValue ) != 12", timestampMonthValueEquals.toString());
+        assertEquals("dayOfMonth( DatedAllTypes.timestampValue ) != 31", timestampDayValueEquals.toString());
     }
 
     private void assertEqualsEither(String expected1, String expected2, String actual)

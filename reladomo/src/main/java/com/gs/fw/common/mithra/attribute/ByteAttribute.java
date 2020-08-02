@@ -537,7 +537,7 @@ public abstract class ByteAttribute<T> extends PrimitiveNumericAttribute<T, Byte
     @Override
     public ByteAttribute absoluteValue()
     {
-        throw new UnsupportedOperationException("absoluteValue is not implemented for ShortAttribute");
+        throw new UnsupportedOperationException("absoluteValue is not implemented for ByteAttribute");
     }
 
     public NumericAttribute zDispatchAddTo(NumericAttribute firstAddend)
