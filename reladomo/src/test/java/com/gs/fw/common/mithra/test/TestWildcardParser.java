@@ -207,4 +207,11 @@ public class TestWildcardParser extends TestCase
         assertEquals("ab", parser.getSqlLikeExpression(new char[] {'=', '[', ']', '%', '_'}));
 
     }
+    
+    public void testEscapeCharacterHandling()
+    {
+        WildcardParser parser = new WildcardParser("\'[1-9\']\'[1-9\']");
+        assertTrue(parser.matches("25"));
+        assertEquals("[1-9][1-9]", parser.getSqlLikeExpression());
+    }
 }
