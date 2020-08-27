@@ -20,6 +20,7 @@ package com.gs.fw.common.mithra.cacheloader;
 
 import com.gs.fw.common.mithra.MithraDatabaseObject;
 import com.gs.fw.common.mithra.MithraObject;
+import com.gs.fw.common.mithra.MithraObjectDeserializer;
 import com.gs.fw.common.mithra.connectionmanager.ObjectSourceConnectionManager;
 import com.gs.fw.common.mithra.connectionmanager.SourcelessConnectionManager;
 import com.gs.fw.common.mithra.database.SyslogChecker;
@@ -168,27 +169,31 @@ public class LoadingTaskImpl implements LoadingTask
         }
         Object theSourceAttribute = CacheLoaderConfig.isSourceAttribute(this.sourceAttribute) ? this.sourceAttribute : null;
 
-        final MithraDatabaseObject databaseObject = mithraController.getMithraObjectPortal().getDatabaseObject();
-        Object connectionManager = databaseObject.getConnectionManager();
-
-        String tempdbSchema;
-
-        if (connectionManager instanceof SourcelessConnectionManager)
+        final MithraObjectDeserializer objectFactory = mithraController.getMithraObjectPortal().getMithraObjectDeserializer ();
+        if (objectFactory instanceof MithraDatabaseObject)
         {
-            tempdbSchema = ((SourcelessConnectionManager) connectionManager).getDatabaseType().getTempDbSchemaName();
-        }
-        else
-        {
-            tempdbSchema = ((ObjectSourceConnectionManager) connectionManager).getDatabaseType(sourceAttribute).getTempDbSchemaName();
-        }
+            MithraDatabaseObject databaseObject = (MithraDatabaseObject)objectFactory;
+            Object connectionManager = databaseObject.getConnectionManager();
 
-        if (tempdbSchema != null)
-        {
-            if (tempdbSchema.endsWith("."))
+            String tempdbSchema;
+
+            if (connectionManager instanceof SourcelessConnectionManager)
             {
-                tempdbSchema = tempdbSchema.substring(0, tempdbSchema.length() - 1);
+                tempdbSchema = ((SourcelessConnectionManager) connectionManager).getDatabaseType ().getTempDbSchemaName ();
             }
-            this.syslogChecker.checkAndWaitForSyslogSynchronized(theSourceAttribute, tempdbSchema, databaseObject);
+            else
+            {
+                tempdbSchema = ((ObjectSourceConnectionManager) connectionManager).getDatabaseType (sourceAttribute).getTempDbSchemaName ();
+            }
+
+            if (tempdbSchema != null)
+            {
+                if (tempdbSchema.endsWith ("."))
+                {
+                    tempdbSchema = tempdbSchema.substring (0, tempdbSchema.length () - 1);
+                }
+                this.syslogChecker.checkAndWaitForSyslogSynchronized (theSourceAttribute, tempdbSchema, databaseObject);
+            }
         }
     }
 

@@ -758,6 +758,7 @@ public abstract class MithraAbstractDatabaseObject
         }
         Connection con = null;
         Statement stm = null;
+        String sql = "";
         try
         {
             con = this.getConnectionForTempWriteGenericSource(genericSource, isForQuery);
@@ -780,14 +781,14 @@ public abstract class MithraAbstractDatabaseObject
             }
             if (drop && dt.truncateBeforeDroppingTempTable())
             {
-                String sql = "truncate table " + tempTableName;
+                sql = "truncate table " + tempTableName;
                 if (this.getSqlLogger().isDebugEnabled())
                 {
                     this.getSqlLogger().debug("connection:"+System.identityHashCode(con)+" truncating temp table with: " + sql);
                 }
                 stm.executeUpdate(sql);
             }
-            String sql = (drop ? "drop table " : "delete from ") + tempTableName;
+            sql = (drop ? "drop table " : "delete from ") + tempTableName;
             if (this.getSqlLogger().isDebugEnabled())
             {
                 this.getSqlLogger().debug("connection:"+System.identityHashCode(con)+" dropping temp table with: " + sql);

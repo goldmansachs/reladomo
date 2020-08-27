@@ -18,6 +18,11 @@
 
 package com.gs.fw.common.mithra.databasetype;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.Map;
+
 import com.gs.fw.common.mithra.MithraManagerProvider;
 import com.gs.fw.common.mithra.bulkloader.BulkLoader;
 import com.gs.fw.common.mithra.bulkloader.BulkLoaderException;
@@ -113,6 +118,14 @@ public class SybaseIqDatabaseType extends SybaseDatabaseType
     public static SybaseIqDatabaseType getInstance()
     {
         return instance;
+    }
+
+    /*In previous override but not in Reladomo*/
+    @Override
+    public double getSysLogPercentFull(Connection connection, String schemaName) throws SQLException
+    {
+        //an override of the SybaseASE-specific behavior in SybaseDatabaseType
+        return 0.0;
     }
 
     public static SybaseIqDatabaseType getInstanceWithoutSharedTempTables()
