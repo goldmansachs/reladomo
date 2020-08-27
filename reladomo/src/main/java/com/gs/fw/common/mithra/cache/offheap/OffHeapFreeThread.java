@@ -41,6 +41,8 @@ public class OffHeapFreeThread extends Thread
     private List<OffHeapThreadSnapShot> toFree = FastList.newList();
     private List<OffHeapThreadSnapShot> newToFree = FastList.newList();
 
+    private boolean started = false;
+
     public OffHeapFreeThread()
     {
         super("Off Heap Free Thread");
@@ -63,6 +65,13 @@ public class OffHeapFreeThread extends Thread
         synchronized (newToFree)
         {
             newToFree.add(new OffHeapThreadSnapShot(base, allStackTraces));
+        }
+    }
+
+    public synchronized void safeStart() {
+        if (!started) {
+            this.start();
+            this.started = true;
         }
     }
 
