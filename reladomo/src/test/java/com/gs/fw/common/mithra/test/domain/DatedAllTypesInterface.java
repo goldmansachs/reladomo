@@ -19,11 +19,13 @@ package com.gs.fw.common.mithra.test.domain;
 
 import com.gs.fw.common.mithra.util.Time;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 
 public interface DatedAllTypesInterface
 {
+    void setBigDecimalValue(BigDecimal v);
 
     void setBooleanValue(boolean b);
 
@@ -74,6 +76,8 @@ public interface DatedAllTypesInterface
     void setNullableTimeValue(Time time);
 
     void setNullableByteArrayValue(byte[] bytes);
+
+    void setNullableBigDecimalValue(BigDecimal b);
 
     boolean isBooleanValue();
 

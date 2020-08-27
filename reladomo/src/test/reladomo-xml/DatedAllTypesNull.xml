@@ -56,6 +56,7 @@
     <Attribute name="timestampValue" javaType="Timestamp" columnName="TIMESTAMP_COL"  nullable="false"/>
     <Attribute name="stringValue"    javaType="String"    columnName="STRING_COL"     nullable="false" maxLength="50" truncate="true"/>
     <Attribute name="byteArrayValue" javaType="byte[]"    columnName="BYTE_ARRAY_COL" nullable="false"/>
+    <Attribute name="bigDecimalValue" javaType="BigDecimal" columnName="BIG_DECIMAL_COL" nullable="false" precision="10" scale="5"/>
 
     <!--<Attribute name="nullableBooleanValue"   javaType="boolean"   columnName="NULL_BOOL_COL"       nullable="true"/>-->
     <Attribute name="nullableByteValue"      javaType="byte"      columnName="NULL_BYTE_COL"       nullable="true"/>
@@ -70,6 +71,7 @@
     <Attribute name="nullableTimestampValue" javaType="Timestamp" columnName="NULL_TIMESTAMP_COL"  nullable="true"/>
     <Attribute name="nullableStringValue"    javaType="String"    columnName="NULL_STRING_COL"     nullable="true" maxLength="50" truncate="true"/>
     <Attribute name="nullableByteArrayValue" javaType="byte[]"    columnName="NULL_BYTE_ARRAY_COL" nullable="true"/>
+    <Attribute name="nullableBigDecimalValue" javaType="BigDecimal" columnName="NULL_BIG_DECIMAL_COL" nullable="true" precision="10" scale="5"/>
 
     <Relationship name="related" relatedObject="DatedAllTypesNull" cardinality="many-to-one">this.id = DatedAllTypesNull.id</Relationship>
 
