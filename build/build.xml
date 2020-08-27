@@ -893,6 +893,62 @@
         </parallel>
     </target>
 
+    <macrodef name="ci-test-suite">
+        <attribute name="mithraxmlconfig" description="mithra.xml.config"/>
+        <attribute name="testclass" description="test class"/>
+        <attribute name="qualifier" description="added to the end of the test name" default=""/>
+        <attribute name="heap" description="either 'onheap' or 'offheap"/>
+        <sequential>
+            <property name="jacocovmarg" value="-Dcoverage=none"/>
+            <delete quiet="true" dir="${root}/reladomo/target/testresult"/>
+            <mkdir dir="${root}/reladomo/target/testresult"/>
+
+            <exec-test-suite mithraxmlconfig="@{mithraxmlconfig}" qualifier="@{qualifier}" testclass="@{testclass}" heap="@{heap}"/>
+            <fail if="failed.mithra.unit.tests" message="Reladomo unit tests failed"/>
+        </sequential>
+    </macrodef>
+
+
+    <target name="reladomo-test-suite1" depends="compile-reladomo-test, compile-reladomo-genutil-test, get-cores" description="Run JUnit test cases for Reladomo code">
+        <ci-test-suite mithraxmlconfig="MithraConfigPartialCache.xml" qualifier="/partial" testclass="com.gs.fw.common.mithra.test.MithraTestSuite" heap="onheap"/>
+    </target>
+
+    <target name="reladomo-test-suite2" depends="compile-reladomo-test, compile-reladomo-genutil-test, get-cores" description="Run JUnit test cases for Reladomo code">
+        <ci-test-suite mithraxmlconfig="MithraConfigFullCache.xml" qualifier="/full" testclass="com.gs.fw.common.mithra.test.MithraTestSuite" heap="onheap"/>
+    </target>
+
+    <target name="reladomo-test-suite3" depends="compile-reladomo-test, compile-reladomo-genutil-test, get-cores" description="Run JUnit test cases for Reladomo code">
+        <ci-test-suite mithraxmlconfig="MithraConfigPartialCache.xml" qualifier="/partial" testclass="com.gs.fw.common.mithra.test.MithraMultiVmTestSuite" heap="onheap"/>
+    </target>
+
+    <target name="reladomo-test-suite4" depends="compile-reladomo-test, compile-reladomo-genutil-test, get-cores" description="Run JUnit test cases for Reladomo code">
+        <ci-test-suite mithraxmlconfig="MithraConfigFullCache.xml" qualifier="/full" testclass="com.gs.fw.common.mithra.test.MithraMultiVmTestSuite" heap="onheap"/>
+    </target>
+
+    <target name="reladomo-test-suite5" depends="compile-reladomo-test, compile-reladomo-genutil-test, get-cores" description="Run JUnit test cases for Reladomo code">
+        <ci-test-suite mithraxmlconfig="MithraConfigOffHeapFullCache.xml" qualifier="/fulloffheap" testclass="com.gs.fw.common.mithra.test.MithraMultiVmTestSuite" heap="offheap"/>
+    </target>
+
+    <target name="reladomo-test-suite6" depends="compile-reladomo-test, compile-reladomo-genutil-test, get-cores" description="Run JUnit test cases for Reladomo code">
+        <ci-test-suite mithraxmlconfig="MithraConfigOffHeapFullCache.xml" qualifier="/fulloffheap" testclass="com.gs.fw.common.mithra.test.MithraTestSuite" heap="offheap"/>
+    </target>
+
+    <target name="reladomo-test-suite9" depends="compile-reladomo-test, compile-reladomo-genutil-test, get-cores" description="Run JUnit test cases for Reladomo code">
+        <property name="jacocovmarg" value="-Dcoverage=none"/>
+        <delete quiet="true" dir="${root}/reladomo/target/testresult"/>
+        <mkdir dir="${root}/reladomo/target/testresult"/>
+
+        <exec-test-suite mithraxmlconfig="Util.xml" testclass="com.gs.fw.common.mithra.test.MithraUtilTestSuite" heap="onheap"/>
+
+        <exec-test-suite mithraxmlconfig="MithraConfigOffHeapFullCache.xml" qualifier="/fulloffheap" testclass="com.gs.fw.common.mithra.test.offheap.MithraOffHeapTestSuite" heap="offheap"/>
+        <exec-test-suite mithraxmlconfig="MithraConfigMasterCache.xml" qualifier="/fulloffheap" testclass="com.gs.fw.common.mithra.test.MithraMultiVmOffHeapTestSuite" heap="offheap"/>
+        <exec-test-suite mithraxmlconfig="MithraCacheTestConfig.xml" qualifier="/full" testclass="com.gs.fw.common.mithra.test.cacheloader.CacheLoaderSuite" heap="onheap"/>
+        <exec-test-suite mithraxmlconfig="MithraConfigPartialCache.xml" qualifier="/partial" testclass="com.gs.fw.common.mithra.test.MithraToStringTestSuite" heap="onheap"/>
+        <exec-test-suite mithraxmlconfig="MithraConfigPartialCache.xml" testclass="com.gs.fw.common.mithra.test.generator.GeneratorTestSuite" heap="onheap"/>
+        <exec-test-suite mithraxmlconfig="MithraTestTableManagerConfig.xml" testclass="com.gs.fw.common.mithra.test.TestTablePartitionManager" heap="onheap"/>
+        <fail if="failed.mithra.unit.tests" message="Reladomo unit tests failed"/>
+    </target>
+
     <target name="reladomo-junitreport" if="junitHtmlReport" depends="run-reladomo-test-suite">
         <mkdir dir="${root}/reladomo/target/junit-report"/>
         <junitreport>
@@ -2314,5 +2370,7 @@
 
     <target name="prep-reladomo-xa" depends="gen-reladomo-xa-pom, jar-reladomo-xa, jar-reladomo-xa-src, jar-reladomo-xa-javadoc"/>
     <!-- ************************** /reladomo xa ******************************* -->
+
+    <target name="reladomo-test-suite-extra" depends="reladomo-serial-test-suite, run-reladomo-graphql-test-suite, reladomo-xa-test-suite"/>
 
 </project>

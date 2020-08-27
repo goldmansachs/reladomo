@@ -30,6 +30,7 @@ import com.gs.fw.common.mithra.transaction.TransactionStyle;
 import com.gs.fw.common.mithra.util.*;
 import com.gs.fw.common.mithra.util.Time;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -5027,6 +5028,7 @@ public class TestDatedBitemporal extends MithraTestAbstract implements TestDated
 
     private void setAllTypes(DatedAllTypesInterface allTypes, int s)
     {
+        allTypes.setBigDecimalValue(BigDecimal.valueOf(s));
         allTypes.setBooleanValue((s % 2) == 0);
         allTypes.setByteValue((byte) s);
         allTypes.setShortValue((short) s);
