@@ -4,7 +4,7 @@
 [![][docs img]][docs]
 [![][contrib img]][contrib]
 [![][license-apache img]][license-apache]
-[![][travis img]][travis]
+[![][actions unit-tests img]][actions unit-tests]
 [![][release img]][release]
 
 ## What is it? 
@@ -92,8 +92,8 @@ Extract the jar file and refer to the docs below.
 * [Versions](https://github.com/goldmansachs/reladomo/releases)
 * [Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.goldmansachs.reladomo%22)
 
-[travis]:https://travis-ci.org/goldmansachs/reladomo
-[travis img]:https://travis-ci.org/goldmansachs/reladomo.svg?branch=master
+[actions unit-tests]:https://github.com/goldmansachs/reladomo/actions?query=workflow%3A%22Test+Suite+1%22
+[actions unit-tests img]:https://github.com/goldmansachs/reladomo/workflows/Test%20Suite%201/badge.svg?branch=master
 
 [license-apache]:LICENSE.txt
 [license-apache img]:https://img.shields.io/badge/License-Apache%202-blue.svg
