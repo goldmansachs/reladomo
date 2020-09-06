@@ -1577,7 +1577,7 @@
 
     <target name="prep-reladomo-gen-util" depends="gen-reladomo-gen-util-pom, jar-reladomo-gen-util, jar-reladomo-gen-util-src, jar-reladomo-gen-util-javadoc"/>
 
-    <target name="jar-reladomo-graphql" depends="compile-reladomo-genutil">
+    <target name="jar-reladomo-graphql" depends="compile-reladomo-graphql">
         <jar jarfile="${root}/target/reladomo-graphql-${reladomo.version}.jar" index="true">
             <fileset dir="${root}/reladomographql/target/classes"/>
             <zipfileset prefix="META-INF" file="${root}/NOTICE.txt"/>
@@ -1639,7 +1639,7 @@
         <fail message="Release files are missing.">
             <condition>
                 <not>
-                    <resourcecount count="48">
+                    <resourcecount count="56">
                         <fileset dir="${root}/target">
                             <include name="reladomo-${reladomo.version}.pom"/>
                             <include name="reladomo-${reladomo.version}.jar"/>
