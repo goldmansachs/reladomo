@@ -1,4 +1,18 @@
 # Change Log
+## 18.0.0 - 2020-09-06
+### Enhancements:
+- Switch to jdk8. Reladomo's mininum supported jdk is now JDK 8
+- Remove GSC collection. Eclipse collections is now the only supported part of the interface.
+- Initial implementation of GraphQL API
+- Change Strings to be quoted in the toString() representation of in-clause operations.
+- Only run off heap free thread when necessary.
+
+### Bug Fixes:
+- Fix parameter tokenization with comma
+- Correct limit row count for MariaDB and Postgres.
+- Implement equals and hashCode() on Timestamp-part and Date-part Calculators.
+- Fix a bug in wild card expression parsing
+
 ## 17.1.4 - 2019-11-28
 ### Bug Fixes:
 - Fix json deserialization for primitive attributes with "null"

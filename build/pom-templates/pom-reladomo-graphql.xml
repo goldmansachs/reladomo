@@ -20,14 +20,44 @@ under the License.
     <parent>
         <artifactId>graphql</artifactId>
         <groupId>com.goldmansachs.reladomo</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>@reladomo.version@</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>graphql-reladomo</artifactId>
+    <artifactId>reladomo-graphql</artifactId>
+
+    <name>Reladomo Integration For GraphQL</name>
+    <description>Reladomo integration for GraphQL</description>
+    <url>https://github.com/goldmansachs/reladomo</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Victor Borisoff</name>
+            <email>victor.borisoff@gs.com</email>
+            <organization>Goldman Sachs</organization>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/goldmansachs/reladomo</url>
+        <connection>scm:git:https://github.com/goldmansachs/reladomo.git</connection>
+        <developerConnection>scm:git:https://github.com/goldmansachs/reladomo.git</developerConnection>
+    </scm>
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/com.graphql-java/graphql-java -->
+        <dependency>
+            <groupId>com.goldmansachs.reladomo</groupId>
+            <artifactId>reladomo</artifactId>
+            <version>@reladomo.version@</version>
+        </dependency>
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>graphql-java</artifactId>
@@ -62,12 +92,6 @@ under the License.
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>3.0.1</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.goldmansachs.reladomo</groupId>
-            <artifactId>reladomo</artifactId>
-            <version>${reladomo.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
