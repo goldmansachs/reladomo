@@ -933,12 +933,14 @@
         <ci-test-suite mithraxmlconfig="MithraConfigOffHeapFullCache.xml" qualifier="/fulloffheap" testclass="com.gs.fw.common.mithra.test.MithraTestSuite" heap="offheap"/>
     </target>
 
+    <target name="reladomo-test-suite7" depends="compile-reladomo-test, compile-reladomo-genutil-test, get-cores" description="Run JUnit test cases for Reladomo code">
+        <ci-test-suite mithraxmlconfig="Util.xml" testclass="com.gs.fw.common.mithra.test.MithraUtilTestSuite" heap="onheap"/>
+    </target>
+
     <target name="reladomo-test-suite9" depends="compile-reladomo-test, compile-reladomo-genutil-test, get-cores" description="Run JUnit test cases for Reladomo code">
         <property name="jacocovmarg" value="-Dcoverage=none"/>
         <delete quiet="true" dir="${root}/reladomo/target/testresult"/>
         <mkdir dir="${root}/reladomo/target/testresult"/>
-
-        <exec-test-suite mithraxmlconfig="Util.xml" testclass="com.gs.fw.common.mithra.test.MithraUtilTestSuite" heap="onheap"/>
 
         <exec-test-suite mithraxmlconfig="MithraConfigOffHeapFullCache.xml" qualifier="/fulloffheap" testclass="com.gs.fw.common.mithra.test.offheap.MithraOffHeapTestSuite" heap="offheap"/>
         <exec-test-suite mithraxmlconfig="MithraConfigMasterCache.xml" qualifier="/fulloffheap" testclass="com.gs.fw.common.mithra.test.MithraMultiVmOffHeapTestSuite" heap="offheap"/>

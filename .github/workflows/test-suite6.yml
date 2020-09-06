@@ -11,6 +11,7 @@ on:
 
 jobs:
   build:
+    if: github.repository == 'goldmansachs/reladomo'
 
     runs-on: ubuntu-latest
 

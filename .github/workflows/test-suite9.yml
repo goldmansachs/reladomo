@@ -11,6 +11,7 @@ on:
 
 jobs:
   build:
+    if: github.repository == 'goldmansachs/reladomo'
 
     runs-on: ubuntu-latest
 
@@ -23,4 +24,4 @@ jobs:
     - name: Set env
       run: echo ::set-env name=RELADOMO_JDK_HOME::"$JAVA_HOME"
     - name: Build with Ant via shell script
-      run: ./build/build.sh reladomo-test-suite9
+      run: ./build/build.sh reladomo-test-suite9 reladomo-test-suite-extra
