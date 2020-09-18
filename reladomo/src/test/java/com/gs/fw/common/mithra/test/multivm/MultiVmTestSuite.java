@@ -29,7 +29,7 @@ public class MultiVmTestSuite extends TestSuite
     private static  Logger logger = LoggerFactory.getLogger(MultiVmTestSuite.class.getName());
 
     protected Class testClass;
-    protected SlaveVm slaveVm;
+    protected WorkerVm workerVm;
     private int applicationPort1;
     private int applicationPort2;
 
@@ -66,8 +66,8 @@ public class MultiVmTestSuite extends TestSuite
     {
         try
         {
-            createSlaveVm();
-            slaveVm.startSlaveVm(testClass);
+            createWorkerVm();
+            workerVm.startWorkerVm(testClass);
             super.run(result);
         }
         catch(RuntimeException e)
@@ -78,15 +78,15 @@ public class MultiVmTestSuite extends TestSuite
         }
         finally
         {
-            slaveVm.shutdownSlaveVm();
+            workerVm.shutdownWorkerVm();
         }
     }
 
-    protected void createSlaveVm()
+    protected void createWorkerVm()
     {
-        slaveVm = new SlaveVm();
-        slaveVm.setApplicationPort1(this.getApplicationPort1());
-        slaveVm.setApplicationPort2(this.getApplicationPort2());
+        workerVm = new WorkerVm();
+        workerVm.setApplicationPort1(this.getApplicationPort1());
+        workerVm.setApplicationPort2(this.getApplicationPort2());
     }
 
     public int getApplicationPort1()
@@ -103,10 +103,10 @@ public class MultiVmTestSuite extends TestSuite
     {
         MultiVmTest multiVmTest = (MultiVmTest) test;
         multiVmTest.setApplicationPorts(this.applicationPort1, this.applicationPort2);
-        RemoteSlaveVm remoteSlaveVm = slaveVm.getRemoteSlaveVm();
-        multiVmTest.setRemoteSlaveVm(remoteSlaveVm);
-        remoteSlaveVm.executeMethod("slaveVmSetUp");
+        RemoteWorkerVm remoteWorkerVm = workerVm.getRemoteWorkerVm();
+        multiVmTest.setRemoteWorkerVm(remoteWorkerVm);
+        remoteWorkerVm.executeMethod("workerVmSetUp");
         super.runTest(test, result);
-        remoteSlaveVm.executeMethod("slaveVmTearDown");
+        remoteWorkerVm.executeMethod("workerVmTearDown");
     }
 }

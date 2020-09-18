@@ -84,8 +84,6 @@ public class FastUnsafeOffHeapDataStorage implements OffHeapDataStorage
 
     static
     {
-        LATER_FREE_THREAD.start();
-
         Class<?> storageClass = FastUnsafeOffHeapDataStorage.class;
         try
         {
@@ -100,6 +98,8 @@ public class FastUnsafeOffHeapDataStorage implements OffHeapDataStorage
 
     public FastUnsafeOffHeapDataStorage(int dataSize, String businessClassName, RelatedFinder finder)
     {
+        LATER_FREE_THREAD.safeStart();
+
         this.dataSize = dataSize;
         this.totalAllocated = this.dataSize << PAGE_POWER_OF_TWO; // one page
         this.maxIncreaseSize = this.dataSize << (PAGE_POWER_OF_TWO+10); // 1024 pages

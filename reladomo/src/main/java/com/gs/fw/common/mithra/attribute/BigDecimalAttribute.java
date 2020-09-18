@@ -181,21 +181,7 @@ public abstract class BigDecimalAttribute<T> extends NonPrimitiveAttribute<T, Bi
 
     public abstract Operation notEq(double other);
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    public abstract Operation in(com.gs.collections.api.set.primitive.DoubleSet doubleSet);
-
     public abstract Operation in(DoubleSet doubleSet);
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    public abstract Operation notIn(com.gs.collections.api.set.primitive.DoubleSet doubleSet);
 
     public abstract Operation notIn(DoubleSet doubleSet);
 
@@ -234,6 +220,12 @@ public abstract class BigDecimalAttribute<T> extends NonPrimitiveAttribute<T, Bi
     public void setSqlParameter(int index, PreparedStatement ps, Object o, TimeZone databaseTimeZone, DatabaseType databaseType) throws SQLException
     {
         ps.setBigDecimal(index, (BigDecimal)o);
+    }
+
+    @Override
+    public String formattedValue(BigDecimal object)
+    {
+        return String.valueOf(object);
     }
 
     public BigDecimal valueOf(T o)
@@ -381,15 +373,6 @@ public abstract class BigDecimalAttribute<T> extends NonPrimitiveAttribute<T, Bi
     protected BigDecimal createBigDecimalFromDouble(double doubleValue)
     {
         return BigDecimalUtil.createBigDecimalFromDouble(doubleValue, this.getPrecision(), this.getScale());
-    }
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    protected Set<BigDecimal> createBigDecimalSetFromDoubleSet(com.gs.collections.api.set.primitive.DoubleSet doubleSet)
-    {
-        return BigDecimalUtil.createBigDecimalSetFromDoubleSet(doubleSet, this.getPrecision(), this.getScale());
     }
 
     protected Set<BigDecimal> createBigDecimalSetFromDoubleSet(DoubleSet doubleSet)

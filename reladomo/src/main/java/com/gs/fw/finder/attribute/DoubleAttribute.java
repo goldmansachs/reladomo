@@ -23,63 +23,49 @@ import org.eclipse.collections.api.set.primitive.DoubleSet;
 
 public interface DoubleAttribute<Owner> extends NumericAttribute<Owner>
 {
-    public Operation<Owner> eq(double value);
+    Operation<Owner> eq(double value);
 
-    public Operation<Owner> notEq(double value);
+    Operation<Owner> notEq(double value);
 
-    public Operation<Owner> greaterThan(double value);
+    Operation<Owner> greaterThan(double value);
 
-    public Operation<Owner> greaterThanEquals(double value);
+    Operation<Owner> greaterThanEquals(double value);
 
-    public Operation<Owner> lessThan(double value);
+    Operation<Owner> lessThan(double value);
 
-    public Operation<Owner> lessThanEquals(double value);
+    Operation<Owner> lessThanEquals(double value);
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    public Operation<Owner> in(com.gs.collections.api.set.primitive.DoubleSet doubleSet);
+    Operation<Owner> in(DoubleSet doubleSet);
 
-    public Operation<Owner> in(DoubleSet doubleSet);
+    Operation<Owner> notIn(DoubleSet doubleSet);
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    public Operation<Owner> notIn(com.gs.collections.api.set.primitive.DoubleSet doubleSet);
+    DoubleAttribute<Owner> plus(ByteAttribute addend);
+    DoubleAttribute<Owner> plus(ShortAttribute addend);
+    DoubleAttribute<Owner> plus(IntegerAttribute addend);
+    DoubleAttribute<Owner> plus(LongAttribute addend);
+    DoubleAttribute<Owner> plus(FloatAttribute addend);
+    DoubleAttribute<Owner> plus(DoubleAttribute addend);
 
-    public Operation<Owner> notIn(DoubleSet doubleSet);
+    DoubleAttribute<Owner> minus(ByteAttribute subtrahend);
+    DoubleAttribute<Owner> minus(ShortAttribute subtrahend);
+    DoubleAttribute<Owner> minus(IntegerAttribute subtrahend);
+    DoubleAttribute<Owner> minus(LongAttribute subtrahend);
+    DoubleAttribute<Owner> minus(FloatAttribute subtrahend);
+    DoubleAttribute<Owner> minus(DoubleAttribute subtrahend);
 
-    public DoubleAttribute<Owner> plus(ByteAttribute addend);
-    public DoubleAttribute<Owner> plus(ShortAttribute addend);
-    public DoubleAttribute<Owner> plus(IntegerAttribute addend);
-    public DoubleAttribute<Owner> plus(LongAttribute addend);
-    public DoubleAttribute<Owner> plus(FloatAttribute addend);
-    public DoubleAttribute<Owner> plus(DoubleAttribute addend);
+    DoubleAttribute<Owner> times(ByteAttribute multiplicand);
+    DoubleAttribute<Owner> times(ShortAttribute multiplicand);
+    DoubleAttribute<Owner> times(IntegerAttribute multiplicand);
+    DoubleAttribute<Owner> times(LongAttribute multiplicand);
+    DoubleAttribute<Owner> times(FloatAttribute multiplicand);
+    DoubleAttribute<Owner> times(DoubleAttribute multiplicand);
 
-    public DoubleAttribute<Owner> minus(ByteAttribute subtrahend);
-    public DoubleAttribute<Owner> minus(ShortAttribute subtrahend);
-    public DoubleAttribute<Owner> minus(IntegerAttribute subtrahend);
-    public DoubleAttribute<Owner> minus(LongAttribute subtrahend);
-    public DoubleAttribute<Owner> minus(FloatAttribute subtrahend);
-    public DoubleAttribute<Owner> minus(DoubleAttribute subtrahend);
+    DoubleAttribute<Owner> dividedBy(ByteAttribute divisor);
+    DoubleAttribute<Owner> dividedBy(ShortAttribute divisor);
+    DoubleAttribute<Owner> dividedBy(IntegerAttribute divisor);
+    DoubleAttribute<Owner> dividedBy(LongAttribute divisor);
+    DoubleAttribute<Owner> dividedBy(FloatAttribute divisor);
+    DoubleAttribute<Owner> dividedBy(DoubleAttribute divisor);
 
-    public DoubleAttribute<Owner> times(ByteAttribute multiplicand);
-    public DoubleAttribute<Owner> times(ShortAttribute multiplicand);
-    public DoubleAttribute<Owner> times(IntegerAttribute multiplicand);
-    public DoubleAttribute<Owner> times(LongAttribute multiplicand);
-    public DoubleAttribute<Owner> times(FloatAttribute multiplicand);
-    public DoubleAttribute<Owner> times(DoubleAttribute multiplicand);
-
-    public DoubleAttribute<Owner> dividedBy(ByteAttribute divisor);
-    public DoubleAttribute<Owner> dividedBy(ShortAttribute divisor);
-    public DoubleAttribute<Owner> dividedBy(IntegerAttribute divisor);
-    public DoubleAttribute<Owner> dividedBy(LongAttribute divisor);
-    public DoubleAttribute<Owner> dividedBy(FloatAttribute divisor);
-    public DoubleAttribute<Owner> dividedBy(DoubleAttribute divisor);
-
-    public DoubleAttribute<Owner> absoluteValue();
+    DoubleAttribute<Owner> absoluteValue();
 }

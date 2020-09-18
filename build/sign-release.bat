@@ -1,6 +1,6 @@
 setlocal
 
-set VER=17.1.4
+set VER=18.0.0
 
 cd ../target
 gpg -ab reladomo-%VER%-javadoc.jar
@@ -23,6 +23,10 @@ gpg -ab reladomo-xa-%VER%-javadoc.jar
 gpg -ab reladomo-xa-%VER%-sources.jar
 gpg -ab reladomo-xa-%VER%.jar
 gpg -ab reladomo-xa-%VER%.pom
+gpg -ab reladomo-graphql-%VER%-javadoc.jar
+gpg -ab reladomo-graphql-%VER%-sources.jar
+gpg -ab reladomo-graphql-%VER%.jar
+gpg -ab reladomo-graphql-%VER%.pom
 gpg -ab reladomogen-%VER%-javadoc.jar
 gpg -ab reladomogen-%VER%-sources.jar
 gpg -ab reladomogen-%VER%.jar

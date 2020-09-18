@@ -21,6 +21,7 @@ package com.gs.fw.common.mithra.test;
 import com.gs.fw.common.mithra.MithraDatabaseObject;
 import com.gs.fw.common.mithra.MithraException;
 import com.gs.fw.common.mithra.MithraManagerProvider;
+import com.gs.fw.common.mithra.MithraObjectDeserializer;
 import com.gs.fw.common.mithra.MithraObjectPortal;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.attribute.SourceAttributeType;
@@ -292,8 +293,8 @@ public class TestDatabaseConfiguration
                 Method method = this.getMethod(finderClassname, "getMithraObjectPortal", NO_PARAMS);
                 mithraObjectPortal = (MithraObjectPortal) this.invokeMethod(method, null, NO_ARGS);
 
-                MithraDatabaseObject databaseObject = mithraObjectPortal.getDatabaseObject();
-                if(isCompatibleWithConnectionManager(mithraObjectPortal) && isUsed(mtr, currentClassName) && databaseObject != null && dataObjects.size() > 0)
+                MithraObjectDeserializer databaseObject = mithraObjectPortal.getMithraObjectDeserializer();
+                if(databaseObject instanceof  MithraDatabaseObject && isCompatibleWithConnectionManager(mithraObjectPortal) && isUsed(mtr, currentClassName) && databaseObject != null && dataObjects.size() > 0)
                 {
                     Method insertDataMethod = this.getMethod(databaseObject, "insertData", new Class[]{List.class, List.class, Object.class});
                     this.invokeMethod(insertDataMethod, databaseObject, new Object[]{attributes, dataObjects, this.sourceId});

@@ -115,25 +115,6 @@ public abstract class SingleColumnCharAttribute<T> extends CharAttribute<T> impl
         return new CharNotEqOperation(this, other);
     }
 
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public Operation in(com.gs.collections.api.set.primitive.CharSet charSet)
-    {
-        if (charSet.isEmpty())
-        {
-            return new None(this);
-        }
-        if (charSet.size() == 1)
-        {
-            return this.eq(charSet.charIterator().next());
-        }
-        return new CharInOperation(this, charSet);
-    }
-
     @Override
     public Operation in(CharSet charSet)
     {
@@ -146,25 +127,6 @@ public abstract class SingleColumnCharAttribute<T> extends CharAttribute<T> impl
             return this.eq(charSet.charIterator().next());
         }
         return new CharInOperation(this, charSet);
-    }
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    @Override
-    public Operation notIn(com.gs.collections.api.set.primitive.CharSet charSet)
-    {
-        if (charSet.isEmpty())
-        {
-            return new All(this);
-        }
-        if (charSet.size() == 1)
-        {
-            return this.notEq(charSet.charIterator().next());
-        }
-        return new CharNotInOperation(this, charSet);
     }
 
     @Override

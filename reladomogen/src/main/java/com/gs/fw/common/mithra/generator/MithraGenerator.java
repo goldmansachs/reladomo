@@ -57,20 +57,9 @@ public class MithraGenerator extends AbstractMithraGenerator
         this.coreGenerator.setWarnAboutConcreteClasses(warnAboutConreteClasses);
     }
 
-    public void setGenerateGscListMethod(boolean generateGscListMethod)
-    {
-        this.coreGenerator.setGenerateGscListMethod(generateGscListMethod);
-    }
-
     public void setGenerateEcListMethod(boolean generateEcListMethod)
     {
         this.coreGenerator.setGenerateEcListMethod(generateEcListMethod);
-    }
-
-    @Deprecated
-    public void setGenerateLegacyCaramel(boolean generateLegacyCaramel)
-    {
-        this.coreGenerator.setGenerateLegacyCaramel(generateLegacyCaramel);
     }
 
     public void setCodeFormat(String format)
@@ -118,7 +107,6 @@ public class MithraGenerator extends AbstractMithraGenerator
         gen.setMithraObjectTypeParser(parser);
         gen.setGeneratedDir(root + "tmp/gen");
         gen.setNonGeneratedDir(root + "tmp/nogen");
-        gen.setGenerateGscListMethod(true);
         gen.setCodeFormat(CoreMithraGenerator.FORMAT_FAST);
         gen.setDefaultFinalGetters(false);
 

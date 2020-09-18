@@ -59,11 +59,11 @@ public class PeerToPeerMithraServerTestCase extends RemoteMithraNotificationTest
         mithraManager.readConfiguration(this.getConfigXml(xmlFile));
     }
 
-    public void slaveVmSetUp()
+    public void workerVmSetUp()
     {
         ConnectionManagerForTests connectionManager = ConnectionManagerForTests.getInstance();
         connectionManager.setPeerToPeer(true);
-        super.slaveVmSetUp();
+        super.workerVmSetUp();
     }
 
     protected void addTestClassesFromOther(RemoteMithraServerTestCase otherTest, Set toAdd)

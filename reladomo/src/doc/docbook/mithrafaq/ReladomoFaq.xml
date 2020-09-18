@@ -1654,7 +1654,7 @@ task mithraGenerateSources<< {
           generatedDir:'generated/java',
           nonGeneratedDir:'src/main/java',
           generateConcreteClasses:'true',
-          generateGscListMethod:'true'
+          generateEcListMethod:'true'
   )
 }
 

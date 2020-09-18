@@ -62,7 +62,9 @@ public class DateYearCalculator extends SingleAttributeNumericCalculator<DateAtt
     @Override
     public void appendToString(ToStringContext toStringContext)
     {
-        toStringContext.append(attribute.getAttributeName()).append(".year");
+        toStringContext.append("year(");
+        this.attribute.zAppendToString(toStringContext);
+        toStringContext.append(")");
     }
 
     @Override
@@ -72,5 +74,20 @@ public class DateYearCalculator extends SingleAttributeNumericCalculator<DateAtt
         LocalDate localDateAfter = new LocalDate().withYear(value + 1).withDayOfMonth(1).withMonthOfYear(1);
 
         return this.attribute.greaterThanEquals(localDateBefore.toDate()).and(attribute.lessThan(localDateAfter.toDate()));
+    }
+
+    public boolean equals(Object obj)
+    {
+        if (this == obj) return true;
+        if (obj.getClass().equals(this.getClass()))
+        {
+            return this.attribute.equals(((DateYearCalculator)obj).attribute);
+        }
+        return false;
+    }
+
+    public int hashCode()
+    {
+        return 0x45678123 ^ this.attribute.hashCode();
     }
 }

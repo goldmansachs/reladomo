@@ -31,7 +31,7 @@ public class MultiClientVmTestSuite extends TestSuite
 
     private Class testClass;
     private ClientVm clientVm;
-    private SlaveVm slaveVm;
+    private WorkerVm workerVm;
     private static BrokerService brokerService;
     private static NotificationServer notificationServer;
     private String url = "tcp://localhost:";
@@ -73,10 +73,10 @@ public class MultiClientVmTestSuite extends TestSuite
         try
         {
             this.startMessagingSystem();
-            this.createSlaveVm();
+            this.createWorkerVm();
             this.createClientVm();
-            slaveVm.startSlaveVm(testClass);
-            clientVm.startSlaveVm(testClass);
+            workerVm.startWorkerVm(testClass);
+            clientVm.startWorkerVm(testClass);
             super.run(result);
         }
         catch(RuntimeException e)
@@ -87,8 +87,8 @@ public class MultiClientVmTestSuite extends TestSuite
         }
         finally
         {
-            clientVm.shutdownSlaveVm();
-            slaveVm.shutdownSlaveVm();
+            clientVm.shutdownWorkerVm();
+            workerVm.shutdownWorkerVm();
             try
             {
                 if (brokerService != null)
@@ -114,11 +114,11 @@ public class MultiClientVmTestSuite extends TestSuite
         clientVm.setApplicationPort2(this.applicationPort2);
     }
 
-    protected void createSlaveVm()
+    protected void createWorkerVm()
     {
-        slaveVm = new SlaveVm();
-        slaveVm.setApplicationPort1(this.applicationPort1);
-        slaveVm.setApplicationPort2(this.applicationPort2);
+        workerVm = new WorkerVm();
+        workerVm.setApplicationPort1(this.applicationPort1);
+        workerVm.setApplicationPort2(this.applicationPort2);
     }
 
     public int getApplicationPort1()
@@ -135,15 +135,15 @@ public class MultiClientVmTestSuite extends TestSuite
     {
         MultiClientVmTest multiVmTest = (MultiClientVmTest) test;
         multiVmTest.setApplicationPorts(this.applicationPort1, this.applicationPort2);
-        RemoteSlaveVm remoteSlaveVm = slaveVm.getRemoteSlaveVm();
-        multiVmTest.setRemoteSlaveVm(remoteSlaveVm);
-        RemoteSlaveVm remoteClientVm = clientVm.getRemoteSlaveVm();
+        RemoteWorkerVm remoteWorkerVm = workerVm.getRemoteWorkerVm();
+        multiVmTest.setRemoteWorkerVm(remoteWorkerVm);
+        RemoteWorkerVm remoteClientVm = clientVm.getRemoteWorkerVm();
         multiVmTest.setRemoteClientVm(remoteClientVm);
-        remoteSlaveVm.executeMethod("slaveVmSetUp");
+        remoteWorkerVm.executeMethod("workerVmSetUp");
         remoteClientVm.executeMethod("clientVmSetUp");
         super.runTest(test, result);
         remoteClientVm.executeMethod("clientVmTearDown");
-        remoteSlaveVm.executeMethod("slaveVmTearDown");
+        remoteWorkerVm.executeMethod("workerVmTearDown");
     }
 
     private void startTcpMessagingSystem()

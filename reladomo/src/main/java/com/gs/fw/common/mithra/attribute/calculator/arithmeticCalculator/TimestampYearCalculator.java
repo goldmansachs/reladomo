@@ -18,6 +18,7 @@ package com.gs.fw.common.mithra.attribute.calculator.arithmeticCalculator;
 
 import com.gs.fw.common.mithra.attribute.CalculatedIntegerAttribute;
 import com.gs.fw.common.mithra.attribute.TimestampAttribute;
+import com.gs.fw.common.mithra.attribute.calculator.AbstractAbsoluteValueCalculator;
 import com.gs.fw.common.mithra.finder.Operation;
 import com.gs.fw.common.mithra.finder.SqlQuery;
 import com.gs.fw.common.mithra.finder.ToStringContext;
@@ -77,7 +78,9 @@ public class TimestampYearCalculator extends SingleAttributeNumericCalculator<Ti
     @Override
     public void appendToString(ToStringContext toStringContext)
     {
-        toStringContext.append(attribute.getAttributeName()).append(".year");
+        toStringContext.append("year(");
+        this.attribute.zAppendToString(toStringContext);
+        toStringContext.append(")");
     }
 
     @Override
@@ -91,5 +94,20 @@ public class TimestampYearCalculator extends SingleAttributeNumericCalculator<Ti
         Timestamp timestampAfter = new Timestamp(dateAfter.getMillis());
 
         return this.attribute.greaterThanEquals(timestampBefore).and(attribute.lessThan(timestampAfter));
+    }
+
+    public boolean equals(Object obj)
+    {
+        if (this == obj) return true;
+        if (obj.getClass().equals(this.getClass()))
+        {
+            return this.attribute.equals(((TimestampYearCalculator)obj).attribute);
+        }
+        return false;
+    }
+
+    public int hashCode()
+    {
+        return 0x78123456 ^ this.attribute.hashCode();
     }
 }

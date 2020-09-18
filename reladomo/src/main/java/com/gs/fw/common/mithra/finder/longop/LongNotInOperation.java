@@ -43,18 +43,6 @@ public class LongNotInOperation extends NotInOperation implements SqlParameterSe
     private LongSet set;
     private transient volatile long[] copiedArray;
 
-
-    /**
-     * @deprecated  GS Collections variant of public APIs will be decommissioned in Mar 2019.
-     * Use Eclipse Collections variant of the same API instead.
-     **/
-    @Deprecated
-    public LongNotInOperation(LongAttribute attribute, com.gs.collections.api.set.primitive.LongSet longSet)
-    {
-        super(attribute);
-        this.set = LongSets.immutable.of(longSet.toArray());
-    }
-
     public LongNotInOperation(LongAttribute attribute, LongSet longSet)
     {
         super(attribute);

@@ -55,5 +55,8 @@
             LewContract.acctId = this.accountId
     </Relationship>
 
+    <Relationship name="testOneToOneSourceParam" relatedObject="DatedAccount" cardinality="one-to-one" parameters="int param">
+        DatedAccount.id = this.accountId and DatedAccount.deskId = {DatedAccount.complexFunction(param, 0)}
+    </Relationship>
     <Index name="byNumber" unique="true">accountNumber,accountSubNumber,acctMstrSrc</Index>
 </MithraObject>

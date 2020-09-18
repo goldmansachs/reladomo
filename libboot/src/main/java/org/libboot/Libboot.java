@@ -197,8 +197,8 @@ public class Libboot
             // repoName, urlPattern
             // urlPattern must include {groupIdWithSlashes} {artifactId} {version} {ext} in it.
             // example:
-            // central, http://repo.maven.apache.org/maven2/{groupIdWithSlashes}/{version}/{artifactId}-{version}.{ext}
-            // nexusMirror, http://mirror.foo.com/service/local/repositories/central/content/{groupIdWithSlashes}/{artifactId}/{version}/{artifactId}-{version}.{ext}
+            // central, https://repo.maven.apache.org/maven2/{groupIdWithSlashes}/{version}/{artifactId}-{version}.{ext}
+            // nexusMirror, https://mirror.foo.com/service/local/repositories/central/content/{groupIdWithSlashes}/{artifactId}/{version}/{artifactId}-{version}.{ext}
             this.repos = new HashMap<String, Repo>();
             File repoFile = new File(this.repo);
             int lineNum = 0;

@@ -16,18 +16,21 @@
 
 package com.gs.fw.common.mithra.finder;
 
-import com.gs.fw.common.mithra.attribute.NonPrimitiveAttribute;
-import com.gs.fw.common.mithra.extractor.Extractor;
-import com.gs.fw.common.mithra.finder.paramop.OpWithBigDecimalParamExtractor;
-import com.gs.fw.common.mithra.finder.paramop.OpWithObjectParam;
-import com.gs.fw.common.mithra.finder.paramop.OpWithStringParamExtractor;
-
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import com.gs.fw.common.mithra.attribute.NonPrimitiveAttribute;
+import com.gs.fw.common.mithra.extractor.Extractor;
+import com.gs.fw.common.mithra.extractor.OperationParameterExtractor;
+import com.gs.fw.common.mithra.extractor.StringExtractor;
+import com.gs.fw.common.mithra.finder.paramop.OpWithBigDecimalParamExtractor;
+import com.gs.fw.common.mithra.finder.paramop.OpWithObjectParam;
+import com.gs.fw.common.mithra.finder.paramop.OpWithStringParamExtractor;
+import com.gs.fw.common.mithra.util.HashUtil;
+import com.gs.fw.common.mithra.util.StringPool;
 
 
-public class NonPrimitiveNotEqOperation extends AtomicNotEqualityOperation implements SqlParameterSetter, OpWithObjectParam
+public class NonPrimitiveNotEqOperation extends AtomicNotEqualityOperation implements SqlParameterSetter, OpWithObjectParam, OperationWithParameterExtractor
 {
     private Object parameter;
 
@@ -100,6 +103,104 @@ public class NonPrimitiveNotEqOperation extends AtomicNotEqualityOperation imple
     {
         this.getAttribute().zAppendToString(toStringContext);
         toStringContext.append("!=");
-        toStringContext.append("\"" + this.getParameterAsObject().toString() + "\"");
+        NonPrimitiveAttribute nonPrimitiveAttribute = (NonPrimitiveAttribute) this.getAttribute();
+        String formattedValue = nonPrimitiveAttribute.formattedValue(this.getParameterAsObject());
+        toStringContext.append(formattedValue);
+    }
+
+    public Extractor getParameterExtractor()
+    {
+        return new ParameterExtractor();
+    }
+
+    protected class ParameterExtractor extends OperationParameterExtractor implements StringExtractor
+    {
+        public Object valueOf(Object o)
+        {
+            return getParameterAsObject();
+        }
+
+        @Override
+        public int offHeapValueOf(Object o)
+        {
+            return StringPool.getInstance().getOffHeapAddressWithoutAdding((String)getParameterAsObject());
+        }
+
+        @Override
+        public String stringValueOf(Object o)
+        {
+            return (String) getParameterAsObject();
+        }
+
+        @Override
+        public void setStringValue(Object o, String newValue)
+        {
+            throw new RuntimeException("not implemented");
+        }
+
+        public boolean isAttributeNull(Object o)
+        {
+            return this.valueOf(o) == null;
+        }
+
+        public int valueHashCode(Object o)
+        {
+            return valueOf(o).hashCode();
+        }
+
+        public boolean valueEquals(Object first, Object second)
+        {
+            if (first == second) return true;
+            boolean firstNull = this.isAttributeNull(first);
+            boolean secondNull = this.isAttributeNull(second);
+            if (firstNull) return secondNull;
+            return this.valueOf(first).equals(this.valueOf(second));
+        }
+
+        public boolean valueEquals(Object first, Object second, Extractor secondExtractor)
+        {
+            Object firstValue = this.valueOf(first);
+            Object secondValue = secondExtractor.valueOf(second);
+            if (firstValue == secondValue) return true; // takes care of both null
+
+            return (firstValue != null) && firstValue.equals(secondValue);
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (obj instanceof ParameterExtractor)
+            {
+                return nullSafeEquals(getParameterAsObject(), ((ParameterExtractor) obj).valueOf(null));
+            }
+            return false;
+        }
+
+        private boolean nullSafeEquals(Object value, Object other)
+        {
+            if (value == null)
+            {
+                if (other == null)
+                {
+                    return true;
+                }
+            }
+            else if (other == value || value.equals(other))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            Object p = getParameterAsObject();
+            if (p == null)
+            {
+                return HashUtil.NULL_HASH;
+            }
+            return p.hashCode();
+        }
     }
 }

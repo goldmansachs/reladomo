@@ -18,6 +18,8 @@
 package com.gs.fw.common.mithra.cacheloader;
 
 
+import com.gs.fw.common.mithra.MithraDatabaseObject;
+import com.gs.fw.common.mithra.MithraObjectDeserializer;
 import com.gs.fw.common.mithra.attribute.AsOfAttribute;
 import com.gs.fw.common.mithra.attribute.Attribute;
 import com.gs.fw.common.mithra.connectionmanager.ObjectSourceConnectionManager;
@@ -315,22 +317,30 @@ public abstract class AbstractLoaderFactory implements TopLevelLoaderFactory
 
     protected String getDatabaseIdentifier(Object sourceAttribute)
     {
-        Object connectionManager = this.runtimeCacheController.getMithraObjectPortal().getDatabaseObject().getConnectionManager();
-        if (connectionManager instanceof SourcelessConnectionManager)
+        MithraObjectDeserializer factory = this.runtimeCacheController.getMithraObjectPortal().getMithraObjectDeserializer();
+        if (factory instanceof MithraDatabaseObject)
         {
-            return ((SourcelessConnectionManager) connectionManager).getDatabaseIdentifier();
-        }
-        else if (connectionManager instanceof ObjectSourceConnectionManager)
-        {
-            if (!CacheLoaderConfig.isSourceAttribute(sourceAttribute))
+            Object connectionManager = ((MithraDatabaseObject) factory).getConnectionManager();
+            if (connectionManager instanceof SourcelessConnectionManager)
             {
-                throw new RuntimeException("Factory must define sourceAttributes (" + this + ").");
+                return ((SourcelessConnectionManager) connectionManager).getDatabaseIdentifier();
             }
-            return ((ObjectSourceConnectionManager) connectionManager).getDatabaseIdentifier(sourceAttribute);
+            else if (connectionManager instanceof ObjectSourceConnectionManager)
+            {
+                if (!CacheLoaderConfig.isSourceAttribute(sourceAttribute))
+                {
+                    throw new RuntimeException("Factory must define sourceAttributes (" + this + ").");
+                }
+                return ((ObjectSourceConnectionManager) connectionManager).getDatabaseIdentifier(sourceAttribute);
+            }
+            else
+            {
+                throw new RuntimeException("Cannot handle ConnectionManager class: " + connectionManager.getClass() + " factory: " + this);
+            }
         }
         else
         {
-            throw new RuntimeException("Cannot handle ConnectionManager class: " + connectionManager.getClass() + " factory: " + this);
+            return "pure" + (sourceAttribute == null ? "" : "-" + sourceAttribute);
         }
     }
 

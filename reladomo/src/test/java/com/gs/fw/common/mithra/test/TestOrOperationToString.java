@@ -43,15 +43,15 @@ public class TestOrOperationToString extends MithraTestAbstract
         LongHashSet gscLongSet = LongHashSet.newSetWith(1000000L, 2000000L);
         SortedSet<Timestamp> timestampSet = new TreeSet<Timestamp>(UnifiedSet.newSetWith(InfinityTimestamp.getParaInfinity(), new Timestamp(getDawnOfTime().getTime())));
         Operation op = ParaDeskFinder.connectionLong().in(gscLongSet).or(ParaDeskFinder.createTimestamp().in(timestampSet));
-        assertTrue(op.toString().equals(" ( ( ParaDesk.connectionLong in [1000000, 2000000] ) | ( ParaDesk.createTimestamp in [1900-01-01 00:00:00.0, 9999-12-01 23:59:00.0] ) )")
-                || op.toString().equals(" ( ( ParaDesk.connectionLong in [2000000, 1000000] ) | ( ParaDesk.createTimestamp in [1900-01-01 00:00:00.0, 9999-12-01 23:59:00.0] ) )"));
+        assertTrue(op.toString(), op.toString().equals(" ( ( ParaDesk.connectionLong in [1000000, 2000000] ) | ( ParaDesk.createTimestamp in [\"1900-01-01 00:00:00.0\", \"9999-12-01 23:59:00.0\"] ) )")
+                || op.toString().equals(" ( ( ParaDesk.connectionLong in [2000000, 1000000] ) | ( ParaDesk.createTimestamp in [\"1900-01-01 00:00:00.0\", \"9999-12-01 23:59:00.0\"] ) )"));
     }
 
     public void testOrWithEqualsAndIn()
     {
         SortedSet<String> stringSet = new TreeSet<String>(UnifiedSet.newSetWith("lsd", "swp"));
         Operation op = ParaDeskFinder.deskIdString().in(stringSet).or(ParaDeskFinder.statusChar().eq('A'));
-        assertEquals(" ( ( ParaDesk.deskIdString in [lsd, swp] ) | ( ParaDesk.statusChar = A ) )", op.toString());
+        assertEquals(" ( ( ParaDesk.deskIdString in [\"lsd\", \"swp\"] ) | ( ParaDesk.statusChar = A ) )", op.toString());
     }
 
     public void testOrWithDuplicates()

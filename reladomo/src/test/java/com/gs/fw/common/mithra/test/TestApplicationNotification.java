@@ -367,7 +367,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         assertFalse(orderList.isStale());
 
         int orderUpdateClassCount = OrderFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverInsertOrder",
+        this.getRemoteWorkerVm().executeMethod("serverInsertOrder",
                 new Class[]{int.class, int.class, String.class, String.class},
                 new Object[]{new Integer(orderId), new Integer(userId), state, newTrackingId});
         waitForMessages(orderUpdateClassCount, OrderFinder.getMithraObjectPortal());
@@ -404,7 +404,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
         int orderUpdateClassCount = OrderFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverInsertOrder",
+        this.getRemoteWorkerVm().executeMethod("serverInsertOrder",
                 new Class[]{int.class, int.class, String.class, String.class},
                 new Object[]{new Integer(newOrderId), new Integer(newUserId), state, newTrackingId});
         waitForMessages(orderUpdateClassCount, OrderFinder.getMithraObjectPortal());
@@ -436,7 +436,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         EmployeeFinder.registerForNotification(sourceId2, classLevelListener2);
         waitForRegistrationToComplete();
 
-        this.getRemoteSlaveVm().executeMethod("serverInsertEmployee",
+        this.getRemoteWorkerVm().executeMethod("serverInsertEmployee",
                 new Class[]{int.class, int.class, String.class},
                 new Object[]{new Integer(sourceId1), new Integer(newId), email});
 
@@ -451,7 +451,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         classLevelListener1.reset();
         classLevelListener2.reset();
 
-        this.getRemoteSlaveVm().executeMethod("serverInsertEmployee",
+        this.getRemoteWorkerVm().executeMethod("serverInsertEmployee",
                 new Class[]{int.class, int.class, String.class},
                 new Object[]{new Integer(sourceId2), new Integer(newId), email});
 
@@ -481,7 +481,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         orderList.registerForNotification(listener);
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class,String.class, int.class, String.class},
                 new Object[]{new Integer(orderId), state, new Integer(userId),newTrackingId});
         waitForMessages(orderUpdateClassCount, OrderFinder.getMithraObjectPortal());
@@ -519,7 +519,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         orderList.registerForNotification(listener);
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class,String.class, int.class, String.class},
                 new Object[]{new Integer(orderId), state, new Integer(newUserId),trackingId});
         waitForAttributeUpdate(userIdAttributeUpdateCount, OrderFinder.userId());
@@ -551,7 +551,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         orderList.registerForNotification(listener);
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverDeleteOrder",
+        this.getRemoteWorkerVm().executeMethod("serverDeleteOrder",
                 new Class[]{int.class},
                 new Object[]{new Integer(1)});
         waitForMessages(orderUpdateClassCount, OrderFinder.getMithraObjectPortal());
@@ -584,7 +584,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         orderList.registerForNotification(listener);
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverDeleteOrder",
+        this.getRemoteWorkerVm().executeMethod("serverDeleteOrder",
                 new Class[]{int.class},
                 new Object[]{new Integer(4)});
         waitForMessages(orderUpdateClassCount, OrderFinder.getMithraObjectPortal());
@@ -615,7 +615,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         teamList.registerForNotification(listener);
         TeamFinder.registerForNotification("A", classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateTeamName",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateTeamName",
                 new Class[]{String.class, int.class,String.class},
                 new Object[]{"A", new Integer(998), "New Team Name"});
         waitForMessages(updateClassCount, TeamFinder.getMithraObjectPortal());
@@ -636,7 +636,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         TeamFinder.registerForNotification("A", classLevelListener2);
         waitForRegistrationToComplete();
         updateClassCount = TeamFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverDeleteTeam",
+        this.getRemoteWorkerVm().executeMethod("serverDeleteTeam",
                 new Class[]{String.class, int.class},
                 new Object[]{"A", new Integer(998)});
         waitForMessages(updateClassCount, TeamFinder.getMithraObjectPortal());
@@ -671,7 +671,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         teamList1.registerForNotification(listener);
         TeamFinder.registerForNotification("A", classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateTeamName",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateTeamName",
                 new Class[]{String.class, int.class,String.class},
                 new Object[]{"A", new Integer(998), "New Team Name"});
         waitForMessages(updateClassCount, TeamFinder.getMithraObjectPortal());
@@ -687,7 +687,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         assertFalse(listener.isUpdated());
         assertFalse(classLevelListener.isUpdated());
         updateClassCount = TeamFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverDeleteTeam",
+        this.getRemoteWorkerVm().executeMethod("serverDeleteTeam",
                 new Class[]{String.class, int.class},
                 new Object[]{"A", new Integer(997)});
 
@@ -715,7 +715,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
 //        TestMithraApplicationNotificationListener listener = new TestMithraApplicationNotificationListener();
 //        teamList0.registerForNotification(listener);
 //
-//        this.getRemoteSlaveVm().executeMethod("serverUpdatePlayerName",
+//        this.getRemoteWorkerVm().executeMethod("serverUpdatePlayerName",
 //                new Class[]{String.class, int.class,String.class},
 //                new Object[]{"A", new Integer(100), "John C. Doe"});
 //        waitForMessages(playerUpdateClassCount, PlayerFinder.getMithraObjectPortal());
@@ -739,7 +739,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         orderList.registerForNotification(listener);
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverMassDeleteOrdersForUser",
+        this.getRemoteWorkerVm().executeMethod("serverMassDeleteOrdersForUser",
                 new Class[]{int.class},
                 new Object[]{new Integer(1)});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -773,7 +773,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         orderList.registerForNotification(listener);
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverMassDeleteOrdersForUser",
+        this.getRemoteWorkerVm().executeMethod("serverMassDeleteOrdersForUser",
                 new Class[]{int.class},
                 new Object[]{new Integer(1)});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -805,7 +805,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         orderList.registerForNotification(listener);
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverMassDeleteOrdersForUser",
+        this.getRemoteWorkerVm().executeMethod("serverMassDeleteOrdersForUser",
                 new Class[]{int.class},
                 new Object[]{new Integer(2)});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -836,7 +836,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         orderList.registerForNotification(listener);
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverInsertOrder",
+        this.getRemoteWorkerVm().executeMethod("serverInsertOrder",
                 new Class[]{int.class, int.class, String.class, String.class},
                 new Object[]{new Integer(orderId), new Integer(userId), state, trackingId});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -868,7 +868,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         orderList.registerForNotification(listener);
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class,String.class, int.class, String.class},
                 new Object[]{new Integer(5), "Completed", new Integer(userId), trackingId});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -898,7 +898,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         orderList.registerForNotification(listener);
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class,String.class, int.class, String.class},
                 new Object[]{new Integer(1), "Completed", new Integer(userId), trackingId});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -928,7 +928,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         orderList.registerForNotification(listener);
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverDeleteOrder",
+        this.getRemoteWorkerVm().executeMethod("serverDeleteOrder",
                 new Class[]{int.class}, new Object[]{new Integer(5)});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
 
@@ -957,7 +957,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         orderList.registerForNotification(listener);
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverDeleteOrder",
+        this.getRemoteWorkerVm().executeMethod("serverDeleteOrder",
                 new Class[]{int.class}, new Object[]{new Integer(1)});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
 
@@ -979,7 +979,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         teamList.registerForNotification(listener);
         TeamFinder.registerForNotification(Sets.mutable.of("A", "B"), classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateTeamName",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateTeamName",
                 new Class[]{String.class, int.class,String.class},
                 new Object[]{"B", new Integer(1003), "New Team 1003 B"});
         waitForMessages(updateClassCount, TeamFinder.getMithraObjectPortal());
@@ -994,7 +994,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         listener.reset();
         classLevelListener.reset();
         updateClassCount = TeamFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateTeamName",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateTeamName",
                 new Class[]{String.class, int.class,String.class},
                 new Object[]{"A", new Integer(1004), "New Team 1004 A"});
         waitForMessages(updateClassCount, TeamFinder.getMithraObjectPortal());
@@ -1019,7 +1019,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         teamList.registerForNotification(listener);
         TeamFinder.registerForNotification("A", classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateTeamName",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateTeamName",
                 new Class[]{String.class, int.class,String.class},
                 new Object[]{"A", new Integer(999), "New Team Name"});
         waitForAttributeUpdate(teamNameAttributeUpdateCount, TeamFinder.name());
@@ -1041,7 +1041,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         }
         teamList.insertAll();
         int updateClassCount = TeamFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateTeamName",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateTeamName",
                 new Class[]{String.class, int.class,String.class},
                 new Object[]{"A", new Integer(1), "New Team Name"});
         waitForMessages(updateClassCount, TeamFinder.getMithraObjectPortal());
@@ -1065,7 +1065,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         teamList.registerForNotification(listener);
         TeamFinder.registerForNotification(Sets.mutable.of("A", "B"), classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateTeamName",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateTeamName",
                 new Class[]{String.class, int.class,String.class},
                 new Object[]{"B", new Integer(1003), "New Team 1003 B"});
         waitForMessages(updateClassCount, TeamFinder.getMithraObjectPortal());
@@ -1080,7 +1080,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         listener.reset();
         classLevelListener.reset();
         updateClassCount = TeamFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateTeamName",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateTeamName",
                 new Class[]{String.class, int.class,String.class},
                 new Object[]{"A", new Integer(1004), "New Team 1004 A"});
         waitForMessages(updateClassCount, TeamFinder.getMithraObjectPortal());
@@ -1107,7 +1107,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         teamList.add(team);
         updateClassCount = TeamFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
         //server-side update the newly added team
-        this.getRemoteSlaveVm().executeMethod("serverUpdateTeamName",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateTeamName",
                 new Class[]{String.class, int.class,String.class},
                 new Object[]{"B", new Integer(10999), "New Team 999"});
         waitForMessages(updateClassCount, TeamFinder.getMithraObjectPortal());
@@ -1126,7 +1126,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         assertFalse(classLevelListener.isUpdated());
         //server-side update a team which is not in the list
         int teamNameAttributeUpdateCount = TeamFinder.name().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateTeamName",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateTeamName",
                 new Class[]{String.class, int.class,String.class},
                 new Object[]{"A", new Integer(999), "New Team 999A"});
         waitForAttributeUpdate(teamNameAttributeUpdateCount, TeamFinder.name());
@@ -1156,7 +1156,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         orderList.registerForNotification(listener);
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class,String.class, int.class, String.class},
                 new Object[]{new Integer(5), "Completed", new Integer(userId), trackingId});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -1181,7 +1181,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         order.insert();
         orderList.add(order);
         updateClassCount = OrderFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class,String.class, int.class, String.class},
                 new Object[]{new Integer(999), "Completed", new Integer(userId), trackingId});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -1211,7 +1211,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         orderList.registerForNotification(listener);
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class,String.class, int.class, String.class},
                 new Object[]{new Integer(5), "Completed", new Integer(userId), trackingId});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -1236,7 +1236,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         order.insert();
         orderList.add(2, order);
         updateClassCount = OrderFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class,String.class, int.class, String.class},
                 new Object[]{new Integer(999), "Completed", new Integer(userId), trackingId});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -1268,7 +1268,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         newOrderList.addAll(orderList);
         newOrderList.insertAll();
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class,String.class, int.class, String.class},
                 new Object[]{new Integer(5), "Completed", new Integer(userId), trackingId});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -1293,7 +1293,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         order.insert();
         newOrderList.add(order);
         updateClassCount = OrderFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class,String.class, int.class, String.class},
                 new Object[]{new Integer(999), "Completed", new Integer(userId), trackingId});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -1332,7 +1332,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         newOrderList.addAll(1, orderList);
         newOrderList.insertAll();
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class, String.class, int.class, String.class},
                 new Object[]{new Integer(5), "Completed", new Integer(userId), trackingId});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -1363,7 +1363,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         orderList.registerForNotification(listener);
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class,String.class, int.class, String.class},
                 new Object[]{new Integer(5), "Completed", new Integer(userId), trackingId});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -1383,7 +1383,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
 
         updateClassCount = OrderFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
         int stateAttributeUpdateCount = OrderFinder.state().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class,String.class, int.class, String.class},
                 new Object[]{new Integer(5), "In-Progress", new Integer(userId), trackingId});
         waitForAttributeUpdate(stateAttributeUpdateCount, OrderFinder.state());
@@ -1412,7 +1412,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         orderList.registerForNotification(listener);
         OrderFinder.registerForNotification(classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class,String.class, int.class, String.class},
                 new Object[]{new Integer(5), "Completed", new Integer(userId), trackingId});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -1432,7 +1432,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         System.gc();
         Thread.yield();
 
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class,String.class, int.class, String.class},
                 new Object[]{new Integer(5), "In-Progress", new Integer(userId), trackingId});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -1452,7 +1452,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         teamList.registerForNotification(listener);
         TeamFinder.registerForNotification("A", classLevelListener);
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateTeamName",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateTeamName",
                 new Class[]{String.class, int.class,String.class},
                 new Object[]{"A", new Integer(999), "New Team Name"});
         waitForAttributeUpdate(teamNameAttributeUpdateCount, TeamFinder.name());
@@ -1487,7 +1487,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         classLevelListener.reset();
 
         updateClassCount = TeamFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateTeamName",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateTeamName",
                 new Class[]{String.class, int.class,String.class},
                 new Object[]{"A", new Integer(1), "New Team Name"});
         waitForMessages(updateClassCount, TeamFinder.getMithraObjectPortal());
@@ -1513,7 +1513,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         TeamFinder.registerForNotification("A", classLevelListener2);
 
         teamNameAttributeUpdateCount = TeamFinder.name().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateTeamName",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateTeamName",
                 new Class[]{String.class, int.class,String.class},
                 new Object[]{"A", new Integer(1), "Newest Team Name"});
         waitForAttributeUpdate(teamNameAttributeUpdateCount, TeamFinder.name());
@@ -1571,7 +1571,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         classLevelListener2.reset();
 
         updateClassCount = TeamFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateTeamName",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateTeamName",
                 new Class[]{String.class, int.class,String.class},
                 new Object[]{"A", new Integer(1000), "Newest Team Name 999"});
         waitForMessages(updateClassCount, TeamFinder.getMithraObjectPortal());
@@ -1622,7 +1622,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         assertFalse(classLevelListener.isDeleted());
         waitForRegistrationToComplete();
         //server-side delete employee from list 0
-        this.getRemoteSlaveVm().executeMethod("serverDeleteEmployee",
+        this.getRemoteWorkerVm().executeMethod("serverDeleteEmployee",
                 new Class[]{int.class, int.class},
                 new Object[]{new Integer(0), new Integer(1001)});
         waitForMessages(updateClassCount, EmployeeFinder.getMithraObjectPortal());
@@ -1644,7 +1644,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         assertFalse(classLevelListener.isDeleted());
 
         //server-side delete employee from list 1
-        this.getRemoteSlaveVm().executeMethod("serverDeleteEmployee",
+        this.getRemoteWorkerVm().executeMethod("serverDeleteEmployee",
                 new Class[]{int.class, int.class},
                 new Object[]{new Integer(0), new Integer(2005)});
         waitForMessages(updateClassCount, EmployeeFinder.getMithraObjectPortal());
@@ -1678,7 +1678,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         OrderFinder.registerForNotification(classLevelListener);
         tx.commit();
         waitForRegistrationToComplete();
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class,String.class, int.class, String.class},
                 new Object[]{new Integer(5), "Completed", new Integer(userId), trackingId});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -1698,7 +1698,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         System.gc();
         Thread.yield();
 
-        this.getRemoteSlaveVm().executeMethod("serverUpdateOrder",
+        this.getRemoteWorkerVm().executeMethod("serverUpdateOrder",
                 new Class[]{int.class,String.class, int.class, String.class},
                 new Object[]{new Integer(5), "In-Progress", new Integer(userId), trackingId});
         waitForMessages(updateClassCount, OrderFinder.getMithraObjectPortal());
@@ -1733,7 +1733,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         waitForRegistrationToComplete();
 
         int orderUpdateClassCount = OrderFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverDeleteOrder",
+        this.getRemoteWorkerVm().executeMethod("serverDeleteOrder",
                 new Class[]{int.class}, new Object[]{new Integer(1)});
         waitForMessages(orderUpdateClassCount, OrderFinder.getMithraObjectPortal());
 
@@ -1768,7 +1768,7 @@ public class TestApplicationNotification extends RemoteMithraNotificationTestCas
         classLevelListener2.reset();
 
         orderUpdateClassCount = OrderFinder.getMithraObjectPortal().getPerClassUpdateCountHolder().getUpdateCount();
-        this.getRemoteSlaveVm().executeMethod("serverDeleteOrder",
+        this.getRemoteWorkerVm().executeMethod("serverDeleteOrder",
                 new Class[]{int.class}, new Object[]{new Integer(2)});
         waitForMessages(orderUpdateClassCount, OrderFinder.getMithraObjectPortal());
 

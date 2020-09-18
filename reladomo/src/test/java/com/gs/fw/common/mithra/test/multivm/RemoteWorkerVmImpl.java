@@ -24,26 +24,26 @@ import java.lang.reflect.Method;
 
 
 
-public class RemoteSlaveVmImpl implements RemoteSlaveVm
+public class RemoteWorkerVmImpl implements RemoteWorkerVm
 {
-    private static  Logger logger = LoggerFactory.getLogger(RemoteSlaveVmImpl.class.getName());
+    private static  Logger logger = LoggerFactory.getLogger(RemoteWorkerVmImpl.class.getName());
 
     private static MultiVmTest runningTest;
     private static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
     private static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
 
-    private static SlaveVmHeartbeat heartbeat;
+    private static WorkerVmHeartbeat heartbeat;
 
-    public RemoteSlaveVmImpl()
+    public RemoteWorkerVmImpl()
     {
         if (heartbeat == null)
         {
-            heartbeat = new SlaveVmHeartbeat();
+            heartbeat = new WorkerVmHeartbeat();
             heartbeat.start();
         }
     }
 
-    public static void exitSlaveVm()
+    public static void exitWorkerVm()
     {
         synchronized(heartbeat)
         {
@@ -70,7 +70,7 @@ public class RemoteSlaveVmImpl implements RemoteSlaveVm
             Throwable t = ite.getTargetException();
             if (t instanceof Error) throw (Error) t;
             if (t instanceof RuntimeException) throw (RuntimeException) t;
-            throw new RemoteSlaveVmException("Could not execute method"+methodName+" on class "+runningTest.getClass().getName(), ite);
+            throw new RemoteWorkerVmException("Could not execute method"+methodName+" on class "+runningTest.getClass().getName(), ite);
         }
         catch(Error e)
         {
@@ -83,7 +83,7 @@ public class RemoteSlaveVmImpl implements RemoteSlaveVm
         catch (Exception e)
         {
             logger.error("Could not execute method "+methodName+" on class "+runningTest.getClass().getName(), e);
-            throw new RemoteSlaveVmException("Could not execute method "+methodName+" on class "+runningTest.getClass().getName(), e);
+            throw new RemoteWorkerVmException("Could not execute method "+methodName+" on class "+runningTest.getClass().getName(), e);
         }
     }
 
@@ -100,7 +100,7 @@ public class RemoteSlaveVmImpl implements RemoteSlaveVm
             Throwable t = ite.getTargetException();
             if (t instanceof Error) throw (Error) t;
             if (t instanceof RuntimeException) throw (RuntimeException) t;
-            throw new RemoteSlaveVmException("Could not execute method"+methodName+" on class "+runningTest.getClass().getName(), ite);
+            throw new RemoteWorkerVmException("Could not execute method"+methodName+" on class "+runningTest.getClass().getName(), ite);
         }
         catch(Error e)
         {
@@ -113,7 +113,7 @@ public class RemoteSlaveVmImpl implements RemoteSlaveVm
         catch (Exception e)
         {
             logger.error("Could not execute method "+methodName+" on class "+runningTest.getClass().getName(), e);
-            throw new RemoteSlaveVmException("Could not execute method "+methodName+" on class "+runningTest.getClass().getName(), e);
+            throw new RemoteWorkerVmException("Could not execute method "+methodName+" on class "+runningTest.getClass().getName(), e);
         }
     }
 
@@ -122,12 +122,12 @@ public class RemoteSlaveVmImpl implements RemoteSlaveVm
         runningTest = testCase;
     }
 
-    private static class SlaveVmHeartbeat extends Thread
+    private static class WorkerVmHeartbeat extends Thread
     {
         private boolean done = false;
         private long lastPingTime;
 
-        public SlaveVmHeartbeat()
+        public WorkerVmHeartbeat()
         {
             this.setDaemon(false);
             this.setPriority(Thread.MIN_PRIORITY);
@@ -152,10 +152,10 @@ public class RemoteSlaveVmImpl implements RemoteSlaveVm
                 {
                     synchronized(this)
                     {
-                        this.wait(SlaveVm.HEARTBEAT_INTERVAL_MS);
-                        if (lastPingTime < System.currentTimeMillis() - SlaveVm.PING_INTERVAL_MS * 5)
+                        this.wait(WorkerVm.HEARTBEAT_INTERVAL_MS);
+                        if (lastPingTime < System.currentTimeMillis() - WorkerVm.PING_INTERVAL_MS * 5)
                         {
-                            System.out.println("Forcing SlaveVm shutdown.");
+                            System.out.println("Forcing WorkerVm shutdown.");
                             System.exit(-1);
                         }
                     }

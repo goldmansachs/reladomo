@@ -220,6 +220,7 @@ public class WildcardParser implements Serializable
             if (inEscapeSequence)
             {
                 inEscapeSequence = false;
+                last = c;
                 continue;
             }
 
@@ -328,6 +329,7 @@ public class WildcardParser implements Serializable
             if (inEscapeSequence)
             {
                 inEscapeSequence = false;
+                last = c;
                 continue;
             }
 
@@ -405,6 +407,7 @@ public class WildcardParser implements Serializable
             if (inEscapeSequence)
             {
                 inEscapeSequence = false;
+                last = c;
                 continue;
             }
 

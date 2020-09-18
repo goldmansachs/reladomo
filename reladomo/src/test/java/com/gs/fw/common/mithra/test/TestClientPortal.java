@@ -2312,7 +2312,7 @@ public class TestClientPortal extends RemoteMithraServerTestCase
         TamsAccount tamsAccount = TamsAccountFinder.findOne(TamsAccountFinder.accountNumber().eq("7410161001").and(
                 TamsAccountFinder.deskId().eq("A")).and(TamsAccountFinder.businessDate().eq(asOf)));
         assertNotNull(tamsAccount);
-        this.getRemoteSlaveVm().executeMethod("serverUpdatePnlGroupOnTamsAccount");
+        this.getRemoteWorkerVm().executeMethod("serverUpdatePnlGroupOnTamsAccount");
         TamsAccountList tal = new TamsAccountList(TamsAccountFinder.deskId().eq("A").and(TamsAccountFinder.businessDate().eq(asOf)));
         tal.forceResolve();
         tamsAccount = TamsAccountFinder.findOneBypassCache(TamsAccountFinder.accountNumber().eq("7410161001").and(
@@ -2342,7 +2342,7 @@ public class TestClientPortal extends RemoteMithraServerTestCase
         TamsAccount tamsAccount = TamsAccountFinder.findOne(TamsAccountFinder.accountNumber().eq("7410161001").and(
                 TamsAccountFinder.deskId().eq("A")).and(TamsAccountFinder.businessDate().eq(asOf)));
         assertNotNull(tamsAccount);
-        this.getRemoteSlaveVm().executeMethod("serverUpdatePnlGroupAndBusinessToDate");
+        this.getRemoteWorkerVm().executeMethod("serverUpdatePnlGroupAndBusinessToDate");
 
         tamsAccount = TamsAccountFinder.findOneBypassCache(TamsAccountFinder.accountNumber().eq("7410161001").and(
                 TamsAccountFinder.deskId().eq("A")).and(TamsAccountFinder.businessDate().eq(asOf)));
@@ -2372,7 +2372,7 @@ public class TestClientPortal extends RemoteMithraServerTestCase
         TamsAccount tamsAccount = TamsAccountFinder.findOne(TamsAccountFinder.accountNumber().eq("7410161001").and(
                 TamsAccountFinder.deskId().eq("A")).and(TamsAccountFinder.businessDate().eq(asOf)));
         assertNotNull(tamsAccount);
-        this.getRemoteSlaveVm().executeMethod("serverChainInNewTamsAccount");
+        this.getRemoteWorkerVm().executeMethod("serverChainInNewTamsAccount");
 
         tamsAccount = TamsAccountFinder.findOneBypassCache(TamsAccountFinder.accountNumber().eq("7410161001").and(
                 TamsAccountFinder.deskId().eq("A")).and(TamsAccountFinder.businessDate().eq(asOf)));

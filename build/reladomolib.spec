@@ -1,6 +1,5 @@
 # <repo>, <groupId>, <artifactId>, <version>, <extension>, <destDir>, <checksum>
 # central,org.apache.ant,ant,1.9.6,jar,build/lib,80E2063B01BAB3C79C2D84E4ED5E73868394C85A
-central,com.goldmansachs,gs-collections-api,5.1.0,jar,lib/compile,EA605CDF64CAB5FC7B48C99F061D4C8DB05B6FF1
 central,org.eclipse.collections,eclipse-collections-api,7.1.1,jar,lib/compile,806C2B3BEF5364D1A1668F25CE70100FA2C6B919
 central,org.eclipse.collections,eclipse-collections,7.1.1,jar,lib/compile,83ECA9F03F1F2D055DF453D72036C5CE2E82896B
 central,joda-time,joda-time,2.9.4,jar,lib/compile,1C295B462F16702EBE720BBB08F62E1BA80DA41B
@@ -71,6 +70,15 @@ central,org.javassist,javassist,3.20.0-GA,jar,lib/serial,A9CBCDFB7E9F86FBC74D3AF
 
 #xa libs:
 central,org.apache.geronimo.specs,geronimo-jms_1.1_spec,1.1.1,jar,lib/xa,C872B46C601D8DC03633288B81269F9E42762CEA
+
+#graphql
+central,javax.servlet,javax.servlet-api,3.0.1,jar,build/lib/graphql,6BF0EBB7EFD993E222FC1112377B5E92A13B38DD
+central,com.graphql-java,graphql-java,13.0,jar,build/lib/graphql,F3D5C387CF09A13922F719FC984E7B6CBF2A3CCF
+central,com.graphql-java-kickstart,graphql-java-servlet,8.0.0,jar,build/lib/graphql,F0FEE2A1DD3715EE93473A54FA93F7CFDFC24E46
+central,com.graphql-java,graphql-java-extended-scalars,1.0,jar,build/lib/graphql,D798F4D543331B26E5E0B359D84D775F66B0E3E0
+central,org.skyscreamer,jsonassert,1.5.0,jar,lib/test,6C9D5FE2F59DA598D9AEFC1CFC6528FF3CF32DF3
+central,com.vaadin.external.google,android-json,0.0.20131108.vaadin1,jar,lib/test,FA26D351FE62A6A17F5CDA1287C1C6110DEC413F
+
 
 # Copyright 2016 Goldman Sachs.
 # Licensed under the Apache License, Version 2.0 (the "License");
