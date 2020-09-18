@@ -31,11 +31,12 @@ import graphql.schema.idl.TypeRuntimeWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static graphql.schema.idl.TypeRuntimeWiring.newTypeWiring;
 
@@ -56,11 +57,11 @@ public class SchemaProvider
         {
             throw new RuntimeException("The " + META_GRAPHQLS_NAME + " is empty or corrupted.");
         }
-        final List<String> sdl =  readResourceAsString(schemaResourceName);
+        final List<String> sdl = readResourceAsString(schemaResourceName);
 
         final StringBuilder sdlBuilder = new StringBuilder();
-        for (final String each: sdl) sdlBuilder.append(each).append('\n');
-        for (final String each: metaSdl) sdlBuilder.append(each).append('\n');
+        for (final String each : sdl) sdlBuilder.append(each).append('\n');
+        for (final String each : metaSdl) sdlBuilder.append(each).append('\n');
 
         try
         {
@@ -136,16 +137,16 @@ public class SchemaProvider
         return wiringBuilder;
     }
 
-    private static List<String> readResourceAsString (final String resourceName)
+    private static List<String> readResourceAsString(final String resourceName)
     {
-        try
+        try (InputStream in = SchemaProvider.class.getClassLoader().getResourceAsStream(resourceName))
         {
-            final Path path = Paths.get(SchemaProvider.class.getClassLoader().getResource(resourceName).toURI());
-            LOGGER.debug("Reading from " + path);
-            return Files.readAllLines(path, Charset.defaultCharset());
-        } catch (final Exception e)
+            return new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8)).lines().collect(Collectors.toList());
+        }
+        catch (final Exception e)
         {
-            throw new RuntimeException ("Failed to read resource \"" + resourceName + "\"", e);
+            throw new RuntimeException("Failed to read resource \"" + resourceName + "\"", e);
         }
     }
+
 }

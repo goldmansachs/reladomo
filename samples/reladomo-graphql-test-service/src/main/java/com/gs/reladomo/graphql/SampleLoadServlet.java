@@ -36,9 +36,9 @@ public class SampleLoadServlet extends HttpServlet
     // !!! lazy mithra portals
     public SampleLoadServlet ()
     {
-        SampleLoadServlet.initReladomo ("TestReladomoRuntimeConfig.xml", "test_data.txt");
+        SampleLoadServlet.initReladomo ("TestReladomoRuntimeConfig.xml", "sample-data.txt");
         this.inflatePureBalances ();
-        GraphQLReladomoServlet.setSchemaResourceName ("test_schema.graphqls");
+        TestServiceGraphQLServlet.setSchemaResourceName ("sample-schema.graphqls");
     }
 
     static protected MithraTestResource initReladomo (String configFilename, String datasetFilename)

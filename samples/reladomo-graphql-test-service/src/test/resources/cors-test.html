@@ -1,0 +1,16 @@
+<script type="text/javascript">
+    var url = 'http://localhost:8090/graphql';
+    var httpReq = {
+       method: 'POST',
+       headers: {
+           'Content-Type': 'application/json',
+          'Accept': 'application/json',
+      },
+      body: '{ "courseById" ("courseId": 101) { "courseId" }}'
+    };
+
+    fetch(url, httpReq).then(data =>
+        console.log('data returned:', data)
+    );
+
+</script>
