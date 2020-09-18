@@ -3,25 +3,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>graphql</artifactId>
-        <groupId>com.goldmansachs.reladomo</groupId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>graphql-reladomo-test-service</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.goldmansachs.reladomo</groupId>
+    <artifactId>reladomo-graphql-test-service</artifactId>
+    <version>18.0.0</version>
 
     <properties>
-        <reladomo.version>17.1.4</reladomo.version>
+        <reladomo.version>18.0.0</reladomo.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.goldmansachs.reladomo</groupId>
-            <artifactId>graphql-reladomo</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -32,7 +24,12 @@
             <artifactId>reladomo</artifactId>
             <version>${reladomo.version}</version>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/com.goldmansachs.reladomo/reladomo-graphql -->
+        <dependency>
+            <groupId>com.goldmansachs.reladomo</groupId>
+            <artifactId>reladomo-graphql</artifactId>
+            <version>18.0.0</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.skyscreamer/jsonassert -->
         <dependency>
             <groupId>org.skyscreamer</groupId>

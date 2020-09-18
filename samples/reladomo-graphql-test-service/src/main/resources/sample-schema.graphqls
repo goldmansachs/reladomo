@@ -1,0 +1,737 @@
+type Mutation
+{
+    person_insert(person: PersonInput): Person
+    pureAccount_insert(pureAccount: PureAccountInput): PureAccount
+    pureBalance_insert(pureBalance: PureBalanceInput businessDate: Timestamp!): PureBalance
+    course_insert(course: CourseInput): Course
+    objectSequence_insert(objectSequence: ObjectSequenceInput): ObjectSequence
+}
+
+
+type Query
+{
+    personById( personId: Int! ): Person
+    persons(findMany: PersonFinder filter: PersonFinder where: PersonFinder order_by: PersonOrderBy limit: Int): [Person]
+    person_aggregate(findMany: PersonFinder filter: PersonFinder where: PersonFinder order_by: PersonOrderBy limit: Int): [PersonAggregate]
+
+    pureAccountById( accountId: Int! ): PureAccount
+    pureAccounts(findMany: PureAccountFinder filter: PureAccountFinder where: PureAccountFinder order_by: PureAccountOrderBy limit: Int): [PureAccount]
+    pureAccount_aggregate(findMany: PureAccountFinder filter: PureAccountFinder where: PureAccountFinder order_by: PureAccountOrderBy limit: Int): [PureAccountAggregate]
+
+    pureBalanceById( id: Int! ): PureBalance
+    pureBalances(findMany: PureBalanceFinder filter: PureBalanceFinder where: PureBalanceFinder order_by: PureBalanceOrderBy limit: Int): [PureBalance]
+    pureBalance_aggregate(findMany: PureBalanceFinder filter: PureBalanceFinder where: PureBalanceFinder order_by: PureBalanceOrderBy limit: Int): [PureBalanceAggregate]
+
+    balanceById( id: Int! ): Balance
+    balances(findMany: BalanceFinder filter: BalanceFinder where: BalanceFinder order_by: BalanceOrderBy limit: Int): [Balance]
+    balance_aggregate(findMany: BalanceFinder filter: BalanceFinder where: BalanceFinder order_by: BalanceOrderBy limit: Int): [BalanceAggregate]
+
+    courseById( courseId: Int! ): Course
+    courses(findMany: CourseFinder filter: CourseFinder where: CourseFinder order_by: CourseOrderBy limit: Int): [Course]
+    course_aggregate(findMany: CourseFinder filter: CourseFinder where: CourseFinder order_by: CourseOrderBy limit: Int): [CourseAggregate]
+
+    objectSequenceById( simulatedSequenceName: String! ): ObjectSequence
+    objectSequences(findMany: ObjectSequenceFinder filter: ObjectSequenceFinder where: ObjectSequenceFinder order_by: ObjectSequenceOrderBy limit: Int): [ObjectSequence]
+    objectSequence_aggregate(findMany: ObjectSequenceFinder filter: ObjectSequenceFinder where: ObjectSequenceFinder order_by: ObjectSequenceOrderBy limit: Int): [ObjectSequenceAggregate]
+
+    accountById( accountNum: String! ): Account
+    accounts(findMany: AccountFinder filter: AccountFinder where: AccountFinder order_by: AccountOrderBy limit: Int): [Account]
+    account_aggregate(findMany: AccountFinder filter: AccountFinder where: AccountFinder order_by: AccountOrderBy limit: Int): [AccountAggregate]
+
+}
+
+
+#################### sample.domain.Person ##################
+type Person
+{
+    personId: Int
+    firstName: String
+    lastName: String
+    country: String
+}
+
+type PersonAggregate
+{
+    personId: Int
+    firstName: String
+    lastName: String
+    country: String
+}
+
+input PersonInput
+{
+    personId: Int
+    firstName: String
+    lastName: String
+    country: String
+}
+
+input PersonOrderBy
+{
+    personId: AcsDesc
+    firstName: AcsDesc
+    lastName: AcsDesc
+    country: AcsDesc
+}
+
+input PersonFinder
+{
+    personId: IntegerAttribute
+    firstName: StringAttribute
+    lastName: StringAttribute
+    country: StringAttribute
+    AND: [PersonFinder]
+    OR: [PersonFinder]
+    EXPR: [PersonFloatExpr]
+    tupleIn: [PersonFinderTuple]
+}
+
+input PersonFloatExpr
+{
+    plus: [PersonCalculatedAttribute]
+    minus: [PersonCalculatedAttribute]
+    times: [PersonCalculatedAttribute]
+    dividedBy: [PersonCalculatedAttribute]
+    absoluteValue: PersonCalculatedAttribute
+    eq: Float
+    notEq: Float
+    in: [Float]
+    notIn: [Float]
+    greaterThan: Float
+    greaterThanEquals: Float
+    lessThan: Float
+    lessThanEquals: Float
+}
+input PersonCalculatedAttribute
+{
+    plus: [PersonCalculatedAttribute]
+    minus: [PersonCalculatedAttribute]
+    times: [PersonCalculatedAttribute]
+    dividedBy: [PersonCalculatedAttribute]
+    absoluteValue: PersonCalculatedAttribute
+    id: IntegerAttribute
+    orderId: IntegerAttribute
+    productId: IntegerAttribute
+    quantity: FloatAttribute
+    originalPrice: FloatAttribute
+    discountPrice: FloatAttribute
+    state: StringAttribute
+    VAL: Float
+}
+input PersonFinderTuple
+{
+    personId: Int
+    firstName: String
+    lastName: String
+    country: String
+}
+
+#################### sample.domain.PureAccount ##################
+type PureAccount
+{
+    accountId: Int
+    accountNum: String
+    name: String
+    country: String
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    processingDate: Timestamp
+}
+
+type PureAccountAggregate
+{
+    accountId: Int
+    accountNum: String
+    name: String
+    country: String
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+input PureAccountInput
+{
+    accountId: Int
+    accountNum: String
+    name: String
+    country: String
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+input PureAccountOrderBy
+{
+    accountId: AcsDesc
+    accountNum: AcsDesc
+    name: AcsDesc
+    country: AcsDesc
+    processingDateFrom: AcsDesc
+    processingDateTo: AcsDesc
+}
+
+input PureAccountFinder
+{
+    accountId: IntegerAttribute
+    accountNum: StringAttribute
+    name: StringAttribute
+    country: StringAttribute
+    processingDateFrom: TimestampAttribute
+    processingDateTo: TimestampAttribute
+    processingDate: TimestampAttribute
+    AND: [PureAccountFinder]
+    OR: [PureAccountFinder]
+    EXPR: [PureAccountFloatExpr]
+    tupleIn: [PureAccountFinderTuple]
+}
+
+input PureAccountFloatExpr
+{
+    plus: [PureAccountCalculatedAttribute]
+    minus: [PureAccountCalculatedAttribute]
+    times: [PureAccountCalculatedAttribute]
+    dividedBy: [PureAccountCalculatedAttribute]
+    absoluteValue: PureAccountCalculatedAttribute
+    eq: Float
+    notEq: Float
+    in: [Float]
+    notIn: [Float]
+    greaterThan: Float
+    greaterThanEquals: Float
+    lessThan: Float
+    lessThanEquals: Float
+}
+input PureAccountCalculatedAttribute
+{
+    plus: [PureAccountCalculatedAttribute]
+    minus: [PureAccountCalculatedAttribute]
+    times: [PureAccountCalculatedAttribute]
+    dividedBy: [PureAccountCalculatedAttribute]
+    absoluteValue: PureAccountCalculatedAttribute
+    id: IntegerAttribute
+    orderId: IntegerAttribute
+    productId: IntegerAttribute
+    quantity: FloatAttribute
+    originalPrice: FloatAttribute
+    discountPrice: FloatAttribute
+    state: StringAttribute
+    VAL: Float
+}
+input PureAccountFinderTuple
+{
+    accountId: Int
+    accountNum: String
+    name: String
+    country: String
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+#################### sample.domain.PureBalance ##################
+type PureBalance
+{
+    id: Int
+    url: String
+    accountId: Int
+    accountNum: String
+    value: Float
+    interest: Float
+    count: Float
+    currency: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    businessDate: Timestamp
+    processingDate: Timestamp
+    account: PureAccount
+}
+
+type PureBalanceAggregate
+{
+    id: Int
+    url: String
+    accountId: Int
+    accountNum: String
+    value: FloatAggregate
+    interest: FloatAggregate
+    count: FloatAggregate
+    currency: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    account: PureAccount
+}
+
+input PureBalanceInput
+{
+    id: Int
+    url: String
+    accountId: Int
+    accountNum: String
+    value: Float
+    interest: Float
+    count: Float
+    currency: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+input PureBalanceOrderBy
+{
+    id: AcsDesc
+    url: AcsDesc
+    accountId: AcsDesc
+    accountNum: AcsDesc
+    value: AcsDesc
+    interest: AcsDesc
+    count: AcsDesc
+    currency: AcsDesc
+    businessDateFrom: AcsDesc
+    businessDateTo: AcsDesc
+    processingDateFrom: AcsDesc
+    processingDateTo: AcsDesc
+}
+
+input PureBalanceFinder
+{
+    id: IntegerAttribute
+    url: StringAttribute
+    accountId: IntegerAttribute
+    accountNum: StringAttribute
+    value: FloatAttribute
+    interest: FloatAttribute
+    count: FloatAttribute
+    currency: StringAttribute
+    businessDateFrom: TimestampAttribute
+    businessDateTo: TimestampAttribute
+    processingDateFrom: TimestampAttribute
+    processingDateTo: TimestampAttribute
+    businessDate: TimestampAttribute
+    processingDate: TimestampAttribute
+    account: PureAccountFinder
+    AND: [PureBalanceFinder]
+    OR: [PureBalanceFinder]
+    EXPR: [PureBalanceFloatExpr]
+    tupleIn: [PureBalanceFinderTuple]
+}
+
+input PureBalanceFloatExpr
+{
+    plus: [PureBalanceCalculatedAttribute]
+    minus: [PureBalanceCalculatedAttribute]
+    times: [PureBalanceCalculatedAttribute]
+    dividedBy: [PureBalanceCalculatedAttribute]
+    absoluteValue: PureBalanceCalculatedAttribute
+    eq: Float
+    notEq: Float
+    in: [Float]
+    notIn: [Float]
+    greaterThan: Float
+    greaterThanEquals: Float
+    lessThan: Float
+    lessThanEquals: Float
+}
+input PureBalanceCalculatedAttribute
+{
+    plus: [PureBalanceCalculatedAttribute]
+    minus: [PureBalanceCalculatedAttribute]
+    times: [PureBalanceCalculatedAttribute]
+    dividedBy: [PureBalanceCalculatedAttribute]
+    absoluteValue: PureBalanceCalculatedAttribute
+    id: IntegerAttribute
+    orderId: IntegerAttribute
+    productId: IntegerAttribute
+    quantity: FloatAttribute
+    originalPrice: FloatAttribute
+    discountPrice: FloatAttribute
+    state: StringAttribute
+    VAL: Float
+}
+input PureBalanceFinderTuple
+{
+    id: Int
+    url: String
+    accountId: Int
+    accountNum: String
+    value: Float
+    interest: Float
+    count: Float
+    currency: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+#################### sample.domain.Balance ##################
+type Balance
+{
+    id: Int
+    accountNum: String
+    value: Float
+    currency: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    businessDate: Timestamp
+    processingDate: Timestamp
+    account: Account
+}
+
+type BalanceAggregate
+{
+    id: Int
+    accountNum: String
+    value: FloatAggregate
+    currency: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    account: Account
+}
+
+input BalanceInput
+{
+    id: Int
+    accountNum: String
+    value: Float
+    currency: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+input BalanceOrderBy
+{
+    id: AcsDesc
+    accountNum: AcsDesc
+    value: AcsDesc
+    currency: AcsDesc
+    businessDateFrom: AcsDesc
+    businessDateTo: AcsDesc
+    processingDateFrom: AcsDesc
+    processingDateTo: AcsDesc
+}
+
+input BalanceFinder
+{
+    id: IntegerAttribute
+    accountNum: StringAttribute
+    value: FloatAttribute
+    currency: StringAttribute
+    businessDateFrom: TimestampAttribute
+    businessDateTo: TimestampAttribute
+    processingDateFrom: TimestampAttribute
+    processingDateTo: TimestampAttribute
+    businessDate: TimestampAttribute
+    processingDate: TimestampAttribute
+    account: AccountFinder
+    AND: [BalanceFinder]
+    OR: [BalanceFinder]
+    EXPR: [BalanceFloatExpr]
+    tupleIn: [BalanceFinderTuple]
+}
+
+input BalanceFloatExpr
+{
+    plus: [BalanceCalculatedAttribute]
+    minus: [BalanceCalculatedAttribute]
+    times: [BalanceCalculatedAttribute]
+    dividedBy: [BalanceCalculatedAttribute]
+    absoluteValue: BalanceCalculatedAttribute
+    eq: Float
+    notEq: Float
+    in: [Float]
+    notIn: [Float]
+    greaterThan: Float
+    greaterThanEquals: Float
+    lessThan: Float
+    lessThanEquals: Float
+}
+input BalanceCalculatedAttribute
+{
+    plus: [BalanceCalculatedAttribute]
+    minus: [BalanceCalculatedAttribute]
+    times: [BalanceCalculatedAttribute]
+    dividedBy: [BalanceCalculatedAttribute]
+    absoluteValue: BalanceCalculatedAttribute
+    id: IntegerAttribute
+    orderId: IntegerAttribute
+    productId: IntegerAttribute
+    quantity: FloatAttribute
+    originalPrice: FloatAttribute
+    discountPrice: FloatAttribute
+    state: StringAttribute
+    VAL: Float
+}
+input BalanceFinderTuple
+{
+    id: Int
+    accountNum: String
+    value: Float
+    currency: String
+    businessDateFrom: Timestamp
+    businessDateTo: Timestamp
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+#################### sample.domain.Course ##################
+type Course
+{
+    courseId: Int
+    name: String
+    startDate: Timestamp
+    teacherId: Int
+    cost: Float
+    teacher: Person
+}
+
+type CourseAggregate
+{
+    courseId: Int
+    name: String
+    startDate: Timestamp
+    teacherId: Int
+    cost: FloatAggregate
+    teacher: Person
+}
+
+input CourseInput
+{
+    courseId: Int
+    name: String
+    startDate: Timestamp
+    teacherId: Int
+    cost: Float
+}
+
+input CourseOrderBy
+{
+    courseId: AcsDesc
+    name: AcsDesc
+    startDate: AcsDesc
+    teacherId: AcsDesc
+    cost: AcsDesc
+}
+
+input CourseFinder
+{
+    courseId: IntegerAttribute
+    name: StringAttribute
+    startDate: TimestampAttribute
+    teacherId: IntegerAttribute
+    cost: FloatAttribute
+    teacher: PersonFinder
+    AND: [CourseFinder]
+    OR: [CourseFinder]
+    EXPR: [CourseFloatExpr]
+    tupleIn: [CourseFinderTuple]
+}
+
+input CourseFloatExpr
+{
+    plus: [CourseCalculatedAttribute]
+    minus: [CourseCalculatedAttribute]
+    times: [CourseCalculatedAttribute]
+    dividedBy: [CourseCalculatedAttribute]
+    absoluteValue: CourseCalculatedAttribute
+    eq: Float
+    notEq: Float
+    in: [Float]
+    notIn: [Float]
+    greaterThan: Float
+    greaterThanEquals: Float
+    lessThan: Float
+    lessThanEquals: Float
+}
+input CourseCalculatedAttribute
+{
+    plus: [CourseCalculatedAttribute]
+    minus: [CourseCalculatedAttribute]
+    times: [CourseCalculatedAttribute]
+    dividedBy: [CourseCalculatedAttribute]
+    absoluteValue: CourseCalculatedAttribute
+    id: IntegerAttribute
+    orderId: IntegerAttribute
+    productId: IntegerAttribute
+    quantity: FloatAttribute
+    originalPrice: FloatAttribute
+    discountPrice: FloatAttribute
+    state: StringAttribute
+    VAL: Float
+}
+input CourseFinderTuple
+{
+    courseId: Int
+    name: String
+    startDate: Timestamp
+    teacherId: Int
+    cost: Float
+}
+
+#################### sample.domain.ObjectSequence ##################
+type ObjectSequence
+{
+    simulatedSequenceName: String
+    nextValue: Int
+}
+
+type ObjectSequenceAggregate
+{
+    simulatedSequenceName: String
+    nextValue: Int
+}
+
+input ObjectSequenceInput
+{
+    simulatedSequenceName: String
+    nextValue: Int
+}
+
+input ObjectSequenceOrderBy
+{
+    simulatedSequenceName: AcsDesc
+    nextValue: AcsDesc
+}
+
+input ObjectSequenceFinder
+{
+    simulatedSequenceName: StringAttribute
+    nextValue: IntegerAttribute
+    AND: [ObjectSequenceFinder]
+    OR: [ObjectSequenceFinder]
+    EXPR: [ObjectSequenceFloatExpr]
+    tupleIn: [ObjectSequenceFinderTuple]
+}
+
+input ObjectSequenceFloatExpr
+{
+    plus: [ObjectSequenceCalculatedAttribute]
+    minus: [ObjectSequenceCalculatedAttribute]
+    times: [ObjectSequenceCalculatedAttribute]
+    dividedBy: [ObjectSequenceCalculatedAttribute]
+    absoluteValue: ObjectSequenceCalculatedAttribute
+    eq: Float
+    notEq: Float
+    in: [Float]
+    notIn: [Float]
+    greaterThan: Float
+    greaterThanEquals: Float
+    lessThan: Float
+    lessThanEquals: Float
+}
+input ObjectSequenceCalculatedAttribute
+{
+    plus: [ObjectSequenceCalculatedAttribute]
+    minus: [ObjectSequenceCalculatedAttribute]
+    times: [ObjectSequenceCalculatedAttribute]
+    dividedBy: [ObjectSequenceCalculatedAttribute]
+    absoluteValue: ObjectSequenceCalculatedAttribute
+    id: IntegerAttribute
+    orderId: IntegerAttribute
+    productId: IntegerAttribute
+    quantity: FloatAttribute
+    originalPrice: FloatAttribute
+    discountPrice: FloatAttribute
+    state: StringAttribute
+    VAL: Float
+}
+input ObjectSequenceFinderTuple
+{
+    simulatedSequenceName: String
+    nextValue: Int
+}
+
+#################### sample.domain.Account ##################
+type Account
+{
+    accountNum: String
+    name: String
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+    processingDate: Timestamp
+}
+
+type AccountAggregate
+{
+    accountNum: String
+    name: String
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+input AccountInput
+{
+    accountNum: String
+    name: String
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
+input AccountOrderBy
+{
+    accountNum: AcsDesc
+    name: AcsDesc
+    processingDateFrom: AcsDesc
+    processingDateTo: AcsDesc
+}
+
+input AccountFinder
+{
+    accountNum: StringAttribute
+    name: StringAttribute
+    processingDateFrom: TimestampAttribute
+    processingDateTo: TimestampAttribute
+    processingDate: TimestampAttribute
+    AND: [AccountFinder]
+    OR: [AccountFinder]
+    EXPR: [AccountFloatExpr]
+    tupleIn: [AccountFinderTuple]
+}
+
+input AccountFloatExpr
+{
+    plus: [AccountCalculatedAttribute]
+    minus: [AccountCalculatedAttribute]
+    times: [AccountCalculatedAttribute]
+    dividedBy: [AccountCalculatedAttribute]
+    absoluteValue: AccountCalculatedAttribute
+    eq: Float
+    notEq: Float
+    in: [Float]
+    notIn: [Float]
+    greaterThan: Float
+    greaterThanEquals: Float
+    lessThan: Float
+    lessThanEquals: Float
+}
+input AccountCalculatedAttribute
+{
+    plus: [AccountCalculatedAttribute]
+    minus: [AccountCalculatedAttribute]
+    times: [AccountCalculatedAttribute]
+    dividedBy: [AccountCalculatedAttribute]
+    absoluteValue: AccountCalculatedAttribute
+    id: IntegerAttribute
+    orderId: IntegerAttribute
+    productId: IntegerAttribute
+    quantity: FloatAttribute
+    originalPrice: FloatAttribute
+    discountPrice: FloatAttribute
+    state: StringAttribute
+    VAL: Float
+}
+input AccountFinderTuple
+{
+    accountNum: String
+    name: String
+    processingDateFrom: Timestamp
+    processingDateTo: Timestamp
+}
+
