@@ -21,6 +21,6 @@ jobs:
       with:
         java-version: 1.8
     - name: Set env
-      run: echo ::set-env name=RELADOMO_JDK_HOME::"$JAVA_HOME"
+      run: echo "RELADOMO_JDK_HOME=$JAVA_HOME" >> $GITHUB_ENV
     - name: Build with Ant via shell script
       run: ./build/build.sh reladomo-test-suite1
