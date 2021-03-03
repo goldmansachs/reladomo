@@ -1,4 +1,9 @@
-set JDK_HOME=C:\apps\jdk1.8.0_111
+if "%JDK_HOME%" == "" (
+    echo JDK_HOME defaulting to C:\devel\jdk1.8.0_144
+    set JDK_HOME=C:\devel\jdk1.8.0_144
+) else (
+    echo JDK_HOME is %JDK_HOME%
+)
 
 @REM no need to modify stuff below:
 

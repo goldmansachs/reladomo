@@ -204,15 +204,8 @@ public abstract class AbstractMithraDataFileParser
                     streamReader = new InputStreamReader(is);
                 }
                 Reader reader = new BufferedReader(streamReader);
-                StreamTokenizer st = new StreamTokenizer(reader);
-                st.parseNumbers();
-                st.eolIsSignificant(true);
-                st.wordChars('_', '_');
-    
-                // These calls caused comments to be discarded
-                st.slashSlashComments(true);
-                st.slashStarComments(true);
-    
+                StreamTokenizer st = createStreamTokenizer(reader);
+
                 // Parse the file
                 ParserState currentState = this.getBeginningOfLineState();
                 while (currentState != null)
@@ -246,6 +239,52 @@ public abstract class AbstractMithraDataFileParser
                 }
             }
         }
+    }
+
+    protected StreamTokenizer createStreamTokenizer(Reader reader)
+    {
+        // old default for compatibility
+        return createStreamTokenizerParseNumbers(reader);
+    }
+
+    protected StreamTokenizer createStreamTokenizerWithoutNumbers(Reader reader)
+    {
+        StreamTokenizer st = new StreamTokenizer(reader);
+        st.resetSyntax();
+
+        st.whitespaceChars(0, 32);
+
+        st.wordChars('0', '9');
+        st.wordChars('-', '.');
+        st.wordChars('+', '+');
+        st.wordChars('a', 'z');
+        st.wordChars('A', 'Z');
+        st.wordChars(0xa0, 0xff); // not really needed here. */
+
+        st.quoteChar('"');
+        st.quoteChar('\'');
+        //                st.parseNumbers();
+        st.eolIsSignificant(true);
+        st.wordChars('_', '_');
+
+        // These calls caused comments to be discarded
+        st.slashSlashComments(true);
+        st.slashStarComments(true);
+        return st;
+    }
+
+    protected StreamTokenizer createStreamTokenizerParseNumbers(Reader reader)
+    {
+        StreamTokenizer st = new StreamTokenizer(reader);
+        st.parseNumbers();
+        st.eolIsSignificant(true);
+        st.wordChars('_', '_');
+
+        // These calls caused comments to be discarded
+        st.slashSlashComments(true);
+        st.slashStarComments(true);
+
+        return st;
     }
 
     private void throwParseException(StreamTokenizer st, Exception e)
