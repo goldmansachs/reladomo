@@ -205,6 +205,20 @@ id,teamId,name,designation,email
 102,998,"Joe Smith",null,"joe.smith@abc.com"
 103,997,"Ali G",null,"ali.g@abc.com"
 
+class com.gs.fw.common.mithra.test.domain.AllTypes
+id,booleanValue,byteValue,shortValue,charValue,intValue,longValue,floatValue,doubleValue,dateValue,timeValue,timestampValue,stringValue,byteArrayValue,nullableByteValue,nullableShortValue,nullableCharValue,nullableIntValue,nullableLongValue,nullableFloatValue,nullableDoubleValue,nullableDateValue,nullableTimeValue,nullableTimestampValue,nullableStringValue,nullableByteArrayValue
+9876,true,100,30000,"a",2000000000,51242172543926290,100.99, 100.99998888777, "2007-01-01", "03:03:03.333", "2007-01-01 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9877,true,100,30000,"a",2000000000,51242172577480722,100.99, 100.99998888777, "2007-02-01", "03:03:03.333", "2007-01-02 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9878,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-03-01", "03:03:03.333", "2007-01-03 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9879,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-04-01", "03:03:03.333", "2007-01-04 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9880,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-05-01", "03:03:03.333", "2007-01-05 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9881,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-06-01", "03:03:03.333", "2007-01-06 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9882,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-07-01", "03:03:03.333", "2007-01-07 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9883,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-08-01", "03:03:03.333", "2007-01-08 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9884,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-09-01", "03:03:03.333", "2007-01-09 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9885,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2007-10-01", "03:03:03.333", "2007-01-10 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+9480,true,100,30000,"a",2000000000,9000000000000000000,100.99, 100.99998888777, "2008-11-22", "03:03:03.333", "2008-10-14 01:01:01.999", "This is a test", "00010001B5BFB5BA00174E5954414D5350316E74616D735F70726F64",null, null, null, null, null, null, null, null, null, null, null, null
+
 //This is the end of the file
 
 /*

@@ -18,13 +18,13 @@ package com.gs.fw.common.mithra.util.fileparser;
 
 import java.io.StreamTokenizer;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gs.fw.common.mithra.attribute.NumericAttribute;
 import com.gs.reladomo.metadata.ReladomoClassMetaData;
 import org.slf4j.LoggerFactory;
 
@@ -168,11 +168,19 @@ public class MithraParsedData
         switch (token)
         {
             case StreamTokenizer.TT_NUMBER:
+                //note: this can't parse large long values correctly
                 attribute.parseNumberAndSet(st.nval, currentData, st.lineno());
                 break;
             case StreamTokenizer.TT_WORD:
                 String word = st.sval;
-                attribute.parseWordAndSet(word, currentData, st.lineno());
+                if (!"null".equals(word) && attribute instanceof NumericAttribute)
+                {
+                    attribute.parseStringAndSet(st.sval, currentData, st.lineno(), null);
+                }
+                else
+                {
+                    attribute.parseWordAndSet(word, currentData, st.lineno());
+                }
                 break;
             case '"':
                 attribute.parseStringAndSet(st.sval, currentData, st.lineno(), simpleDateFormat);
@@ -183,7 +191,7 @@ public class MithraParsedData
                 throw new ParseException("Unexpected end of file", st.lineno());
             default:
                 char ch = (char)st.ttype;
-                throw new ParseException("unexpected character "+ch+" on line "+st.lineno()+" attribute count "+attributeNumber, st.lineno());
+                throw new ParseException("unexpected character "+ch+" or type "+st.ttype+" on line "+st.lineno()+" attribute count "+attributeNumber, st.lineno());
         }
     }
 }

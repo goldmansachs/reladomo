@@ -46,13 +46,7 @@ import org.eclipse.collections.impl.map.mutable.UnifiedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedWriter;
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.Arrays;
@@ -662,6 +656,12 @@ public class DbExtractor
         protected AttributeReaderState createAttributeReaderState()
         {
             return new AttributeReaderState(this);
+        }
+
+        @Override
+        protected StreamTokenizer createStreamTokenizer(Reader reader)
+        {
+            return createStreamTokenizerWithoutNumbers(reader);
         }
     }
 

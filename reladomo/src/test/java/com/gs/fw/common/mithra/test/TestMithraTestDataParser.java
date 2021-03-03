@@ -19,6 +19,8 @@ package com.gs.fw.common.mithra.test;
 
 import com.gs.fw.common.mithra.MithraDataObject;
 import com.gs.fw.common.mithra.test.domain.AccountTransactionMax;
+import com.gs.fw.common.mithra.test.domain.AllTypes;
+import com.gs.fw.common.mithra.test.domain.AllTypesData;
 import com.gs.fw.common.mithra.test.domain.Player;
 import com.gs.fw.common.mithra.util.MithraFastList;
 import com.gs.fw.common.mithra.util.fileparser.BinaryCompressor;
@@ -40,7 +42,7 @@ extends TestCase
         List list = parser.getResults();
 
         assertNotNull("No results returned", list);
-        assertEquals(24, list.size());
+        assertEquals(25, list.size());
 
         // AccountTransactionMax
         MithraParsedData atm = (MithraParsedData) list.get(0);
@@ -53,6 +55,14 @@ extends TestCase
         assertTrue(player.getParsedClassName().equals(Player.class.getName()));
         assertEquals(4, player.getDataObjects().size());
         assertEquals(5, player.getAttributes().size());
+
+        MithraParsedData allTypes = (MithraParsedData) list.get(24);
+        assertTrue(allTypes.getParsedClassName().equals(AllTypes.class.getName()));
+        List<MithraDataObject> dataObjects = allTypes.getDataObjects();
+        assertTrue(dataObjects.get(0) instanceof AllTypesData);
+        AllTypesData allTypesData = (AllTypesData) dataObjects.get(0);
+        assertEquals(51242172543926290L, allTypesData.getLongValue());
+
     }
 
     public void testSimpleZippedDataParsing() throws Exception
@@ -93,6 +103,8 @@ extends TestCase
         MithraFastList<MithraParsedData> newData = binaryCompressor.decompress(new URL("file://in-memory"), bais);
         compareData(data, newData);
     }
+
+    //todo: fix long parsing of large longs
 
     public static void compareData(List<MithraParsedData> data, List<MithraParsedData> newData)
     {

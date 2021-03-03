@@ -19,6 +19,8 @@ package com.gs.fw.common.mithra.test;
 import com.gs.fw.common.mithra.util.fileparser.*;
 
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.StreamTokenizer;
 import java.net.URL;
 
 public class MithraTestDataParser extends AbstractMithraDataFileParser
@@ -52,5 +54,11 @@ public class MithraTestDataParser extends AbstractMithraDataFileParser
     protected AttributeReaderState createAttributeReaderState()
     {
         return new AttributeReaderState(this);
+    }
+
+    @Override
+    protected StreamTokenizer createStreamTokenizer(Reader reader)
+    {
+        return createStreamTokenizerWithoutNumbers(reader);
     }
 }
