@@ -95,7 +95,25 @@ public class ASTIsNullClause extends SimpleNode implements LeafLevelExpression, 
 		return false;
 	}
 
-	public boolean isEqual()
+    @Override
+    public boolean isContains()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isStartsWith()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isEndsWith()
+    {
+        return false;
+    }
+
+    public boolean isEqual()
 	{
 		return false;
 	}
@@ -143,7 +161,7 @@ public class ASTIsNullClause extends SimpleNode implements LeafLevelExpression, 
         {
             return ((ASTIsNullClause)other).getMethodName().equals(this.getMethodName());
         }
-        return false; 
+        return false;
     }
 
     public boolean isUnary()
