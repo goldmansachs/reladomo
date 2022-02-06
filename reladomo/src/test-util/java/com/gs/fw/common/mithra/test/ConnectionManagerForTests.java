@@ -203,11 +203,11 @@ public class ConnectionManagerForTests extends AbstractMithraTestConnectionManag
 
             if (this.isPeerToPeer)
             {
-                connectionManager.setJdbcConnectionString("jdbc:h2:tcp://localhost/mem:" + schemaName + this.getAdditionalH2Arguments());
+                connectionManager.setJdbcConnectionString("jdbc:h2:tcp://localhost/mem:" + schemaName + ";MODE=LEGACY"+ this.getAdditionalH2Arguments());
             }
             else
             {
-                connectionManager.setJdbcConnectionString("jdbc:h2:mem:" + schemaName + this.getAdditionalH2Arguments());
+                connectionManager.setJdbcConnectionString("jdbc:h2:mem:" + schemaName + ";MODE=LEGACY"+ this.getAdditionalH2Arguments());
             }
 
             connectionManager.setJdbcUser("sa");

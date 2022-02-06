@@ -181,7 +181,21 @@ public abstract class SingleColumnByteArrayAttribute<Owner> extends ByteArrayAtt
 
     public void appendColumnDefinition(StringBuilder sb, DatabaseType dt, Logger sqlLogger, boolean mustBeIndexable)
     {
+        int maxLen = 0;
+        if (dt.varBinaryHasLength())
+        {
+            maxLen = this.getMaxLength();
+            if (maxLen == Integer.MAX_VALUE)
+            {
+                maxLen = 255;
+                sqlLogger.warn("MaxLength must be set for "+this.getAttributeName());
+            }
+        }
         sb.append(this.columnName).append(' ').append(dt.getSqlDataTypeForVarBinary());
+        if (dt.varBinaryHasLength())
+        {
+            sb.append('(').append(maxLen).append(')');
+        }
         appendNullable(sb, dt);
     }
 

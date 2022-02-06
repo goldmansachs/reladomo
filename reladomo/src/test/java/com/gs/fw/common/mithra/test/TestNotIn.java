@@ -55,14 +55,14 @@ extends TestSqlDatatypes
         //Boolean
         BooleanHashSet boolSet = new BooleanHashSet();
         boolSet.add(true);
-        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN not in ( 1 ) ";
+        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN not in ( TRUE ) ";
         desks = new ParaDeskList(ParaDeskFinder.activeBoolean().notIn(boolSet));
         this.genericRetrievalTest(sql, desks);
         assertTrue(desks.size() > 0);
 
         boolSet = new BooleanHashSet();
         boolSet.add(false);
-        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN not in ( 0 ) ";
+        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN not in ( FALSE ) ";
         desks = new ParaDeskList(ParaDeskFinder.activeBoolean().notIn(boolSet));
         this.genericRetrievalTest(sql, desks);
         assertTrue(desks.size() > 0);
@@ -193,12 +193,12 @@ extends TestSqlDatatypes
         BooleanHashSet boolSet = new BooleanHashSet();;
         boolSet.add(true);
         boolSet.add(false);
-        String sql = "select * from PARA_DESK where ACTIVE_BOOLEAN not in ( 0 , 1 ) ";
+        String sql = "select * from PARA_DESK where ACTIVE_BOOLEAN not in ( FALSE , TRUE ) ";
         List desks = new ParaDeskList(ParaDeskFinder.activeBoolean().notIn(boolSet));
         this.genericRetrievalTest(sql, desks, 0);
         assertTrue(desks.size() == 0);
 
-        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN in ( 0, 1 ) ";
+        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN in ( FALSE, TRUE ) ";
         desks = new ParaDeskList(ParaDeskFinder.activeBoolean().in(boolSet));
         this.genericRetrievalTest(sql, desks);
         assertTrue(desks.size() > 0);

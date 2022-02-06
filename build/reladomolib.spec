@@ -15,7 +15,7 @@ central,log4j,log4j,1.2.17,jar,lib/test,5AF35056B4D257E4B64B9E8069C0746E8B08629F
 central,org.slf4j,slf4j-log4j12,1.7.21,jar,lib/test,7238B064D1ABA20DA2AC03217D700D91E02460FA
 central,org.slf4j,jcl-over-slf4j,1.7.21,jar,lib/test,331B564A3A42F002A0004B039C1C430DA89062CD
 central,org.apache.geronimo.specs,geronimo-jms_1.1_spec,1.1.1,jar,lib/test,C872B46C601D8DC03633288B81269F9E42762CEA
-central,com.h2database,h2,1.3.169,jar,lib/test,98330537871F7DED493A9386A210EE64FE21814D
+central,com.h2database,h2,2.1.210,jar,lib/test,A7395AE43062F9237EB441137B789C518C7D4C2F
 central,org.mortbay.jetty,jetty,6.1.26,jar,lib/test,2F546E289FDDD5B1FAB1D4199FBB6E9EF43EE4B0
 central,org.mortbay.jetty,jetty-util,6.1.26,jar,lib/test,E5642FE0399814E1687D55A3862AA5A3417226A9
 central,javax.servlet,javax.servlet-api,3.0.1,jar,lib/test,6BF0EBB7EFD993E222FC1112377B5E92A13B38DD

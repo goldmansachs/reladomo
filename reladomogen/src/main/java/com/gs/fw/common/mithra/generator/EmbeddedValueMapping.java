@@ -81,7 +81,7 @@ public class EmbeddedValueMapping extends Attribute
         this.getMappingType().setAttribute(name);
     }
 
-    public String getColumnName()
+    public String getPlainColumnName()
     {
         return this.getMappingType().getColumnName();
     }

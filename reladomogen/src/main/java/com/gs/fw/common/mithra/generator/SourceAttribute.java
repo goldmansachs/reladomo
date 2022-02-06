@@ -80,6 +80,12 @@ public class SourceAttribute extends Attribute
         return false;
     }
 
+    @Override
+    public String getPlainColumnName()
+    {
+        return null;
+    }
+
     public String getQuotedColumnName()
     {
         return "null";

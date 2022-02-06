@@ -61,7 +61,6 @@ public class BatchJmsMessageLoopTest extends TestCase
     {
         final MithraManager mithraManager = MithraManagerProvider.getMithraManager();
         final String mithraRuntimeConfig = "ReladomoJmsTestConfig.xml";
-        System.setProperty("h2.additionalArguments", ";MVCC=TRUE");
         mithraTestResource = new MithraTestResource(mithraRuntimeConfig);
         ConnectionManagerForTests connectionManagerForTestTradeDb = ConnectionManagerForTests.getInstance("test_trade_db");
         mithraTestResource.createSingleDatabase(connectionManagerForTestTradeDb);

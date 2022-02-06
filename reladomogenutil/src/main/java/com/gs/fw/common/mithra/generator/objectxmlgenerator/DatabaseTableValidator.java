@@ -187,7 +187,7 @@ public class DatabaseTableValidator extends Task
         Map<String, ColumnInfo> columnInfoMap = viewDetails.getColumnMap();
         for (Attribute attribute : attributes)
         {
-            String columnName = attribute.getColumnName();
+            String columnName = attribute.getPlainColumnName();
             ColumnInfo columnInfo = columnInfoMap.get(columnName);
             if (columnInfo == null)
             {

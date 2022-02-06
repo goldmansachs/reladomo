@@ -1658,7 +1658,7 @@ public class TestSum extends MithraTestAbstract
                     assertEquals(24.00, data.getAttributeAsDouble("TotalDiscount"), 0.01);
                     break;
                 case 2:
-                    assertEquals(78.97, data.getAttributeAsDouble("TotalDiscount"), 0.01);
+                    assertEquals(78.98, data.getAttributeAsDouble("TotalDiscount"), 0.01);
                     break;
 
                 case 4:

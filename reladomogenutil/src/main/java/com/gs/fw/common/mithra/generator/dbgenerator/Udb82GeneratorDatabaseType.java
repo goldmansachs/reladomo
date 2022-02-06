@@ -126,12 +126,6 @@ public class Udb82GeneratorDatabaseType extends AbstractGeneratorDatabaseType
         printFkFile(wrapper, outDir, this);
     }
 
-    protected void generateNullStatement(PrintWriter writer, Attribute[] attributes, String attributeSqlType, int i)
-    {
-        writer.println("    " + attributes[i].getColumnName() + " " + attributeSqlType +
-                    (attributes[i].isNullable() ? "" : " not null") + ((i < attributes.length - 1) ? "," : ""));
-    }
-
     @Override
     protected int getMaxConstraintLength()
     {

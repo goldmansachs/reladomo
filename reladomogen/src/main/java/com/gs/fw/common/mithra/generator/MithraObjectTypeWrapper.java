@@ -2196,7 +2196,7 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
         {
             Attribute attribute = this.primaryKeyAttributes.get(i);
             if (i > 0) result = result + " AND ";
-            result += attribute.getColumnName() + " = ?";
+            result += attribute.getColumnNameWithEscapedQuote() + " = ?";
         }
         return result;
     }
@@ -2208,7 +2208,7 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
         {
             Attribute attribute = this.primaryKeyAttributes.get(i);
             if (i > 0) result = result + " AND ";
-            result += "t0."+attribute.getColumnName() + " = ?";
+            result += "t0."+attribute.getColumnNameWithEscapedQuote() + " = ?";
         }
         return result;
     }
@@ -2216,14 +2216,14 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
     public String getPrimaryKeyWithOptimisticLockWhereSql()
     {
         String result = this.getPrimaryKeyWhereSql();
-        result += " AND "+this.optimisticLockAttribute.getColumnName()+" = ?";
+        result += " AND "+this.optimisticLockAttribute.getColumnNameWithEscapedQuote()+" = ?";
         return result;
     }
 
     public String getPrimaryKeyWithOptimisticLockWhereSqlWithAlias()
     {
         String result = this.getPrimaryKeyWhereSqlWithAlias();
-        result += " AND t0."+this.optimisticLockAttribute.getColumnName()+" = ?";
+        result += " AND t0."+this.optimisticLockAttribute.getColumnNameWithEscapedQuote()+" = ?";
         return result;
     }
 
@@ -2280,7 +2280,7 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
             if (!attrs[i].isIdentity())
             {
                 if (result.length() > 0) result += ",";
-                result += attrs[i].getColumnName();
+                result += attrs[i].getColumnNameWithEscapedQuote();
             }
         }
         return result;
@@ -2350,7 +2350,7 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
         for (int i = 0; i < this.primaryKeyAttributes.size(); i++)
         {
             Attribute attribute = this.primaryKeyAttributes.get(i);
-            sb.append("t0.").append(attribute.getColumnName()).append(",");
+            sb.append("t0.").append(attribute.getColumnNameWithEscapedQuote()).append(",");
         }
         return StringUtility.removeLastCharacter(sb.toString());
     }
@@ -2893,7 +2893,7 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
         for (int i = 0; i < wrapper.primaryKeyAttributes.size(); i++)
         {
             Attribute attribute = wrapper.primaryKeyAttributes.get(i);
-            sb.append("t0.").append(attribute.getColumnName()).append(",");
+            sb.append("t0.").append(attribute.getColumnNameWithEscapedQuote()).append(",");
         }
     }
 
@@ -2904,7 +2904,7 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
             Attribute attribute = wrapper.attributes.get(i);
             if (!attribute.isPrimaryKey())
             {
-                sb.append(alias).append('.').append(attribute.getColumnName()).append(",");
+                sb.append(alias).append('.').append(attribute.getColumnNameWithEscapedQuote()).append(",");
             }
         }
     }
@@ -3327,7 +3327,7 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
         {
             Attribute attribute = this.attributes.get(i);
             if (!attribute.isPrimaryKey())
-                sb.append(attribute.getColumnName()).append(",");
+                sb.append(attribute.getColumnNameWithEscapedQuote()).append(",");
         }
         return StringUtility.removeLastCharacter(sb.toString());
     }
@@ -3361,7 +3361,7 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
         {
             MithraObjectTypeWrapper child = this.childClasses.get(i);
             Attribute firstPk = child.primaryKeyAttributes.get(0);
-            sb.append("t0").append(child.getUniqueAlias()).append('.').append(firstPk.getColumnName()).append(',');
+            sb.append("t0").append(child.getUniqueAlias()).append('.').append(firstPk.getColumnNameWithEscapedQuote()).append(',');
         }
         if (superClasses != null)
         {

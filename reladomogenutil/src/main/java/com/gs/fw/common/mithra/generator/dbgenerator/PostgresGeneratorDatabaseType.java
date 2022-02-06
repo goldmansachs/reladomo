@@ -133,13 +133,6 @@ public class PostgresGeneratorDatabaseType extends AbstractGeneratorDatabaseType
     }
 
     @Override
-    protected void generateNullStatement(PrintWriter writer, Attribute[] attributes, String attributeSqlType, int i)
-    {
-        writer.println("    " + attributes[i].getColumnName() + " " + attributeSqlType +
-                (attributes[i].isNullable() ? "" : " not null") + ((i < attributes.length - 1) ? "," : ""));
-    }
-
-    @Override
     protected int getMaxConstraintLength()
     {
         return POSTGRES_MAX_INDEX_NAME;

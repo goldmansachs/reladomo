@@ -293,4 +293,6 @@ public interface DatabaseType extends CommonDatabaseType
             StringBuilder builder);
 
     public boolean canCombineOptimisticWithBatchUpdates();
+
+    boolean varBinaryHasLength();
 }
