@@ -1355,7 +1355,7 @@ public class TestAggregateBeanListWithHavingClause extends MithraTestAbstract
         aggregateBeanList.addAggregateAttribute("maxDiscount", SaleFinder.discountPercentage().max());
         aggregateBeanList.addGroupBy("id", SaleFinder.sellerId());
 
-        HavingOperation having = SaleFinder.discountPercentage().avg().greaterThan(0.05);
+        HavingOperation having = SaleFinder.discountPercentage().avg().greaterThanEquals(0.05);
         having = having.and(SaleFinder.discountPercentage().max().lessThan(0.1));
         aggregateBeanList.setHavingOperation(having);
 

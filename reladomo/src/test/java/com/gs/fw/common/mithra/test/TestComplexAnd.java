@@ -89,7 +89,7 @@ extends TestSqlDatatypes
 
 
         connection = this.getConnection();
-        sql = "select * from PARA_DESK where DESK_ID_STRING in ('rnd', 'lmn', 'cap') and ACTIVE_BOOLEAN = 1 and CONNECTION_LONG in (1000000) and CREATE_TIMESTAMP = ? ";
+        sql = "select * from PARA_DESK where DESK_ID_STRING in ('rnd', 'lmn', 'cap') and ACTIVE_BOOLEAN = TRUE and CONNECTION_LONG in (1000000) and CREATE_TIMESTAMP = ? ";
         ps = connection.prepareStatement(sql);
         ps.setTimestamp(1, getTestTimestamp());
 
@@ -105,7 +105,7 @@ extends TestSqlDatatypes
         this.genericRetrievalTest(ps, desks, connection);
 
         connection = this.getConnection();
-        sql = "select * from PARA_DESK where DESK_ID_STRING in ('rnd', 'lmn', 'cap') and ACTIVE_BOOLEAN = 1 and CONNECTION_LONG > 100 and CREATE_TIMESTAMP = ? ";
+        sql = "select * from PARA_DESK where DESK_ID_STRING in ('rnd', 'lmn', 'cap') and ACTIVE_BOOLEAN = TRUE and CONNECTION_LONG > 100 and CREATE_TIMESTAMP = ? ";
         ps = connection.prepareStatement(sql);
         ps.setTimestamp(1, getTestTimestamp());
 

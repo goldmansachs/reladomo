@@ -109,7 +109,11 @@ public abstract class AbstractGeneratorDatabaseType
 
     }
 
-    protected abstract void generateNullStatement(PrintWriter writer, Attribute[] attributes, String attributeSqlType, int i);
+    protected void generateNullStatement(PrintWriter writer, Attribute[] attributes, String attributeSqlType, int i)
+    {
+        writer.println("    " + attributes[i].getColumnNameWithEscapedQuote() + " " + attributeSqlType +
+                (attributes[i].isNullable() ? "" : " not null") + ((i < attributes.length - 1) ? "," : ""));
+    }
 
     protected void printFkFile(MithraObjectTypeWrapper wrapper, File outDir, AbstractGeneratorDatabaseType generatorDatabaseType)
             throws IOException
@@ -229,7 +233,7 @@ public abstract class AbstractGeneratorDatabaseType
                         {
                             if (!attributesFk[j].isSourceAttribute())
                             {
-                                fk.addFromColumn(attributesFk[j].getColumnName());
+                                fk.addFromColumn(attributesFk[j].getPlainColumnName());
                             }
                         }
 
@@ -237,7 +241,7 @@ public abstract class AbstractGeneratorDatabaseType
                         {
                             if (!attributesReference[j].isSourceAttribute())
                             {
-                                fk.addToColumn(attributesReference[j].getColumnName());
+                                fk.addToColumn(attributesReference[j].getPlainColumnName());
                             }
                         }
                         if (!relationships.contains(fk))

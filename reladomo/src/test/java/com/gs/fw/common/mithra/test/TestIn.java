@@ -71,14 +71,14 @@ extends TestSqlDatatypes
         //Boolean
         BooleanHashSet boolSet = new BooleanHashSet();
         boolSet.add(true);
-        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN in ( 1 ) ";
+        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN in ( TRUE ) ";
         desks = new ParaDeskList(ParaDeskFinder.activeBoolean().in(boolSet));
         this.genericRetrievalTest(sql, desks);
         assertTrue(desks.size() > 0);
 
         boolSet = new BooleanHashSet();
         boolSet.add(false);
-        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN in ( 0 ) ";
+        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN in ( FALSE ) ";
         desks = new ParaDeskList(ParaDeskFinder.activeBoolean().in(boolSet));
         this.genericRetrievalTest(sql, desks);
         assertTrue(desks.size() > 0);
@@ -87,7 +87,7 @@ extends TestSqlDatatypes
         boolSet = new BooleanHashSet();
         boolSet.add(true);
         boolSet.add(false);
-        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN in ( 0, 1 ) ";
+        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN in ( FALSE, TRUE ) ";
         desks = new ParaDeskList(ParaDeskFinder.activeBoolean().in(boolSet));
         this.genericRetrievalTest(sql, desks);
         assertTrue(desks.size() > 0);

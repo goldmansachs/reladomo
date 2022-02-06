@@ -107,7 +107,7 @@ public class TestAvg extends MithraTestAbstract
                     assertEquals(18, data.getAttributeAsDouble("AvgItems"), 0);
                     break;
                 case 6:
-                    assertEquals(13, data.getAttributeAsDouble("AvgItems"), 0);
+                    assertEquals(13, data.getAttributeAsDouble("AvgItems"), 1);
                     break;
                 case 7:
                     assertEquals(15, data.getAttributeAsDouble("AvgItems"), 0);
@@ -116,7 +116,7 @@ public class TestAvg extends MithraTestAbstract
                     assertEquals(15, data.getAttributeAsDouble("AvgItems"), 0);
                     break;
                 case 9:
-                    assertEquals(15, data.getAttributeAsDouble("AvgItems"), 0);
+                    assertEquals(15, data.getAttributeAsDouble("AvgItems"), 1);
                     break;
                 case 10	:
                     assertEquals(11, data.getAttributeAsDouble("AvgItems"), 0);
@@ -214,7 +214,7 @@ public class TestAvg extends MithraTestAbstract
                     assertEquals(17, data.getAttributeAsDouble("AvgItems"), 0);
                     break;
                 case 6:
-                    assertEquals(13, data.getAttributeAsDouble("AvgItems"), 0);
+                    assertEquals(13, data.getAttributeAsDouble("AvgItems"), 1);
                     break;
                 case 7:
                     assertEquals(15, data.getAttributeAsDouble("AvgItems"), 0);
@@ -364,7 +364,7 @@ public class TestAvg extends MithraTestAbstract
                     assertEquals(15, data.getAttributeAsDouble("AvgItems"), 0);
                     break;
                 case 4:
-                    assertEquals(15, data.getAttributeAsDouble("AvgItems"), 0);
+                    assertEquals(15, data.getAttributeAsDouble("AvgItems"), 1);
                     break;
                 default:
                     fail("Invalid seller id");

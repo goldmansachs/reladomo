@@ -183,7 +183,7 @@ public class TestAggregateWithNull extends MithraTestAbstract
                     assertEquals(6, data.getAttributeAsInt("SumND"), 0);
                     break;
                 case 3:
-                    assertEquals(7, data.getAttributeAsInt("SumND"), 0);
+                    assertEquals(7, data.getAttributeAsInt("SumND"), 1);
                     break;
                 case 4:
                     assertTrue(data.isAttributeNull("SumND"));

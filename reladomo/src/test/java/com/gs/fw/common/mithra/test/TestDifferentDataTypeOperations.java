@@ -70,19 +70,19 @@ public class TestDifferentDataTypeOperations extends MithraTestAbstract
         Operation op = DifferentDataTypesFinder.booleanColumn().eq(true);
         DifferentDataTypesList list = new DifferentDataTypesList(op);
 
-        String sql = "select * from DIFFERENT_DATA_TYPES where BOOLEAN_COLUMN = 1";
+        String sql = "select * from DIFFERENT_DATA_TYPES where BOOLEAN_COLUMN = TRUE";
         this.genericRetrievalTest(sql, list);
 
         op = DifferentDataTypesFinder.variousByBooleanColumn().booleanColumn().eq(true);
         list = new DifferentDataTypesList(op);
-        sql = "select D.* from DIFFERENT_DATA_TYPES D, VARIOUS_TYPES V where V.BOOLEAN_COLUMN = D.BOOLEAN_COLUMN and V.BOOLEAN_COLUMN = 1";
+        sql = "select D.* from DIFFERENT_DATA_TYPES D, VARIOUS_TYPES V where V.BOOLEAN_COLUMN = D.BOOLEAN_COLUMN and V.BOOLEAN_COLUMN = TRUE";
         this.genericRetrievalTest(sql, list);
 
         // test Not Eq Operation
         op = DifferentDataTypesFinder.booleanColumn().notEq(true);
         list = new DifferentDataTypesList(op);
 
-        sql = "select * from DIFFERENT_DATA_TYPES where BOOLEAN_COLUMN != 1";
+        sql = "select * from DIFFERENT_DATA_TYPES where BOOLEAN_COLUMN != TRUE";
         this.genericRetrievalTest(sql, list);
 
         list = new DifferentDataTypesList(op.and(DifferentDataTypesFinder.booleanColumn().notEq(true)));
@@ -91,11 +91,11 @@ public class TestDifferentDataTypeOperations extends MithraTestAbstract
         // test Mapped Attribute
         op = DifferentDataTypesFinder.variousByBooleanColumn().booleanColumn().eq(true);
         list = new DifferentDataTypesList(op);
-        sql = "select D.* from DIFFERENT_DATA_TYPES D, VARIOUS_TYPES V where D.BOOLEAN_COLUMN = V.BOOLEAN_COLUMN and V.BOOLEAN_COLUMN = 1";
+        sql = "select D.* from DIFFERENT_DATA_TYPES D, VARIOUS_TYPES V where D.BOOLEAN_COLUMN = V.BOOLEAN_COLUMN and V.BOOLEAN_COLUMN = TRUE";
         this.genericRetrievalTest(sql, list);
 
         list = new DifferentDataTypesList(op.and(DifferentDataTypesFinder.variousByBooleanColumn().booleanColumn().eq(true)));
-        sql = "select D.* from DIFFERENT_DATA_TYPES D, VARIOUS_TYPES V where D.BOOLEAN_COLUMN = V.BOOLEAN_COLUMN and V.BOOLEAN_COLUMN = 1";
+        sql = "select D.* from DIFFERENT_DATA_TYPES D, VARIOUS_TYPES V where D.BOOLEAN_COLUMN = V.BOOLEAN_COLUMN and V.BOOLEAN_COLUMN = TRUE";
         this.genericRetrievalTest(sql, list);
     }
 
@@ -110,12 +110,12 @@ public class TestDifferentDataTypeOperations extends MithraTestAbstract
         Operation op = DifferentDataTypesFinder.booleanColumn().in(booleanSet);
         DifferentDataTypesList list = new DifferentDataTypesList(op);
 
-        String sql = "select * from DIFFERENT_DATA_TYPES where BOOLEAN_COLUMN in (1,0)";
+        String sql = "select * from DIFFERENT_DATA_TYPES where BOOLEAN_COLUMN in (TRUE,FALSE)";
         this.genericRetrievalTest(sql, list);
 
         op = DifferentDataTypesFinder.variousByBooleanColumn().booleanColumn().in(booleanSet);
         list = new DifferentDataTypesList(op);
-        sql = "select D.* from DIFFERENT_DATA_TYPES D, VARIOUS_TYPES V where V.BOOLEAN_COLUMN = D.BOOLEAN_COLUMN and V.BOOLEAN_COLUMN in (0, 1)";
+        sql = "select D.* from DIFFERENT_DATA_TYPES D, VARIOUS_TYPES V where V.BOOLEAN_COLUMN = D.BOOLEAN_COLUMN and V.BOOLEAN_COLUMN in (FALSE, TRUE)";
         this.genericRetrievalTest(sql, list);
 
         // test Not In Operation
@@ -123,7 +123,7 @@ public class TestDifferentDataTypeOperations extends MithraTestAbstract
         op = DifferentDataTypesFinder.booleanColumn().notIn(booleanSet);
         list = new DifferentDataTypesList(op);
 
-        sql = "select * from DIFFERENT_DATA_TYPES where BOOLEAN_COLUMN not in (0)";
+        sql = "select * from DIFFERENT_DATA_TYPES where BOOLEAN_COLUMN not in (FALSE)";
         this.genericRetrievalTest(sql, list);
 
         BooleanHashSet booleanSet1 = new BooleanHashSet();

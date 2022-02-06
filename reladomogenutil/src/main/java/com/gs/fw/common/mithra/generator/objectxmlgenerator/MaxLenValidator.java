@@ -130,7 +130,7 @@ public class MaxLenValidator
             TableInfo info = tableInfo.get(wrapper.getDefaultTable());
             if (info != null)
             {
-                ColumnInfo columnInfo = info.findColumnInfo(attribute.getColumnName());
+                ColumnInfo columnInfo = info.findColumnInfo(attribute.getPlainColumnName());
                 if (columnInfo != null)
                 {
                     int columnLen = columnInfo.getColumnSize();
@@ -434,7 +434,7 @@ public class MaxLenValidator
             try
             {
                 TableInfo info = this.tableInfo.get(missingObjectTypeWrapper.getDefaultTable());
-                ColumnInfo columnInfo = info.findColumnInfo(attribute.getColumnName());
+                ColumnInfo columnInfo = info.findColumnInfo(attribute.getPlainColumnName());
                 String attributeName = attribute.getName();
 
                 if (columnInfo == null)

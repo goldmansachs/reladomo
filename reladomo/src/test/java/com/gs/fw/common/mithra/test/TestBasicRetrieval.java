@@ -324,7 +324,7 @@ public class TestBasicRetrieval
     {
         Connection conn = this.getConnection();
         Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("select count(*) from user_tbl where active = 1");
+        ResultSet rs = stmt.executeQuery("select count(*) from user_tbl where active = TRUE");
         rs.next();
         int expectedSize = rs.getInt(1);
         conn.close();
@@ -341,7 +341,7 @@ public class TestBasicRetrieval
     {
         Connection conn = this.getConnection();
         Statement stmt = conn.createStatement();
-        ResultSet rs = stmt.executeQuery("select count(*) from user_tbl where active = 1");
+        ResultSet rs = stmt.executeQuery("select count(*) from user_tbl where active = TRUE");
         rs.next();
         int expectedSize = rs.getInt(1);
         conn.close();

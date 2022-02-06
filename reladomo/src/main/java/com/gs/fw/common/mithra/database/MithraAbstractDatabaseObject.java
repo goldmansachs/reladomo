@@ -1841,18 +1841,25 @@ public abstract class MithraAbstractDatabaseObject
     protected void createPrimaryKeyIndexForTestTable(Object source)
     {
         StringBuilder indexPK = new StringBuilder("CREATE UNIQUE INDEX ");
+        StringBuilder constraintPK = new StringBuilder("ALTER TABLE ");
+        constraintPK.append(this.getFullyQualifiedTableNameGenericSource(source)).append(" ADD CONSTRAINT ");
         String schemaName = this.getSchemaGenericSource(source);
         if (schemaName != null)
         {
             if (getDatabaseTypeGenericSource(source).indexRequiresSchemaName())
             {
                 indexPK.append(schemaName).append('.');
+                constraintPK.append(schemaName).append('.');
             }
         }
         indexPK.append("I_").append(this.getTableNameGenericSource(source)).append("_PK ON ").append(this.getFullyQualifiedTableNameGenericSource(source)).append(" (");
         indexPK.append(this.getPrimaryKeyIndexColumns());
         indexPK.append(')');
+        constraintPK.append("C_").append(this.getTableNameGenericSource(source)).append("_PK UNIQUE(");
+        constraintPK.append(this.getPrimaryKeyIndexColumns());
+        constraintPK.append(')');
         this.executeSqlStatementGenericSource(indexPK.toString(), source);
+        this.executeSqlStatementGenericSource(constraintPK.toString(), source);
     }
 
     protected void executeSqlStatementGenericSource(String statement, Object source)

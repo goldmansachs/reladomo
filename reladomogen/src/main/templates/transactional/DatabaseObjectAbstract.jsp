@@ -68,7 +68,7 @@ public abstract class <%=localClassName%> extends <%= wrapper.getDatabaseObjectS
         <%  if (i > 0) { %>result.append(",");<% } %>
         result.append(databaseAlias);
         result.append(".");
-        result.append("<%= primaryKeyAttributes[i].getColumnName() %>");
+        result.append("<%= primaryKeyAttributes[i].getColumnNameWithEscapedQuote() %>");
         <% } // for primary key attributes%>
         return result.toString();
     }

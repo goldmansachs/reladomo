@@ -1063,4 +1063,10 @@ public abstract class AbstractDatabaseType implements DatabaseType
     {
         //do nothing
     }
+
+    @Override
+    public boolean varBinaryHasLength()
+    {
+        return false;
+    }
 }

@@ -51,11 +51,11 @@ extends TestSqlDatatypes
         List desks;
 
         //Boolean
-        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN = 0";
+        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN = FALSE";
         desks = new ParaDeskList(ParaDeskFinder.activeBoolean().eq(false));
         this.genericRetrievalTest(sql, desks);
 
-        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN = 1";
+        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN = TRUE";
         desks = new ParaDeskList(ParaDeskFinder.activeBoolean().eq(true));
         this.genericRetrievalTest(sql, desks);
 
@@ -132,15 +132,15 @@ extends TestSqlDatatypes
         List desks = new ParaDeskList(ParaDeskFinder.deskIdString().eq("rnd").and(ParaDeskFinder.createTimestamp().eq(getTestTimestamp())));
         this.genericRetrievalTest(sql, desks);
 
-        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN = 1 and DESK_ID_STRING = 'abc'";
+        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN = TRUE and DESK_ID_STRING = 'abc'";
         desks = new ParaDeskList(ParaDeskFinder.activeBoolean().eq(true).and(ParaDeskFinder.deskIdString().eq("abc")));
         this.genericRetrievalTest(sql, desks, 0);
 
-        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN = 0 and DESK_ID_STRING = 'abc'";
+        sql = "select * from PARA_DESK where ACTIVE_BOOLEAN = FALSE and DESK_ID_STRING = 'abc'";
         desks = new ParaDeskList(ParaDeskFinder.activeBoolean().eq(false).and(ParaDeskFinder.deskIdString().eq("abc")));
         this.genericRetrievalTest(sql, desks);
 
-        sql = "select * from PARA_DESK where TAG_INT = 100 and CONNECTION_LONG = 2000000 and CREATE_TIMESTAMP = '9999-12-01 23:59:00.0' and ACTIVE_BOOLEAN = 1";
+        sql = "select * from PARA_DESK where TAG_INT = 100 and CONNECTION_LONG = 2000000 and CREATE_TIMESTAMP = '9999-12-01 23:59:00.0' and ACTIVE_BOOLEAN = TRUE";
         desks = new ParaDeskList(ParaDeskFinder.tagInt().eq(100).and(ParaDeskFinder.connectionLong().eq(2000000)).and(ParaDeskFinder.createTimestamp().eq(InfinityTimestamp.getParaInfinity())).and(ParaDeskFinder.activeBoolean().eq(true)));
         this.genericRetrievalTest(sql, desks);
     }

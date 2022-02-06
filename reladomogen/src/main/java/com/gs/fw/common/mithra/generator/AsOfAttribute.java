@@ -112,6 +112,12 @@ public class AsOfAttribute extends Attribute
         return false;
     }
 
+    @Override
+    public String getPlainColumnName()
+    {
+        return null;
+    }
+
     public String getQuotedColumnName()
     {
         throw new RuntimeException("not supported!");

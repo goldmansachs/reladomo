@@ -89,7 +89,7 @@ public class TestMappedAttributes extends MithraTestAbstract
             obj.getDatatypes().setBooleanColumn(true);
         }
 
-        sql = "select M.* from MAPPED_DIFFERENT_DATA_TYPES M, DIFFERENT_DATA_TYPES D where M.ID = D.ID and D.BOOLEAN_COLUMN = 1";
+        sql = "select M.* from MAPPED_DIFFERENT_DATA_TYPES M, DIFFERENT_DATA_TYPES D where M.ID = D.ID and D.BOOLEAN_COLUMN = TRUE";
         op = MappedDifferentDataTypesFinder.datatypes().booleanColumn().eq(true);
         list = new MappedDifferentDataTypesList(op);
         this.genericRetrievalTest(sql, list);
@@ -98,7 +98,7 @@ public class TestMappedAttributes extends MithraTestAbstract
         op = MappedDifferentDataTypesFinder.datatypes().booleanColumn().notEq(true);
         list = new MappedDifferentDataTypesList(op);
 
-        sql = "select M.* from MAPPED_DIFFERENT_DATA_TYPES M, DIFFERENT_DATA_TYPES D where M.ID = D.ID and D.BOOLEAN_COLUMN <> 1";
+        sql = "select M.* from MAPPED_DIFFERENT_DATA_TYPES M, DIFFERENT_DATA_TYPES D where M.ID = D.ID and D.BOOLEAN_COLUMN <> TRUE";
         this.genericRetrievalTest(sql, list);
 
         // test IN for mapped attribute
@@ -109,16 +109,16 @@ public class TestMappedAttributes extends MithraTestAbstract
         op = MappedDifferentDataTypesFinder.datatypes().booleanColumn().in(booleanSet);
         list = new MappedDifferentDataTypesList(op);
 
-        sql = "select M.* from MAPPED_DIFFERENT_DATA_TYPES M, DIFFERENT_DATA_TYPES D where M.ID = D.ID and D.BOOLEAN_COLUMN in (0, 1)";
+        sql = "select M.* from MAPPED_DIFFERENT_DATA_TYPES M, DIFFERENT_DATA_TYPES D where M.ID = D.ID and D.BOOLEAN_COLUMN in (FALSE, TRUE)";
         this.genericRetrievalTest(sql, list);
 
         op = MappedDifferentDataTypesFinder.datatypes().booleanColumn().eq(true);
         list = new MappedDifferentDataTypesList(op);
-        sql = "select M.* from MAPPED_DIFFERENT_DATA_TYPES M, DIFFERENT_DATA_TYPES D where M.ID = D.ID and D.BOOLEAN_COLUMN = 1";
+        sql = "select M.* from MAPPED_DIFFERENT_DATA_TYPES M, DIFFERENT_DATA_TYPES D where M.ID = D.ID and D.BOOLEAN_COLUMN = TRUE";
         this.genericRetrievalTest(sql, list);
 
         list = new MappedDifferentDataTypesList(op.and(MappedDifferentDataTypesFinder.datatypes().booleanColumn().eq(true)));
-        sql = "select M.* from MAPPED_DIFFERENT_DATA_TYPES M, DIFFERENT_DATA_TYPES D where M.ID = D.ID and D.BOOLEAN_COLUMN = 1";
+        sql = "select M.* from MAPPED_DIFFERENT_DATA_TYPES M, DIFFERENT_DATA_TYPES D where M.ID = D.ID and D.BOOLEAN_COLUMN = TRUE";
         this.genericRetrievalTest(sql, list);
     }
 

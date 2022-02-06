@@ -22,10 +22,7 @@ import com.gs.fw.common.mithra.generator.type.*;
 import com.gs.fw.common.mithra.generator.util.StringBuilderBuilder;
 import com.gs.fw.common.mithra.generator.util.StringUtility;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public abstract class AbstractAttribute implements CommonAttribute, Comparable
@@ -374,83 +371,17 @@ public abstract class AbstractAttribute implements CommonAttribute, Comparable
 
     public String getQuotedColumnName()
     {
-        return "\"" + this.getColumnName() + "\"";
+        String columnName = this.getPlainColumnName();
+        if (columnNameRequiresQuotes(columnName))
+        {
+            return "\"\\\"" + columnName + "\\\"\"";
+        }
+        return "\"" + columnName + "\"";
     }
 
     public boolean mustWarnDuringCreation()
     {
         return this.getType() instanceof StringJavaType && !this.hasMaxLength();
-    }
-
-    public String getColumnCreationStatement(boolean addComma)
-    {
-        StringBuilderBuilder sbb = new StringBuilderBuilder();
-        sbb.appendConstant(this.getColumnName()).appendConstant(" ");
-
-        int sqlType = this.getType().getSqlType();
-        if (sqlType == java.sql.Types.BIT)
-        {
-            sbb.appendCode("dt.getSqlDataTypeForBoolean()");
-        }
-        else if (sqlType == java.sql.Types.TIMESTAMP)
-        {
-            sbb.appendCode("dt.getSqlDataTypeForTimestamp()");
-        }
-        else if (sqlType == java.sql.Types.TIME)
-        {
-            sbb.appendCode("dt.getSqlDataTypeForTime()");
-        }
-        else if (sqlType == java.sql.Types.TINYINT)
-        {
-            sbb.appendCode("dt.getSqlDataTypeForTinyInt()");
-        }
-        else if (sqlType == java.sql.Types.VARBINARY)
-        {
-            sbb.appendCode("dt.getSqlDataTypeForVarBinary()");
-        }
-        else if (sqlType == java.sql.Types.DOUBLE)
-        {
-            sbb.appendCode("dt.getSqlDataTypeForDouble()");
-        }
-        else if (sqlType == java.sql.Types.BIGINT)
-        {
-            sbb.appendCode("dt.getSqlDataTypeForLong()");
-        }
-        else
-        {
-            sbb.appendConstant(this.getType().getSqlDataType());
-            if (sqlType == java.sql.Types.VARCHAR)
-            {
-                if (this.hasMaxLength())
-                {
-                    sbb.appendConstant("("+this.getMaxLength()+")");
-                }
-                else
-                {
-                    sbb.appendConstant("(255)");
-                }
-            }
-        }
-        if (this.isIdentity())
-        {
-            sbb.appendCode("dt.getIdentityTableCreationStatement()");
-        }
-        else
-        {
-            if (!this.isNullable())
-            {
-                sbb.appendConstant(" not null");
-            }
-            else
-            {
-                sbb.appendCode("dt.getNullableColumnConstraintString()");
-            }
-        }
-        if (addComma)
-        {
-            sbb.appendConstant(",");
-        }
-        return sbb.getResult();
     }
 
     public JavaType getType()
@@ -460,7 +391,27 @@ public abstract class AbstractAttribute implements CommonAttribute, Comparable
 
     public String getColumnName()
     {
+        String columnName = getPlainColumnName();
+        if (columnNameRequiresQuotes(columnName))
+        {
+            columnName = "\""+columnName+"\"";
+        }
+        return columnName;
+    }
+
+    public String getPlainColumnName()
+    {
         return this.getAttributeType().getColumnName();
+    }
+
+    private boolean columnNameRequiresQuotes(String columnName)
+    {
+        return (columnName != null && !columnName.startsWith("\\") && (columnName.contains(" ") || isSqlKeyword(columnName)));
+    }
+
+    private boolean isSqlKeyword(String columnName)
+    {
+        return SqlKeywords.isKeyword(columnName.toUpperCase());
     }
 
     public void setColumnName(String columnName)
@@ -635,7 +586,7 @@ public abstract class AbstractAttribute implements CommonAttribute, Comparable
 
     protected void validateColumnName(Attribute superClassAttribute)
     {
-        if (this.getAttributeType().getColumnName() == null)
+        if (getPlainColumnName() == null)
         {
             this.getAttributeType().setColumnName(superClassAttribute.getColumnName());
         }
@@ -1618,5 +1569,15 @@ public abstract class AbstractAttribute implements CommonAttribute, Comparable
     public boolean isBeanObjectType()
     {
         return this.getType().isBeanObjectType();
+    }
+
+    public String getColumnNameWithEscapedQuote()
+    {
+        String columnName = getPlainColumnName();
+        if (columnNameRequiresQuotes(columnName))
+        {
+            columnName = "\\\""+columnName+"\\\"";
+        }
+        return columnName;
     }
 }
