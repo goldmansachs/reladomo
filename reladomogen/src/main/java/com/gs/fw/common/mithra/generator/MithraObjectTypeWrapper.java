@@ -1081,32 +1081,6 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
         return errors;
     }
 
-    public String getPkIndexColumns()
-    {
-        Attribute[] pkAttributes = this.getPrimaryKeyAttributes();
-        String result = pkAttributes[0].getColumnName();
-        for (int i = 1; i < pkAttributes.length; i++)
-        {
-            if (!pkAttributes[i].isSourceAttribute())
-            {
-                result += " , " + pkAttributes[i].getColumnName();
-            }
-        }
-        result += getAsOfAttributeIndexColumns();
-        return result;
-    }
-
-    public String getAsOfAttributeIndexColumns()
-    {
-        String result = "";
-        AsOfAttribute[] asOfAttributes = this.getAsOfAttributes();
-        for (int i = 0; i < asOfAttributes.length; i++)
-        {
-            result += " , " + asOfAttributes[i].getToColumnName();
-        }
-        return result;
-    }
-
     public void addIndex(List attributes, MithraObjectTypeWrapper relatedObject)
     {
         List noAsOfAttributesList = new ArrayList(attributes);
@@ -2617,7 +2591,7 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
     {
         if (this.optimisticLockAttribute != null)
         {
-            return "AND "+this.optimisticLockAttribute.getColumnName() +" = ?";
+            return "AND "+this.optimisticLockAttribute.getColumnNameWithEscapedQuote() +" = ?";
         }
         AsOfAttribute processingDateAttribute = this.getProcessingDateAttribute();
         return "AND " + processingDateAttribute.getFromColumnName() + " = ?";

@@ -406,7 +406,8 @@ public abstract class AbstractAttribute implements CommonAttribute, Comparable
 
     private boolean columnNameRequiresQuotes(String columnName)
     {
-        return (columnName != null && !columnName.startsWith("\\") && (columnName.contains(" ") || isSqlKeyword(columnName)));
+        return columnName != null && !columnName.startsWith("\\") && !columnName.startsWith("[") &&
+                (columnName.contains(" ") || isSqlKeyword(columnName));
     }
 
     private boolean isSqlKeyword(String columnName)
@@ -588,7 +589,7 @@ public abstract class AbstractAttribute implements CommonAttribute, Comparable
     {
         if (getPlainColumnName() == null)
         {
-            this.getAttributeType().setColumnName(superClassAttribute.getColumnName());
+            this.getAttributeType().setColumnName(superClassAttribute.getPlainColumnName());
         }
     }
 

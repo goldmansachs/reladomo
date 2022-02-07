@@ -1109,6 +1109,7 @@ public class SybaseDatabaseType extends AbstractDatabaseType
         {
             fullyExecute(con, "set parallel_degree "+maxParallelDegree);
         }
+        fullyExecute(con, "set quoted_identifier on");
     }
 
     public boolean hasPerTableLock()

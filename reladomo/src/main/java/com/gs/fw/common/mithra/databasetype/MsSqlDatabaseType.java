@@ -928,4 +928,9 @@ public class MsSqlDatabaseType extends AbstractDatabaseType
     {
         return Types.TINYINT;
     }
+
+    public void configureConnection(Connection con) throws SQLException
+    {
+        fullyExecute(con, "SET QUOTED_IDENTIFIER ON");
+    }
 }
