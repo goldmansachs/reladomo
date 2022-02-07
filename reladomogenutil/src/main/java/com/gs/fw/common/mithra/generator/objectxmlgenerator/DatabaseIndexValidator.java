@@ -215,7 +215,7 @@ public class DatabaseIndexValidator
         Set<String> pkColumnNamesInMithra = new HashSet<String>();
         for (int j = 0; j < pkAttributes.length; j++)
         {
-            pkColumnNamesInMithra.add(pkAttributes[j].getColumnName());
+            pkColumnNamesInMithra.add(pkAttributes[j].getPlainColumnName());
         }
         this.addAsOfAttributes(pkColumnNamesInMithra, typeWrapper);
         return pkColumnNamesInMithra;

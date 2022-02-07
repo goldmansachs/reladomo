@@ -1,4 +1,17 @@
 # Change Log
+## 18.1.0 - 2022-02-06
+### Enhancements:
+- Add MariaDB support to database definition generator
+- Auto quote columns that are SQL keywords or have spaces
+    - Quoted identifiers are now forced to "on" at connection time to Sybase and MS SQL Server
+- Update to H2 2.1.210
+    - This was a bigger change than expected. H2 2.x behaves quite differently from 1.x
+            - It's a lot more strict regarding identifiers. This may cause issues with table names in unit tests.
+            - Numerical computations can result in slightly different outcomes (e.g. rounding down vs up).
+    - For unit tests, `MODE=LEGACY` is auto set for the in memory instance. The main use of this is the `IDENTITY()` function.
+### Bug Fixes:
+- Fix parsing large long values in test data files
+
 ## 18.0.0 - 2020-09-06
 ### Enhancements:
 - Switch to jdk8. Reladomo's mininum supported jdk is now JDK 8

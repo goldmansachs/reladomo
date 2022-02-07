@@ -157,7 +157,7 @@ public class NullableColumnValidator
                 for (int j = 0; j < attributes.length; j++)
                 {
                     Attribute nextAttribute = attributes[j];
-                    ColumnInfo dbColumnInfo = tableDetails.findColumnInfo(nextAttribute.getColumnName());
+                    ColumnInfo dbColumnInfo = tableDetails.findColumnInfo(nextAttribute.getPlainColumnName());
                     if (dbColumnInfo != null && dbColumnInfo.isNullable() != nextAttribute.isNullable())
                     {
                         this.violations.add("Mithra xml: " + mithraObjectClassName + " db table: " + tableName + " column: " + dbColumnInfo.getColumnName() + " mithra col name: " + nextAttribute.getName() + " is db nullable? " + dbColumnInfo.isNullable() + " is mithra nullable? " + nextAttribute.isNullable() + "\n");
