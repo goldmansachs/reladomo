@@ -67,6 +67,10 @@
         <include name="**/*.jar"/>
     </fileset>
 
+    <fileset dir="${root}/lib/graphql" id="fileset.lib.graphql">
+        <include name="**/*.jar"/>
+    </fileset>
+
     <path id="reladomo.compile.classpath">
         <fileset refid="fileset.lib.compile"/>
         <pathelement location="${root}/reladomo/target/reladomo-asm-4.2.jar"/>
@@ -74,12 +78,7 @@
 
     <path id="reladomographql.compile.classpath">
         <pathelement location="${root}/reladomo/target/classes"/>
-        <pathelement location="${root}/build/lib/graphql/graphql-java-13.0.jar"/>
-        <pathelement location="${root}/build/lib/graphql/graphql-java-servlet-8.0.0.jar"/>
-        <pathelement location="${root}/lib/serial/jackson-databind-2.8.6.jar"/>
-        <pathelement location="${root}/lib/serial/jackson-core-2.8.6.jar"/>
-        <pathelement location="${root}/build/lib/graphql/javax.servlet-api-3.0.1.jar"/>
-        <pathelement location="${root}/build/lib/graphql/graphql-java-extended-scalars-1.0.jar"/>
+        <fileset refid="fileset.lib.graphql"/>
     </path>
 
     <path id="reladomo.test.compile.classpath">
@@ -1976,6 +1975,10 @@
         <include name="**/*.jar"/>
     </fileset>
 
+    <fileset dir="${root}/lib/serialtest" id="fileset.lib.serialtest">
+        <include name="**/*.jar"/>
+    </fileset>
+
     <path id="reladomo.serial.compile.classpath">
         <fileset refid="fileset.lib.serial"/>
         <path refid="reladomo.compile.classpath"/>
@@ -1985,6 +1988,7 @@
     <path id="reladomo.serial.test.compile.classpath">
         <path refid="reladomo.serial.compile.classpath"/>
         <path refid="reladomo.run.test.classpath"/>
+        <fileset refid="fileset.lib.serialtest"/>
         <pathelement location="${root}/reladomoserial/target/classes"/>
         <pathelement location="${root}/reladomo/target/test-classes-onheap"/>
         <pathelement location="${root}/reladomo/target/test-util-classes"/>

@@ -19,6 +19,7 @@ package com.gs.fw.common.mithra.util;
 
 import org.eclipse.collections.api.IntIterable;
 import org.eclipse.collections.api.LazyIntIterable;
+import org.eclipse.collections.api.LazyIterable;
 import org.eclipse.collections.api.bag.primitive.MutableIntBag;
 import org.eclipse.collections.api.block.function.primitive.IntToObjectFunction;
 import org.eclipse.collections.api.block.function.primitive.ObjectIntToObjectFunction;
@@ -30,6 +31,7 @@ import org.eclipse.collections.api.set.SetIterable;
 import org.eclipse.collections.api.set.primitive.ImmutableIntSet;
 import org.eclipse.collections.api.set.primitive.IntSet;
 import org.eclipse.collections.api.set.primitive.MutableIntSet;
+import org.eclipse.collections.api.tuple.primitive.IntIntPair;
 import org.eclipse.collections.impl.set.mutable.primitive.IntHashSet;
 import java.io.Serializable;
 
@@ -307,5 +309,33 @@ public class ConstantIntSet implements IntSet, Serializable
         delegate.appendString(appendable, start, separator, end);
     }
 
+    @Override
+    public IntSet union(IntSet set)
+    {
+        return delegate.union(set);
+    }
 
+    @Override
+    public IntSet intersect(IntSet set)
+    {
+        return delegate.intersect(set);
+    }
+
+    @Override
+    public IntSet difference(IntSet set)
+    {
+        return delegate.difference(set);
+    }
+
+    @Override
+    public IntSet symmetricDifference(IntSet set)
+    {
+        return delegate.symmetricDifference(set);
+    }
+
+    @Override
+    public LazyIterable<IntIntPair> cartesianProduct(IntSet set)
+    {
+        return delegate.cartesianProduct(set);
+    }
 }

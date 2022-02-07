@@ -17,6 +17,7 @@
 
 package com.gs.fw.common.mithra.util;
 
+import org.eclipse.collections.api.LazyIterable;
 import org.eclipse.collections.api.LazyShortIterable;
 import org.eclipse.collections.api.ShortIterable;
 import org.eclipse.collections.api.bag.primitive.MutableShortBag;
@@ -30,6 +31,7 @@ import org.eclipse.collections.api.set.SetIterable;
 import org.eclipse.collections.api.set.primitive.ImmutableShortSet;
 import org.eclipse.collections.api.set.primitive.MutableShortSet;
 import org.eclipse.collections.api.set.primitive.ShortSet;
+import org.eclipse.collections.api.tuple.primitive.ShortShortPair;
 import org.eclipse.collections.impl.set.mutable.primitive.ShortHashSet;
 import java.io.Serializable;
 
@@ -305,5 +307,33 @@ public class ConstantShortSet implements ShortSet, Serializable
         delegate.appendString(appendable, start, separator, end);
     }
 
+    @Override
+    public ShortSet union(ShortSet set)
+    {
+        return delegate.union(set);
+    }
 
+    @Override
+    public ShortSet intersect(ShortSet set)
+    {
+        return delegate.intersect(set);
+    }
+
+    @Override
+    public ShortSet difference(ShortSet set)
+    {
+        return delegate.difference(set);
+    }
+
+    @Override
+    public ShortSet symmetricDifference(ShortSet set)
+    {
+        return delegate.symmetricDifference(set);
+    }
+
+    @Override
+    public LazyIterable<ShortShortPair> cartesianProduct(ShortSet set)
+    {
+        return delegate.cartesianProduct(set);
+    }
 }
