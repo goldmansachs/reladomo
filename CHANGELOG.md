@@ -9,6 +9,9 @@
             - It's a lot more strict regarding identifiers. This may cause issues with table names in unit tests.
             - Numerical computations can result in slightly different outcomes (e.g. rounding down vs up).
     - For unit tests, `MODE=LEGACY` is auto set for the in memory instance. The main use of this is the `IDENTITY()` function.
+- Update main dependencies: Eclipse Collections 11.0.0, Joda Time 2.10.13, slf4j 1.7.35.
+- Update serialization dependencies: gson 2.8.9, jackson-core 2.13.1.
+
 ### Bug Fixes:
 - Fix parsing large long values in test data files
 

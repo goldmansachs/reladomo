@@ -1,10 +1,10 @@
 # <repo>, <groupId>, <artifactId>, <version>, <extension>, <destDir>, <checksum>
 # central,org.apache.ant,ant,1.9.6,jar,build/lib,80E2063B01BAB3C79C2D84E4ED5E73868394C85A
-central,org.eclipse.collections,eclipse-collections-api,7.1.1,jar,lib/compile,806C2B3BEF5364D1A1668F25CE70100FA2C6B919
-central,org.eclipse.collections,eclipse-collections,7.1.1,jar,lib/compile,83ECA9F03F1F2D055DF453D72036C5CE2E82896B
-central,joda-time,joda-time,2.9.4,jar,lib/compile,1C295B462F16702EBE720BBB08F62E1BA80DA41B
+central,org.eclipse.collections,eclipse-collections-api,11.0.0,jar,lib/compile,1FA4325CDAD80CFEC8ADE827B8F8D00A54936E35
+central,org.eclipse.collections,eclipse-collections,11.0.0,jar,lib/compile,FDEAF9CBD78FA80AB3F96B9DB9567538B20B1A6E
+central,joda-time,joda-time,2.10.13,jar,lib/compile,86F338C18CEA2A89005556642E81707FF920DD38
 central,org.apache.geronimo.specs,geronimo-jta_1.1_spec,1.1.1,jar,lib/compile,AABAB3165B8EA936B9360ABBF448459C0D04A5A4
-central,org.slf4j,slf4j-api,1.7.21,jar,lib/compile,139535A69A4239DB087DE9BAB0BEE568BF8E0B70
+central,org.slf4j,slf4j-api,1.7.35,jar,lib/compile,517F3A0687490B72D0E56D815E05608A541AF802
 
 #drivers
 central,org.postgresql,postgresql,9.3-1101-jdbc4,jar,lib/drivers,9DA59F12BADEA19B3B2884161F624BCF6750F985
@@ -36,48 +36,52 @@ central,org.jacoco,org.jacoco.ant,0.7.9,jar,lib/coverage,7CB39A4B38A32FFC8D0B505
 central,org.ow2.asm,asm-debug-all,5.2,jar,lib/coverage,3354E11E2B34215F06DAB629AB88E06ACA477C19
 
 #serial libs:
-central,com.google.code.gson,gson,2.8.0,jar,lib/serial,C4BA5371A29AC9B2AD6129B1D39EA38750043EFF
+central,com.google.code.gson,gson,2.8.9,jar,lib/serial,8A432C1D6825781E21A02DB2E2C33C5FDE2833B9
 
-central,com.fasterxml.jackson.core,jackson-core,2.8.6,jar,lib/serial,2EF7B1CC34DE149600F5E75BC2D5BF40DE894E60
-central,com.fasterxml.jackson.core,jackson-annotations,2.8.6,jar,lib/serial,9577018F9CE3636A2E1CB0A0C7FE915E5098DED5
-central,com.fasterxml.jackson.core,jackson-databind,2.8.6,jar,lib/serial,C43DE61F74ECC61322EF8F402837BA65B0AA2BF4
-
-central,com.fasterxml.jackson.jaxrs,jackson-jaxrs-json-provider,2.8.8,jar,lib/serial,E70BE1CD2AD47615A527F7475F63ACADBF3BE730
-central,com.fasterxml.jackson.jaxrs,jackson-jaxrs-base,2.8.8,jar,lib/serial,345A87F3C145912163964DED45803EBF0A9C775E
-
-central,org.glassfish.jersey.core,jersey-common,2.25,jar,lib/serial,B38E1A1AF6AD75DD9037A767764B0D41801F1C9F
-central,org.glassfish.jersey.core,jersey-server,2.25,jar,lib/serial,0874CA16134872781B8C6A2ADFE3BB2AF80BC378
-central,org.glassfish.jersey.core,jersey-client,2.25,jar,lib/serial,416A00562F25D7EFDBA015E5C21876D19163EDD0
-central,org.glassfish.jersey.ext,jersey-entity-filtering,2.25,jar,lib/serial,52B5A204A79D22041F4B30C2670E95C2456CBCBD
-central,org.glassfish.jersey.media,jersey-media-json-jackson,2.25,jar,lib/serial,2C99D40047A50FC43C5886545F7F2148C7E4A384
-central,org.glassfish.jersey.media,jersey-media-jaxb,2.25,jar,lib/serial,09AA3EEBA90DCE24F04BF27CD1A4E0D378EC697F
-central,org.glassfish.jersey.bundles.repackaged,jersey-guava,2.25,jar,lib/serial,4439BDDB870B210E40CA2E953813930BE424DC0C
-
-central,org.glassfish.hk2,hk2-api,2.5.0-b30,jar,lib/serial,5C6688A6BAFCD2098BEF4CA45226D5355B816647
-central,org.glassfish.hk2,hk2-utils,2.5.0-b30,jar,lib/serial,B17FC7D8082AC00E59CD96FDA9CFF21F24CC367C
-central,org.glassfish.hk2,hk2-locator,2.5.0-b30,jar,lib/serial,82056CBBD258647BBC6B80DEBE4E6B7121C61BE9
-central,org.glassfish.hk2.external,javax.inject,2.5.0-b30,jar,lib/serial,054B36144FD2FB684F9CEE73D96060BB82E4D363
-central,org.glassfish.jersey.containers,jersey-container-grizzly2-http,2.25,jar,lib/serial,ACA5D2802C7D81E4350829696C96AEE2F01FE6A9
-central,org.glassfish.grizzly,grizzly-http-server,2.3.28,jar,lib/serial,13BC9A63DAE3A0A623B52FE71753D5413D134540
-central,org.glassfish.grizzly,grizzly-http,2.3.28,jar,lib/serial,BB34B4E7FBB66B53AC6D428DCC99F5925C9FF7BD
-central,org.glassfish.grizzly,grizzly-framework,2.3.28,jar,lib/serial,23A90F6316B3776699B173CCF9394C69D15B7E9C
+central,com.fasterxml.jackson.core,jackson-core,2.13.1,jar,lib/serial,51AE921A2ED1E06CA8876F12F32F265E83C0B2B8
+central,com.fasterxml.jackson.core,jackson-databind,2.13.1,jar,lib/serial,698B2D2B15D9A1B7AAE025F1D9F576842285E7F6
 
 central,javax.ws.rs,javax.ws.rs-api,2.0,jar,lib/serial,61F0983EB190954CCDEDE31E786A9E0BD9767C4A
-central,javax.validation,validation-api,1.1.0.Final,jar,lib/serial,8613AE82954779D518631E05DAA73A6A954817D5
-central,javax.annotation,javax.annotation-api,1.2,jar,lib/serial,479C1E06DB31C432330183F5CAE684163F186146
 
-central,org.javassist,javassist,3.20.0-GA,jar,lib/serial,A9CBCDFB7E9F86FBC74D3AFAE65F2248BFBF82A0
+central,com.fasterxml.jackson.core,jackson-annotations,2.13.1,jar,lib/serialtest,1CBCBE4623113E6AF92CCAA89884A345270F1A87
+
+central,com.fasterxml.jackson.jaxrs,jackson-jaxrs-json-provider,2.13.1,jar,lib/serialtest,F305A0891E9C917FDD526F3708896B99CF89AF5C
+central,com.fasterxml.jackson.jaxrs,jackson-jaxrs-base,2.13.1,jar,lib/serialtest,2C8AA6362A140F5DE4CD6292F9D92AE09DC03F34
+
+central,org.glassfish.jersey.core,jersey-common,2.25,jar,lib/serialtest,B38E1A1AF6AD75DD9037A767764B0D41801F1C9F
+central,org.glassfish.jersey.core,jersey-server,2.25,jar,lib/serialtest,0874CA16134872781B8C6A2ADFE3BB2AF80BC378
+central,org.glassfish.jersey.core,jersey-client,2.25,jar,lib/serialtest,416A00562F25D7EFDBA015E5C21876D19163EDD0
+central,org.glassfish.jersey.ext,jersey-entity-filtering,2.25,jar,lib/serialtest,52B5A204A79D22041F4B30C2670E95C2456CBCBD
+central,org.glassfish.jersey.media,jersey-media-json-jackson,2.25,jar,lib/serialtest,2C99D40047A50FC43C5886545F7F2148C7E4A384
+central,org.glassfish.jersey.media,jersey-media-jaxb,2.25,jar,lib/serialtest,09AA3EEBA90DCE24F04BF27CD1A4E0D378EC697F
+central,org.glassfish.jersey.bundles.repackaged,jersey-guava,2.25,jar,lib/serialtest,4439BDDB870B210E40CA2E953813930BE424DC0C
+
+central,org.glassfish.hk2,hk2-api,2.5.0-b30,jar,lib/serialtest,5C6688A6BAFCD2098BEF4CA45226D5355B816647
+central,org.glassfish.hk2,hk2-utils,2.5.0-b30,jar,lib/serialtest,B17FC7D8082AC00E59CD96FDA9CFF21F24CC367C
+central,org.glassfish.hk2,hk2-locator,2.5.0-b30,jar,lib/serialtest,82056CBBD258647BBC6B80DEBE4E6B7121C61BE9
+central,org.glassfish.hk2.external,javax.inject,2.5.0-b30,jar,lib/serialtest,054B36144FD2FB684F9CEE73D96060BB82E4D363
+central,org.glassfish.jersey.containers,jersey-container-grizzly2-http,2.25,jar,lib/serialtest,ACA5D2802C7D81E4350829696C96AEE2F01FE6A9
+central,org.glassfish.grizzly,grizzly-http-server,2.3.28,jar,lib/serialtest,13BC9A63DAE3A0A623B52FE71753D5413D134540
+central,org.glassfish.grizzly,grizzly-http,2.3.28,jar,lib/serialtest,BB34B4E7FBB66B53AC6D428DCC99F5925C9FF7BD
+central,org.glassfish.grizzly,grizzly-framework,2.3.28,jar,lib/serialtest,23A90F6316B3776699B173CCF9394C69D15B7E9C
+
+central,javax.validation,validation-api,1.1.0.Final,jar,lib/serialtest,8613AE82954779D518631E05DAA73A6A954817D5
+central,javax.annotation,javax.annotation-api,1.2,jar,lib/serialtest,479C1E06DB31C432330183F5CAE684163F186146
+
+central,org.javassist,javassist,3.20.0-GA,jar,lib/serialtest,A9CBCDFB7E9F86FBC74D3AFAE65F2248BFBF82A0
 
 #xa libs:
 central,org.apache.geronimo.specs,geronimo-jms_1.1_spec,1.1.1,jar,lib/xa,C872B46C601D8DC03633288B81269F9E42762CEA
 
 #graphql
-central,javax.servlet,javax.servlet-api,3.0.1,jar,build/lib/graphql,6BF0EBB7EFD993E222FC1112377B5E92A13B38DD
-central,com.graphql-java,graphql-java,13.0,jar,build/lib/graphql,F3D5C387CF09A13922F719FC984E7B6CBF2A3CCF
-central,com.graphql-java-kickstart,graphql-java-servlet,8.0.0,jar,build/lib/graphql,F0FEE2A1DD3715EE93473A54FA93F7CFDFC24E46
-central,com.graphql-java,graphql-java-extended-scalars,1.0,jar,build/lib/graphql,D798F4D543331B26E5E0B359D84D775F66B0E3E0
+central,javax.servlet,javax.servlet-api,3.0.1,jar,lib/graphql,6BF0EBB7EFD993E222FC1112377B5E92A13B38DD
+central,com.graphql-java,graphql-java,13.0,jar,lib/graphql,F3D5C387CF09A13922F719FC984E7B6CBF2A3CCF
+central,com.graphql-java-kickstart,graphql-java-servlet,8.0.0,jar,lib/graphql,F0FEE2A1DD3715EE93473A54FA93F7CFDFC24E46
+central,com.graphql-java,graphql-java-extended-scalars,1.0,jar,lib/graphql,D798F4D543331B26E5E0B359D84D775F66B0E3E0
 central,org.skyscreamer,jsonassert,1.5.0,jar,lib/test,6C9D5FE2F59DA598D9AEFC1CFC6528FF3CF32DF3
 central,com.vaadin.external.google,android-json,0.0.20131108.vaadin1,jar,lib/test,FA26D351FE62A6A17F5CDA1287C1C6110DEC413F
+central,com.fasterxml.jackson.core,jackson-core,2.13.1,jar,lib/graphql,51AE921A2ED1E06CA8876F12F32F265E83C0B2B8
+central,com.fasterxml.jackson.core,jackson-databind,2.13.1,jar,lib/graphql,698B2D2B15D9A1B7AAE025F1D9F576842285E7F6
 
 
 # Copyright 2016 Goldman Sachs.
