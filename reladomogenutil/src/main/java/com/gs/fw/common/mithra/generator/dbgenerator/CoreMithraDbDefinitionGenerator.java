@@ -82,8 +82,9 @@ public class CoreMithraDbDefinitionGenerator extends BaseMithraGenerator
         }
         else
         {
-            this.logger.error("No database type specified.");
-            throw new MithraGeneratorException(new Exception("Invalid database type specified."));
+            String message = "Invalid database type specified: " + databaseType + ".";
+            this.logger.error(message);
+            throw new MithraGeneratorException(new Exception(message));
         }
     }
 
