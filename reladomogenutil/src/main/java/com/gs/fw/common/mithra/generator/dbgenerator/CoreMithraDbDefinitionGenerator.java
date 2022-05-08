@@ -45,6 +45,7 @@ public class CoreMithraDbDefinitionGenerator extends BaseMithraGenerator
     private final String DB_NAME_POSTGRES = "postgres";
     private final String DB_NAME_ORACLE = "oracle";
     private final String DB_NAME_MARIA = "maria";
+    private final String DB_NAME_H2 = "h2";
 
     public String getDatabaseType()
     {
@@ -79,6 +80,10 @@ public class CoreMithraDbDefinitionGenerator extends BaseMithraGenerator
         else if (databaseType.equalsIgnoreCase(DB_NAME_MARIA))
         {
             abstractGeneratorDatabaseType = new MariaGeneratorDatabaseType();
+        }
+        else if (databaseType.equalsIgnoreCase(DB_NAME_H2))
+        {
+            abstractGeneratorDatabaseType = new H2GeneratorDatabaseType();
         }
         else
         {
