@@ -45,6 +45,7 @@ public class CoreMithraDbDefinitionGenerator extends BaseMithraGenerator
     private final String DB_NAME_POSTGRES = "postgres";
     private final String DB_NAME_ORACLE = "oracle";
     private final String DB_NAME_MARIA = "maria";
+    private final String DB_NAME_H2 = "h2";
 
     public String getDatabaseType()
     {
@@ -80,10 +81,15 @@ public class CoreMithraDbDefinitionGenerator extends BaseMithraGenerator
         {
             abstractGeneratorDatabaseType = new MariaGeneratorDatabaseType();
         }
+        else if (databaseType.equalsIgnoreCase(DB_NAME_H2))
+        {
+            abstractGeneratorDatabaseType = new H2GeneratorDatabaseType();
+        }
         else
         {
-            this.logger.error("No database type specified.");
-            throw new MithraGeneratorException(new Exception("Invalid database type specified."));
+            String message = "Invalid database type specified: " + databaseType + ".";
+            this.logger.error(message);
+            throw new MithraGeneratorException(new Exception(message));
         }
     }
 
