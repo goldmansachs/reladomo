@@ -1,0 +1,27 @@
+name: Create GSOSS private repo from a GS public fork
+run-name: ${{ github.triggering_actor }} is creating gsoss2-${{ inputs.gspublicrepo }} 
+on:
+  workflow_dispatch:
+    inputs:
+      gspublicrepo:
+        description: |
+              Name of the GS public fork for which a GSOSS private repo should be created.
+              This must be relative to github.com/goldmansachs/
+        required: true
+        type: string
+      projectleads:
+        description: 'Comma separated Github user ids that should be made project-lead. Ex: user1,user2,...'
+        required: true
+        type: string
+      ipareviewers:
+        description: '(Optional) Comma separated Github user ids that should be made IP reviewers (with maintain permission). Ex: user1,user2,...'
+        required: false
+        type: string
+
+jobs:
+  call-remote-workflow:
+    runs-on: ubuntu-latest
+    steps:
+     - name: step1
+       run: |
+        echo hello
