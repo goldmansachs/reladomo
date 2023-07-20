@@ -19,7 +19,7 @@ on:
         type: string
 
 jobs:
-  call-remote-workflow:
+  create-gsoss2-${{ inputs.gspublicrepo }}:
     runs-on: ubuntu-latest
     steps:
      - name: step1
