@@ -110,5 +110,7 @@ Extract the jar file and refer to the docs below.
 [ChangeLog]:CHANGELOG.md
 [ChangeLog img]:https://img.shields.io/badge/Change%20log-markdown-blue.svg
 
+feature1
+
 [contrib]:CONTRIBUTING.md
 [contrib img]:https://img.shields.io/badge/Contribution-guide-blue.svg
