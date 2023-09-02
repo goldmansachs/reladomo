@@ -236,6 +236,7 @@
         <mkdir dir="${root}/reladomogenutil/target/db/db2"/>
         <mkdir dir="${root}/reladomogenutil/target/db/postgres"/>
         <mkdir dir="${root}/reladomogenutil/target/db/oracle"/>
+        <mkdir dir="${root}/reladomogenutil/target/db/h2"/>
         <mkdir dir="${root}/reladomogsi/target"/>
         <mkdir dir="${root}/reladomogsi/target/generated-src"/>
         <mkdir dir="${root}/reladomogsi/target/classes"/>
@@ -1360,6 +1361,10 @@
             <mithraImport dir="${root}/reladomo/src/test/reladomo-xml" fileName="MithraClassListToImport.xml"/>
             <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/testmithraimport" fileName="MithraTestImportClassList.xml"/>
         </reladomo-gen-db>
+        <reladomo-gen-db xml="${root}/reladomo/src/test/reladomo-xml/MithraClassList.xml" generatedDir="${root}/reladomogenutil/target/db/h2" databaseType="h2">
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml" fileName="MithraClassListToImport.xml"/>
+            <mithraImport dir="${root}/reladomo/src/test/reladomo-xml/testmithraimport" fileName="MithraTestImportClassList.xml"/>
+        </reladomo-gen-db>
     </target>
 
     <target name="generate-reladomo-xml-test" depends="compile-reladomo-genutil">
@@ -1910,6 +1915,7 @@
             <exec-test-suite mithraxmlconfig="MithraMsSqlTestConfig.xml" testclass="com.gs.fw.common.mithra.test.MithraMsSqlTestSuite" heap="onheap"/>
             <exec-test-suite mithraxmlconfig="MithraSybaseTestConfig.xml" testclass="com.gs.fw.common.mithra.test.MithraSybaseTestSuite" heap="onheap"/>
             <exec-test-suite mithraxmlconfig="MithraMariaTestConfig.xml" testclass="com.gs.fw.common.mithra.test.MithraMariaTestSuite" heap="onheap"/>
+            <exec-test-suite mithraxmlconfig="MithraH2TestConfig.xml" testclass="com.gs.fw.common.mithra.test.MithraH2TestSuite" heap="onheap"/>
         </parallel>
     </target>
 
@@ -1924,6 +1930,7 @@
                 <include name="TEST-*MithraPostgresTestConfig.xml"/>
                 <include name="TEST-*MithraOracleTestConfig.xml"/>
                 <include name="TEST-*MithraMariaTestConfig.xml"/>
+                <include name="TEST-*MithraH2TestConfig.xml"/>
             </fileset>
             <report format="frames" todir="${root}/reladomo/target/junit-report-vendor-test"/>
         </junitreport>
