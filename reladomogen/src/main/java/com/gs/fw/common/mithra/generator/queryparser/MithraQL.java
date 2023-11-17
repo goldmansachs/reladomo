@@ -130,6 +130,24 @@ public class MithraQL/*@bgen(jjtree)*/implements MithraQLTreeConstants, MithraQL
                               jjtc000 = false;
                              jjtn000.setLesserThanOrEqualTo(true); jjtn000.setString("<=");
         break;
+      case CONTAINS:
+        jj_consume_token(CONTAINS);
+                 jjtree.closeNodeScope(jjtn000, true);
+                 jjtc000 = false;
+                jjtn000.setContains(true); jjtn000.setString("contains");
+        break;
+      case STARTS_WITH:
+        jj_consume_token(STARTS_WITH);
+                    jjtree.closeNodeScope(jjtn000, true);
+                    jjtc000 = false;
+                   jjtn000.setStartsWith(true); jjtn000.setString("startsWith");
+        break;
+      case ENDS_WITH:
+        jj_consume_token(ENDS_WITH);
+                  jjtree.closeNodeScope(jjtn000, true);
+                  jjtc000 = false;
+                 jjtn000.setEndsWith(true); jjtn000.setString("endsWith");
+        break;
       default:
         jj_la1[1] = jj_gen;
         jj_consume_token(-1);
@@ -288,6 +306,9 @@ public class MithraQL/*@bgen(jjtree)*/implements MithraQLTreeConstants, MithraQL
       case LESSER_THAN:
       case GREATER_THAN_EQUAL:
       case LESSER_THAN_EQUAL:
+      case CONTAINS:
+      case STARTS_WITH:
+      case ENDS_WITH:
         RelationalOperatorExpression();
         break;
       case IS:
@@ -564,10 +585,10 @@ public class MithraQL/*@bgen(jjtree)*/implements MithraQLTreeConstants, MithraQL
       jj_la1_1();
    }
    private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x10000,0x7e0000,0x80,0xd8800000,0x40,0xd8800000,0x47e0c00,0xd8000000,0x100,0xd8000000,0x2000000,0x2000000,0x2000000,0xc8000000,0x800000,};
+      jj_la1_0 = new int[] {0x10000,0x3fe0000,0x80,0xc4000000,0x40,0xc4000000,0x23fe0c00,0xc0000000,0x100,0xc0000000,0x10000000,0x10000000,0x10000000,0x40000000,0x4000000,};
    }
    private static void jj_la1_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x7,0x0,0x7,0x0,0x7,0x0,0x3,0x0,0x0,0x0,0x0,0x2,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x3e,0x0,0x3e,0x0,0x3e,0x0,0x1e,0x0,0x0,0x0,0x6,0x10,};
    }
 
   public MithraQL(java.io.InputStream stream) {
@@ -669,8 +690,8 @@ public class MithraQL/*@bgen(jjtree)*/implements MithraQLTreeConstants, MithraQL
 
   public ParseException generateParseException() {
     jj_expentries.removeAllElements();
-    boolean[] la1tokens = new boolean[37];
-    for (int i = 0; i < 37; i++) {
+    boolean[] la1tokens = new boolean[40];
+    for (int i = 0; i < 40; i++) {
       la1tokens[i] = false;
     }
     if (jj_kind >= 0) {
@@ -689,7 +710,7 @@ public class MithraQL/*@bgen(jjtree)*/implements MithraQLTreeConstants, MithraQL
         }
       }
     }
-    for (int i = 0; i < 37; i++) {
+    for (int i = 0; i < 40; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
