@@ -187,17 +187,45 @@
     <target name="all" depends="compile-reladomo, compile-reladomo-genutil"/>
 
     <target name="sanity-check-build">
-        <available property="jdk.sanity.check" classname="java.sql.Connection" ignoresystemclasses="true">
-            <classpath>
-                <fileset dir="${jdk.home}" includes="**/*.jar"/>
-            </classpath>
-        </available>
+        <!-- Check for JDK presence using a more flexible approach that works with modern JDKs -->
+        <condition property="jdk.sanity.check">
+            <or>
+                <!-- Check for JDK 9+ module system -->
+                <available classname="java.lang.Module"/>
+                <!-- Traditional JDK check -->
+                <available classname="java.sql.Connection" ignoresystemclasses="true">
+                    <classpath>
+                        <fileset dir="${jdk.home}" includes="**/*.jar"/>
+                    </classpath>
+                </available>
+            </or>
+        </condition>
         <fail message="Could not find the JDK! Check ${jdk.home}." unless="jdk.sanity.check"/>
         <available property="reladomo.sanity.check" file="${root}/reladomo/src/main/java/com/gs/fw/common/mithra/MithraManager.java"/>
         <fail message="Could not find Reladomo sources. Project root is ${root}, but there is nothing in ${root}/reladomo/src/main/java/com/gs/fw/common/mithra/MithraManager.java." unless="reladomo.sanity.check"/>
     </target>
 
     <target name="determine-jdk">
+        <!-- Modern JDK detection (JDK 9+) -->
+        <condition property="modern.jdk">
+            <available classname="java.lang.Module"/>
+        </condition>
+        
+        <!-- Set jdk14 property for both modern and legacy JDKs -->
+        <available property="jdk14" classname="java.sql.Savepoint" ignoresystemclasses="true">
+            <classpath>
+                <pathelement location="${jdk.home}/jre/lib/rt.jar"/>
+            </classpath>
+        </available>
+        
+        <!-- For modern JDKs, set jdk14 property directly -->
+        <condition property="jdk14">
+            <isset property="modern.jdk"/>
+        </condition>
+        
+        <!-- Log JDK detection results -->
+        <echo message="JDK detection: modern.jdk=${modern.jdk}, jdk14=${jdk14}"/>
+    </target>
         <available property="jdk14" classname="java.sql.Savepoint" ignoresystemclasses="true">
             <classpath>
                 <pathelement location="${jdk.home}/jre/lib/rt.jar"/>

@@ -24,7 +24,15 @@ export RELADOMO_HOME=${RELADOMO_HOME:-"$SCRIPTPATH/.."}
 
 echo RELADOMO_HOME is $RELADOMO_HOME
 
-export JDK_HOME=${RELADOMO_JDK_HOME:-"/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home"}
+# Updated JDK detection logic
+if [ -n "$RELADOMO_JDK_HOME" ]; then
+  export JDK_HOME=$RELADOMO_JDK_HOME
+elif [ -d "/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home" ]; then
+  export JDK_HOME="/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Home"
+else
+  # Default to system Java if specific version not found
+  export JDK_HOME=$JAVA_HOME
+fi
 
 export GENERATE_RELADOMO_CONCRETE_CLASSES=true
 
