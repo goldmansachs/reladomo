@@ -276,10 +276,9 @@ public class VerboseSerializer
         public Object next()
         {
             this.counter++;
-            Object data = null;
-            try
+            Object data = null;            try
             {
-                data = VerboseSerializer.this.dataClass.newInstance();
+                data = VerboseSerializer.this.dataClass.getDeclaredConstructor().newInstance();
             }
             catch (Exception e)
             {

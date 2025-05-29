@@ -69,12 +69,10 @@ public class H2DbServer
         {
             getLogger().error("Unable to stop H2 Database",e);
         }
-    }
-
-    private void initializeH2() throws Exception
+    }    private void initializeH2() throws Exception
     {
         getLogger().info("Starting H2 database Server");
-        Class.forName("org.h2.Driver").newInstance();
+        Class.forName("org.h2.Driver").getDeclaredConstructor().newInstance();
         getLogger().info("H2 database Server Started");
     }
 

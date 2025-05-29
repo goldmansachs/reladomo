@@ -52,13 +52,11 @@ public class DerbyServer
                 logger.error("During derby DB initialisation!", e);
             }
         }
-    }
-
-    private void startNetworkServer() throws Exception
+    }    private void startNetworkServer() throws Exception
     {
         getLogger().info("Starting Network Server");
         System.setProperty("derby.drda.startNetworkServer", "true");
-        Class.forName("org.apache.derby.jdbc.EmbeddedDriver").newInstance();
+        Class.forName("org.apache.derby.jdbc.EmbeddedDriver").getDeclaredConstructor().newInstance();
         getLogger().info("Network Server Started");
         new NetworkServerControl();
     }

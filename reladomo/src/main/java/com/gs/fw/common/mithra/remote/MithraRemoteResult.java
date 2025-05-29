@@ -79,24 +79,14 @@ public abstract class MithraRemoteResult implements Externalizable, Runnable
     public void writeRemoteTransactionId(ObjectOutput out) throws IOException
     {
         out.writeObject(this.remoteTransactionId);
-    }
-
-    protected RelatedFinder instantiateRelatedFinder(String finderClassname)
+    }    protected RelatedFinder instantiateRelatedFinder(String finderClassname)
     {
         RelatedFinder finderClass = null;
         try
         {
-            finderClass = (RelatedFinder) Class.forName(finderClassname).newInstance();
+            finderClass = (RelatedFinder) Class.forName(finderClassname).getDeclaredConstructor().newInstance();
         }
-        catch (InstantiationException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (IllegalAccessException e)
-        {
-            throw new RuntimeException(e);
-        }
-        catch (ClassNotFoundException e)
+        catch (Exception e)
         {
             throw new RuntimeException(e);
         }
@@ -172,16 +162,11 @@ public abstract class MithraRemoteResult implements Externalizable, Runnable
         for(int i = 0; i < dbIdSize; i++)
         {
             String finderClassname = (String)in.readObject();
-            RelatedFinder finderClass = null;
-            try
+            RelatedFinder finderClass = null;            try
             {
-                finderClass = (RelatedFinder) Class.forName(finderClassname).newInstance();
+                finderClass = (RelatedFinder) Class.forName(finderClassname).getDeclaredConstructor().newInstance();
             }
-            catch (InstantiationException e)
-            {
-                throw new RuntimeException();
-            }
-            catch (IllegalAccessException e)
+            catch (Exception e)
             {
                 throw new RuntimeException();
             }

@@ -46,19 +46,19 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.192</version>
+            <version>2.2.224</version>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.21</version>
+            <version>2.0.9</version>
         </dependency>
 
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.1</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -68,15 +68,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>3.11.0</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.4.0</version>
                 <executions>
                     <execution>
                         <id>add-source</id>
@@ -113,6 +114,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
                 <executions>
                     <execution>
                         <id>generateMithra</id>
@@ -121,7 +123,7 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <property name="plugin_classpath" refid="maven.plugin.classpath"/>
                                 <taskdef name="gen-reladomo" classpath="plugin_classpath"
                                     classname="com.gs.fw.common.mithra.generator.MithraGenerator"/>
@@ -138,7 +140,7 @@
                                 <gen-ddl xml="${project.basedir}/src/main/resources/reladomo/models/ReladomoClassList.xml"
                                             generatedDir="${project.build.directory}/generated-db/sql"
                                             databaseType="postgres"/>
-                            </tasks>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>

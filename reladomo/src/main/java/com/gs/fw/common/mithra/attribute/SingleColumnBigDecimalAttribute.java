@@ -264,12 +264,11 @@ public abstract class SingleColumnBigDecimalAttribute<T> extends BigDecimalAttri
             String busClassNameWithDots, String busClassName, boolean isNullablePrimitive, boolean hasBusDate, RelatedFinder relatedFinder,
             Map<String, Object> properties, boolean isTransactional, boolean isOptimistic, int offHeapFieldOffset, int offHeapNullBitsOffset, int offHeapNullBitsPosition, int precision, int scale, boolean isShadowAttribute)
     {
-        SingleColumnBigDecimalAttribute e;
-        try
+        SingleColumnBigDecimalAttribute e;        try
         {
             e = (SingleColumnBigDecimalAttribute) extractorWriter.createClass(attributeName, isNullablePrimitive, hasBusDate, busClassNameWithDots,
                     busClassName, isOptimistic, offHeapFieldOffset, offHeapNullBitsOffset, offHeapNullBitsPosition,
-                    "com/gs/fw/common/mithra/attribute/SingleColumnBigDecimalAttribute", false, isShadowAttribute).newInstance();
+                    "com/gs/fw/common/mithra/attribute/SingleColumnBigDecimalAttribute", false, isShadowAttribute).getDeclaredConstructor().newInstance();
         }
         catch (Exception excp)
         {

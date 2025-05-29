@@ -463,14 +463,11 @@ public class MithraArrayTupleTupleSet implements MithraTupleSet, Externalizable
 
         private Exceptions() throws Throwable {
             throw throwable;
-        }
-
-        public static synchronized void throwCheckedException(Throwable throwable) {
+        }        public static synchronized void throwCheckedException(Throwable throwable) {
             Exceptions.throwable = throwable;
             try {
-                Exceptions.class.newInstance();
-            } catch(InstantiationException e) {
-            } catch(IllegalAccessException e) {
+                Exceptions.class.getDeclaredConstructor().newInstance();
+            } catch(Exception e) {
             } finally {
                 Exceptions.throwable = null;
             }

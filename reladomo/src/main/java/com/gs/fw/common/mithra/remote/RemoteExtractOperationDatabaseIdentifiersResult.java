@@ -52,19 +52,14 @@ public class RemoteExtractOperationDatabaseIdentifiersResult extends MithraRemot
     {
         int dbIdSize = in.readInt();
         databaseIdentifierMap = new UnifiedMap(dbIdSize);
-        for(int i = 0; i < dbIdSize; i++)
-        {
+        for(int i = 0; i < dbIdSize; i++)        {
             String finderClassname = in.readUTF();
             RelatedFinder finderClass = null;
             try
             {
-                finderClass = (RelatedFinder) Class.forName(finderClassname).newInstance();
+                finderClass = (RelatedFinder) Class.forName(finderClassname).getDeclaredConstructor().newInstance();
             }
-            catch (InstantiationException e)
-            {
-                throw new RuntimeException();
-            }
-            catch (IllegalAccessException e)
+            catch (Exception e)
             {
                 throw new RuntimeException();
             }

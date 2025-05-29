@@ -77,10 +77,9 @@ public class CacheLoaderConfig
                 String justClassName = className.substring(0, n);
                 String param = className.substring(n + 1, className.length() - 1);
                 return Class.forName(justClassName).getConstructor(String.class).newInstance(param);
-            }
-            else
+            }            else
             {
-                return Class.forName(className).newInstance();
+                return Class.forName(className).getDeclaredConstructor().newInstance();
             }
         }
         catch (Exception e)

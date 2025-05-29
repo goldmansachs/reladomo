@@ -21,17 +21,15 @@
     <property name="root" value="${env.RELADOMO_HOME}"/>
     <!--todo: remove-->
     <property name="mithra.home" value="${env.RELADOMO_HOME}/reladomo"/>
-    <property name="mithra.generateEcListMethod" value="true"/>
-
-    <property name="eclipse-collections.version" value="7.1.1"/>
-    <property name="junit.version" value="4.11"/>
-    <property name="slf4j.version" value="1.6.4"/>
+    <property name="mithra.generateEcListMethod" value="true"/>    <property name="eclipse-collections.version" value="11.1.0"/>
+    <property name="junit.version" value="4.13.2"/>
+    <property name="slf4j.version" value="2.0.9"/>
     <property name="jtdsjbcp.version" value="1.2.0.15"/>
     <property name="fw-psp.version" value="1.3.0"/>
     <property name="gsintegrator-api.version" value="1.8.0"/>
-    <property name="antjar.version" value="1.7.1"/>
+    <property name="antjar.version" value="1.10.14"/>
     <property name="docbook-xsl.version" value="1.79.1"/>
-    <property name="jacoco.version" value="0.7.9"/>
+    <property name="jacoco.version" value="0.8.10"/>
     <property name="gwt.version" value="2.6.1"/>
 
     <property name="mithra.pom-template.dir" location="${mithra.home}/build/mithra/pom-templates"/>
@@ -184,25 +182,15 @@
 
     <target name="clean" depends="clean-reladomo" description="Delete class files and other temp files"/>  <!-- standard alias -->
 
-    <target name="all" depends="compile-reladomo, compile-reladomo-genutil"/>
-
-    <target name="sanity-check-build">
-        <available property="jdk.sanity.check" classname="java.sql.Connection" ignoresystemclasses="true">
-            <classpath>
-                <fileset dir="${jdk.home}" includes="**/*.jar"/>
-            </classpath>
-        </available>
-        <fail message="Could not find the JDK! Check ${jdk.home}." unless="jdk.sanity.check"/>
+    <target name="all" depends="compile-reladomo, compile-reladomo-genutil"/>    <target name="sanity-check-build">
+        <!-- For Java 9+, we check for JDK by looking for javac executable -->
+        <available property="jdk.sanity.check" file="${jdk.home}/bin/javac"/>
+        <fail message="Could not find the JDK! Check ${jdk.home}. Looking for ${jdk.home}/bin/javac" unless="jdk.sanity.check"/>
         <available property="reladomo.sanity.check" file="${root}/reladomo/src/main/java/com/gs/fw/common/mithra/MithraManager.java"/>
         <fail message="Could not find Reladomo sources. Project root is ${root}, but there is nothing in ${root}/reladomo/src/main/java/com/gs/fw/common/mithra/MithraManager.java." unless="reladomo.sanity.check"/>
-    </target>
-
-    <target name="determine-jdk">
-        <available property="jdk14" classname="java.sql.Savepoint" ignoresystemclasses="true">
-            <classpath>
-                <pathelement location="${jdk.home}/jre/lib/rt.jar"/>
-            </classpath>
-        </available>
+    </target>    <target name="determine-jdk">
+        <!-- For Java 9+, we assume the JDK is modern since rt.jar doesn't exist anymore -->
+        <property name="jdk14" value="true"/>
     </target>
 
     <target name="init-reladomo" depends="determine-jdk, sanity-check-build">
@@ -435,8 +423,8 @@
         </jasper2>
         <javac destdir="${root}/reladomogen/target/classes"
             debug="true"
-            source="1.8"
-            target="1.8"
+            source="21"
+            target="21"
             includeAntRuntime="true">
             <src path="${root}/reladomogen/src/main/java"/>
             <include name="com/gs/fw/common/mithra/generator/TemplateMinifier.java"/>
@@ -463,16 +451,16 @@
         </dependset>
         <javac destdir="${root}/reladomogen/target/classes"
             debug="true"
-            source="1.8"
-            target="1.8"
+            source="21"
+            target="21"
             includeAntRuntime="true">
             <src path="${root}/reladomogen/target/generated-src"/>
             <include name="com/gs/fw/common/mithra/generator/MithraVersion.java"/>
         </javac>
         <javac destdir="${root}/reladomogen/target/classes"
             debug="true"
-            source="1.8"
-            target="1.8"
+            source="21"
+            target="21"
             nowarn="true"
             includeAntRuntime="true">
             <src path="${root}/reladomogen/src/main/java"/>
@@ -609,8 +597,8 @@
         <delete dir="${root}/reladomo/target/classes/org" quiet="true"/>
         <javac destdir="${root}/reladomo/target/classes"
             debug="true"
-            source="1.8"
-            target="1.8"
+            source="21"
+            target="21"
             nowarn="true"
             includeAntRuntime="false">
             <src path="${root}/reladomo/src/main/java"/>
@@ -634,8 +622,8 @@
         <copy file="${root}/reladomographql/src/main/resources/meta.graphqls" todir="${root}/reladomographql/target/classes/" verbose="true"/>
         <javac destdir="${root}/reladomographql/target/classes"
                debug="true"
-               source="1.8"
-               target="1.8"
+               source="21"
+               target="21"
                nowarn="true"
                includeAntRuntime="false">
             <src path="${root}/reladomographql/src/main/java"/>
@@ -651,8 +639,8 @@
         <copy file="${root}/reladomographql/src/main/resources/meta.graphqls" todir="${root}/reladomographql/target/test-classes/" verbose="true"/>
         <javac destdir="${root}/reladomographql/target/test-classes"
                debug="true"
-               source="1.8"
-               target="1.8"
+               source="21"
+               target="21"
                nowarn="true"
                includeAntRuntime="false">
             <src path="${root}/reladomographql/src/test/java"/>
@@ -708,8 +696,8 @@
     <target name="compile-reladomo-test-util" depends="compile-reladomo, test-util-dependset">
         <javac destdir="${root}/reladomo/target/test-util-classes"
             debug="true"
-            source="1.8"
-            target="1.8"
+            source="21"
+            target="21"
             nowarn="true"
             includeAntRuntime="false">
             <src path="${root}/reladomo/src/test-util/java"/>
@@ -836,8 +824,8 @@
     <target name="compile-reladomo-test" depends="compile-reladomo-test-util, compile-reladomo-genutil, generate-reladomo-test-classes, generate-reladomo-final-test-classes, test-dependset">
         <javac destdir="${root}/reladomo/target/test-classes-onheap"
             debug="true"
-            source="1.8"
-            target="1.8"
+            source="21"
+            target="21"
             nowarn="true"
             includeAntRuntime="true">
             <src path="${root}/reladomo/src/test/java"/>
@@ -851,8 +839,8 @@
         </javac>
         <javac destdir="${root}/reladomo/target/test-classes-offheap"
             debug="true"
-            source="1.8"
-            target="1.8"
+            source="21"
+            target="21"
             nowarn="true"
             includeAntRuntime="true">
             <src path="${root}/reladomo/src/test/java"/>
@@ -1275,8 +1263,8 @@
         </dependset>
         <javac destdir="${root}/reladomogenutil/target/classes"
             debug="true"
-            source="1.8"
-            target="1.8"
+            source="21"
+            target="21"
             includeAntRuntime="true">
             <src path="${root}/reladomogenutil/src/main/java"/>
             <classpath>
@@ -1321,8 +1309,8 @@
         </dependset>
         <javac destdir="${root}/reladomogenutil/target/test-classes"
             debug="true"
-            source="1.8"
-            target="1.8"
+            source="21"
+            target="21"
             includeAntRuntime="true">
             <src path="${root}/reladomogenutil/src/test/java"/>
             <classpath>
@@ -1828,8 +1816,8 @@
         </dependset>
         <javac destdir="${root}/reladomoui/target/classes"
             debug="true"
-            source="1.8"
-            target="1.8"
+            source="21"
+            target="21"
             includeAntRuntime="false">
             <src path="${root}/reladomoui/src/main/java"/>
             <classpath>
@@ -1937,8 +1925,8 @@
         </dependset>
         <javac destdir="${root}/reladomogs/target/classes"
             debug="true"
-            source="1.8"
-            target="1.8"
+            source="21"
+            target="21"
             nowarn="true"
             includeAntRuntime="false">
             <src path="${root}/reladomogs/src/main/java"/>
@@ -2012,8 +2000,8 @@
     <target name="compile-reladomo-serial" depends="init-reladomo-serial, compile-reladomo, serial-dependset">
         <javac destdir="${root}/reladomoserial/target/classes"
                debug="true"
-               source="1.8"
-               target="1.8"
+               source="21"
+               target="21"
                nowarn="true"
                includeAntRuntime="false">
             <src path="${root}/reladomoserial/src/main/java"/>
@@ -2035,8 +2023,8 @@
     <target name="compile-reladomo-serial-test" depends="compile-reladomo-serial, compile-reladomo-test, serial-test-dependset">
         <javac destdir="${root}/reladomoserial/target/test-classes"
                debug="true"
-               source="1.8"
-               target="1.8"
+               source="21"
+               target="21"
                nowarn="true"
                includeAntRuntime="false">
             <src path="${root}/reladomoserial/src/test/java"/>
@@ -2216,8 +2204,8 @@
     <target name="compile-reladomo-xa" depends="init-reladomo-xa, compile-reladomo, xa-dependset">
         <javac destdir="${root}/reladomoxa/target/classes"
                debug="true"
-               source="1.8"
-               target="1.8"
+               source="21"
+               target="21"
                nowarn="true"
                includeAntRuntime="false">
             <src path="${root}/reladomoxa/src/main/java"/>
@@ -2239,8 +2227,8 @@
     <target name="compile-reladomo-xa-test" depends="compile-reladomo-xa, compile-reladomo-test, xa-test-dependset">
         <javac destdir="${root}/reladomoxa/target/test-classes"
                debug="true"
-               source="1.8"
-               target="1.8"
+               source="21"
+               target="21"
                nowarn="true"
                includeAntRuntime="false">
             <src path="${root}/reladomoxa/src/test/java"/>

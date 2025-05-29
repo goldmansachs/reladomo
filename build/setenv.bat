@@ -1,6 +1,6 @@
 if "%JDK_HOME%" == "" (
-    echo JDK_HOME defaulting to C:\devel\jdk1.8.0_144
-    set JDK_HOME=C:\devel\jdk1.8.0_144
+    echo JDK_HOME defaulting to C:\devel\jdk-24
+    set JDK_HOME=C:\devel\jdk-24
 ) else (
     echo JDK_HOME is %JDK_HOME%
 )

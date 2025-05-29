@@ -430,12 +430,11 @@ public abstract class AbstractConnectionManager
     /**
      * sets the driver class name. This is used in conjunction with the JDBC connection string
      * @param driver the driver class name, for example "com.sybase.jdbc4.jdbc.SybDriver"
-     */
-    public void setDriverClassName(String driver)
+     */    public void setDriverClassName(String driver)
     {
         try
         {
-            this.driver = (Driver) Class.forName(driver).newInstance();
+            this.driver = (Driver) Class.forName(driver).getDeclaredConstructor().newInstance();
         }
         catch (Exception e)
         {

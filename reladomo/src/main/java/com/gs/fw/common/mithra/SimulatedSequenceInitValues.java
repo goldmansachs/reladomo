@@ -51,10 +51,9 @@ public class SimulatedSequenceInitValues
         this.batchSize = batchSize;
         this.incrementSize = incrementSize;
         this.initialValue = initialValue;
-        this.sequenceObjectFactoryName = sequenceObjectFactoryName;
-        try
+        this.sequenceObjectFactoryName = sequenceObjectFactoryName;        try
         {
-            this.sequenceObjectFactory = Class.forName(sequenceObjectFactoryName).newInstance();
+            this.sequenceObjectFactory = Class.forName(sequenceObjectFactoryName).getDeclaredConstructor().newInstance();
         }
         catch (Exception e)
         {

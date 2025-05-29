@@ -35,7 +35,7 @@ public class ReladomoRuntimeMetaFunction<T extends MithraObject, U extends Mithr
     {
         try
         {
-            return (V) classMetaData.getOnHeapDataClass().newInstance();
+            return (V) classMetaData.getOnHeapDataClass().getDeclaredConstructor().newInstance();
         }
         catch (Exception e)
         {

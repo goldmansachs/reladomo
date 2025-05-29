@@ -101,12 +101,11 @@ public class XAConnectionManager extends AbstractConnectionManager
     }
 
     private DataSource createLdapDataSource(Properties loginProperties, String ldapName) throws NamingException
-    {
-        if (this.ldapDataSourceProvider == null)
+    {        if (this.ldapDataSourceProvider == null)
         {
             try
             {
-                this.ldapDataSourceProvider = (LdapDataSourceProvider) Class.forName("com.gs.fw.common.mithra.connectionmanager.JndiJdbcLdapDataSourceProvider").newInstance();
+                this.ldapDataSourceProvider = (LdapDataSourceProvider) Class.forName("com.gs.fw.common.mithra.connectionmanager.JndiJdbcLdapDataSourceProvider").getDeclaredConstructor().newInstance();
             }
             catch (Exception e)
             {

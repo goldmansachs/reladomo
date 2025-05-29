@@ -242,7 +242,7 @@ public abstract class SingleColumnBooleanAttribute<T> extends BooleanAttribute<T
         try
         {
             e = (SingleColumnBooleanAttribute) extractorWriter.createClass(attributeName, isNullablePrimitive, hasBusDate, busClassNameWithDots,
-                    busClassName, isOptimistic, offHeapFieldOffset, offHeapNullBitsOffset, offHeapNullBitsPosition, "com/gs/fw/common/mithra/attribute/SingleColumnBooleanAttribute", false, hasShadowAttribute).newInstance();
+                    busClassName, isOptimistic, offHeapFieldOffset, offHeapNullBitsOffset, offHeapNullBitsPosition, "com/gs/fw/common/mithra/attribute/SingleColumnBooleanAttribute", false, hasShadowAttribute).getDeclaredConstructor().newInstance();
         }
         catch (Exception excp)
         {

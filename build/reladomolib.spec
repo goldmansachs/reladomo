@@ -1,10 +1,10 @@
 # <repo>, <groupId>, <artifactId>, <version>, <extension>, <destDir>, <checksum>
 # central,org.apache.ant,ant,1.9.6,jar,build/lib,80E2063B01BAB3C79C2D84E4ED5E73868394C85A
-central,org.eclipse.collections,eclipse-collections-api,11.0.0,jar,lib/compile,1FA4325CDAD80CFEC8ADE827B8F8D00A54936E35
-central,org.eclipse.collections,eclipse-collections,11.0.0,jar,lib/compile,FDEAF9CBD78FA80AB3F96B9DB9567538B20B1A6E
-central,joda-time,joda-time,2.10.13,jar,lib/compile,86F338C18CEA2A89005556642E81707FF920DD38
+central,org.eclipse.collections,eclipse-collections-api,11.1.0,jar,lib/compile,BCE5592BA072CBF33B44915D312E69B8D2F731FC
+central,org.eclipse.collections,eclipse-collections,11.1.0,jar,lib/compile,FA4B0AC2A3344B2D1B8EC392592B66E116F60D2C
+central,joda-time,joda-time,2.12.5,jar,lib/compile,698CE67B5E58BECFB4EF2CF0393422775E59DFF4
 central,org.apache.geronimo.specs,geronimo-jta_1.1_spec,1.1.1,jar,lib/compile,AABAB3165B8EA936B9360ABBF448459C0D04A5A4
-central,org.slf4j,slf4j-api,1.7.35,jar,lib/compile,517F3A0687490B72D0E56D815E05608A541AF802
+central,org.slf4j,slf4j-api,2.0.9,jar,lib/compile,7CF2726FDCFBC8610F9A71FB3ED639871F315340
 
 #drivers
 central,org.postgresql,postgresql,9.3-1101-jdbc4,jar,lib/drivers,9DA59F12BADEA19B3B2884161F624BCF6750F985
@@ -12,10 +12,10 @@ central,org.mariadb.jdbc,mariadb-java-client,1.6.4,jar,lib/drivers,D782981055167
 
 # test libs:
 central,log4j,log4j,1.2.17,jar,lib/test,5AF35056B4D257E4B64B9E8069C0746E8B08629F
-central,org.slf4j,slf4j-log4j12,1.7.21,jar,lib/test,7238B064D1ABA20DA2AC03217D700D91E02460FA
-central,org.slf4j,jcl-over-slf4j,1.7.21,jar,lib/test,331B564A3A42F002A0004B039C1C430DA89062CD
+central,org.slf4j,slf4j-reload4j,2.0.9,jar,lib/test,DCD3F851B93D7DDC5A5E409A8F3B1254599011FC
+central,org.slf4j,jcl-over-slf4j,2.0.9,jar,lib/test,89EB336CF1183CE075253C7C3788AA196D56F71A
 central,org.apache.geronimo.specs,geronimo-jms_1.1_spec,1.1.1,jar,lib/test,C872B46C601D8DC03633288B81269F9E42762CEA
-central,com.h2database,h2,2.1.210,jar,lib/test,A7395AE43062F9237EB441137B789C518C7D4C2F
+central,com.h2database,h2,2.2.224,jar,lib/test,7BDADE27D8CD197D9B5CE9DC251F41D2EDC5F7AD
 central,org.mortbay.jetty,jetty,6.1.26,jar,lib/test,2F546E289FDDD5B1FAB1D4199FBB6E9EF43EE4B0
 central,org.mortbay.jetty,jetty-util,6.1.26,jar,lib/test,E5642FE0399814E1687D55A3862AA5A3417226A9
 central,javax.servlet,javax.servlet-api,3.0.1,jar,lib/test,6BF0EBB7EFD993E222FC1112377B5E92A13B38DD

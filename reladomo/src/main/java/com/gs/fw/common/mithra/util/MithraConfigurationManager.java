@@ -556,29 +556,16 @@ public class MithraConfigurationManager
     }
 
     private MithraObjectDeserializer instantiateFactory(List<String> mithraInitializationErrors, String objectFactoryClassName)
-    {
-        try
+    {        try
         {
             Class dboClass = Class.forName(objectFactoryClassName);
-            MithraObjectDeserializer deserializer = (MithraObjectDeserializer) dboClass.newInstance();
+            MithraObjectDeserializer deserializer = (MithraObjectDeserializer) dboClass.getDeclaredConstructor().newInstance();
             initSimulatedSequences(deserializer);
             return deserializer;
         }
-        catch (IllegalAccessException e)
+        catch (Exception e)
         {
             final String msg = "Could not access class or constructor for class " + objectFactoryClassName;
-            getLogger().error(msg, e);
-            mithraInitializationErrors.add(msg);
-        }
-        catch (ClassNotFoundException e)
-        {
-            final String msg = "Class " + objectFactoryClassName + " could not be found";
-            getLogger().error(msg, e);
-            mithraInitializationErrors.add(msg);
-        }
-        catch (InstantiationException e)
-        {
-            final String msg = "Could not instantiate class " + objectFactoryClassName;
             getLogger().error(msg, e);
             mithraInitializationErrors.add(msg);
         }
@@ -1605,28 +1592,15 @@ public class MithraConfigurationManager
 
 
     private LoadOperationProvider instantiateLoadOperationProvider(String loadOperationProviderName, List<String> mithraInitializationErrors)
-    {
-        try
+    {        try
         {
             Class lopClass = Class.forName(loadOperationProviderName);
-            LoadOperationProvider loadOperationProvider = (LoadOperationProvider) lopClass.newInstance();
+            LoadOperationProvider loadOperationProvider = (LoadOperationProvider) lopClass.getDeclaredConstructor().newInstance();
             return loadOperationProvider;
         }
-        catch (IllegalAccessException e)
+        catch (Exception e)
         {
             final String msg = "Could not access class or constructor for class " + loadOperationProviderName;
-            getLogger().error(msg, e);
-            mithraInitializationErrors.add(msg);
-        }
-        catch (ClassNotFoundException e)
-        {
-            final String msg = "Class " + loadOperationProviderName + " could not be found";
-            getLogger().error(msg, e);
-            mithraInitializationErrors.add(msg);
-        }
-        catch (InstantiationException e)
-        {
-            final String msg = "Could not instantiate class " + loadOperationProviderName;
             getLogger().error(msg, e);
             mithraInitializationErrors.add(msg);
         }

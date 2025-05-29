@@ -105,10 +105,9 @@ public class MithraParsedData
 
     public MithraDataObject createAndAddDataObject(int lineNumber) throws ParseException
     {
-        MithraDataObject currentData;
-        try
+        MithraDataObject currentData;        try
         {
-            currentData = (MithraDataObject) dataClass.newInstance();
+            currentData = (MithraDataObject) dataClass.getDeclaredConstructor().newInstance();
         }
         catch (Exception e)
         {

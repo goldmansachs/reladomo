@@ -25,6 +25,9 @@ import java.util.ListIterator;
 public abstract class AbstractSetLikeIdentityList<T> implements SetLikeIdentityList<T>, List<T>
 {
 
+    // Explicitly override getFirst() to resolve Java 21 sequenced collections conflict
+    // Both List.getFirst() and SetLikeIdentityList.getFirst() return the first element
+    public abstract T getFirst();
 
     public List<T> getAll()
     {

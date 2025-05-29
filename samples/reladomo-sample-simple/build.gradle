@@ -21,8 +21,8 @@ version = '0.0.1-SNAPSHOT'
 
 description = "Reladomo Sample Application"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 21
+targetCompatibility = 21
 
 repositories {
      maven { url "https://repo.maven.apache.org/maven2" }

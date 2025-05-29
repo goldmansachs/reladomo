@@ -56,20 +56,14 @@ public class MithraSerialUtil
     public static String getDataClassNameToSerialize(MithraDataObject data)
     {
         return data.zGetSerializationClassName();
-    }
-
-    public static MithraDataObject instantiateData(Class dataClass) throws IOException
+    }    public static MithraDataObject instantiateData(Class dataClass) throws IOException
     {
         Exception problem = null;
         try
         {
-            return (MithraDataObject) dataClass.newInstance();
+            return (MithraDataObject) dataClass.getDeclaredConstructor().newInstance();
         }
-        catch (InstantiationException e)
-        {
-            problem = e;
-        }
-        catch (IllegalAccessException e)
+        catch (Exception e)
         {
             problem = e;
         }
@@ -87,20 +81,11 @@ public class MithraSerialUtil
 
     public static Object safeInstantiate(String className) throws IOException
     {
-        Exception problem = null;
-        try
+        Exception problem = null;        try
         {
-            return Class.forName(className).newInstance();
+            return Class.forName(className).getDeclaredConstructor().newInstance();
         }
-        catch (InstantiationException e)
-        {
-            problem = e;
-        }
-        catch (IllegalAccessException e)
-        {
-            problem = e;
-        }
-        catch (ClassNotFoundException e)
+        catch (Exception e)
         {
             problem = e;
         }

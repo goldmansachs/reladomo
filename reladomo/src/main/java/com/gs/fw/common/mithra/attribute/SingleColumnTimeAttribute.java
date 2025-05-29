@@ -237,12 +237,11 @@ public abstract class SingleColumnTimeAttribute<Owner> extends TimeAttribute<Own
                                                               String busClassName, boolean isNullablePrimitive, boolean hasBusTime, RelatedFinder relatedFinder, Map<String, Object> properties,
                                                               boolean isTransactional, boolean isOptimistic, int offHeapFieldOffset, int offHeapNullBitsOffset, int offHeapNullBitsPosition, boolean hasShadowAttribute)
     {
-        SingleColumnTimeAttribute e;
-        try
+        SingleColumnTimeAttribute e;        try
         {
             e = (SingleColumnTimeAttribute) extractorWriter.createClass(attributeName, isNullablePrimitive, hasBusTime, busClassNameWithDots,
                     busClassName, isOptimistic, offHeapFieldOffset, offHeapNullBitsOffset, offHeapNullBitsPosition,
-                    "com/gs/fw/common/mithra/attribute/SingleColumnTimeAttribute", false, hasShadowAttribute).newInstance();
+                    "com/gs/fw/common/mithra/attribute/SingleColumnTimeAttribute", false, hasShadowAttribute).getDeclaredConstructor().newInstance();
         }
         catch (Exception excp)
         {
