@@ -95,6 +95,21 @@ public class ASTIsNullClause extends SimpleNode implements LeafLevelExpression, 
 		return false;
 	}
 
+	public boolean isContains()
+	{
+		return false;
+	}
+
+	public boolean isStartsWith()
+	{
+		return false;
+	}
+
+	public boolean isEndsWith()
+	{
+		return false;
+	}
+
 	public boolean isEqual()
 	{
 		return false;

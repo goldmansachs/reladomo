@@ -796,6 +796,46 @@ public class TestRelationships extends MithraTestAbstract
         assertEquals(count, dbCalls());
     }
 
+    public void testStringOperatorsInRelationship()
+    {
+        Order order = OrderFinder.findOne(OrderFinder.orderId().eq(2));
+        assertEquals(IntHashSet.newSetWith(2, 3, 4), itemIds(order.getItemsWithStatePrefix("In-")));
+        assertEquals(new IntHashSet(), itemIds(order.getItemsWithStatePrefix("Progress")));
+        assertEquals(IntHashSet.newSetWith(2, 3, 4), itemIds(order.getItemsInProgress()));
+        assertEquals(new IntHashSet(), itemIds(order.getShippedItems()));
+    }
+
+    public void testStringOperatorsInRelationshipDeepFetch()
+    {
+        OrderList orders = new OrderList(OrderFinder.orderId().in(IntHashSet.newSetWith(1, 2)));
+        orders.deepFetch(OrderFinder.itemsInProgress());
+        orders.forceResolve();
+        int count = dbCalls();
+        Order order1 = orders.getOrderAt(0).getOrderId() == 1 ? orders.getOrderAt(0) : orders.getOrderAt(1);
+        Order order2 = orders.getOrderAt(0).getOrderId() == 2 ? orders.getOrderAt(0) : orders.getOrderAt(1);
+        assertEquals(IntHashSet.newSetWith(1), itemIds(order1.getItemsInProgress()));
+        assertEquals(IntHashSet.newSetWith(2, 3, 4), itemIds(order2.getItemsInProgress()));
+        assertEquals(count, dbCalls());
+    }
+
+    public void testStringOperatorsInRelationshipFinderNavigation()
+    {
+        OrderList orders = new OrderList(OrderFinder.itemsWithStatePrefix("In-").id().eq(3));
+        assertEquals(1, orders.size());
+        assertEquals(2, orders.getOrderAt(0).getOrderId());
+        assertEquals(0, new OrderList(OrderFinder.shippedItems().id().eq(3)).size());
+    }
+
+    private static IntHashSet itemIds(OrderItemList items)
+    {
+        IntHashSet ids = new IntHashSet();
+        for (int i = 0; i < items.size(); i++)
+        {
+            ids.add(items.getOrderItemAt(i).getId());
+        }
+        return ids;
+    }
+
     public void testNullAttributeInRelationship()
     {
         AccountList list = new AccountList(AccountFinder.deskId().eq("A").and(AccountFinder.pnlGroupId().eq("NULLTEST")));
@@ -1040,7 +1080,10 @@ public class TestRelationships extends MithraTestAbstract
         relationshipNames.add("parent");
         relationshipNames.add("itemsOrTest");
         relationshipNames.add("itemsInTest");
+        relationshipNames.add("itemsInProgress");
+        relationshipNames.add("shippedItems");
 
+        parameterizedRelationshipNames.add("itemsWithStatePrefix");
         parameterizedRelationshipNames.add("itemForProduct");
         parameterizedRelationshipNames.add("itemForProductSet");
         parameterizedRelationshipNames.add("expensiveItems");
