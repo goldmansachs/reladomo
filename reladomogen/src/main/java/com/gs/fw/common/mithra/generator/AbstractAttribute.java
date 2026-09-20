@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+//Portions copyright Zeyt Ates. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.generator;
 
@@ -406,13 +407,7 @@ public abstract class AbstractAttribute implements CommonAttribute, Comparable
 
     private boolean columnNameRequiresQuotes(String columnName)
     {
-        return columnName != null && !columnName.startsWith("\\") && !columnName.startsWith("[") &&
-                (columnName.contains(" ") || isSqlKeyword(columnName));
-    }
-
-    private boolean isSqlKeyword(String columnName)
-    {
-        return SqlKeywords.isKeyword(columnName.toUpperCase());
+        return SqlIdentifierQuoter.requiresQuotes(columnName);
     }
 
     public void setColumnName(String columnName)

@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+//Portions copyright Zeyt Ates. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.generator;
 
@@ -3252,6 +3253,20 @@ public class MithraObjectTypeWrapper extends MithraBaseObjectTypeWrapper
     public String getDefaultTable()
     {
         return this.getWrapped().getDefaultTable();
+    }
+
+    /**
+     * The default table name, delimited with double quotes when it collides with a
+     * reserved SQL keyword and quoting is safe. DDL generation must use this rather
+     * than {@link #getDefaultTable()}, otherwise a table mapped to a name such as
+     * ORDER or VALUE produces DDL that stricter databases reject.
+     *
+     * See {@link SqlIdentifierQuoter#quoteTableName} for why quoting is deliberately
+     * limited to upper case names.
+     */
+    public String getQuotedDefaultTable()
+    {
+        return SqlIdentifierQuoter.quoteTableName(this.getDefaultTable());
     }
 
     public String getSourceAttributeVariableDeclaration()

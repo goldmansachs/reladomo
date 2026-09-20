@@ -13,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+//Portions copyright Zeyt Ates. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.generator.dbgenerator;
 
@@ -48,7 +49,7 @@ public class H2GeneratorDatabaseType
     @Override
     public void generateDdlFile(MithraObjectTypeWrapper wrapper, File outDir) throws IOException
     {
-        String tableName = wrapper.getDefaultTable();
+        String tableName = wrapper.getQuotedDefaultTable();
         PrintWriter writer = getDdlPrintWriter(wrapper, outDir);
 
         writer.println("drop table if exists " + tableName + ";");
@@ -71,7 +72,7 @@ public class H2GeneratorDatabaseType
     {
         PrintWriter writer = getIdxPrintWriter(wrapper, outDir);
         List indices = wrapper.getPrefixFreeIndices();
-        String tableName = wrapper.getDefaultTable();
+        String tableName = wrapper.getQuotedDefaultTable();
 
         boolean firstPk = true;
 

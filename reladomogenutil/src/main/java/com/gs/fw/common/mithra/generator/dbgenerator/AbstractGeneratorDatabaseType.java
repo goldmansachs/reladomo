@@ -1,5 +1,3 @@
-
-
 /*
  Copyright 2016 Goldman Sachs.
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +13,7 @@
  specific language governing permissions and limitations
  under the License.
  */
+//Portions copyright Zeyt Ates. Licensed under Apache 2.0 license
 
 package com.gs.fw.common.mithra.generator.dbgenerator;
 
@@ -382,7 +381,7 @@ public abstract class AbstractGeneratorDatabaseType
 
         public void printAlterTable(PrintWriter writer, AbstractGeneratorDatabaseType generatorDatabaseType)
         {
-            writer.print("alter table " + toObject.getDefaultTable());
+            writer.print("alter table " + toObject.getQuotedDefaultTable());
             String fk = "_fk_" + toObject.getFkCounterAndIncrement();
             writer.print(" add constraint "+generatorDatabaseType.fixConstraint(toObject.getDefaultTable(), fk.length()) + fk);
         }
@@ -411,7 +410,7 @@ public abstract class AbstractGeneratorDatabaseType
 
         public void printReferences(PrintWriter writer)
         {
-            writer.println("references " + fromObject.getDefaultTable() + '(');
+            writer.println("references " + fromObject.getQuotedDefaultTable() + '(');
         }
     }
 }
