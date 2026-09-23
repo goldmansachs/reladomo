@@ -110,7 +110,7 @@ public abstract class AbstractGeneratorDatabaseType
 
     protected void generateNullStatement(PrintWriter writer, Attribute[] attributes, String attributeSqlType, int i)
     {
-        writer.println("    " + attributes[i].getColumnNameWithEscapedQuote() + " " + attributeSqlType +
+        writer.println("    " + attributes[i].getColumnName() + " " + attributeSqlType +
                 (attributes[i].isNullable() ? "" : " not null") + ((i < attributes.length - 1) ? "," : ""));
     }
 

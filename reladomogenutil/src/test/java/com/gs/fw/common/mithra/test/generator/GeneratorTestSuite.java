@@ -16,6 +16,7 @@
 
 package com.gs.fw.common.mithra.test.generator;
 
+import com.gs.fw.common.mithra.generator.dbgenerator.GenerateNullStatementTest;
 import com.gs.fw.common.mithra.portal.MithraAbstractObjectPortal;
 import com.gs.fw.common.mithra.test.*;
 import com.gs.fw.common.mithra.test.aggregate.AggregateTestSuite;
@@ -41,6 +42,7 @@ public class GeneratorTestSuite
         suite.addTestSuite(TableInfoTest.class);
         suite.addTestSuite(DatabaseIndexValidatorTest.class);
         suite.addTestSuite(DatabaseTableValidatorTest.class);
+        suite.addTestSuite(GenerateNullStatementTest.class);
         return suite;
     }
 }
