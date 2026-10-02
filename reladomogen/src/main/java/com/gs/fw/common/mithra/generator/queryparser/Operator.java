@@ -31,6 +31,12 @@ public interface Operator
 
 	public boolean isNotEqual();
 
+	public boolean isContains();
+
+	public boolean isStartsWith();
+
+	public boolean isEndsWith();
+
 	public boolean isIn();
 
 	public Operator getReverseOperator();

@@ -70,6 +70,21 @@ public class ASTInOperator extends SimpleNode implements Operator
 		return false;
 	}
 
+	public boolean isContains()
+	{
+		return false;
+	}
+
+	public boolean isStartsWith()
+	{
+		return false;
+	}
+
+	public boolean isEndsWith()
+	{
+		return false;
+	}
+
 	public boolean isEqual()
 	{
 		return false;

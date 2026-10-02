@@ -38,20 +38,23 @@ public interface MithraQLConstants {
   int LESSER_THAN = 20;
   int GREATER_THAN_EQUAL = 21;
   int LESSER_THAN_EQUAL = 22;
-  int OPEN_PAREN = 23;
-  int CLOSE_PAREN = 24;
-  int COMMA = 25;
-  int IN = 26;
-  int INTEGER_LITERAL = 27;
-  int FLOATING_POINT_LITERAL = 28;
-  int EXPONENT = 29;
-  int STRING_LITERAL = 30;
-  int CHARACTER_LITERAL = 31;
-  int BOOLEAN_LITERAL = 32;
-  int JAVA_LITERAL = 33;
-  int IDENTIFIER = 34;
-  int LETTER = 35;
-  int DIGIT = 36;
+  int CONTAINS = 23;
+  int STARTS_WITH = 24;
+  int ENDS_WITH = 25;
+  int OPEN_PAREN = 26;
+  int CLOSE_PAREN = 27;
+  int COMMA = 28;
+  int IN = 29;
+  int INTEGER_LITERAL = 30;
+  int FLOATING_POINT_LITERAL = 31;
+  int EXPONENT = 32;
+  int STRING_LITERAL = 33;
+  int CHARACTER_LITERAL = 34;
+  int BOOLEAN_LITERAL = 35;
+  int JAVA_LITERAL = 36;
+  int IDENTIFIER = 37;
+  int LETTER = 38;
+  int DIGIT = 39;
 
   int DEFAULT = 0;
 
@@ -79,6 +82,9 @@ public interface MithraQLConstants {
     "\"<\"",
     "\">=\"",
     "\"<=\"",
+    "\"contains\"",
+    "\"startsWith\"",
+    "\"endsWith\"",
     "\"(\"",
     "\")\"",
     "\",\"",
