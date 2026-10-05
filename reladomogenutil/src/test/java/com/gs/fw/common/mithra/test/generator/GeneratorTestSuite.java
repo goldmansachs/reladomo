@@ -41,6 +41,7 @@ public class GeneratorTestSuite
         suite.addTestSuite(TableInfoTest.class);
         suite.addTestSuite(DatabaseIndexValidatorTest.class);
         suite.addTestSuite(DatabaseTableValidatorTest.class);
+        suite.addTestSuite(CoreMithraDbDefinitionGeneratorTest.class);
         return suite;
     }
 }

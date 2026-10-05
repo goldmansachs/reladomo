@@ -1,0 +1,2 @@
+alter table ORDERS_WI add constraint ORDERS_WI_PK primary key (ORDER_ID, THRU_Z, OUT_Z);
+

@@ -1,0 +1,2 @@
+alter table ANIMAL_GROUP_TBL add constraint ANIMAL_GROUP_TBL_PK primary key (ID);
+

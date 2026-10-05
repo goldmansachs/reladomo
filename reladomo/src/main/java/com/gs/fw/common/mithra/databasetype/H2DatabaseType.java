@@ -19,6 +19,7 @@
 package com.gs.fw.common.mithra.databasetype;
 
 import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.attribute.TimestampAttribute;
 import com.gs.fw.common.mithra.finder.SqlQuery;
 import com.gs.fw.common.mithra.util.ImmutableTimestamp;
 import com.gs.fw.common.mithra.util.TableColumnInfo;
@@ -447,6 +448,38 @@ public class H2DatabaseType extends AbstractDatabaseType
     public String getSqlExpressionForDateDayOfMonth(String columnName)
     {
         return "EXTRACT(DAY FROM " + columnName + ")";
+    }
+
+    /*
+     * FORMATDATETIME preserves the bare timestamp's wall time. PARSEDATETIME attaches its configured
+     * source zone so AT TIME ZONE can apply timestamp-specific DST rules for the JVM default zone.
+     */
+    private String getSqlExpressionForTimestampWithConversion(String field, String columnName, int conversion, TimeZone dbTimeZone)
+    {
+        String timestampFormat = "yyyy-MM-dd HH:mm:ss.SSSSSSSSS";
+        String sourceTimeZone = conversion == TimestampAttribute.CONVERT_TO_UTC ? "UTC" : dbTimeZone.getID();
+        String timestampWithSourceTimeZone = "PARSEDATETIME(FORMATDATETIME(" + columnName + ", '" + timestampFormat
+                + "'), '" + timestampFormat + "', 'en', '" + sourceTimeZone + "')";
+        return "EXTRACT(" + field + " FROM " + timestampWithSourceTimeZone + " AT TIME ZONE '"
+                + TimeZone.getDefault().getID() + "')";
+    }
+
+    @Override
+    protected String getSqlExpressionForTimestampYearWithConversion(String columnName, int conversion, TimeZone dbTimeZone)
+    {
+        return getSqlExpressionForTimestampWithConversion("YEAR", columnName, conversion, dbTimeZone);
+    }
+
+    @Override
+    protected String getSqlExpressionForTimestampMonthWithConversion(String columnName, int conversion, TimeZone dbTimeZone)
+    {
+        return getSqlExpressionForTimestampWithConversion("MONTH", columnName, conversion, dbTimeZone);
+    }
+
+    @Override
+    protected String getSqlExpressionForTimestampDayOfMonthWithConversion(String columnName, int conversion, TimeZone dbTimeZone)
+    {
+        return getSqlExpressionForTimestampWithConversion("DAY", columnName, conversion, dbTimeZone);
     }
 
     @Override
