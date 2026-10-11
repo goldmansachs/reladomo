@@ -244,6 +244,7 @@ public abstract class SingleLinkDeepFetchStrategy extends DeepFetchStrategy
         CachedQuery cachedQuery = new CachedQuery(op, this.orderBy);
         if (this.orderBy != null && resultList.size() > 1) Collections.sort(resultList, this.orderBy);
         cachedQuery.setResult(resultList);
+        inheritReachedMaxRetrieveCount(cachedQuery, baseQuery.getOne());
         if (!baseQuery.isExpired())
         {
             cachedQuery.cacheQuery(false);
@@ -298,12 +299,25 @@ public abstract class SingleLinkDeepFetchStrategy extends DeepFetchStrategy
 
     protected void cacheComplexQuery(CachedQuery cachedQuery, boolean forRelationship)
     {
+        // a result derived from a truncated parent list covers only part of the complex operation
+        if (cachedQuery.reachedMaxRetrieveCount())
+        {
+            return;
+        }
         AnalyzedOperation analyzedOperation = new AnalyzedOperation(cachedQuery.getOperation());
         if (analyzedOperation.isAnalyzedOperationDifferent())
         {
             cachedQuery.setWasDefaulted();
         }
         cachedQuery.cacheQuery(forRelationship);
+    }
+
+    protected static void inheritReachedMaxRetrieveCount(CachedQuery derived, CachedQuery parent)
+    {
+        if (parent != null && parent.reachedMaxRetrieveCount())
+        {
+            derived.setReachedMaxRetrieveCount(true);
+        }
     }
 
     protected CachedQuery getCachedQueryFromList(MithraList baseList)

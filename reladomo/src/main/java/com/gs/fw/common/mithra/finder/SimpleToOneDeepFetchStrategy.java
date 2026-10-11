@@ -257,6 +257,7 @@ public class SimpleToOneDeepFetchStrategy extends SingleLinkDeepFetchStrategy
         if (bypassCache || complexList.getOperation().getResultObjectPortal().isCacheDisabled())
         {
             CachedQuery complexQuery = new CachedQuery(complexList.getOperation(), this.orderBy);
+            inheritReachedMaxRetrieveCount(complexQuery, parentQuery);
             CachedQueryPair cqp = new CachedQueryPair(complexQuery);
             cqp.add(parentQuery);
             MithraList simplifiedList = fetchSimplifiedJoinList(node, immediateParentList, true);
@@ -310,8 +311,10 @@ public class SimpleToOneDeepFetchStrategy extends SingleLinkDeepFetchStrategy
         if (portal.isCacheDisabled()) return null;
 
         CachedQuery cachedQuery = new CachedQuery(complexOperation, this.orderBy);
+        CachedQuery parentQuery = node.getImmediateParentCachedQuery(this.chainPosition);
+        inheritReachedMaxRetrieveCount(cachedQuery, parentQuery);
         CachedQueryPair cachedQueryPair = new CachedQueryPair(cachedQuery);
-        cachedQueryPair.add(node.getImmediateParentCachedQuery(this.chainPosition));
+        cachedQueryPair.add(parentQuery);
 
         FullUniqueIndex fullResult = new FullUniqueIndex("identity", IDENTITY_EXTRACTORS);
         FastList notFound = new FastList();
