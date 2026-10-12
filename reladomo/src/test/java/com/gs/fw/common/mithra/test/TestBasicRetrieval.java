@@ -550,12 +550,76 @@ public class TestBasicRetrieval
         DeepRelationshipUtility.setMaxSimplifiedIn(1);
         try
         {
+            int count = this.getRetrievalCount();
             OrderList allOrdersList = OrderFinder.findMany(allOrders);
             allOrdersList.deepFetch(OrderFinder.orderStatus());
             assertEquals(7, allOrdersList.size());
+            assertEquals(count + 2, this.getRetrievalCount());
             Order orderWithStatus = OrderFinder.findOne(OrderFinder.orderId().eq(1));
             assertNotNull(orderWithStatus.getOrderStatus());
             assertEquals(10, orderWithStatus.getOrderStatus().getStatus());
+        }
+        finally
+        {
+            DeepRelationshipUtility.resetMaxSimplifiedIn();
+        }
+    }
+
+    public void testToManyDeepFetchAfterMaxObjectsToRetrieveDoesNotCachePartialRelatedResult()
+    {
+        if (!OrderFinder.getMithraObjectPortal().getCache().isPartialCache())
+        {
+            return;
+        }
+        Operation allOrders = OrderFinder.orderId().greaterThan(0);
+
+        OrderList firstPage = OrderFinder.findMany(allOrders);
+        firstPage.setOrderBy(OrderFinder.orderId().descendingOrderBy());
+        firstPage.setMaxObjectsToRetrieve(1);
+        firstPage.deepFetch(OrderFinder.items());
+        assertEquals(1, firstPage.size());
+        assertTrue(firstPage.reachedMaxObjectsToRetrieve());
+        assertEquals(0, firstPage.get(0).getItems().size());
+
+        DeepRelationshipUtility.setMaxSimplifiedIn(1);
+        try
+        {
+            int count = this.getRetrievalCount();
+            OrderList allOrdersList = OrderFinder.findMany(allOrders);
+            allOrdersList.deepFetch(OrderFinder.items());
+            assertEquals(7, allOrdersList.size());
+            assertEquals(count + 2, this.getRetrievalCount());
+            Order orderWithItems = OrderFinder.findOne(OrderFinder.orderId().eq(2));
+            assertFalse(orderWithItems.getItems().isEmpty());
+        }
+        finally
+        {
+            DeepRelationshipUtility.resetMaxSimplifiedIn();
+        }
+    }
+
+    public void testDeepFetchAfterMaxObjectsToRetrieveCachesEachParentsRelatedResult()
+    {
+        if (!OrderFinder.getMithraObjectPortal().getCache().isPartialCache())
+        {
+            return;
+        }
+        DeepRelationshipUtility.setMaxSimplifiedIn(1);
+        try
+        {
+            OrderList firstPage = OrderFinder.findMany(OrderFinder.orderId().greaterThan(0));
+            firstPage.setOrderBy(OrderFinder.orderId().ascendingOrderBy());
+            firstPage.setMaxObjectsToRetrieve(2);
+            firstPage.deepFetch(OrderFinder.items());
+            assertEquals(2, firstPage.size());
+            assertTrue(firstPage.reachedMaxObjectsToRetrieve());
+
+            int count = this.getRetrievalCount();
+            for (int i = 0; i < firstPage.size(); i++)
+            {
+                firstPage.get(i).getItems().forceResolve();
+            }
+            assertEquals(count, this.getRetrievalCount());
         }
         finally
         {
