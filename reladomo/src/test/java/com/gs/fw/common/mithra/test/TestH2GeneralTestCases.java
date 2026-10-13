@@ -35,7 +35,9 @@ import com.gs.fw.common.mithra.MithraTransaction;
 import com.gs.fw.common.mithra.MithraUniqueIndexViolationException;
 import com.gs.fw.common.mithra.TemporaryContext;
 import com.gs.fw.common.mithra.TransactionalCommand;
+import com.gs.fw.common.mithra.databasetype.H2DatabaseType;
 import com.gs.fw.common.mithra.finder.Operation;
+import com.gs.fw.common.mithra.finder.SqlQuery;
 import com.gs.fw.common.mithra.test.aggregate.TestStandardDeviation;
 import com.gs.fw.common.mithra.test.aggregate.TestVariance;
 import com.gs.fw.common.mithra.test.domain.AllTypes;
@@ -2020,6 +2022,25 @@ public class TestH2GeneralTestCases
         OrderDriver pd = new OrderDriver();
         pd.setOrderId(orderId);
         return pd;
+    }
+
+    public void testSelectWithoutLockOnReadDoesNotLock()
+    {
+        H2DatabaseType databaseType = H2DatabaseType.getInstance();
+        databaseType.setLockOnRead(false);
+        assertEquals("select ORDER_ID from ORDERS where ORDER_ID = 1", databaseType.getSelect("ORDER_ID", "ORDERS", "ORDER_ID = 1", true));
+        SqlQuery query = new SqlQuery(OrderFinder.orderId().eq(1), null, false);
+        assertEquals(databaseType.getSelect("t0.ORDER_ID", query, null, false, 0), databaseType.getSelect("t0.ORDER_ID", query, null, true, 0));
+    }
+
+    public void testSelectWithLockOnReadAppendsForUpdate()
+    {
+        H2DatabaseType databaseType = H2DatabaseType.getInstance();
+        databaseType.setLockOnRead(true);
+        assertEquals("select ORDER_ID from ORDERS where ORDER_ID = 1 FOR UPDATE", databaseType.getSelect("ORDER_ID", "ORDERS", "ORDER_ID = 1", true));
+        assertEquals("select ORDER_ID from ORDERS where ORDER_ID = 1", databaseType.getSelect("ORDER_ID", "ORDERS", "ORDER_ID = 1", false));
+        SqlQuery query = new SqlQuery(OrderFinder.orderId().eq(1), null, false);
+        assertEquals(databaseType.getSelect("t0.ORDER_ID", query, null, false, 0) + " FOR UPDATE", databaseType.getSelect("t0.ORDER_ID", query, null, true, 0));
     }
 
     public void testManyThreads() throws SQLException, InterruptedException

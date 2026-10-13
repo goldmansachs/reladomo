@@ -123,6 +123,7 @@ public class H2DatabaseType extends AbstractDatabaseType
 
     private boolean useMultiValueInsert = false;
     private boolean quoteTableName = false;
+    private boolean lockOnRead = false;
 
     /**
      * Singleton. Protected visibility to allow test harness to subclass.
@@ -137,10 +138,10 @@ public class H2DatabaseType extends AbstractDatabaseType
         if (isInTransaction)
         {
             MithraObjectPortal portal = query.getAnalyzedOperation().getOriginalOperation().getResultObjectPortal();
-//            if (portal.getTxParticipationMode().mustLockOnRead())
-//            {
-//                result += " FOR UPDATE";
-//            }
+            if (this.lockOnRead && portal.getTxParticipationMode().mustLockOnRead())
+            {
+                result += " FOR UPDATE";
+            }
         }
         return result;
     }
@@ -148,10 +149,10 @@ public class H2DatabaseType extends AbstractDatabaseType
     public String getSelect(String columns, String fromClause, String whereClause, boolean lock)
     {
         String result = super.getSelect(columns, fromClause, whereClause, lock);
-//        if (lock)
-//        {
-//            result += " FOR UPDATE";
-//        }
+        if (this.lockOnRead && lock)
+        {
+            result += " FOR UPDATE";
+        }
         return result;
     }
 
@@ -417,6 +418,20 @@ public class H2DatabaseType extends AbstractDatabaseType
     public void setQuoteTableName(boolean quoteTableName)
     {
         this.quoteTableName = quoteTableName;
+    }
+
+    public boolean isLockOnRead()
+    {
+        return this.lockOnRead;
+    }
+
+    /**
+     * Off by default, so H2 used as an in-memory test database relies on Reladomo's own transactional locking.
+     * Turn on when H2 is a shared database, so transactional reads take row locks like other vendors.
+     */
+    public void setLockOnRead(boolean lockOnRead)
+    {
+        this.lockOnRead = lockOnRead;
     }
 
     @Override

@@ -53,6 +53,7 @@ public class MithraH2TestAbstract
     throws Exception
     {
         setMithraTestObjectToResultSetComparator(new AllTypesResultSetComparator());
+        H2DatabaseType.getInstance().setLockOnRead(true);
         mithraTestResource = new MithraTestResource("MithraH2TestConfig.xml", H2DatabaseType.getInstance());
         mithraTestResource.setRestrictedClassList(getRestrictedClassList());
 
@@ -77,6 +78,7 @@ public class MithraH2TestAbstract
         {
             mithraTestResource.tearDown();
         }
+        H2DatabaseType.getInstance().setLockOnRead(false);
         if (!H2TestConnectionManager.getInstance().ensureAllConnectionsReturnedToPool())
         {
             fail("Connections were not returned to pool");
