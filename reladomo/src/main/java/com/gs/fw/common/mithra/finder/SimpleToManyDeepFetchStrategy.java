@@ -89,6 +89,7 @@ public class SimpleToManyDeepFetchStrategy extends SingleLinkDeepFetchStrategy
         if (portal.isCacheDisabled()) return null;
 
         CachedQuery complexCachedQuery = new CachedQuery(op, this.orderBy);
+        inheritReachedMaxRetrieveCount(complexCachedQuery, parentQuery);
         QueryCache queryCache = portal.getQueryCache();
         CachedQuery cachedResult = queryCache.findByEquality(op);
         if (cachedResult != null)
@@ -203,7 +204,9 @@ public class SimpleToManyDeepFetchStrategy extends SingleLinkDeepFetchStrategy
     protected List deepFetchToManyFromServer(HashMap<Operation, List> opToListMap, boolean bypassCache,
             List immediateParentList, MithraList complexList, DeepFetchNode node, CachedQuery parentQuery)
     {
-        CachedQueryPair cqp = new CachedQueryPair(new CachedQuery(complexList.getOperation(), this.orderBy));
+        CachedQuery complexQuery = new CachedQuery(complexList.getOperation(), this.orderBy);
+        inheritReachedMaxRetrieveCount(complexQuery, parentQuery);
+        CachedQueryPair cqp = new CachedQueryPair(complexQuery);
         cqp.add(parentQuery);
         MithraList list = getResolvedListFromServer(bypassCache, immediateParentList, complexList, node);
 
