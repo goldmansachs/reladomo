@@ -19,6 +19,7 @@
 package com.gs.fw.common.mithra.databasetype;
 
 import com.gs.fw.common.mithra.MithraObjectPortal;
+import com.gs.fw.common.mithra.attribute.TimestampAttribute;
 import com.gs.fw.common.mithra.finder.SqlQuery;
 import com.gs.fw.common.mithra.util.ImmutableTimestamp;
 import com.gs.fw.common.mithra.util.TableColumnInfo;
@@ -122,6 +123,7 @@ public class H2DatabaseType extends AbstractDatabaseType
 
     private boolean useMultiValueInsert = false;
     private boolean quoteTableName = false;
+    private boolean lockOnRead = false;
 
     /**
      * Singleton. Protected visibility to allow test harness to subclass.
@@ -136,10 +138,10 @@ public class H2DatabaseType extends AbstractDatabaseType
         if (isInTransaction)
         {
             MithraObjectPortal portal = query.getAnalyzedOperation().getOriginalOperation().getResultObjectPortal();
-//            if (portal.getTxParticipationMode().mustLockOnRead())
-//            {
-//                result += " FOR UPDATE";
-//            }
+            if (this.lockOnRead && portal.getTxParticipationMode().mustLockOnRead())
+            {
+                result += " FOR UPDATE";
+            }
         }
         return result;
     }
@@ -147,10 +149,10 @@ public class H2DatabaseType extends AbstractDatabaseType
     public String getSelect(String columns, String fromClause, String whereClause, boolean lock)
     {
         String result = super.getSelect(columns, fromClause, whereClause, lock);
-//        if (lock)
-//        {
-//            result += " FOR UPDATE";
-//        }
+        if (this.lockOnRead && lock)
+        {
+            result += " FOR UPDATE";
+        }
         return result;
     }
 
@@ -418,6 +420,20 @@ public class H2DatabaseType extends AbstractDatabaseType
         this.quoteTableName = quoteTableName;
     }
 
+    public boolean isLockOnRead()
+    {
+        return this.lockOnRead;
+    }
+
+    /**
+     * Off by default, so H2 used as an in-memory test database relies on Reladomo's own transactional locking.
+     * Turn on when H2 is a shared database, so transactional reads take row locks like other vendors.
+     */
+    public void setLockOnRead(boolean lockOnRead)
+    {
+        this.lockOnRead = lockOnRead;
+    }
+
     @Override
     public String getFullyQualifiedTableName(String schema, String tableName)
     {
@@ -447,6 +463,38 @@ public class H2DatabaseType extends AbstractDatabaseType
     public String getSqlExpressionForDateDayOfMonth(String columnName)
     {
         return "EXTRACT(DAY FROM " + columnName + ")";
+    }
+
+    /*
+     * FORMATDATETIME preserves the bare timestamp's wall time. PARSEDATETIME attaches its configured
+     * source zone so AT TIME ZONE can apply timestamp-specific DST rules for the JVM default zone.
+     */
+    private String getSqlExpressionForTimestampWithConversion(String field, String columnName, int conversion, TimeZone dbTimeZone)
+    {
+        String timestampFormat = "yyyy-MM-dd HH:mm:ss.SSSSSSSSS";
+        String sourceTimeZone = conversion == TimestampAttribute.CONVERT_TO_UTC ? "UTC" : dbTimeZone.getID();
+        String timestampWithSourceTimeZone = "PARSEDATETIME(FORMATDATETIME(" + columnName + ", '" + timestampFormat
+                + "'), '" + timestampFormat + "', 'en', '" + sourceTimeZone + "')";
+        return "EXTRACT(" + field + " FROM " + timestampWithSourceTimeZone + " AT TIME ZONE '"
+                + TimeZone.getDefault().getID() + "')";
+    }
+
+    @Override
+    protected String getSqlExpressionForTimestampYearWithConversion(String columnName, int conversion, TimeZone dbTimeZone)
+    {
+        return getSqlExpressionForTimestampWithConversion("YEAR", columnName, conversion, dbTimeZone);
+    }
+
+    @Override
+    protected String getSqlExpressionForTimestampMonthWithConversion(String columnName, int conversion, TimeZone dbTimeZone)
+    {
+        return getSqlExpressionForTimestampWithConversion("MONTH", columnName, conversion, dbTimeZone);
+    }
+
+    @Override
+    protected String getSqlExpressionForTimestampDayOfMonthWithConversion(String columnName, int conversion, TimeZone dbTimeZone)
+    {
+        return getSqlExpressionForTimestampWithConversion("DAY", columnName, conversion, dbTimeZone);
     }
 
     @Override

@@ -1,0 +1,2 @@
+alter table BCP_SIMPLE_ABC add constraint BCP_SIMPLE_ABC_PK primary key (ID);
+
