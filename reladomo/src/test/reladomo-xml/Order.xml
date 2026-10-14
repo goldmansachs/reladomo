@@ -65,6 +65,15 @@
     <Relationship name="itemsForUserFive" relatedObject="OrderItem" cardinality="one-to-many" returnType="List">
         OrderItem.orderId = this.orderId and this.userId = 5
     </Relationship>
+    <Relationship name="itemsWithStatePrefix" relatedObject="OrderItem" cardinality="one-to-many" parameters="String prefix">
+        OrderItem.orderId = this.orderId and OrderItem.state startsWith {prefix}
+    </Relationship>
+    <Relationship name="itemsInProgress" relatedObject="OrderItem" cardinality="one-to-many">
+        OrderItem.orderId = this.orderId and OrderItem.state contains "Progress"
+    </Relationship>
+    <Relationship name="shippedItems" relatedObject="OrderItem" cardinality="one-to-many">
+        OrderItem.orderId = this.orderId and OrderItem.state endsWith "Shipped"
+    </Relationship>
     <Relationship name="productsWithoutInProgress" relatedObject="Product" cardinality="one-to-many">
         this.orderId = OrderItem.orderId and
         10.5 = OrderItem.quantity and
